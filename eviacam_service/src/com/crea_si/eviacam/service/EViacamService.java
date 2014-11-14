@@ -1,75 +1,70 @@
 package com.crea_si.eviacam.service;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 public class EViacamService extends AccessibilityService {
     private static final String TAG = "EViacamService";
-    private Timer mTimer;
+    private HeartBeat mHeartBeat;
 
+    /**
+     * Called when the accessibility service is started
+     */
     @Override
     public void onCreate() {
-        // Called when the accessibility service is started
         super.onCreate();
-        Log.i(TAG, "onCreate");
 
-        mTimer = new Timer();
+        Log.v(TAG, "onCreate");
+
+        mHeartBeat = new HeartBeat(this);
     }
 
+    /**
+     * Called every time the service is switched ON
+     */
     @Override
     public void onServiceConnected() {
-        // Called every time the service is switched ON
-        Log.i(TAG, "onServiceConnected");
+        Log.v(TAG, "onServiceConnected");
 
-        // Does not want any accessibility event. Cannot be removed directly from
-        // @xml/accessibilityservice, otherwise onUnbind and onDestroy never get called
+        /**
+         * Unsubscribe all accessibility events. Cannot be removed directly from
+         * @xml/accessibilityservice, otherwise onUnbind and onDestroy // never
+         * get called
+         */
         setServiceInfo(new AccessibilityServiceInfo());
 
-        Toast toast = Toast.makeText(this.getApplicationContext(),
-                "onServiceConnected", Toast.LENGTH_SHORT);
-        toast.show();
-
-        mTimer.scheduleAtFixedRate(new mainTask(), 0, 5000);
+        Toast.makeText(this.getApplicationContext(), "onServiceConnected", Toast.LENGTH_SHORT).show();
+        
+        mHeartBeat.start();
     }
 
-    private class mainTask extends TimerTask {
-        public void run() {
-            toastHandler.sendEmptyMessage(0);
-        }
-    }
-
-    private final Handler toastHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Toast.makeText(getApplicationContext(), "test", Toast.LENGTH_SHORT)
-                    .show();
-        }
-    };
-
+    /**
+     * Called when service is switched off
+     */
     @Override
     public boolean onUnbind(Intent intent) {
-        // Gets called when service is switched off
-        mTimer.cancel();
-        Log.i(TAG, "onUnbind");
+        Log.v(TAG, "onUnbind");
+
+        mHeartBeat.stop();
+
         return false;
     }
 
+    /**
+     * Called when service is switched off after onUnbind
+     */
     @Override
     public void onDestroy() {
-        // Gets called when service is switched off after onUnbind
         super.onDestroy();
-        mTimer.cancel();
-        Log.i(TAG, "onDestroy");
-        super.onDestroy();
+
+        Log.v(TAG, "onDestroy");
+
+        mHeartBeat.stop();
+
     }
 
     /**

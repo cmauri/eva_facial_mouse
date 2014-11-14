@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ public class EViacamService extends AccessibilityService {
         // Called when the accessibility service is started
         super.onCreate();
         Log.i(TAG, "onCreate");
+
         mTimer = new Timer();
     }
 
@@ -27,6 +29,10 @@ public class EViacamService extends AccessibilityService {
     public void onServiceConnected() {
         // Called every time the service is switched ON
         Log.i(TAG, "onServiceConnected");
+
+        // Does not want any accessibility event. Cannot be removed directly from
+        // @xml/accessibilityservice, otherwise onUnbind and onDestroy never get called
+        setServiceInfo(new AccessibilityServiceInfo());
 
         Toast toast = Toast.makeText(this.getApplicationContext(),
                 "onServiceConnected", Toast.LENGTH_SHORT);
@@ -86,13 +92,4 @@ public class EViacamService extends AccessibilityService {
     public void onInterrupt() {
         Log.i(TAG, "onInterrupt");
     }
-
-    /*
-     * About other Service callbacks
-     * 
-     * NOT CALLED int onStartCommand(Intent intent, int flags, int startId)
-     * boolean onUnbind(Intent intent)
-     * 
-     * NON OVERRIDABLE IBinder onBind(Intent intent)
-     */
 }

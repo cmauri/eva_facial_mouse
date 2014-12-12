@@ -10,6 +10,7 @@ import android.util.Log;
 public class EViacamService extends AccessibilityService {
     private static final String TAG = "EViacamService";
     private HeartBeat mHeartBeat;
+    private LayoutManager mLayoutManager;
 
     /**
      * Called when the accessibility service is started
@@ -17,7 +18,7 @@ public class EViacamService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        android.os.Debug.waitForDebugger();
         Log.v(TAG, "onCreate");
 
         mHeartBeat = new HeartBeat(this);
@@ -38,9 +39,12 @@ public class EViacamService extends AccessibilityService {
         setServiceInfo(new AccessibilityServiceInfo());
 
         Toast.makeText(this.getApplicationContext(), "onServiceConnected", Toast.LENGTH_SHORT).show();
-        
         mHeartBeat.start();
+        
+        mLayoutManager= new LayoutManager(this.getApplicationContext());
+        mLayoutManager.createFeedbackOverlay();
     }
+    
 
     /**
      * Called when service is switched off
@@ -49,8 +53,11 @@ public class EViacamService extends AccessibilityService {
     public boolean onUnbind(Intent intent) {
         Log.v(TAG, "onUnbind");
 
+        mLayoutManager.destroyFeedbackOverlay();
+        mLayoutManager= null;        
+        
         mHeartBeat.stop();
-
+        
         return false;
     }
 

@@ -5,10 +5,8 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
-import android.util.Log;
 
 public class EViacamService extends AccessibilityService {
-    private static final String TAG = "EViacamService";
     private HeartBeat mHeartBeat;
     private LayoutManager mLayoutManager;
 
@@ -19,7 +17,7 @@ public class EViacamService extends AccessibilityService {
     public void onCreate() {
         super.onCreate();
         android.os.Debug.waitForDebugger();
-        Log.v(TAG, "onCreate");
+        EVIACAM.debug("onCreate");
 
         mHeartBeat = new HeartBeat(this);
     }
@@ -29,7 +27,7 @@ public class EViacamService extends AccessibilityService {
      */
     @Override
     public void onServiceConnected() {
-        Log.v(TAG, "onServiceConnected");
+        EVIACAM.debug("onServiceConnected");
 
         /**
          * Unsubscribe all accessibility events. Cannot be removed directly from
@@ -51,7 +49,7 @@ public class EViacamService extends AccessibilityService {
      */
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.v(TAG, "onUnbind");
+        EVIACAM.debug("onUnbind");
 
         mLayoutManager.destroyFeedbackOverlay();
         mLayoutManager= null;        
@@ -68,7 +66,7 @@ public class EViacamService extends AccessibilityService {
     public void onDestroy() {
         super.onDestroy();
 
-        Log.v(TAG, "onDestroy");
+        EVIACAM.debug("onDestroy");
 
         mHeartBeat.stop();
 
@@ -81,7 +79,7 @@ public class EViacamService extends AccessibilityService {
      */
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        Log.i(TAG, "onAccessibilityEvent");
+        EVIACAM.debug("onAccessibilityEvent");
     }
 
     /**
@@ -92,6 +90,6 @@ public class EViacamService extends AccessibilityService {
      */
     @Override
     public void onInterrupt() {
-        Log.i(TAG, "onInterrupt");
+        EVIACAM.debug("onInterrupt");
     }
 }

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.graphics.PixelFormat;
 
 public class LayoutManager {
-    private static final String TAG = "EViacamService";
     private Context mContext;
     private FeedbackOverlayView mFOV;
     
@@ -38,7 +37,7 @@ public class LayoutManager {
         WindowManager wm= (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         wm.addView(mFOV, feedbackParams);
 
-        Log.i(TAG,"finish createFeedbackOverlay");
+        EVIACAM.debug("finish createFeedbackOverlay");
     }    
     
     void destroyFeedbackOverlay() {
@@ -47,6 +46,6 @@ public class LayoutManager {
         WindowManager wm= (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         wm.removeViewImmediate(mFOV);
         mFOV = null;
-        Log.i(TAG,"finish destroyFeedbackOverlay");
+        EVIACAM.debug("finish destroyFeedbackOverlay");
     }
 }

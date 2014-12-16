@@ -4,4 +4,5 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityEventTypes="typeViewClicked"
     android:accessibilityFeedbackType="feedbackSpoken"
-    android:description="@string/eviacam_service_description" />
+    android:description="@string/eviacam_service_description" 
+    android:settingsActivity="com.crea_si.eviacam.service.SettingsActivity" />

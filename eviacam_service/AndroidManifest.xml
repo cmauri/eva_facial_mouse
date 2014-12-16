@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.crea_si.eviacam.service"
     android:versionCode="1"
     android:versionName="1.0" >
@@ -19,7 +20,8 @@
             android:name=".EViacamService"
             android:icon="@drawable/ic_launcher"
             android:label="@string/service_name"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" >
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" 
+            android:settingsActivity="com.crea_si.eviacam.service.SettingsActivity" >
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -28,6 +30,20 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibilityservice" />
         </service>
+
+        <!-- Enable Viacam preferences -->
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/eviacam_preferences_title"
+            android:launchMode="singleTop"
+            android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
+            tools:ignore="ExportedActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.accessibilityservice.SERVICE_SETTINGS" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

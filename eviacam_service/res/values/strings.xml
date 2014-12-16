@@ -3,5 +3,5 @@
     <string name="app_name">Enable Viacam</string>
     <string name="service_name">Enable Viacam</string>
     <string name="eviacam_service_description">Enable Viacam is a mouse replacement software that moves the pointer as you move your head.</string>
-
+    <string name="eviacam_preferences_title">Enable Viacam settings</string>
 </resources>

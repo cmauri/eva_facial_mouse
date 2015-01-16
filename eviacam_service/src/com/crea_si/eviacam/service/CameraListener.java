@@ -3,6 +3,7 @@ package com.crea_si.eviacam.service;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
+import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.OpenCVLoader;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup; 
 import android.view.SurfaceView;
+import android.view.ViewGroup.LayoutParams;
 
 public class CameraListener implements CvCameraViewListener2 {
     private Context mContext;
@@ -40,17 +42,31 @@ public class CameraListener implements CvCameraViewListener2 {
         
         mContext= context;
        
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
-        View v= inflater.inflate(R.layout.camera_view, null);
-               
-        mCameraView= (CameraBridgeViewBase) v.findViewById(R.id.camera_view);
-        //mCameraView= new JavaCameraView(context, -1);
-        //mCameraView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        mCameraView.setVisibility(SurfaceView.VISIBLE);
+        // Create capture view using layout
+        //LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
+        //View v= inflater.inflate(R.layout.camera_view, null);
+        //mCameraView= (CameraBridgeViewBase) v.findViewById(R.id.camera_view);
+        
+        // Create capture view directly
+        View v= mCameraView= new JavaCameraView(context, -1);
+        
+        // Set  CameraBridgeViewBase parameters
+        
+        // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)
+        // crashes with a "Callback buffer was too small! error", it works at 352x288
+        
+        mCameraView.setMaxFrameSize(352, 288);
+        mCameraView.enableFpsMeter(); // For testing
         mCameraView.setCvCameraViewListener(this);
+        
+        // Set View parameters
+        mCameraView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        mCameraView.setVisibility(SurfaceView.VISIBLE);
+        
+        // Add view to parent
         vg.addView(v);
 
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_10, context, mLoaderCallback);
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, context, mLoaderCallback);
     }
 
 
@@ -70,15 +86,10 @@ public class CameraListener implements CvCameraViewListener2 {
         EVIACAM.debug("onCameraFrame");
         return null;
     }
-    */
+     */
 
-    private int count= 0;
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
-        count++;
-        if (count== 100) 
-            mCameraView.disableView();
-
         EVIACAM.debug("onCameraFrame");
         return inputFrame.rgba();
     }

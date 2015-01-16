@@ -3,7 +3,6 @@ package com.crea_si.eviacam.service;
 import android.content.Context;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
-import android.util.Log;
 import android.graphics.PixelFormat;
 
 public class LayoutManager {

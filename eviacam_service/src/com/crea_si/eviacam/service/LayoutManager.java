@@ -48,4 +48,8 @@ public class LayoutManager {
         mFOV = null;
         EVIACAM.debug("finish destroyFeedbackOverlay");
     }
+    
+    FeedbackOverlayView getViewGroup() {
+        return mFOV;
+    }
 }

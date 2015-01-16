@@ -9,6 +9,7 @@ import android.widget.Toast;
 public class EViacamService extends AccessibilityService {
     private HeartBeat mHeartBeat;
     private LayoutManager mLayoutManager;
+    private CameraListener mCameraListener;
 
     /**
      * Called when the accessibility service is started
@@ -36,11 +37,16 @@ public class EViacamService extends AccessibilityService {
          */
         setServiceInfo(new AccessibilityServiceInfo());
 
+        // DEBUGGING MESSAGES
         Toast.makeText(this.getApplicationContext(), "onServiceConnected", Toast.LENGTH_SHORT).show();
         mHeartBeat.start();
         
+        // Create overlay
         mLayoutManager= new LayoutManager(this.getApplicationContext());
         mLayoutManager.createFeedbackOverlay();
+        
+        // Connect camera
+        mCameraListener= new CameraListener(this, mLayoutManager.getViewGroup());
     }
     
 

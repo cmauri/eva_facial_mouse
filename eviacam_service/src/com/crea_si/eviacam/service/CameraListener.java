@@ -60,11 +60,17 @@ public class CameraListener implements CvCameraViewListener {
         mCameraView.setCvCameraViewListener(this);
         
         // Set View parameters
-        mCameraView.setLayoutParams(new LayoutParams(352, 288));
+        mCameraView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mCameraView.setVisibility(SurfaceView.VISIBLE);
         
+        MaxWidthLinearLayout mwly= new MaxWidthLinearLayout(context);
+        mwly.setMaxWidth(40);
+        mwly.setMaxHeight(40);
+        //mwly.setGravity(0x00000001);
+        mwly.addView(v);
+        
         // Add view to parent
-        vg.addView(v);
+        vg.addView(mwly);
 
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, context, mLoaderCallback);
     }

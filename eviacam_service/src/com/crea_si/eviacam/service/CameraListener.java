@@ -8,13 +8,9 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
-
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup; 
 import android.view.SurfaceView;
-import android.widget.RelativeLayout;
+
 
 public class CameraListener implements CvCameraViewListener2 {
     private Context mContext;
@@ -37,15 +33,10 @@ public class CameraListener implements CvCameraViewListener2 {
         }
     };
     
-    public CameraListener(Context context, ViewGroup vg) {
+    public CameraListener(Context context) {
         EVIACAM.debug("Create CameraListener");
-        
+
         mContext= context;
-       
-        // Create capture view using layout
-        //LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
-        //View v= inflater.inflate(R.layout.camera_view, null);
-        //mCameraView= (CameraBridgeViewBase) v.findViewById(R.id.camera_view);
         
         // Create capture view directly
         mCameraView= new JavaCameraView(context, -1);
@@ -61,17 +52,21 @@ public class CameraListener implements CvCameraViewListener2 {
         // Set View parameters
         mCameraView.setVisibility(SurfaceView.VISIBLE);
         
-        // Set layout and add to parent
-        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(88, 72);
-        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        mCameraView.setLayoutParams(lp);
-
-        vg.addView(mCameraView);
-
+    }
+    
+    public void StartCamera() {
         // Start OpenCV
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, context, mLoaderCallback);
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, mContext, mLoaderCallback);
+    }
+    
+    public void StopCamera() {
+        if (mCameraView!= null)
+            mCameraView.disableView();
     }
 
+    SurfaceView getCameraSurface(){
+        return mCameraView;
+    }
 
     @Override
     public void onCameraViewStarted(int width, int height) {

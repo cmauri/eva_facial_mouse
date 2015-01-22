@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 public class EViacamService extends AccessibilityService {
     private HeartBeat mHeartBeat;
-    private LayoutManager mLayoutManager;
+    private OverlayManager mOverlayManager;
     private CameraListener mCameraListener;
 
     /**
@@ -42,11 +42,13 @@ public class EViacamService extends AccessibilityService {
         mHeartBeat.start();
         
         // Create overlay
-        mLayoutManager= new LayoutManager(this.getApplicationContext());
-        mLayoutManager.createFeedbackOverlay();
+        mOverlayManager= new OverlayManager(this.getApplicationContext());
+        mOverlayManager.createOverlay();
         
-        // Connect camera
-        mCameraListener= new CameraListener(this, mLayoutManager.getViewGroup());
+        // Create camera
+        mCameraListener= new CameraListener(this);
+        mOverlayManager.addCameraSurface(mCameraListener.getCameraSurface());
+        mCameraListener.StartCamera();
     }
     
 
@@ -56,9 +58,11 @@ public class EViacamService extends AccessibilityService {
     @Override
     public boolean onUnbind(Intent intent) {
         EVIACAM.debug("onUnbind");
+        
+        mCameraListener.StopCamera();
 
-        mLayoutManager.destroyFeedbackOverlay();
-        mLayoutManager= null;        
+        mOverlayManager.destroyOverlay();
+        mOverlayManager= null;        
         
         mHeartBeat.stop();
         

@@ -5,7 +5,7 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener;
+import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.view.SurfaceView;
 import android.widget.RelativeLayout;
 
-public class CameraListener implements CvCameraViewListener {
+public class CameraListener implements CvCameraViewListener2 {
     private Context mContext;
     private CameraBridgeViewBase mCameraView;
     
@@ -62,7 +62,7 @@ public class CameraListener implements CvCameraViewListener {
         mCameraView.setVisibility(SurfaceView.VISIBLE);
         
         // Set layout and add to parent
-        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(352, 288);
+        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(88, 72);
         lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
         mCameraView.setLayoutParams(lp);
 
@@ -82,18 +82,10 @@ public class CameraListener implements CvCameraViewListener {
     public void onCameraViewStopped() {
         EVIACAM.debug("onCameraViewStopped");        
     }
-
-    @Override
-    public Mat onCameraFrame(Mat inputFrame) {
-        EVIACAM.debug("onCameraFrame");
-        return inputFrame;
-    }
      
-    /*
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         EVIACAM.debug("onCameraFrame");
         return inputFrame.rgba();
     }
-    */
 }

@@ -23,6 +23,9 @@ public class CameraListener implements CvCameraViewListener2 {
                 case LoaderCallbackInterface.SUCCESS:
                 {
                     EVIACAM.debug("OpenCV loaded successfully");
+                    System.loadLibrary("visionpipeline");
+                    
+                    VisionPipeline.ProcessFrame(10, 10);
                     mCameraView.enableView();
                 } break;
                 default:

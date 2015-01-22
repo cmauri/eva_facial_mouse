@@ -11,6 +11,8 @@
 # Generated files
 bin/
 gen/
+obj/
+libs/armeabi-v7a/
 
 # Gradle files
 .gradle/

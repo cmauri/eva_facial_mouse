@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup; 
 import android.view.SurfaceView;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.RelativeLayout;
 
 public class CameraListener implements CvCameraViewListener {
     private Context mContext;
@@ -66,10 +67,13 @@ public class CameraListener implements CvCameraViewListener {
         MaxWidthLinearLayout mwly= new MaxWidthLinearLayout(context);
         mwly.setMaxWidth(40);
         mwly.setMaxHeight(40);
-        //mwly.setGravity(0x00000001);
         mwly.addView(v);
         
         // Add view to parent
+        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        mwly.setLayoutParams(lp);
+
         vg.addView(mwly);
 
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, context, mLoaderCallback);

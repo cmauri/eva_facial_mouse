@@ -31,6 +31,9 @@ public class LayoutManager {
                
         // Whole screen is covered (including status bar)
         feedbackParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+        
+        feedbackParams.width = LayoutParams.MATCH_PARENT;
+        feedbackParams.height = LayoutParams.MATCH_PARENT;
       
         mFOV = new FeedbackOverlayView(mContext);
         WindowManager wm= (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);

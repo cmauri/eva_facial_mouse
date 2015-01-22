@@ -6,8 +6,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
-public class FeedbackOverlayView extends LinearLayout {
+public class FeedbackOverlayView extends RelativeLayout {
 	Paint mPaintBox;
     
     public FeedbackOverlayView(Context context) {

@@ -15,6 +15,7 @@ public class FeedbackOverlayView extends RelativeLayout {
         super(context);
         
         mPaintBox = new Paint();
+        setWillNotDraw(false);
     }
 	
 	public void onDraw(Canvas canvas){

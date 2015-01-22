@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup; 
 import android.view.SurfaceView;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 
 public class CameraListener implements CvCameraViewListener {
@@ -49,10 +48,9 @@ public class CameraListener implements CvCameraViewListener {
         //mCameraView= (CameraBridgeViewBase) v.findViewById(R.id.camera_view);
         
         // Create capture view directly
-        View v= mCameraView= new JavaCameraView(context, -1);
+        mCameraView= new JavaCameraView(context, -1);
         
-        // Set  CameraBridgeViewBase parameters
-        
+        // Set CameraBridgeViewBase parameters        
         // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)
         // crashes with a "Callback buffer was too small! error", it works at 352x288
         
@@ -61,21 +59,16 @@ public class CameraListener implements CvCameraViewListener {
         mCameraView.setCvCameraViewListener(this);
         
         // Set View parameters
-        mCameraView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         mCameraView.setVisibility(SurfaceView.VISIBLE);
         
-        MaxWidthLinearLayout mwly= new MaxWidthLinearLayout(context);
-        mwly.setMaxWidth(40);
-        mwly.setMaxHeight(40);
-        mwly.addView(v);
-        
-        // Add view to parent
-        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
+        // Set layout and add to parent
+        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(352, 288);
         lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        mwly.setLayoutParams(lp);
+        mCameraView.setLayoutParams(lp);
 
-        vg.addView(mwly);
+        vg.addView(mCameraView);
 
+        // Start OpenCV
         OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, context, mLoaderCallback);
     }
 

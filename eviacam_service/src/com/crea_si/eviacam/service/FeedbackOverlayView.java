@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class FeedbackOverlayView extends RelativeLayout {

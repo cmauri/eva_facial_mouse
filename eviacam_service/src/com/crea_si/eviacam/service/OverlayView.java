@@ -1,28 +1,25 @@
 package com.crea_si.eviacam.service;
 
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
-public class FeedbackOverlayView extends ViewGroup {
+public class OverlayView extends RelativeLayout {
 	Paint mPaintBox;
     
-    public FeedbackOverlayView(Context context) {
+    public OverlayView(Context context) {
         super(context);
         
         mPaintBox = new Paint();
+        setWillNotDraw(false);
     }
-    
-	@Override
-	protected void onLayout(boolean changed, int l, int t, int r, int b) {
-		// TODO Auto-generated method stub
-	}
 	
 	public void onDraw(Canvas canvas){
+	    super.onDraw(canvas);
+	    
 		// Draw something
 	    final int COLOR = Color.parseColor("#0099cc");
 	    final int ALPHA_EMPTY = 255;

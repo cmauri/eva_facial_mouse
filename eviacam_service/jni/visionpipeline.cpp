@@ -35,20 +35,19 @@
 #define DEFAULT_TRACK_AREA_HEIGHT_PERCENT 0.30f
 #define DEFAULT_TRACK_AREA_X_CENTER_PERCENT 0.5f
 #define DEFAULT_TRACK_AREA_Y_CENTER_PERCENT 0.5f
-#define DEFAULT_FACE_DETECTION_TIMEOUT 5000
-#define COLOR_DEGRADATION_TIME 5000
-
 
 CVisionPipeline::CVisionPipeline ()
-: m_faceCascade(NULL)
+: m_trackFace(true)
+, m_isRunning(false)
+, m_faceCascade(NULL)
 , m_storage(NULL)
+, m_faceDetected(true)
 , m_faceLocationStatus(0) // 0 -> not available, 1 -> available
 , m_corner_count(0)
 {
-	InitDefaults();
-
-	m_isRunning= false;
-	m_trackAreaTimeout.SetWaitTimeMs(COLOR_DEGRADATION_TIME);
+	SetThreadPeriod(CPU_NORMAL);
+	m_trackArea.SetSize (DEFAULT_TRACK_AREA_WIDTH_PERCENT, DEFAULT_TRACK_AREA_HEIGHT_PERCENT);
+	m_trackArea.SetCenter (DEFAULT_TRACK_AREA_X_CENTER_PERCENT, DEFAULT_TRACK_AREA_Y_CENTER_PERCENT);
 	memset(m_corners, 0, sizeof(m_corners));
 
 	//
@@ -57,24 +56,13 @@ CVisionPipeline::CVisionPipeline ()
 	//wxString cascadePath (eviacam::GetDataDir() + _T("/haarcascade_frontalface_default.xml"));
 	try {
 		// TODO: load face cascade
-		m_faceCascade = NULL;
+
 		//m_faceCascade = (CvHaarClassifierCascade*)cvLoad(cascadePath.mb_str(wxConvUTF8), 0, 0, 0);
 	}
 	catch (cv::Exception& e) {
 		LOGW("%s:%d %s\n", __FILE__, __LINE__, e.what());
 	}
-	// In debug mode if previous load attemp try to open it from the standard unix location.
-#ifndef NDEBUG
-	if (!m_faceCascade)	{
-		try {
-			m_faceCascade = (CvHaarClassifierCascade*)
-				cvLoad("/usr/share/eviacam/haarcascade_frontalface_default.xml", 0, 0, 0);
-		}
-		catch (cv::Exception& e) {
-			LOGW("%s:%d %s\n", __FILE__, __LINE__, e.what());
-		}
-	}
-#endif
+
 	if (!m_faceCascade) {
 		// TODO: toast?? should never happen
 		//wxMessageDialog dlg (NULL, _("The face localization option is not enabled."), _T("Enable Viacam"), wxICON_ERROR | wxOK );
@@ -122,9 +110,9 @@ void CVisionPipeline::AllocWorkingSpace (CIplImage &image)
 {
 	bool retval;
 
-	if (!m_imgVelX.Initialized () ||
-		image.Width() != m_imgVelX.Width() ||
-		image.Height() != m_imgVelX.Height() ) {
+	if (!m_imgPrev.Initialized () ||
+		image.Width() != m_imgPrev.Width() ||
+		image.Height() != m_imgPrev.Height() ) {
 
 		// TODO: review synchronization
 //		m_imageCopyMutex.Enter();
@@ -143,14 +131,6 @@ void CVisionPipeline::AllocWorkingSpace (CIplImage &image)
 
 		retval= m_imgCurrProc.Create (image.Width(), image.Height(), 
 					      IPL_DEPTH_8U, "GRAY");
-		assert (retval);
-
-		retval= m_imgVelX.Create (image.Width(), image.Height(), 
-								  IPL_DEPTH_32F, "GRAY");
-		assert (retval);
-
-		retval= m_imgVelY.Create (image.Width(), image.Height(), 
-								  IPL_DEPTH_32F, "GRAY");
 		assert (retval);
 	}
 }
@@ -214,21 +194,16 @@ void CVisionPipeline::ComputeFaceTrackArea (CIplImage &image)
 	if (face->total>0) {
 		CvRect* faceRect = (CvRect*) cvGetSeqElem(face, 0);
 		m_faceLocation = *faceRect;
+		m_faceDetected= true;
 		m_faceLocationStatus = 1;
 
 		LOGD("face detected: location (%d, %d) size (%d, %d)",
 			faceRect->x, faceRect->y, faceRect->width, faceRect->height);
-
-		m_waitTime.Reset();
-		m_trackAreaTimeout.Reset();
 	}
+	else
+		m_faceDetected= false;
 
 	cvClearMemStorage(m_storage);
-}
-
-bool CVisionPipeline::IsFaceDetected () const
-{
-	return !m_waitTime.HasExpired();
 }
 
 int CVisionPipeline::PreprocessImage ()
@@ -449,10 +424,10 @@ bool CVisionPipeline::ProcessImage (CIplImage& image, float& xVel, float& yVel)
 			m_condition.Signal();
 		}*/
 
-		if (m_trackFace && m_enableWhenFaceDetected && !IsFaceDetected())
-			return false;
-		else
+		if (m_trackFace && m_faceDetected)
 			return true;
+		else
+			return false;
 	}
 	catch (const std::exception& e) {
 		LOGE("Exception: %s\n", e.what());
@@ -528,19 +503,4 @@ void CVisionPipeline::SetThreadPeriod (int value)
 			m_threadPeriod= NORMAL;
 			break;
 	}
-}
-
-//
-// Configuration methods
-//
-void CVisionPipeline::InitDefaults()
-{
-	m_trackFace= true;
-	m_enableWhenFaceDetected= false;
-	m_useLegacyTracker= false;
-	m_waitTime.SetWaitTimeMs(DEFAULT_FACE_DETECTION_TIMEOUT);
-	SetThreadPeriod(CPU_NORMAL);
-	m_trackArea.SetSize (DEFAULT_TRACK_AREA_WIDTH_PERCENT, DEFAULT_TRACK_AREA_HEIGHT_PERCENT);
-	m_trackArea.SetCenter (DEFAULT_TRACK_AREA_X_CENTER_PERCENT, DEFAULT_TRACK_AREA_Y_CENTER_PERCENT);
-	
 }

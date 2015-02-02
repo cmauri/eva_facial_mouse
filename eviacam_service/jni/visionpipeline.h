@@ -37,57 +37,33 @@ public:
 	CVisionPipeline ();
 	~CVisionPipeline();
 
-	void InitDefaults();
-
 	bool ProcessImage (CIplImage& image, float& xVel, float& yVel);
 
 	bool GetTrackFace () const { return m_trackFace; }
 	void SetTrackFace (bool state) { m_trackFace= state; }
-	
-	bool GetEnableWhenFaceDetected () const { return m_enableWhenFaceDetected; }
-	void SetEnableWhenFaceDetected (bool state) { m_enableWhenFaceDetected= state; }
 
-	bool IsFaceDetected () const;
-
-	unsigned int GetTimeout () const { return (unsigned int) (m_waitTime.GetWaitTimeMs()/1000); }
-	void SetTimeout (unsigned int timeout) { m_waitTime.SetWaitTimeMs(timeout*1000); }
-	
 	int GetCpuUsage ();
 	void SetCpuUsage (int value);
 
 	bool IsTrackFaceAllowed () { return (m_faceCascade!= NULL); }	
 
-
-
 private:
 	// Track area
 	bool m_trackFace;
-	bool m_enableWhenFaceDetected;
 	bool m_isRunning;
-	bool m_useLegacyTracker;
-	CWaitTime m_waitTime;
-	CWaitTime m_trackAreaTimeout;
-		
 	CIplImage m_imgThread;
 	CIplImage m_imgPrevProc, m_imgCurrProc;
 	CIplImage m_imgPrev, m_imgCurr;
-	CIplImage m_imgVelX, m_imgVelY;
 	TCrvLookupTable m_prevLut;
-
 	CvHaarClassifierCascade* m_faceCascade;
 	CvMemStorage* m_storage;
 	int m_threadPeriod;
-	
 	CNormROI m_trackArea;
 
-/*
-	wxCriticalSection m_imageCopyMutex;
-	wxMutex m_mutex;
-	wxCondition m_condition;
-*/
 	// Face location detection
 	CvRect m_faceLocation;
-	int m_faceLocationStatus; // 0 -> not available, 1 -> available
+	volatile bool m_faceDetected;
+	volatile int m_faceLocationStatus; // 0 -> not available, 1 -> available
 
 	// Corner array
 	enum { NUM_CORNERS = 15 };
@@ -99,7 +75,6 @@ private:
 	int PreprocessImage ();
 	void ComputeFaceTrackArea (CIplImage &image);
 	void SetThreadPeriod (int value);
-	void OldTracker(CIplImage &image, float &xVel, float &yVel);
 	void NewTracker(CIplImage &image, float &xVel, float &yVel);
 	int Entry();
 };

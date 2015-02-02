@@ -28,6 +28,8 @@
 									<listOptionValue builtIn="false" value="&quot;${NDKROOT}/sources/cxx-stl/gnu-libstdc++/4.6/libs/armeabi-v7a/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/../../sdk/native/jni/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${NDKROOT}/sources/android/native_app_glue&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${OPENCV_ANDROID_SDK}/native/jni/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${NDKROOT}/toolchains/arm-linux-androideabi-4.9/prebuilt/windows-x86_64/lib/gcc/arm-linux-androideabi/4.9/include&quot;"/>
 								</option>
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.273216997" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>

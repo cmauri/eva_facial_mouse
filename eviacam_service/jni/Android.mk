@@ -8,10 +8,8 @@ LOCAL_MODULE    := visionpipeline
 LOCAL_SRC_FILES := crvimage.cpp \
 	timeutil.cpp \
 	sample.cpp \
-	waittime.cpp \
-	crvhistogram.cpp \
-	crvmisc.cpp \
 	crvnormroi.cpp \
+	facedetection.cpp \
 	visionpipeline.cpp
 LOCAL_LDLIBS    += -lm -llog -landroid
 LOCAL_STATIC_LIBRARIES += android_native_app_glue

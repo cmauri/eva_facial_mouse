@@ -24,11 +24,12 @@
 #include "timeutil.h"
 #include "eviacam.h"
 
-#include <opencv2/legacy/legacy.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
 
 #include <math.h>
+
+namespace eviacam {
 
 // Constants
 #define DEFAULT_TRACK_AREA_WIDTH_PERCENT 0.50f
@@ -36,77 +37,21 @@
 #define DEFAULT_TRACK_AREA_X_CENTER_PERCENT 0.5f
 #define DEFAULT_TRACK_AREA_Y_CENTER_PERCENT 0.5f
 
-CVisionPipeline::CVisionPipeline ()
-: m_trackFace(true)
-, m_isRunning(false)
-, m_faceCascade(NULL)
-, m_storage(NULL)
-, m_faceDetected(true)
-, m_faceLocationStatus(0) // 0 -> not available, 1 -> available
+VisionPipeline::VisionPipeline(const char* cascadePath)
+: m_faceDetection(cascadePath)
+, m_trackFace(true)
 , m_corner_count(0)
 {
-	SetThreadPeriod(CPU_NORMAL);
-	m_trackArea.SetSize (DEFAULT_TRACK_AREA_WIDTH_PERCENT, DEFAULT_TRACK_AREA_HEIGHT_PERCENT);
-	m_trackArea.SetCenter (DEFAULT_TRACK_AREA_X_CENTER_PERCENT, DEFAULT_TRACK_AREA_Y_CENTER_PERCENT);
+	m_floatTrackArea.SetSize (DEFAULT_TRACK_AREA_WIDTH_PERCENT, DEFAULT_TRACK_AREA_HEIGHT_PERCENT);
+	m_floatTrackArea.SetCenter (DEFAULT_TRACK_AREA_X_CENTER_PERCENT, DEFAULT_TRACK_AREA_Y_CENTER_PERCENT);
 	memset(m_corners, 0, sizeof(m_corners));
-
-	//
-	// Open face haarcascade
-	// 
-	//wxString cascadePath (eviacam::GetDataDir() + _T("/haarcascade_frontalface_default.xml"));
-	try {
-		// TODO: load face cascade
-
-		//m_faceCascade = (CvHaarClassifierCascade*)cvLoad(cascadePath.mb_str(wxConvUTF8), 0, 0, 0);
-	}
-	catch (cv::Exception& e) {
-		LOGW("%s:%d %s\n", __FILE__, __LINE__, e.what());
-	}
-
-	if (!m_faceCascade) {
-		// TODO: toast?? should never happen
-		//wxMessageDialog dlg (NULL, _("The face localization option is not enabled."), _T("Enable Viacam"), wxICON_ERROR | wxOK );
-		//dlg.ShowModal();
-	}
-	m_storage = cvCreateMemStorage(0);
-
-	// Create and start face detection thread
-	// TODO: spawn secondary thread
-/*
-	if (m_faceCascade) {	
-		if (Create() == wxTHREAD_NO_ERROR) {
-#if defined (WIN32)
-			// On linux this ends up calling setpriority syscall which changes
-			// the priority of the whole process :-( (see wxWidgets threadpsx.cpp)
-			// TODO: implement it using pthreads
-			SetPriority (WXTHREAD_MIN_PRIORITY);
-#endif
-			m_isRunning= true;
-			Run();
-		}
-	}
-*/
 }
 
-
-CVisionPipeline::~CVisionPipeline ()
+VisionPipeline::~VisionPipeline ()
 {
-	if (m_faceCascade) {
-		m_isRunning= false;
-		// @TODO: need to wait threads here?
-		//m_condition.Signal();
-		//Wait();
-		cvReleaseHaarClassifierCascade(&m_faceCascade);
-		m_faceCascade = NULL;
-	}
-
-	if (m_storage) {
-		cvReleaseMemStorage(&m_storage);
-		m_storage = NULL;
-	}
 }
 
-void CVisionPipeline::AllocWorkingSpace (CIplImage &image)
+void VisionPipeline::allocWorkingSpace (CIplImage &image)
 {
 	bool retval;
 
@@ -114,115 +59,14 @@ void CVisionPipeline::AllocWorkingSpace (CIplImage &image)
 		image.Width() != m_imgPrev.Width() ||
 		image.Height() != m_imgPrev.Height() ) {
 
-		// TODO: review synchronization
-//		m_imageCopyMutex.Enter();
 		retval= m_imgPrev.Create (image.Width(), image.Height(), 
 								  IPL_DEPTH_8U, "GRAY");
 		assert (retval);
-//		m_imageCopyMutex.Leave();
 
 		retval= m_imgCurr.Create (image.Width(), image.Height(), 
 								  IPL_DEPTH_8U, "GRAY");
 		assert (retval);
-
-		retval= m_imgPrevProc.Create (image.Width(), image.Height(), 
-								  IPL_DEPTH_8U, "GRAY");
-		assert (retval);
-
-		retval= m_imgCurrProc.Create (image.Width(), image.Height(), 
-					      IPL_DEPTH_8U, "GRAY");
-		assert (retval);
 	}
-}
-
-// Low-priority secondary thead where face localization occurs
-//wxThread::ExitCode CVisionPipeline::Entry( )
-int CVisionPipeline::Entry()
-{
-	bool retval;
-	unsigned long ts1 = 0;
-	for (;;) {
-		// TODO: review synchronization
-		//m_condition.WaitTimeout(1000);
-		if (!m_isRunning) {
-			break;
-		}
-
-		unsigned long now = CTimeUtil::GetMiliCount();
-		if (now - ts1>= (unsigned long) m_threadPeriod) {
-			ts1 = CTimeUtil::GetMiliCount();
-			// TODO: review synchronization
-			//m_imageCopyMutex.Enter();
-			if (!m_imgPrev.Initialized ()) {
-				// TODO: review synchronization
-				// m_imageCopyMutex.Leave();
-				continue;
-			}
-			
-			if (!m_imgThread.Initialized () ||
-						  m_imgPrev.Width() != m_imgThread.Width() ||
-						  m_imgPrev.Height() != m_imgThread.Height() ) {				
-
-				retval= m_imgThread.Create (m_imgPrev.Width(), m_imgPrev.Height(), 
-					IPL_DEPTH_8U, "GRAY");
-				assert (retval);
-			}
-			
-			cvCopy(m_imgPrev.ptr(), m_imgThread.ptr());
-			// TODO: review synchronization
-			//m_imageCopyMutex.Leave();
-
-			ComputeFaceTrackArea(m_imgThread);
-		}
-	}
-	return 0;
-}
-
-void CVisionPipeline::ComputeFaceTrackArea (CIplImage &image)
-{
-	if (!m_trackFace) return;
-	if (m_faceLocationStatus) return;	// Already available
-
-	CvSeq *face = cvHaarDetectObjects(
-		image.ptr(),
-		m_faceCascade,
-		m_storage,
-		1.5, 2, CV_HAAR_DO_CANNY_PRUNING,
-		cvSize(65, 65)
-	);
-	
-	if (face->total>0) {
-		CvRect* faceRect = (CvRect*) cvGetSeqElem(face, 0);
-		m_faceLocation = *faceRect;
-		m_faceDetected= true;
-		m_faceLocationStatus = 1;
-
-		LOGD("face detected: location (%d, %d) size (%d, %d)",
-			faceRect->x, faceRect->y, faceRect->width, faceRect->height);
-	}
-	else
-		m_faceDetected= false;
-
-	cvClearMemStorage(m_storage);
-}
-
-int CVisionPipeline::PreprocessImage ()
-{
-#if 1
-	TCrvHistogram his;
-	int range;
-		
-	crvHistogram (m_imgCurr.ptr(), his);
-	range= crvNormalizeHistogram (his, m_prevLut, 50);
-
-	crvLUTTransform (m_imgPrev.ptr(), m_imgPrevProc.ptr(), m_prevLut);
-	crvLUTTransform (m_imgCurr.ptr(), m_imgCurrProc.ptr(), m_prevLut);		
-#else
-	cvEqualizeHist(m_imgPrev.ptr(), m_imgPrevProc.ptr());
-	cvEqualizeHist(m_imgCurr.ptr(), m_imgCurrProc.ptr());
-#endif
-
-	return 0;
 }
 
 static 
@@ -232,31 +76,41 @@ void DrawCorners(CIplImage &image, CvPoint2D32f corners[], int num_corners, CvSc
 		cvCircle(image.ptr(), cvPoint(corners[i].x, corners[i].y), 1, color);
 }
 
-void CVisionPipeline::NewTracker(CIplImage &image, float &xVel, float &yVel)
+void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 {
-	CvPoint2D32f trackAreaLocation;
-	CvSize2D32f trackAreaSize;
 	bool updateFeatures = false;
 
-	// Face location has been updated?
-	if (m_faceLocationStatus) {
-		trackAreaLocation.x = m_faceLocation.x;
-		trackAreaLocation.y = m_faceLocation.y;
-		trackAreaSize.width = m_faceLocation.width;
-		trackAreaSize.height = m_faceLocation.height;
-		m_faceLocationStatus = 0;
+	// Check if face detected and update floatTrackArea as needed
+	{
+	bool faceDetected= false;
+	CvSize frameSize;
+	CvRect faceRegion;
+	if (m_faceDetection.retrieveDetectionInfo(faceDetected, frameSize, faceRegion) && faceDetected) {
+		// Update m_floatTrackArea
+		m_floatTrackArea.SetP1Move(0, 0);
+		m_floatTrackArea.SetSizeInteger(frameSize, faceRegion.width, faceRegion.height);
+		m_floatTrackArea.SetP1MoveInteger(frameSize, faceRegion.x, faceRegion.y);
 		updateFeatures = true;
 	}
-	else {
-		CvRect box;
-		m_trackArea.GetBoxImg(&image, box);
-		trackAreaLocation.x = box.x;
-		trackAreaLocation.y = box.y;
-		trackAreaSize.width = box.width;
-		trackAreaSize.height = box.height;
+	else
 		// Need to update corners?
 		if (m_corner_count< NUM_CORNERS) updateFeatures = true;
-	}	
+	}
+
+	// Submit frame for face detection
+	m_faceDetection.submitFrame(m_imgCurr);
+
+	// Get actual coordinates of floatTrackArea
+	CvPoint2D32f trackAreaLocation;
+	CvSize2D32f trackAreaSize;
+	{
+	CvRect box;
+	m_floatTrackArea.GetBoxImg(&image, box);
+	trackAreaLocation.x = box.x;
+	trackAreaLocation.y = box.y;
+	trackAreaSize.width = box.width;
+	trackAreaSize.height = box.height;
+	}
 
 	if (updateFeatures) {
 		// 
@@ -387,8 +241,8 @@ void CVisionPipeline::NewTracker(CIplImage &image, float &xVel, float &yVel)
 	//
 	// Update visible tracking area
 	//
-	m_trackArea.SetSizeImg(&image, trackAreaSize.width, trackAreaSize.height);
-	m_trackArea.SetCenterImg(&image, 
+	m_floatTrackArea.SetSizeImg(&image, trackAreaSize.width, trackAreaSize.height);
+	m_floatTrackArea.SetCenterImg(&image,
 		trackAreaLocation.x + trackAreaSize.width / 2.0f, 
 		trackAreaLocation.y + trackAreaSize.height / 2.0f);
 
@@ -399,35 +253,17 @@ void CVisionPipeline::NewTracker(CIplImage &image, float &xVel, float &yVel)
 }
 
 
-bool CVisionPipeline::ProcessImage (CIplImage& image, float& xVel, float& yVel)
+bool VisionPipeline::processImage (CIplImage& image, float& xVel, float& yVel)
 {
 	try {
-		AllocWorkingSpace(image);
+		allocWorkingSpace(image);
 
 		cvCvtColor(image.ptr(), m_imgCurr.ptr(), CV_BGR2GRAY);
 
-		// TODO: review synchronization
-		// m_imageCopyMutex.Enter();
-
-		NewTracker(image, xVel, yVel);
+		newTracker(image, xVel, yVel);
 
 		// Store current image as previous
 		m_imgPrev.Swap(&m_imgCurr);
-		// TODO: review synchronization
-		//m_imageCopyMutex.Leave();
-
-		// Notifies face detection thread when needed
-
-		/*
-		if (m_trackFace) {
-			m_trackArea.SetDegradation(255 - m_trackAreaTimeout.PercentagePassed() * 255 / 100);
-			m_condition.Signal();
-		}*/
-
-		if (m_trackFace && m_faceDetected)
-			return true;
-		else
-			return false;
 	}
 	catch (const std::exception& e) {
 		LOGE("Exception: %s\n", e.what());
@@ -437,70 +273,4 @@ bool CVisionPipeline::ProcessImage (CIplImage& image, float& xVel, float& yVel)
 	return false;
 }
 
-enum ECpuValues { LOWEST = 1500, LOW = 800, NORMAL = 400, HIGH = 100, HIGHEST = 0 };
-
-int CVisionPipeline::GetCpuUsage ()
-{
-	switch (m_threadPeriod)
-	{
-		case LOWEST:
-			return (int) CVisionPipeline::ECpuUsage(CPU_LOWEST);
-			break;
-		case LOW:
-			return (int) CVisionPipeline::ECpuUsage(CPU_LOW);
-			break;
-		case HIGH:
-			return (int) CVisionPipeline::ECpuUsage(CPU_HIGH);
-			break;
-		case HIGHEST:
-			return (int) CVisionPipeline::ECpuUsage(CPU_HIGHEST);
-			break;
-		default:
-			return (int) CVisionPipeline::ECpuUsage(CPU_NORMAL);
-			break;
-	}
-}
-
-void CVisionPipeline::SetCpuUsage (int value)
-{
-	switch (value)
-	{
-		case (int) CVisionPipeline::ECpuUsage(CPU_LOWEST):
-			SetThreadPeriod(LOWEST);
-			break;
-		case (int) CVisionPipeline::ECpuUsage(CPU_LOW):
-			SetThreadPeriod(LOW);
-			break;
-		case (int) CVisionPipeline::ECpuUsage(CPU_NORMAL):
-			SetThreadPeriod(NORMAL);
-			break;
-		case (int) CVisionPipeline::ECpuUsage(CPU_HIGH):
-			SetThreadPeriod(HIGH);
-			break;
-		case (int) CVisionPipeline::ECpuUsage(CPU_HIGHEST):
-			SetThreadPeriod(HIGHEST);
-			break;
-	}
-}
-
-void CVisionPipeline::SetThreadPeriod (int value)
-{
-	switch (value)
-	{
-		case LOWEST:
-			m_threadPeriod= LOWEST;
-			break;
-		case LOW:
-			m_threadPeriod= LOWEST;
-			break;
-		case HIGH:
-			m_threadPeriod= HIGH;
-			break;
-		case HIGHEST:
-			m_threadPeriod= HIGHEST;
-			break;
-		default:
-			m_threadPeriod= NORMAL;
-			break;
-	}
 }

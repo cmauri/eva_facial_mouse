@@ -24,20 +24,19 @@
 #define VISIONPIPELINE_H
 
 #include "crvimage.h"
-#include "crvhistogram.h"
 #include "crvnormroi.h"
-#include "waittime.h"
+#include "facedetection.h"
 
-class CVisionPipeline
+namespace  eviacam {
+
+class VisionPipeline
 {
 public:
-	enum ECpuUsage {CPU_LOWEST= 0, CPU_LOW, CPU_NORMAL, CPU_HIGH, CPU_HIGHEST};
-
 	// Methods
-	CVisionPipeline ();
-	~CVisionPipeline();
+	VisionPipeline (const char* cascadePath);
+	virtual ~VisionPipeline();
 
-	bool ProcessImage (CIplImage& image, float& xVel, float& yVel);
+	bool processImage (CIplImage& image, float& xVel, float& yVel);
 
 	bool GetTrackFace () const { return m_trackFace; }
 	void SetTrackFace (bool state) { m_trackFace= state; }
@@ -45,38 +44,27 @@ public:
 	int GetCpuUsage ();
 	void SetCpuUsage (int value);
 
-	bool IsTrackFaceAllowed () { return (m_faceCascade!= NULL); }	
-
 private:
+	// Face detector
+	FaceDetection m_faceDetection;
+
 	// Track area
 	bool m_trackFace;
-	bool m_isRunning;
-	CIplImage m_imgThread;
-	CIplImage m_imgPrevProc, m_imgCurrProc;
 	CIplImage m_imgPrev, m_imgCurr;
-	TCrvLookupTable m_prevLut;
-	CvHaarClassifierCascade* m_faceCascade;
-	CvMemStorage* m_storage;
-	int m_threadPeriod;
-	CNormROI m_trackArea;
-
-	// Face location detection
-	CvRect m_faceLocation;
-	volatile bool m_faceDetected;
-	volatile int m_faceLocationStatus; // 0 -> not available, 1 -> available
+	CNormROI m_floatTrackArea;
 
 	// Corner array
 	enum { NUM_CORNERS = 15 };
 	CvPoint2D32f m_corners[NUM_CORNERS];
 	int m_corner_count;
 	
+	//
 	// Private methods
-	void AllocWorkingSpace (CIplImage &image);
-	int PreprocessImage ();
-	void ComputeFaceTrackArea (CIplImage &image);
-	void SetThreadPeriod (int value);
-	void NewTracker(CIplImage &image, float &xVel, float &yVel);
-	int Entry();
+	//
+	void allocWorkingSpace (CIplImage &image);
+	void newTracker(CIplImage &image, float &xVel, float &yVel);
 };
+
+}
 
 #endif

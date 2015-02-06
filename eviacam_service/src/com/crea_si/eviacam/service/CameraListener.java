@@ -9,6 +9,7 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 import android.content.Context;
+import android.graphics.PointF;
 import android.view.SurfaceView;
 
 
@@ -23,9 +24,13 @@ public class CameraListener implements CvCameraViewListener2 {
                 case LoaderCallbackInterface.SUCCESS:
                 {
                     EVIACAM.debug("OpenCV loaded successfully");
-                    System.loadLibrary("visionpipeline");
                     
-                    VisionPipeline.ProcessFrame(10, 10);
+                    // initialize JNI part
+                    System.loadLibrary("visionpipeline");
+                    // TODO: get cascade path from apk resources
+                    VisionPipeline.init("/mnt/sdcard/Download/haarcascade_profileface.xml");
+                    
+                    // start camera
                     mCameraView.enableView();
                 } break;
                 default:
@@ -41,8 +46,9 @@ public class CameraListener implements CvCameraViewListener2 {
 
         mContext= context;
         
+        // TODO: detect if device has frontal camera or not
         // Create capture view directly
-        mCameraView= new JavaCameraView(context, -1);
+        mCameraView= new JavaCameraView(context, CameraBridgeViewBase.CAMERA_ID_FRONT);
         
         // Set CameraBridgeViewBase parameters        
         // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)
@@ -84,6 +90,10 @@ public class CameraListener implements CvCameraViewListener2 {
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         EVIACAM.debug("onCameraFrame");
-        return inputFrame.rgba();
+        Mat rgba = inputFrame.rgba();
+        PointF vel = new PointF(0, 0);
+        VisionPipeline.processFrame(rgba.getNativeObjAddr(), vel);
+
+        return rgba;
     }
 }

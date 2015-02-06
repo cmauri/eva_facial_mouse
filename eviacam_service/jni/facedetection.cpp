@@ -35,6 +35,8 @@ void* thread_entry (void* t)
 	FaceDetection* obj= static_cast<FaceDetection*>(t);
 	obj->threadEntry();
 	
+	pthread_exit(NULL);
+
 	return NULL;	// make the compiler happy
 }
 
@@ -56,6 +58,7 @@ FaceDetection::FaceDetection (const char* cascadePath)
 	}
 	catch (cv::Exception& e) {
 		LOGW("%s:%d %s\n", __FILE__, __LINE__, e.what());
+		LOGW("continuing without face detection");
 	}
 
 	//
@@ -108,10 +111,14 @@ FaceDetection::~FaceDetection ()
 		m_storage = NULL;
 		m_faceCascade = NULL;
 	}
+
+	LOGD("FaceDetection: cleanup completed");
 }
 
 void FaceDetection::threadEntry()
 {
+	LOGD("FaceDetection: threadEntry(): start");
+
 	for (;;) {
 		// lock
 		pthread_mutex_lock(&m_condition_mutex);
@@ -119,7 +126,7 @@ void FaceDetection::threadEntry()
 		m_processingFrame= false;
 		
 		// need to exit?
-		if (!m_finishThread) {
+		if (m_finishThread) {
 			pthread_mutex_unlock(&m_condition_mutex);
 			break;
 		}
@@ -128,7 +135,7 @@ void FaceDetection::threadEntry()
 		pthread_cond_wait(&m_condition, &m_condition_mutex);
 	
 		// need to exit?
-		if (!m_finishThread) {
+		if (m_finishThread) {
 			pthread_mutex_unlock(&m_condition_mutex);
 			break;
 		}
@@ -141,7 +148,7 @@ void FaceDetection::threadEntry()
 		computeFaceTrackArea();
 	}
 	
-	pthread_exit(NULL);
+	LOGD("FaceDetection: threadEntry(): finish");
 }
 
 void FaceDetection::computeFaceTrackArea ()
@@ -174,6 +181,8 @@ void FaceDetection::computeFaceTrackArea ()
 
 void FaceDetection::submitFrame (CIplImage& image)
 {
+	if (m_faceCascade== NULL) return;	// initialization failed, do nothing
+
 	// enough time elapsed since last submitted frame?
 	unsigned long now = CTimeUtil::GetMiliCount();
 	if (now - m_lastSubmit_tstamp< getThreadPeriod()) return;
@@ -209,6 +218,8 @@ exit_submitFrame:
 
 bool FaceDetection::retrieveDetectionInfo (bool &faceDetected, CvSize& frameSize, CvRect& faceRegion)
 {
+	if (m_faceCascade== NULL) return false;	// initialization failed, do nothing
+
 	// face localization retrieved?
 	if (m_detectorInfoRetrieved) return false;	// no new information available
 	

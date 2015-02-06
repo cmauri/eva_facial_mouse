@@ -8,8 +8,8 @@ import android.widget.RelativeLayout;
 import android.graphics.PixelFormat;
 
 public class OverlayManager {
-    private final int CAM_SURFACE_WIDTH= 88;
-    private final int CAM_SURFACE_HEIGHT= 72;
+    private final int CAM_SURFACE_WIDTH= 320;
+    private final int CAM_SURFACE_HEIGHT= 240;
     
     private Context mContext;
     private OverlayView mOverlayView;

@@ -110,6 +110,10 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 	trackAreaLocation.y = box.y;
 	trackAreaSize.width = box.width;
 	trackAreaSize.height = box.height;
+
+	// DEBUG: show tracking area
+	cv::Mat tmp(image.ptr());
+	cv::rectangle(tmp, box, cvScalar(255, 0, 0) );
 	}
 
 	if (updateFeatures) {

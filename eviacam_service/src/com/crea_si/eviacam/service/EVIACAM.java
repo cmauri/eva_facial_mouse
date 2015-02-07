@@ -8,7 +8,7 @@ import android.util.Log;
 public class EVIACAM {
     public static final String TAG = EVIACAM.class.getSimpleName();
     
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = BuildConfig.DEBUG;
     
     public static void debug(String message) {
         if ( DEBUG ) Log.d(TAG, message);

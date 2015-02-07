@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+environment/project/0.882924228.58224285.1682898960/BUILD_CONFIG/delimiter=;
+environment/project/0.882924228.58224285.1682898960/BUILD_CONFIG/operation=append
+environment/project/0.882924228.58224285.1682898960/BUILD_CONFIG/value=DEBUG
+environment/project/0.882924228.58224285.1682898960/append=true
+environment/project/0.882924228.58224285.1682898960/appendContributed=true
+environment/project/0.882924228.58224285/BUILD_CONFIG/delimiter=;
+environment/project/0.882924228.58224285/BUILD_CONFIG/operation=append
+environment/project/0.882924228.58224285/BUILD_CONFIG/value=RELEASE
+environment/project/0.882924228.58224285/append=true
+environment/project/0.882924228.58224285/appendContributed=true

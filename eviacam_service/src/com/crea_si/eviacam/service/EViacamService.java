@@ -17,7 +17,8 @@ public class EViacamService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
-        android.os.Debug.waitForDebugger();
+        
+        if (EVIACAM.DEBUG) android.os.Debug.waitForDebugger();
         EVIACAM.debug("onCreate");
 
         mHeartBeat = new HeartBeat(this);

@@ -65,9 +65,6 @@ public class EViacamService extends AccessibilityService {
         mOverlayManager.destroyOverlay();
         mOverlayManager= null;        
         
-        // Finish JNI part
-        VisionPipeline.finish();
-        
         mHeartBeat.stop();
         
         return false;

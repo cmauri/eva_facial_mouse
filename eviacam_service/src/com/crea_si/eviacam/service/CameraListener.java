@@ -84,7 +84,9 @@ public class CameraListener implements CvCameraViewListener2 {
 
     @Override
     public void onCameraViewStopped() {
-        EVIACAM.debug("onCameraViewStopped");        
+        EVIACAM.debug("onCameraViewStopped");
+        // finish JNI part
+        VisionPipeline.finish();
     }
      
     @Override

@@ -10,12 +10,12 @@ import android.graphics.PixelFormat;
 public class OverlayManager {
     private final int CAM_SURFACE_WIDTH= 320;
     private final int CAM_SURFACE_HEIGHT= 240;
-    
+
     private Context mContext;
     private OverlayView mOverlayView;
-    
+
     OverlayManager (Context context) {
-        mContext=context;
+        mContext= context;
     }
     
     /***
@@ -63,5 +63,9 @@ public class OverlayManager {
         v.setLayoutParams(lp);
 
         mOverlayView.addView(v);
+    }
+    
+    OverlayView getOverlayView() {
+        return mOverlayView;
     }
 }

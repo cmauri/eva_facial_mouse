@@ -48,8 +48,11 @@ public class EViacamService extends AccessibilityService {
         mOverlayManager= new OverlayManager(this.getApplicationContext());
         mOverlayManager.createOverlay();
         
+        // create pointer action object
+        PointerControl p= new PointerControl(mOverlayManager.getOverlayView());
+        
         // Create camera
-        mCameraListener= new CameraListener(this);
+        mCameraListener= new CameraListener(this, p);
         mOverlayManager.addCameraSurface(mCameraListener.getCameraSurface());
         mCameraListener.StartCamera();
     }

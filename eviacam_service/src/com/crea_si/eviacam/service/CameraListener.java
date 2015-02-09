@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 
 public class CameraListener implements CvCameraViewListener2 {
     private Context mContext;
+    private PointerControl mPointerControl;
     private CameraBridgeViewBase mCameraView;
     
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(mContext) {
@@ -41,10 +42,11 @@ public class CameraListener implements CvCameraViewListener2 {
         }
     };
     
-    public CameraListener(Context context) {
+    public CameraListener(Context context, PointerControl pa) {
         EVIACAM.debug("Create CameraListener");
 
         mContext= context;
+        mPointerControl= pa;
         
         // TODO: detect if device has frontal camera or not
         // Create capture view directly
@@ -95,7 +97,7 @@ public class CameraListener implements CvCameraViewListener2 {
         Mat rgba = inputFrame.rgba();
         PointF vel = new PointF(0, 0);
         VisionPipeline.processFrame(rgba.getNativeObjAddr(), vel);
-
+        mPointerControl.updateMotion(vel);
         return rgba;
     }
 }

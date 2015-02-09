@@ -38,9 +38,11 @@ public class EViacamService extends AccessibilityService {
          */
         setServiceInfo(new AccessibilityServiceInfo());
 
-        // DEBUGGING MESSAGES
-        Toast.makeText(this.getApplicationContext(), "onServiceConnected", Toast.LENGTH_SHORT).show();
-        mHeartBeat.start();
+        if (EVIACAM.DEBUG) {
+            // DEBUGGING MESSAGES
+            Toast.makeText(this.getApplicationContext(), "onServiceConnected", Toast.LENGTH_SHORT).show();
+            mHeartBeat.start();
+        }
         
         // Create overlay
         mOverlayManager= new OverlayManager(this.getApplicationContext());
@@ -65,7 +67,7 @@ public class EViacamService extends AccessibilityService {
         mOverlayManager.destroyOverlay();
         mOverlayManager= null;        
         
-        mHeartBeat.stop();
+        if (EVIACAM.DEBUG) mHeartBeat.stop();
         
         return false;
     }

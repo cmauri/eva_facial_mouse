@@ -7,7 +7,7 @@ include $(OPENCV_ANDROID_SDK)/native/jni/OpenCV.mk
 LOCAL_MODULE    := visionpipeline
 LOCAL_SRC_FILES := crvimage.cpp \
 	timeutil.cpp \
-	crvnormroi.cpp \
+	normroi2.cpp \
 	facedetection.cpp \
 	visionpipeline.cpp \
 	visionpipeline_jni.cpp  

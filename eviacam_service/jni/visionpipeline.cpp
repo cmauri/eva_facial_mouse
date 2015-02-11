@@ -31,19 +31,19 @@
 
 namespace eviacam {
 
-// Constants
-#define DEFAULT_TRACK_AREA_WIDTH_PERCENT 0.50f
-#define DEFAULT_TRACK_AREA_HEIGHT_PERCENT 0.30f
-#define DEFAULT_TRACK_AREA_X_CENTER_PERCENT 0.5f
-#define DEFAULT_TRACK_AREA_Y_CENTER_PERCENT 0.5f
+// constants
+#define DEFAULT_TRACK_AREA_WIDTH 0.6f
+#define DEFAULT_TRACK_AREA_HEIGHT 0.6f
 
 VisionPipeline::VisionPipeline(const char* cascadePath)
 : m_faceDetection(cascadePath)
 , m_trackFace(true)
 , m_corner_count(0)
 {
-	m_floatTrackArea.SetSize (DEFAULT_TRACK_AREA_WIDTH_PERCENT, DEFAULT_TRACK_AREA_HEIGHT_PERCENT);
-	m_floatTrackArea.SetCenter (DEFAULT_TRACK_AREA_X_CENTER_PERCENT, DEFAULT_TRACK_AREA_Y_CENTER_PERCENT);
+	m_floatTrackArea.set(
+		cvPoint2D32f((1.0f - DEFAULT_TRACK_AREA_WIDTH) / 2.0f,
+					(1.0f - DEFAULT_TRACK_AREA_HEIGHT) / 2.0f),
+		cvSize2D32f(DEFAULT_TRACK_AREA_WIDTH, DEFAULT_TRACK_AREA_HEIGHT));
 	memset(m_corners, 0, sizeof(m_corners));
 }
 
@@ -86,35 +86,31 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 	CvSize frameSize;
 	CvRect faceRegion;
 	if (m_faceDetection.retrieveDetectionInfo(faceDetected, frameSize, faceRegion) && faceDetected) {
-		// Update m_floatTrackArea
-		m_floatTrackArea.SetP1Move(0, 0);
-		m_floatTrackArea.SetSizeInteger(frameSize, faceRegion.width, faceRegion.height);
-		m_floatTrackArea.SetP1MoveInteger(frameSize, faceRegion.x, faceRegion.y);
+		// update floatTrackArea
+		m_floatTrackArea.setReferenceSize(frameSize);
+		m_floatTrackArea.set(faceRegion);
 		updateFeatures = true;
 	}
 	else
-		// Need to update corners?
+		// need to update corners?
 		if (m_corner_count< NUM_CORNERS) updateFeatures = true;
 	}
 
 	// Submit frame for face detection
 	m_faceDetection.submitFrame(m_imgCurr);
 
+	// set current image size
+	m_floatTrackArea.setReferenceSize(image.GetSize());
+
 	// Get actual coordinates of floatTrackArea
 	CvPoint2D32f trackAreaLocation;
 	CvSize2D32f trackAreaSize;
-	{
-	CvRect box;
-	m_floatTrackArea.GetBoxImg(&image, box);
-	trackAreaLocation.x = box.x;
-	trackAreaLocation.y = box.y;
-	trackAreaSize.width = box.width;
-	trackAreaSize.height = box.height;
+	m_floatTrackArea.get(trackAreaLocation, trackAreaSize);
 
-	// DEBUG: show tracking area
+	// show tracking area
 	cv::Mat tmp(image.ptr());
-	cv::rectangle(tmp, box, cvScalar(255, 0, 0) );
-	}
+	cv::rectangle(tmp, cvPoint(trackAreaLocation.x, trackAreaLocation.y),
+			cvPoint(trackAreaLocation.x + trackAreaSize.width, trackAreaLocation.y + trackAreaSize.height), cvScalar(255, 0, 0) );
 
 	if (updateFeatures) {
 		// 
@@ -158,10 +154,6 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 		LOGD("Features updated\n");
 	}
 
-	// TODO: use flag to tell DEBUG from RELEASE builds
-	//if (slog_get_priority() >= SLOG_PRIO_DEBUG)
-	//	DrawCorners(image, m_corners, m_corner_count, cvScalar(255, 0, 0));
-
 	//
 	// Track corners
 	//
@@ -203,10 +195,10 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 	}
 
 	//
-	// Accumulate motion (TODO: remove outliers?)
+	// accumulate motion
 	//	
 	int valid_corners = 0;
-	float dx = 0, dy = 0;
+	xVel= 0; yVel= 0;
 
 	for (int i = 0; i< m_corner_count; i++) {
 		if (status[i] &&
@@ -214,8 +206,8 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 			m_corners[i].x < trackAreaLocation.x + trackAreaSize.width &&
 			m_corners[i].y >= trackAreaLocation.y &&
 			m_corners[i].y < trackAreaLocation.y + trackAreaSize.height) {
-			dx += m_corners[i].x - new_corners[i].x;
-			dy += m_corners[i].y - new_corners[i].y;
+			xVel += m_corners[i].x - new_corners[i].x;
+			yVel += m_corners[i].y - new_corners[i].y;
 
 			// Save new corner location
 			m_corners[valid_corners++] = new_corners[i];
@@ -224,32 +216,20 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 	m_corner_count = valid_corners;
 
 	if (valid_corners) {
-		dx = dx / (float) valid_corners;
-		dy = dy / (float) valid_corners;
-
-		xVel = 2.0 * dx;
-		yVel = 2.0 * -dy;
+		xVel = xVel / (float) valid_corners;
+		yVel = -yVel / (float) valid_corners;
 	}
 	else {
 		xVel = yVel = 0;
 	}
 
 	//
-	// Update tracking area location
+	// update tracking area location
 	//
 	if (m_trackFace) {
-		trackAreaLocation.x -= dx;
-		trackAreaLocation.y -= dy;
+		m_floatTrackArea.move(cvPoint2D32f(-xVel, yVel));
 	}
 	
-	//
-	// Update visible tracking area
-	//
-	m_floatTrackArea.SetSizeImg(&image, trackAreaSize.width, trackAreaSize.height);
-	m_floatTrackArea.SetCenterImg(&image,
-		trackAreaLocation.x + trackAreaSize.width / 2.0f, 
-		trackAreaLocation.y + trackAreaSize.height / 2.0f);
-
 	//
 	// Draw corners
 	//

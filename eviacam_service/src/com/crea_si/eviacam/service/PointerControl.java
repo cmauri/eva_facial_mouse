@@ -6,7 +6,7 @@ import java.lang.Math;
 class PointerControl {
     // constants
     private final int ACCEL_ARRAY_SIZE= 30;
-    private final int DEFAULT_SPEED= 15;
+    private final int DEFAULT_SPEED= 10;
     private final int MAX_SPEED= 25;
     private final int DEFAULT_ACCELERATION= 1;
     private final int MAX_ACCELERATION= 5;
@@ -39,7 +39,7 @@ class PointerControl {
     }
     
     private float getSpeedFactor(int speed) {
-        return (float) Math.pow (Math.E, speed / 6.0); 
+        return (float) Math.pow (6.0, speed / 6.0); 
     }
     
     public int getXSpeed() { return mXSpeed; }

@@ -24,7 +24,7 @@
 #define VISIONPIPELINE_H
 
 #include "crvimage.h"
-#include "crvnormroi.h"
+#include "normroi2.h"
 #include "facedetection.h"
 
 namespace  eviacam {
@@ -51,7 +51,7 @@ private:
 	// Track area
 	bool m_trackFace;
 	CIplImage m_imgPrev, m_imgCurr;
-	CNormROI m_floatTrackArea;
+	NormROI2 m_floatTrackArea;
 
 	// Corner array
 	enum { NUM_CORNERS = 15 };

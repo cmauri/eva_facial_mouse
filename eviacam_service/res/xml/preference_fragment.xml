@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="FOO">
+    <PreferenceCategory android:title="@string/motion_settings">
 
-        <CheckBoxPreference
-            android:key="checkBoxPref"
-            android:title="check it out"
-            android:summary="click this litle box"/>
+       <com.crea_si.eviacam.service.NumberPickerPreference           
+            android:key="x_axis_speed"
+            android:title="@string/x_axis_speed"
+            android:dialogMessage="@string/x_axis_speed_summary" 
+            android:summary="@string/x_axis_speed_summary"
+            android:defaultValue="10" 
+            app:minValue="1"
+            app:maxValue="25" 
+        />
+       <com.crea_si.eviacam.service.NumberPickerPreference           
+            android:key="y_axis_speed"
+            android:title="@string/y_axis_speed"
+            android:dialogMessage="@string/y_axis_speed_summary" 
+            android:summary="@string/y_axis_speed_summary"
+            android:defaultValue="10" 
+            app:minValue="1"
+            app:maxValue="25" 
+        />
 
     </PreferenceCategory>
 

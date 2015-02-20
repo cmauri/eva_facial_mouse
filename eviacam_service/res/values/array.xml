@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<string-array name="time_without_detection_entries">
+    <item>@string/disable</item>
+    <item>@string/five_seconds</item>
+    <item>@string/ten_seconds</item>
+    <item>@string/thirty_seconds</item>
+    <item>@string/one_minute</item>
+</string-array>
+<string-array name="time_without_detection_values">
+    <item>0</item>
+    <item>5</item>
+    <item>10</item>
+    <item>30</item>
+    <item>60</item>
+</string-array>
+
+</resources>

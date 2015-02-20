@@ -22,7 +22,69 @@
             app:minValue="1"
             app:maxValue="25" 
         />
+       
+       <com.crea_si.eviacam.service.NumberPickerPreference           
+            android:key="acceleration"
+            android:title="@string/acceleration"
+            android:dialogMessage="@string/acceleration_summary" 
+            android:summary="@string/acceleration_summary"
+            android:defaultValue="1" 
+            app:minValue="0"
+            app:maxValue="5" 
+        />
+       
+       <com.crea_si.eviacam.service.NumberPickerPreference           
+            android:key="motion_threshold"
+            android:title="@string/motion_threshold"
+            android:dialogMessage="@string/motion_threshold_summary" 
+            android:summary="@string/motion_threshold_summary"
+            android:defaultValue="1" 
+            app:minValue="0"
+            app:maxValue="5" 
+        />
+       
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/clic_settings">
+
+        <com.crea_si.eviacam.service.NumberPickerPreference           
+            android:key="dwell_time"
+            android:title="@string/dwell_time"
+            android:dialogMessage="@string/dwell_time_summary" 
+            android:summary="@string/dwell_time_summary"
+            android:defaultValue="10" 
+            app:minValue="1"
+            app:maxValue="50" 
+        />
+        
+        <com.crea_si.eviacam.service.NumberPickerPreference           
+            android:key="dwell_area"
+            android:title="@string/dwell_area"
+            android:dialogMessage="@string/dwell_area_summary" 
+            android:summary="@string/dwell_area_summary"
+            android:defaultValue="2" 
+            app:minValue="0"
+            app:maxValue="8" 
+        />
+        <CheckBoxPreference 
+            android:key="sound_on_click"
+            android:title="@string/sound_on_click"
+            android:defaultValue="true"
+        />
+        
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/detection_settings">
+        
+        <ListPreference
+            android:key="time_without_detection"
+            android:title="@string/time_without_detection"
+            android:summary="@string/time_without_detection_summary"
+            android:entries="@array/time_without_detection_entries"
+            android:entryValues="@array/time_without_detection_values"
+            android:defaultValue="30"
+        />
 
     </PreferenceCategory>
-
+        
 </PreferenceScreen>

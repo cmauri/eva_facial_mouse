@@ -26,7 +26,7 @@ public class NumberPickerPreference extends DialogPreference {
     private int mValue;
     private int mMinValue;
     private int mMaxValue;
-    // private int mDefaultValue;   // Not needed in principle
+    private CharSequence mTitle;
 
     public NumberPickerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -36,8 +36,9 @@ public class NumberPickerPreference extends DialogPreference {
         TypedArray arr = context.obtainStyledAttributes(attrs, R.styleable.NumberPickerPreference);
         mMinValue= arr.getInteger(R.styleable.NumberPickerPreference_minValue, DEFAULT_MIN_VALUE);
         mMaxValue= arr.getInteger(R.styleable.NumberPickerPreference_maxValue, DEFAULT_MAX_VALUE);
-        //mDefaultValue= arr.getInteger(R.styleable.NumberPickerPreference_defaultValue, DEFAULT_MIN_VALUE);
         arr.recycle();
+        
+        mTitle= this.getTitle();
     }
     
     public NumberPickerPreference(Context context, AttributeSet attrs) {
@@ -64,7 +65,7 @@ public class NumberPickerPreference extends DialogPreference {
 
         FrameLayout dialogView = new FrameLayout(getContext());
         dialogView.addView(mPicker);
-
+        
         return dialogView;
     }
 
@@ -90,6 +91,7 @@ public class NumberPickerPreference extends DialogPreference {
 
     public void setValue(int value) {
         mValue = value;
+        setTitle(mTitle + ": " + Integer.toString(value));
         persistInt(mValue);
     }
 

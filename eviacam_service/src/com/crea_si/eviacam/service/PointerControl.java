@@ -1,60 +1,76 @@
 package com.crea_si.eviacam.service;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.PointF;
+import android.preference.PreferenceManager;
+
 import java.lang.Math;
 
 class PointerControl {
     // constants
+    private final int AXIS_SPEED_MIN;
+    private final int AXIS_SPEED_MAX;
+    private final int ACCELERATION_MIN;
+    private final int ACCELERATION_MAX;
+    private final int MOTION_SMOOTHING_MIN;
+    private final int MOTION_SMOOTHING_MAX;
+    private final int MOTION_THRESHOLD_MIN;
     private final int ACCEL_ARRAY_SIZE= 30;
-    private final int DEFAULT_SPEED= 10;
-    private final int MAX_SPEED= 25;
-    private final int DEFAULT_ACCELERATION= 1;
-    private final int MAX_ACCELERATION= 5;
-    private final int DEFAULT_SMOOTHNESS= 1;
-    private final int MAX_SMOOTHNESS= 8;
-    private final int DEFAULT_STOP_MARGIN= 2;
-    private final int MAX_STOP_MARGIN= 5;
-    
-    // configuration attributes
-    private int mXSpeed= DEFAULT_SPEED, mYSpeed= DEFAULT_SPEED;
-    private int mAcceleration= DEFAULT_ACCELERATION;
-    private boolean mBeepOnClick= true;
-    private float mLowPassFilterWeight;
-    private int mStopMargin= DEFAULT_STOP_MARGIN;
     
     // internal status attributes
-    private float mXMultiplier, mYMultiplier;
-    private float mAccelArray[]= new float[ACCEL_ARRAY_SIZE];
+    private float mXMultiplier, mYMultiplier;   // derived from axis_speed
+    private float mAccelArray[]= new float[ACCEL_ARRAY_SIZE]; // derived from acceleration
+    private float mLowPassFilterWeight; // derived from motion_smoothing
     private float mDXPrevious, mDYPrevious; // previous values for the filter
+    private int mMotionThreshold;
     private PointF mPointerLocation= new PointF();
     private OverlayView mOverlayView;
     
     // methods
-    public PointerControl(OverlayView ov){
+    public PointerControl(OverlayView ov, Context c){
         mOverlayView= ov;
-        mXMultiplier= getSpeedFactor(mXSpeed);
-        mYMultiplier= getSpeedFactor(mYSpeed);
-        setSmoothness (DEFAULT_SMOOTHNESS);
-        for (int i= 0; i< ACCEL_ARRAY_SIZE; i++) mAccelArray[i]= 1.0f;
+        
+        // get constants from resources
+        Resources r= c.getResources();
+        AXIS_SPEED_MIN= r.getInteger(R.integer.axis_speed_min);                
+        AXIS_SPEED_MAX= r.getInteger(R.integer.axis_speed_max);
+        
+        ACCELERATION_MIN= r.getInteger(R.integer.acceleration_min);
+        ACCELERATION_MAX= r.getInteger(R.integer.acceleration_max);
+        
+        MOTION_SMOOTHING_MIN= r.getInteger(R.integer.motion_smoothing_min);
+        MOTION_SMOOTHING_MAX= r.getInteger(R.integer.motion_smoothing_max);
+        
+        MOTION_THRESHOLD_MIN = r.getInteger(R.integer.motion_threshold_min);
+
+        // get values from shared resources
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(c);
+        int xAxisSpeed= sharedPref.getInt("x_axis_speed", AXIS_SPEED_MIN);
+        setXSpeed(xAxisSpeed);
+        int yAxisSpeed= sharedPref.getInt("y_axis_speed", AXIS_SPEED_MIN);
+        setYSpeed(yAxisSpeed);
+        int acceleration= sharedPref.getInt("acceleration", ACCELERATION_MIN);
+        setAcceleration(acceleration);
+        int motionSmoothing= sharedPref.getInt("motion_smoothing", MOTION_SMOOTHING_MIN);
+        setMotionSmoothning (motionSmoothing);
+        mMotionThreshold= sharedPref.getInt("motion_threshold", MOTION_THRESHOLD_MIN);
     }
     
-    private float getSpeedFactor(int speed) {
+    private static float computeSpeedFactor(int speed) {
         return (float) Math.pow (6.0, speed / 6.0); 
     }
     
-    public int getXSpeed() { return mXSpeed; }
-    public void setXSpeed(int value) {
-        if (value >= 0 && value <= MAX_SPEED) {
-            mXSpeed= value;
-            mXMultiplier= getSpeedFactor(mXSpeed);
+    private void setXSpeed(int value) {
+        if (value >= AXIS_SPEED_MIN && value <= AXIS_SPEED_MAX) {
+            mXMultiplier= computeSpeedFactor(value);
         }
     }
 
-    public int getYSpeed() { return mYSpeed; }
-    public void setYSpeed (int value) {
-        if (value >= 0 && value <= MAX_SPEED) {
-            mYSpeed= value;
-            mYMultiplier= getSpeedFactor(mYSpeed);
+    private void setYSpeed (int value) {
+        if (value >= AXIS_SPEED_MIN && value <= AXIS_SPEED_MAX) {
+            mYMultiplier= computeSpeedFactor(value);
         }
     }
 
@@ -85,10 +101,9 @@ class PointerControl {
         setRelAcceleration (ACCEL_ARRAY_SIZE, 1.0f, ACCEL_ARRAY_SIZE, 1.0f);
     }
     
-    
-    public int getAcceleration() { return mAcceleration; }
-    public void setAcceleration(int acceleration) {
-        if (acceleration> MAX_ACCELERATION) acceleration= MAX_ACCELERATION;
+    private void setAcceleration(int acceleration) {
+        if (acceleration< ACCELERATION_MIN) acceleration= ACCELERATION_MIN;
+        else if (acceleration> ACCELERATION_MAX) acceleration= ACCELERATION_MAX;
 
         switch (acceleration) {
             case 0: setRelAcceleration(); break;
@@ -99,26 +114,13 @@ class PointerControl {
             case 5: setRelAcceleration (7, 2.0f, 14, 2.0f); break;
             default: assert (false);
         }
-
-        mAcceleration= acceleration;
     }
 
-    public int getSmoothness() {
-        return (int) (Math.pow (10.0, mLowPassFilterWeight) + 0.5f) - 1;
-    }
-    public void setSmoothness (int smoothness) {
-        if (smoothness> MAX_SMOOTHNESS) smoothness= MAX_SMOOTHNESS;
+    private void setMotionSmoothning (int smoothness) {
+        if (smoothness< MOTION_SMOOTHING_MIN) smoothness= MOTION_SMOOTHING_MIN;
+        else if (smoothness> MOTION_SMOOTHING_MAX) smoothness= MOTION_SMOOTHING_MAX;
         mLowPassFilterWeight= (float) Math.log10((double) smoothness + 1);
     }
-
-    int getStopMargin() { return mStopMargin; } 
-    void setStopMargin (int value) {
-        if (value> MAX_STOP_MARGIN) value= MAX_STOP_MARGIN;
-        mStopMargin= value;
-    }
-
-    boolean getBeepOnClick() { return mBeepOnClick; }
-    void setBeepOnClick(boolean value) { mBeepOnClick = value; }
     
     public void updateMotion(PointF vel) {
         // multipliers
@@ -139,8 +141,8 @@ class PointerControl {
         dy*= mAccelArray[iAccelArray];
         
         // stop margin
-        if (-mStopMargin < dx && dx < mStopMargin) dx= 0.0f;
-        if (-mStopMargin < dy && dy < mStopMargin) dy= 0.0f;
+        if (-mMotionThreshold < dx && dx < mMotionThreshold) dx= 0.0f;
+        if (-mMotionThreshold < dy && dy < mMotionThreshold) dy= 0.0f;
         
         // update pointer location
         mPointerLocation.x+= dx;

@@ -10,7 +10,7 @@
     <string name="y_axis_speed">Y axis speed</string>
     <string name="y_axis_speed_summary">Sets response sensitivity for the Y axis</string>
     <string name="acceleration">Acceleration</string>
-    <string name="acceleration_summary">Set pointer acceleration. 0 disables.</string>
+    <string name="acceleration_summary">Set pointer acceleration. 0 disables</string>
     <string name="clic_settings">Click settings</string>
     <string name="detection_settings">Detection settings</string>
     <string name="disable">Disable</string>
@@ -19,6 +19,8 @@
     <string name="dwell_time">Dwell time</string>
     <string name="dwell_time_summary">Time to wait (deciseconds) before making click</string>
     <string name="five_seconds">5 s</string>
+    <string name="motion_smoothing">Motion smoothing</string>
+    <string name="motion_smoothing_summary">Tremor reduction filter. 0 disables</string> 
     <string name="motion_threshold">Motion threshold</string>
     <string name="motion_threshold_summary">Minimum displacement (in pixels) to start moving pointer</string>
     <string name="one_minute">1 minute</string>

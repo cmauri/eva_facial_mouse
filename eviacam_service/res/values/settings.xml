@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="axis_speed_default">10</integer>
+    <integer name="axis_speed_min">1</integer>
+    <integer name="axis_speed_max">25</integer>
+    
+    <integer name="acceleration_default">1</integer>
+    <integer name="acceleration_min">0</integer>
+    <integer name="acceleration_max">5</integer>
+    
+    <integer name="motion_smoothing_default">1</integer>
+    <integer name="motion_smoothing_min">0</integer>
+    <integer name="motion_smoothing_max">8</integer>
+    
+    <integer name="motion_threshold_default">1</integer>
+    <integer name="motion_threshold_min">0</integer>
+    <integer name="motion_threshold_max">5</integer>
+    
+    <integer name="dwell_time_default">10</integer>
+    <integer name="dwell_time_min">1</integer>
+    <integer name="dwell_time_max">50</integer>
+    
+    <integer name="dwell_area_default">2</integer>
+    <integer name="dwell_area_min">0</integer>
+    <integer name="dwell_area_max">8</integer>
+
+    <bool name="sound_on_click_default">true</bool>
+    
+    <string name="time_without_detection_default">30</string>
+
+</resources>

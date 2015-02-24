@@ -9,18 +9,18 @@
             android:title="@string/x_axis_speed"
             android:dialogMessage="@string/x_axis_speed_summary" 
             android:summary="@string/x_axis_speed_summary"
-            android:defaultValue="10" 
-            app:minValue="1"
-            app:maxValue="25" 
+            android:defaultValue="@integer/axis_speed_default" 
+            app:minValue="@integer/axis_speed_min"
+            app:maxValue="@integer/axis_speed_max"
         />
        <com.crea_si.eviacam.service.NumberPickerPreference           
             android:key="y_axis_speed"
             android:title="@string/y_axis_speed"
             android:dialogMessage="@string/y_axis_speed_summary" 
             android:summary="@string/y_axis_speed_summary"
-            android:defaultValue="10" 
-            app:minValue="1"
-            app:maxValue="25" 
+            android:defaultValue="@integer/axis_speed_default" 
+            app:minValue="@integer/axis_speed_min"
+            app:maxValue="@integer/axis_speed_max"
         />
        
        <com.crea_si.eviacam.service.NumberPickerPreference           
@@ -28,9 +28,19 @@
             android:title="@string/acceleration"
             android:dialogMessage="@string/acceleration_summary" 
             android:summary="@string/acceleration_summary"
-            android:defaultValue="1" 
-            app:minValue="0"
-            app:maxValue="5" 
+            android:defaultValue="@integer/acceleration_default" 
+            app:minValue="@integer/acceleration_min"
+            app:maxValue="@integer/acceleration_max"
+        />
+       
+       <com.crea_si.eviacam.service.NumberPickerPreference           
+            android:key="motion_smoothing"
+            android:title="@string/motion_smoothing"
+            android:dialogMessage="@string/motion_smoothing_summary" 
+            android:summary="@string/motion_smoothing_summary"
+            android:defaultValue="@integer/motion_smoothing_default" 
+            app:minValue="@integer/motion_smoothing_min"
+            app:maxValue="@integer/motion_smoothing_max"
         />
        
        <com.crea_si.eviacam.service.NumberPickerPreference           
@@ -38,9 +48,9 @@
             android:title="@string/motion_threshold"
             android:dialogMessage="@string/motion_threshold_summary" 
             android:summary="@string/motion_threshold_summary"
-            android:defaultValue="1" 
-            app:minValue="0"
-            app:maxValue="5" 
+            android:defaultValue="@integer/motion_threshold_default" 
+            app:minValue="@integer/motion_threshold_min"
+            app:maxValue="@integer/motion_threshold_max"
         />
        
     </PreferenceCategory>
@@ -52,9 +62,9 @@
             android:title="@string/dwell_time"
             android:dialogMessage="@string/dwell_time_summary" 
             android:summary="@string/dwell_time_summary"
-            android:defaultValue="10" 
-            app:minValue="1"
-            app:maxValue="50" 
+            android:defaultValue="@integer/dwell_time_default" 
+            app:minValue="@integer/dwell_time_min"
+            app:maxValue="@integer/dwell_time_max"
         />
         
         <com.crea_si.eviacam.service.NumberPickerPreference           
@@ -62,14 +72,14 @@
             android:title="@string/dwell_area"
             android:dialogMessage="@string/dwell_area_summary" 
             android:summary="@string/dwell_area_summary"
-            android:defaultValue="2" 
-            app:minValue="0"
-            app:maxValue="8" 
+            android:defaultValue="@integer/dwell_area_default" 
+            app:minValue="@integer/dwell_area_min"
+            app:maxValue="@integer/dwell_area_max" 
         />
         <CheckBoxPreference 
             android:key="sound_on_click"
             android:title="@string/sound_on_click"
-            android:defaultValue="true"
+            android:defaultValue="@bool/sound_on_click_default"
         />
         
     </PreferenceCategory>
@@ -82,7 +92,7 @@
             android:summary="@string/time_without_detection_summary"
             android:entries="@array/time_without_detection_entries"
             android:entryValues="@array/time_without_detection_values"
-            android:defaultValue="30"
+            android:defaultValue="@string/time_without_detection_default"
         />
 
     </PreferenceCategory>

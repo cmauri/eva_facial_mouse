@@ -3,6 +3,7 @@ package com.crea_si.eviacam.service;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
@@ -44,19 +45,21 @@ public class EViacamService extends AccessibilityService {
             mHeartBeat.start();
         }
         
+        // set default configuration values if the service is run for the first time
+        PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
+        
         // Create overlay
         mOverlayManager= new OverlayManager(this.getApplicationContext());
         mOverlayManager.createOverlay();
         
         // create pointer action object
-        PointerControl p= new PointerControl(mOverlayManager.getOverlayView());
+        PointerControl p= new PointerControl(mOverlayManager.getOverlayView(), getApplicationContext());
         
         // Create camera
         mCameraListener= new CameraListener(this, p);
         mOverlayManager.addCameraSurface(mCameraListener.getCameraSurface());
         mCameraListener.StartCamera();
     }
-    
 
     /**
      * Called when service is switched off

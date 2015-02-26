@@ -11,6 +11,7 @@ public class EViacamService extends AccessibilityService {
     private HeartBeat mHeartBeat;
     private OverlayManager mOverlayManager;
     private CameraListener mCameraListener;
+    private PointerControl mPointerControl;
 
     /**
      * Called when the accessibility service is started
@@ -53,10 +54,10 @@ public class EViacamService extends AccessibilityService {
         mOverlayManager.createOverlay();
         
         // create pointer action object
-        PointerControl p= new PointerControl(mOverlayManager.getOverlayView(), getApplicationContext());
+        mPointerControl= new PointerControl(mOverlayManager.getOverlayView(), getApplicationContext());
         
         // Create camera
-        mCameraListener= new CameraListener(this, p);
+        mCameraListener= new CameraListener(this, mPointerControl);
         mOverlayManager.addCameraSurface(mCameraListener.getCameraSurface());
         mCameraListener.StartCamera();
     }
@@ -71,7 +72,9 @@ public class EViacamService extends AccessibilityService {
         mCameraListener.StopCamera();
 
         mOverlayManager.destroyOverlay();
-        mOverlayManager= null;        
+        mOverlayManager= null;
+        
+        mPointerControl.cleanup();
         
         if (EVIACAM.DEBUG) mHeartBeat.stop();
         

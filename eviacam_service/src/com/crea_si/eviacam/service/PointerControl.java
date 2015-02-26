@@ -2,13 +2,14 @@ package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.preference.PreferenceManager;
 
 import java.lang.Math;
 
-class PointerControl {
+class PointerControl implements OnSharedPreferenceChangeListener {
     // constants
     private final int AXIS_SPEED_MIN;
     private final int AXIS_SPEED_MAX;
@@ -19,6 +20,12 @@ class PointerControl {
     private final int MOTION_THRESHOLD_MIN;
     private final int ACCEL_ARRAY_SIZE= 30;
     
+    private static final String KEY_X_AXIS_SPEED= "x_axis_speed";
+    private static final String KEY_Y_AXIS_SPEED= "y_axis_speed";
+    private static final String KEY_ACCELERATION= "acceleration";
+    private static final String KEY_MOTION_SMOOTHING= "motion_smoothing";
+    private static final String KEY_MOTION_THRESHOLD= "motion_threshold";
+    
     // internal status attributes
     private float mXMultiplier, mYMultiplier;   // derived from axis_speed
     private float mAccelArray[]= new float[ACCEL_ARRAY_SIZE]; // derived from acceleration
@@ -27,9 +34,10 @@ class PointerControl {
     private int mMotionThreshold;
     private PointF mPointerLocation= new PointF();
     private OverlayView mOverlayView;
+    private SharedPreferences mSharedPref;
     
     // methods
-    public PointerControl(OverlayView ov, Context c){
+    public PointerControl(OverlayView ov, Context c) {
         mOverlayView= ov;
         
         // get constants from resources
@@ -45,17 +53,41 @@ class PointerControl {
         
         MOTION_THRESHOLD_MIN = r.getInteger(R.integer.motion_threshold_min);
 
+        // shared preferences
+        mSharedPref = PreferenceManager.getDefaultSharedPreferences(c);
+        
+        // register preference change listener
+        mSharedPref.registerOnSharedPreferenceChangeListener(this);
+        
+        readSettings();
+    }
+    
+    private void readSettings() {
         // get values from shared resources
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(c);
-        int xAxisSpeed= sharedPref.getInt("x_axis_speed", AXIS_SPEED_MIN);
+        int xAxisSpeed= mSharedPref.getInt(KEY_X_AXIS_SPEED, AXIS_SPEED_MIN);
         setXSpeed(xAxisSpeed);
-        int yAxisSpeed= sharedPref.getInt("y_axis_speed", AXIS_SPEED_MIN);
+        int yAxisSpeed= mSharedPref.getInt(KEY_Y_AXIS_SPEED, AXIS_SPEED_MIN);
         setYSpeed(yAxisSpeed);
-        int acceleration= sharedPref.getInt("acceleration", ACCELERATION_MIN);
+        int acceleration= mSharedPref.getInt(KEY_ACCELERATION, ACCELERATION_MIN);
         setAcceleration(acceleration);
-        int motionSmoothing= sharedPref.getInt("motion_smoothing", MOTION_SMOOTHING_MIN);
+        int motionSmoothing= mSharedPref.getInt(KEY_MOTION_SMOOTHING, MOTION_SMOOTHING_MIN);
         setMotionSmoothning (motionSmoothing);
-        mMotionThreshold= sharedPref.getInt("motion_threshold", MOTION_THRESHOLD_MIN);
+        mMotionThreshold= mSharedPref.getInt(KEY_MOTION_THRESHOLD, MOTION_THRESHOLD_MIN);
+    }
+    
+    // clean-up object
+    public void cleanup() {
+        mSharedPref.unregisterOnSharedPreferenceChangeListener(this);        
+    }
+    
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+            String key) {
+        if (key.equals(KEY_X_AXIS_SPEED) || key.equals(KEY_Y_AXIS_SPEED) ||
+            key.equals(KEY_ACCELERATION) || key.equals(KEY_MOTION_SMOOTHING) ||
+            key.equals(KEY_MOTION_THRESHOLD)) {
+            readSettings();
+        }
     }
     
     private static float computeSpeedFactor(int speed) {

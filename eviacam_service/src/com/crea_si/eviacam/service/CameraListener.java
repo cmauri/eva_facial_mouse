@@ -93,7 +93,6 @@ public class CameraListener implements CvCameraViewListener2 {
      
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
-        EVIACAM.debug("onCameraFrame");
         Mat rgba = inputFrame.rgba();
         PointF vel = new PointF(0, 0);
         VisionPipeline.processFrame(rgba.getNativeObjAddr(), vel);

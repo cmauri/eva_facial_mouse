@@ -1,14 +1,15 @@
 package com.crea_si.eviacam.service;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.preference.PreferenceManager;
-
 import java.lang.Math;
 
+@SuppressLint("Assert")
 class PointerControl implements OnSharedPreferenceChangeListener {
     // constants
     private final int AXIS_SPEED_MIN;

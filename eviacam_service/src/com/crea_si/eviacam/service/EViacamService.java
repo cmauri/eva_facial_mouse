@@ -17,6 +17,9 @@ public class EViacamService extends AccessibilityService {
     private void init() {
         // TODO: handle exceptions properly
         
+        // TODO:
+        // http://stackoverflow.com/questions/28752238/accessibilityservice-onunbind-not-always-called-when-running-on-emulator
+        
         // check if service has been already started
         // under certain circumstances onUnbind is not called (e.g. running
         // on an emulator happens quite often) and the service continues 

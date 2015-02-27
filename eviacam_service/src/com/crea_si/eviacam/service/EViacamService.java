@@ -12,27 +12,22 @@ public class EViacamService extends AccessibilityService {
     private OverlayManager mOverlayManager;
     private CameraListener mCameraListener;
     private PointerControl mPointerControl;
+    boolean mRunning= false;
 
-    /**
-     * Called when the accessibility service is started
-     */
-    @Override
-    public void onCreate() {
-        super.onCreate();
+    private void init() {
+        // TODO: handle exceptions properly
         
-        if (EVIACAM.DEBUG) android.os.Debug.waitForDebugger();
-        EVIACAM.debug("onCreate");
-
-        mHeartBeat = new HeartBeat(this);
-    }
-
-    /**
-     * Called every time the service is switched ON
-     */
-    @Override
-    public void onServiceConnected() {
-        EVIACAM.debug("onServiceConnected");
-
+        // check if service has been already started
+        // under certain circumstances onUnbind is not called (e.g. running
+        // on an emulator happens quite often) and the service continues 
+        // running although it shows it is disabled
+        // this does not solve the issue but at least the service does not crash
+        if (mRunning) {
+            EVIACAM.debug("ALREADY RUNNING");
+            //stopSelf();
+            return;
+        }
+        
         /**
          * Unsubscribe all accessibility events. Cannot be removed directly from
          * @xml/accessibilityservice, otherwise onUnbind and onDestroy // never
@@ -41,25 +36,72 @@ public class EViacamService extends AccessibilityService {
         setServiceInfo(new AccessibilityServiceInfo());
 
         if (EVIACAM.DEBUG) {
-            // DEBUGGING MESSAGES
-            Toast.makeText(this.getApplicationContext(), "onServiceConnected", Toast.LENGTH_SHORT).show();
+            // debugging stuff
+            //android.os.Debug.waitForDebugger();
+            Toast.makeText(getApplicationContext(), "onServiceConnected", Toast.LENGTH_SHORT).show();
+            mHeartBeat = new HeartBeat(this);
             mHeartBeat.start();
         }
         
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
         
-        // Create overlay
-        mOverlayManager= new OverlayManager(this.getApplicationContext());
+        // create overlay
+        mOverlayManager= new OverlayManager(getApplicationContext());
         mOverlayManager.createOverlay();
         
-        // create pointer action object
+        // create pointer control object
         mPointerControl= new PointerControl(mOverlayManager.getOverlayView(), getApplicationContext());
         
-        // Create camera
+        // create camera & machine vision part
         mCameraListener= new CameraListener(this, mPointerControl);
         mOverlayManager.addCameraSurface(mCameraListener.getCameraSurface());
+        
+        // start processing frames
         mCameraListener.StartCamera();
+        
+        mRunning= true;
+    }
+    
+    private void cleanup() {
+        // TODO: handle exceptions properly
+        if (!mRunning) return;
+        
+        mCameraListener.StopCamera();
+        mCameraListener= null;
+
+        mPointerControl.cleanup();
+        mPointerControl= null;
+        
+        mOverlayManager.destroyOverlay();
+        mOverlayManager= null;
+        
+        if (EVIACAM.DEBUG) {
+            mHeartBeat.stop();
+            mHeartBeat= null;
+        }
+        
+        mRunning= false;
+    }
+    
+    /**
+     * Called when the accessibility service is started
+     */
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        
+        EVIACAM.debug("onCreate");
+    }
+
+    /**
+     * Called every time the service is switched ON
+     */
+    @Override
+    public void onServiceConnected() {
+        EVIACAM.debug("onServiceConnected");
+        
+        init();
     }
 
     /**
@@ -69,14 +111,7 @@ public class EViacamService extends AccessibilityService {
     public boolean onUnbind(Intent intent) {
         EVIACAM.debug("onUnbind");
         
-        mCameraListener.StopCamera();
-
-        mOverlayManager.destroyOverlay();
-        mOverlayManager= null;
-        
-        mPointerControl.cleanup();
-        
-        if (EVIACAM.DEBUG) mHeartBeat.stop();
+        cleanup();
         
         return false;
     }
@@ -90,8 +125,7 @@ public class EViacamService extends AccessibilityService {
 
         EVIACAM.debug("onDestroy");
 
-        mHeartBeat.stop();
-
+        cleanup();
     }
 
     /**

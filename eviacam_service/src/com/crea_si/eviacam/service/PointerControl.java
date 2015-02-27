@@ -36,6 +36,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private PointF mPointerLocation= new PointF();
     private OverlayView mOverlayView;
     private SharedPreferences mSharedPref;
+    private DwellClick mDwellClick;
     
     // methods
     public PointerControl(OverlayView ov, Context c) {
@@ -61,6 +62,8 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
         
         readSettings();
+        
+        mDwellClick= new DwellClick(c);
     }
     
     private void readSettings() {
@@ -78,7 +81,8 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     
     // clean-up object
     public void cleanup() {
-        mSharedPref.unregisterOnSharedPreferenceChangeListener(this);        
+        mDwellClick.cleanup();
+        mSharedPref.unregisterOnSharedPreferenceChangeListener(this);
     }
     
     @Override
@@ -199,5 +203,6 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         }
         
         mOverlayView.updatePointerLocation(mPointerLocation);
+        mDwellClick.updatePointerLocation(mPointerLocation);
     }
 }

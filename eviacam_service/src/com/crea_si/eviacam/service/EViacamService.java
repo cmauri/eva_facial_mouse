@@ -8,12 +8,25 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
 public class EViacamService extends AccessibilityService {
+    static private AccessibilityService sAccessibilityService;
     private HeartBeat mHeartBeat;
     private OverlayManager mOverlayManager;
     private CameraListener mCameraListener;
     private PointerControl mPointerControl;
+    
+    
     boolean mRunning= false;
 
+    public EViacamService() {
+        super();
+        sAccessibilityService= this;
+    }
+    
+    public static AccessibilityService getInstance() {
+        return sAccessibilityService;
+    }
+    
+    
     private void init() {
         // TODO: handle exceptions properly
         
@@ -40,7 +53,7 @@ public class EViacamService extends AccessibilityService {
 
         if (EVIACAM.DEBUG) {
             // debugging stuff
-            //android.os.Debug.waitForDebugger();
+            android.os.Debug.waitForDebugger();
             Toast.makeText(getApplicationContext(), "onServiceConnected", Toast.LENGTH_SHORT).show();
             mHeartBeat = new HeartBeat(this);
             mHeartBeat.start();

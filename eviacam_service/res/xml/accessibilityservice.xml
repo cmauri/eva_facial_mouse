@@ -5,4 +5,5 @@
     android:accessibilityEventTypes="typeViewClicked"
     android:accessibilityFeedbackType="feedbackSpoken"
     android:description="@string/eviacam_service_description" 
-    android:settingsActivity="com.crea_si.eviacam.service.SettingsActivity" />
+    android:settingsActivity="com.crea_si.eviacam.service.SettingsActivity"
+    android:canRetrieveWindowContent="true" />

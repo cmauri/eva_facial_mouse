@@ -80,8 +80,9 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         mRequestEnabled= false;
     }
     
-    private void performClick () {
+    private void performClick (PointF p) {
         EVIACAM.debug("Click performed");
+        Actions.click(p);
         //Toast.makeText(mContext, "CLICK!!!", Toast.LENGTH_SHORT).show();
     }
 
@@ -115,7 +116,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
        
         // state machine
         if (mState == State.POINTER_MOVING) {
-            EVIACAM.debug("POINTER_MOVING");
             if (!movedAboveThreshold (mPrevPointerLocation, pl)) {
                 mState= State.COUNTDOWN_STARTED;
                 mCountdown.reset();
@@ -123,14 +123,13 @@ class DwellClick implements OnSharedPreferenceChangeListener {
             }
         }
         else if (mState == State.COUNTDOWN_STARTED) {
-            EVIACAM.debug("COUNTDOWN_STARTED");
             if (movedAboveThreshold (mPrevPointerLocation, pl)) {
                 mState= State.POINTER_MOVING;
                 // hide countdown
             }
             else {
                 if (mCountdown.hasFinished()) {
-                    performClick();
+                    performClick(pl);
                     mState= State.CLICK_DONE;
                     // hide countdown
                 }
@@ -140,7 +139,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
             }
         }
         else if (mState == State.CLICK_DONE) {
-            EVIACAM.debug("CLICK_DONE");
             if (movedAboveThreshold (mPrevPointerLocation, pl)) {
                 mState= State.POINTER_MOVING;
             }

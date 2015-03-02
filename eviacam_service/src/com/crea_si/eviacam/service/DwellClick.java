@@ -8,6 +8,10 @@ import android.graphics.PointF;
 import android.preference.PreferenceManager;
 
 class DwellClick implements OnSharedPreferenceChangeListener {
+    private enum State {
+        DISABLED, POINTER_MOVING, COUNTDOWN_STARTED, CLICK_DONE
+    }
+    
     // constants
     private final int DWELL_TIME_DEFAULT;
     private final int DWELL_AREA_DEFAULT;
@@ -18,11 +22,14 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private static final String KEY_SOUND_ON_CLICK= "sound_on_click";
     
     // attributes
-    private boolean mEnabled= true;
+    private State mState= State.POINTER_MOVING;
     private float mDwellAreaSquared;
     private Countdown mCountdown;
     private boolean mSoundOnClick;
     private PointF mPrevPointerLocation= null;
+    // this attribute is modified from the main thread only (enable/disable methods)
+    // and is used to notify the working thread (updatePointerLocation method)
+    private boolean mRequestEnabled= true;
     private SharedPreferences mSharedPref;
     
     public DwellClick(Context c) {
@@ -65,43 +72,80 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         }
     }
        
-    /*
-    private void enable () {
-        mPrevPointerLocation= null;
-        mEnabled= true;
+    public void enable () {
+        mRequestEnabled= true;
     }
     
-    private void disable () {
-        mEnabled= false;
+    public void disable () {
+        mRequestEnabled= false;
     }
-    */
     
     private void performClick () {
         EVIACAM.debug("Click performed");
+        //Toast.makeText(mContext, "CLICK!!!", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean movedAboveThreshold (PointF p1, PointF p2) {
+        float dx= p1.x - p2.x;
+        float dy= p1.y - p2.y;
+        float dist= dx * dx + dy * dy;
+        return (dist> mDwellAreaSquared);
     }
     
+    // this method is called from a secondary thread
     public void updatePointerLocation (PointF pl) {
-        if (!mEnabled) return;
-        
-        // compute cursor displacement
-        if (mPrevPointerLocation != null) {
-            float dx= pl.x - mPrevPointerLocation.x;
-            float dy= pl.y - mPrevPointerLocation.y;
-            
-            double displacementSquared= dx * dx + dy * dy;
-            
-            if (displacementSquared> mDwellAreaSquared) {
-                // pointer moving
+        if (mPrevPointerLocation== null) {
+            mPrevPointerLocation= new PointF();
+            mPrevPointerLocation.set(pl);
+            return;
+        }
+       
+        // check if need to enable/disable 
+        if (mState == State.DISABLED) {
+            if (mRequestEnabled) {
+                mState = State.POINTER_MOVING;
+            }
+        }
+        else {
+            if (!mRequestEnabled) {
+                mState = State.DISABLED;
+                // hide countdown
+            }
+        }
+       
+        // state machine
+        if (mState == State.POINTER_MOVING) {
+            EVIACAM.debug("POINTER_MOVING");
+            if (!movedAboveThreshold (mPrevPointerLocation, pl)) {
+                mState= State.COUNTDOWN_STARTED;
                 mCountdown.reset();
+                // display countdown
+            }
+        }
+        else if (mState == State.COUNTDOWN_STARTED) {
+            EVIACAM.debug("COUNTDOWN_STARTED");
+            if (movedAboveThreshold (mPrevPointerLocation, pl)) {
+                mState= State.POINTER_MOVING;
+                // hide countdown
             }
             else {
-                // pointer static
-                if (mCountdown.hasFinishedOneShot()) {
+                if (mCountdown.hasFinished()) {
                     performClick();
+                    mState= State.CLICK_DONE;
+                    // hide countdown
+                }
+                else {
+                    // update countdown
                 }
             }
         }
+        else if (mState == State.CLICK_DONE) {
+            EVIACAM.debug("CLICK_DONE");
+            if (movedAboveThreshold (mPrevPointerLocation, pl)) {
+                mState= State.POINTER_MOVING;
+            }
+        }
         
-        mPrevPointerLocation= pl;
+        mPrevPointerLocation.set(pl);
     }
 }

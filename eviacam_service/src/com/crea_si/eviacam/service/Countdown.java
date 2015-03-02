@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 class Countdown {
     private long mLastTimeStamp;
     private long mTimeToWait;
-    private boolean mOneShotFinished;
     
     Countdown (long timeToWait) {
         setTimeToWait (timeToWait);
@@ -14,8 +13,7 @@ class Countdown {
     }    
     
     public void reset () {
-        mTimeToWait= System.currentTimeMillis();
-        mOneShotFinished= false;
+        mLastTimeStamp= System.currentTimeMillis();
     }
     
     public void setTimeToWait (long timeToWait) {
@@ -35,15 +33,5 @@ class Countdown {
 
     public boolean hasFinished () {
         return (System.currentTimeMillis() - mLastTimeStamp> mTimeToWait);
-    }
-
-    // if countdown finished returns true once and false for all subsequent calls
-    public boolean hasFinishedOneShot () {
-        if (mOneShotFinished) return false;
-        if (hasFinished()) {
-            mOneShotFinished= true;
-            return true;
-        }
-        return false;
     }
 }

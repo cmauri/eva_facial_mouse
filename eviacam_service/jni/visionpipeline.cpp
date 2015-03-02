@@ -151,7 +151,7 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 			m_corners[i].y += featuresTrackArea.y;
 		}
 
-		LOGD("Features updated\n");
+		LOGV("Features updated\n");
 	}
 
 	//

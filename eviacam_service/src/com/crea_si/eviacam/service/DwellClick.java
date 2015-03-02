@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.preference.PreferenceManager;
 
 class DwellClick implements OnSharedPreferenceChangeListener {
@@ -85,7 +87,11 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private void performClick (PointF p) {
         EVIACAM.debug("Click performed");
         Actions.click(p);
-        //Toast.makeText(mContext, "CLICK!!!", Toast.LENGTH_SHORT).show();
+
+        if (mSoundOnClick) {
+            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+        }
     }
 
     private boolean movedAboveThreshold (PointF p1, PointF p2) {

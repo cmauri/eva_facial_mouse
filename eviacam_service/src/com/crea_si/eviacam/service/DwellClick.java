@@ -32,7 +32,9 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private boolean mRequestEnabled= true;
     private SharedPreferences mSharedPref;
     
-    public DwellClick(Context c) {
+    public DwellClick() {
+        Context c= EViacamService.getInstance().getApplicationContext();
+        
         // get constants from resources
         Resources r= c.getResources();
         DWELL_TIME_DEFAULT= r.getInteger(R.integer.dwell_time_default) * 100;

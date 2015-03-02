@@ -14,7 +14,6 @@ public class EViacamService extends AccessibilityService {
     private CameraListener mCameraListener;
     private PointerControl mPointerControl;
     
-    
     boolean mRunning= false;
 
     public EViacamService() {
@@ -63,14 +62,14 @@ public class EViacamService extends AccessibilityService {
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
         
         // create overlay
-        mOverlayManager= new OverlayManager(getApplicationContext());
+        mOverlayManager= new OverlayManager();
         mOverlayManager.createOverlay();
         
         // create pointer control object
-        mPointerControl= new PointerControl(mOverlayManager.getOverlayView(), getApplicationContext());
+        mPointerControl= new PointerControl(mOverlayManager.getOverlayView());
         
         // create camera & machine vision part
-        mCameraListener= new CameraListener(this, mPointerControl);
+        mCameraListener= new CameraListener(mPointerControl);
         mOverlayManager.addCameraSurface(mCameraListener.getCameraSurface());
         
         // start processing frames

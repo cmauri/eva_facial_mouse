@@ -8,17 +8,18 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
+
 import android.content.Context;
 import android.graphics.PointF;
 import android.view.SurfaceView;
 
 
 public class CameraListener implements CvCameraViewListener2 {
-    private Context mContext;
     private PointerControl mPointerControl;
     private CameraBridgeViewBase mCameraView;
     
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(mContext) {
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(
+            EViacamService.getInstance().getApplicationContext()) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
@@ -42,15 +43,15 @@ public class CameraListener implements CvCameraViewListener2 {
         }
     };
     
-    public CameraListener(Context context, PointerControl pa) {
+    public CameraListener(PointerControl pa) {
         EVIACAM.debug("Create CameraListener");
 
-        mContext= context;
         mPointerControl= pa;
         
         // TODO: detect if device has frontal camera or not
         // Create capture view directly
-        mCameraView= new JavaCameraView(context, CameraBridgeViewBase.CAMERA_ID_FRONT);
+        mCameraView= new JavaCameraView(EViacamService.getInstance().getApplicationContext(), 
+                CameraBridgeViewBase.CAMERA_ID_FRONT);
         
         // Set CameraBridgeViewBase parameters        
         // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)
@@ -67,7 +68,8 @@ public class CameraListener implements CvCameraViewListener2 {
     
     public void StartCamera() {
         // Start OpenCV
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, mContext, mLoaderCallback);
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, 
+                EViacamService.getInstance().getApplicationContext(), mLoaderCallback);
     }
     
     public void StopCamera() {

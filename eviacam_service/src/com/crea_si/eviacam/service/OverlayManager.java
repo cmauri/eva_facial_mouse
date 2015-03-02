@@ -11,13 +11,8 @@ public class OverlayManager {
     private final int CAM_SURFACE_WIDTH= 320;
     private final int CAM_SURFACE_HEIGHT= 240;
 
-    private Context mContext;
     private OverlayView mOverlayView;
 
-    OverlayManager (Context context) {
-        mContext= context;
-    }
-    
     /***
      *  // Set overlay window to provide visual feedback
      */
@@ -40,8 +35,9 @@ public class OverlayManager {
         feedbackParams.width = LayoutParams.MATCH_PARENT;
         feedbackParams.height = LayoutParams.MATCH_PARENT;
       
-        mOverlayView = new OverlayView(mContext);
-        WindowManager wm= (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Context c= EViacamService.getInstance().getApplicationContext();
+        mOverlayView = new OverlayView(c);
+        WindowManager wm= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         wm.addView(mOverlayView, feedbackParams);
 
         EVIACAM.debug("finish createOverlay");
@@ -50,7 +46,8 @@ public class OverlayManager {
     void destroyOverlay() {
         if (mOverlayView == null) return;
         
-        WindowManager wm= (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        Context c= EViacamService.getInstance().getApplicationContext();
+        WindowManager wm= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         wm.removeViewImmediate(mOverlayView);
         mOverlayView = null;
         EVIACAM.debug("finish destroyOverlay");

@@ -7,6 +7,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.preference.PreferenceManager;
+
 import java.lang.Math;
 
 @SuppressLint("Assert")
@@ -39,8 +40,10 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private DwellClick mDwellClick;
     
     // methods
-    public PointerControl(OverlayView ov, Context c) {
+    public PointerControl(OverlayView ov) {
         mOverlayView= ov;
+        
+        Context c= EViacamService.getInstance().getApplicationContext();
         
         // get constants from resources
         Resources r= c.getResources();
@@ -63,7 +66,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         
         readSettings();
         
-        mDwellClick= new DwellClick(c);
+        mDwellClick= new DwellClick();
     }
     
     private void readSettings() {

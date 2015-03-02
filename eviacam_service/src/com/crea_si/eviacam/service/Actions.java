@@ -7,6 +7,9 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 class Actions {    
+    /*
+     * Perform click under the element under p
+     */
     public static void click (PointF p) {
         // get root
         final AccessibilityNodeInfo rootNode = 
@@ -27,14 +30,24 @@ class Actions {
         node.performAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
     }
     
-    
+    /*
+     * Stub used to avoid creating a Rect instance for each call
+     */
     private static AccessibilityNodeInfoCompat findClickable(
             AccessibilityNodeInfoCompat node, Point p) {
-
-        // TODO: move the new outside the recursion
         Rect window = new Rect();
+        
+        return findClickable0(node, p, window);
+    }
+    
+    /*
+     * Find recursively the node under (x, y)
+     */
+    private static AccessibilityNodeInfoCompat findClickable0(
+            AccessibilityNodeInfoCompat node, Point p, Rect window) {
+
         node.getBoundsInScreen(window);
-        if (!window.contains(window)) {
+        if (!window.contains(p.x, p.y)) {                
             // if window does not contain (x, y) stop recursion
             return null;
         }
@@ -47,11 +60,9 @@ class Actions {
         
         // propagate calls to children
         for (int i= 0; i< node.getChildCount(); i++) {
-            AccessibilityNodeInfoCompat descendant= findClickable(node.getChild(i), p);
+            AccessibilityNodeInfoCompat descendant= findClickable0(node.getChild(i), p, window);
             
-            if (descendant != null) {
-                return descendant;
-            }
+            if (descendant != null) return descendant;
         }
         
         // not found

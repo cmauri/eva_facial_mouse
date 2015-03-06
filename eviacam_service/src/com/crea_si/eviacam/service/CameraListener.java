@@ -3,20 +3,19 @@ package com.crea_si.eviacam.service;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
-import org.opencv.android.JavaCameraView;
+import org.opencv.android.MyJavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
-
-import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.view.SurfaceView;
-
 
 public class CameraListener implements CvCameraViewListener2 {
     private PointerControl mPointerControl;
     private CameraBridgeViewBase mCameraView;
+    private boolean mOrientationLandscape= true;
     
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(
             EViacamService.getInstance().getApplicationContext()) {
@@ -50,7 +49,7 @@ public class CameraListener implements CvCameraViewListener2 {
         
         // TODO: detect if device has frontal camera or not
         // Create capture view directly
-        mCameraView= new JavaCameraView(EViacamService.getInstance().getApplicationContext(), 
+        mCameraView= new MyJavaCameraView(EViacamService.getInstance().getApplicationContext(), 
                 CameraBridgeViewBase.CAMERA_ID_FRONT);
         
         // Set CameraBridgeViewBase parameters        
@@ -98,7 +97,20 @@ public class CameraListener implements CvCameraViewListener2 {
         Mat rgba = inputFrame.rgba();
         PointF vel = new PointF(0, 0);
         VisionPipeline.processFrame(rgba.getNativeObjAddr(), vel);
+        if (!mOrientationLandscape) {
+            float tmp= vel.x;
+            vel.x= -vel.y;
+            vel.y= tmp;
+        }
         mPointerControl.updateMotion(vel);
         return rgba;
+    }
+    
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            mOrientationLandscape= true;
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            mOrientationLandscape= false;
+        }
     }
 }

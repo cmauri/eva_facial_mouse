@@ -2,12 +2,14 @@ package com.crea_si.eviacam.service;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.ComponentCallbacks;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
-public class EViacamService extends AccessibilityService {
+public class EViacamService extends AccessibilityService implements ComponentCallbacks {
     static private AccessibilityService sAccessibilityService;
     private HeartBeat mHeartBeat;
     private OverlayManager mOverlayManager;
@@ -162,5 +164,15 @@ public class EViacamService extends AccessibilityService {
     @Override
     public void onInterrupt() {
         EVIACAM.debug("onInterrupt");
+    }
+    
+    /*
+     * Called by the system when the device configuration changes
+     */
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (mCameraListener != null) {
+            mCameraListener.onConfigurationChanged(newConfig);
+        }
     }
 }

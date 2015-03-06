@@ -27,7 +27,8 @@
             android:icon="@drawable/ic_launcher"
             android:label="@string/service_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" 
-            android:settingsActivity="com.crea_si.eviacam.service.SettingsActivity" >
+            android:settingsActivity="com.crea_si.eviacam.service.SettingsActivity" 
+            android:configChanges="orientation|screenSize" >
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>

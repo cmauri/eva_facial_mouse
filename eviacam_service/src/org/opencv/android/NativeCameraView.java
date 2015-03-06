@@ -103,12 +103,13 @@ public class NativeCameraView extends CameraBridgeViewBase {
             java.util.List<Size> sizes = mCamera.getSupportedPreviewSizes();
 
             /* Select the size that fits surface considering maximum size allowed */
-            Size frameSize = calculateCameraFrameSize(sizes, new OpenCvSizeAccessor(), width, height);
+            Size frameSize = calculateCameraFrameSize(sizes, new OpenCvSizeAccessor(), mMaxWidth, mMaxHeight);
 
             mFrameWidth = (int)frameSize.width;
             mFrameHeight = (int)frameSize.height;
 
-            if ((getLayoutParams().width == LayoutParams.MATCH_PARENT) && (getLayoutParams().height == LayoutParams.MATCH_PARENT))
+             if ((getLayoutParams().width == LayoutParams.MATCH_PARENT) && (getLayoutParams().height == LayoutParams.MATCH_PARENT) ||
+                  width != mFrameWidth || height != mFrameHeight)
                 mScale = Math.min(((float)height)/mFrameHeight, ((float)width)/mFrameWidth);
             else
                 mScale = 0;

@@ -15,20 +15,20 @@ import android.view.ViewGroup.LayoutParams;
  * Due to the big amount of work done, by the base class this child is only responsible
  * for creating camera, destroying camera and delivering frames while camera is enabled
  */
-public class NativeCameraView extends CameraBridgeViewBase {
+public class MyNativeCameraView extends CameraBridgeViewBase {
 
-    public static final String TAG = "NativeCameraView";
+    public static final String TAG = "MyNativeCameraView";
     private boolean mStopThread;
     private Thread mThread;
 
     protected VideoCapture mCamera;
     protected NativeCameraFrame mFrame;
 
-    public NativeCameraView(Context context, int cameraId) {
+    public MyNativeCameraView(Context context, int cameraId) {
         super(context, cameraId);
     }
 
-    public NativeCameraView(Context context, AttributeSet attrs) {
+    public MyNativeCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

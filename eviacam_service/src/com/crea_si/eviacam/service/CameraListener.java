@@ -3,7 +3,7 @@ package com.crea_si.eviacam.service;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
-import org.opencv.android.JavaCameraView;
+import org.opencv.android.MyJavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.OpenCVLoader;
@@ -49,7 +49,7 @@ public class CameraListener implements CvCameraViewListener2 {
         
         // TODO: detect if device has frontal camera or not
         // Create capture view directly
-        mCameraView= new JavaCameraView(EViacamService.getInstance().getApplicationContext(), 
+        mCameraView= new MyJavaCameraView(EViacamService.getInstance().getApplicationContext(), 
                 CameraBridgeViewBase.CAMERA_ID_FRONT);
         
         // Set CameraBridgeViewBase parameters        

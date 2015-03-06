@@ -26,10 +26,10 @@ import org.opencv.imgproc.Imgproc;
  * When frame is delivered via callback from Camera - it processed via OpenCV to be
  * converted to RGBA32 and then passed to the external callback for modifications if required.
  */
-public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallback {
+public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCallback {
 
     private static final int MAGIC_TEXTURE_ID = 10;
-    private static final String TAG = "JavaCameraView";
+    private static final String TAG = "MyJavaCameraView";
 
     private byte mBuffer[];
     private Mat[] mFrameChain;
@@ -56,11 +56,11 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
         }
     }
 
-    public JavaCameraView(Context context, int cameraId) {
+    public MyJavaCameraView(Context context, int cameraId) {
         super(context, cameraId);
     }
 
-    public JavaCameraView(Context context, AttributeSet attrs) {
+    public MyJavaCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -329,10 +329,10 @@ public class JavaCameraView extends CameraBridgeViewBase implements PreviewCallb
         @Override
         public void run() {
             do {
-                synchronized (JavaCameraView.this) {
+                synchronized (MyJavaCameraView.this) {
                     try {
                         while (!mCameraFrameReady && !mStopThread) {
-                            JavaCameraView.this.wait();
+                            MyJavaCameraView.this.wait();
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();

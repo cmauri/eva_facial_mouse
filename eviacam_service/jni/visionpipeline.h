@@ -38,11 +38,11 @@ public:
 
 	bool processImage (CIplImage& image, float& xVel, float& yVel);
 
-	bool GetTrackFace () const { return m_trackFace; }
-	void SetTrackFace (bool state) { m_trackFace= state; }
+	bool getTrackFace () const { return m_trackFace; }
+	void setTrackFace (bool state) { m_trackFace= state; }
 
-	int GetCpuUsage ();
-	void SetCpuUsage (int value);
+	int getCPUUsage ();
+	void setCPUUsage (int value);
 
 private:
 	// Face detector
@@ -61,7 +61,7 @@ private:
 	//
 	// Private methods
 	//
-	void allocWorkingSpace (CIplImage &image);
+	void allocWorkingSpace (int width, int height);
 	void newTracker(CIplImage &image, float &xVel, float &yVel);
 };
 

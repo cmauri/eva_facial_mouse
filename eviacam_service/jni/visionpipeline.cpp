@@ -51,26 +51,26 @@ VisionPipeline::~VisionPipeline ()
 {
 }
 
-void VisionPipeline::allocWorkingSpace (CIplImage &image)
+void VisionPipeline::allocWorkingSpace (int width, int height)
 {
 	bool retval;
 
 	if (!m_imgPrev.Initialized () ||
-		image.Width() != m_imgPrev.Width() ||
-		image.Height() != m_imgPrev.Height() ) {
+		width != m_imgPrev.Width() ||
+		height != m_imgPrev.Height() ) {
 
-		retval= m_imgPrev.Create (image.Width(), image.Height(), 
-								  IPL_DEPTH_8U, "GRAY");
+		retval= m_imgPrev.Create (width, height, IPL_DEPTH_8U, "GRAY");
+		// TODO provide better error checking
 		assert (retval);
 
-		retval= m_imgCurr.Create (image.Width(), image.Height(), 
-								  IPL_DEPTH_8U, "GRAY");
+		retval= m_imgCurr.Create (width, height, IPL_DEPTH_8U, "GRAY");
+		// TODO provide better error checking
 		assert (retval);
 	}
 }
 
 static 
-void DrawCorners(CIplImage &image, CvPoint2D32f corners[], int num_corners, CvScalar color)
+void drawCorners(CIplImage &image, CvPoint2D32f corners[], int num_corners, CvScalar color)
 {
 	for (int i = 0; i < num_corners; i++)
 		cvCircle(image.ptr(), cvPoint(corners[i].x, corners[i].y), 1, color);
@@ -93,6 +93,7 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 	}
 	else
 		// need to update corners?
+		// TODO: force corner update when image rotated
 		if (m_corner_count< NUM_CORNERS) updateFeatures = true;
 	}
 
@@ -100,17 +101,14 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 	m_faceDetection.submitFrame(m_imgCurr);
 
 	// set current image size
-	m_floatTrackArea.setReferenceSize(image.GetSize());
+	m_floatTrackArea.setReferenceSize(m_imgCurr.GetSize());
 
 	// Get actual coordinates of floatTrackArea
 	CvPoint2D32f trackAreaLocation;
 	CvSize2D32f trackAreaSize;
 	m_floatTrackArea.get(trackAreaLocation, trackAreaSize);
 
-	// show tracking area
-	cv::Mat tmp(image.ptr());
-	cv::rectangle(tmp, cvPoint(trackAreaLocation.x, trackAreaLocation.y),
-			cvPoint(trackAreaLocation.x + trackAreaSize.width, trackAreaLocation.y + trackAreaSize.height), cvScalar(255, 0, 0) );
+
 
 	if (updateFeatures) {
 		// 
@@ -231,18 +229,29 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 	}
 	
 	//
-	// Draw corners
-	//
-	DrawCorners(image, m_corners, m_corner_count, cvScalar(0, 255, 0));
+	// Provide feedback
+	// TODO: manage rotations
+
+	// draw tracking area
+	cv::Mat tmp(image.ptr());
+	cv::rectangle(tmp, cvPoint(trackAreaLocation.x, trackAreaLocation.y),
+			cvPoint(trackAreaLocation.x + trackAreaSize.width, trackAreaLocation.y + trackAreaSize.height), cvScalar(255, 0, 0) );
+
+	// draw corners
+	drawCorners(image, m_corners, m_corner_count, cvScalar(0, 255, 0));
 }
 
 
 bool VisionPipeline::processImage (CIplImage& image, float& xVel, float& yVel)
 {
 	try {
-		allocWorkingSpace(image);
+		// TODO: manage rotation cvTranspose & cvFlip
+
+		allocWorkingSpace(image.Width(), image.Height());
 
 		cvCvtColor(image.ptr(), m_imgCurr.ptr(), CV_BGR2GRAY);
+
+
 
 		newTracker(image, xVel, yVel);
 

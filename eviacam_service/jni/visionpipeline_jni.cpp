@@ -23,10 +23,10 @@ JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_init
 	env->ReleaseStringUTFChars(jCascadeName, cascadeName);
 }
 
-JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_finish
+JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_cleanup
 	(JNIEnv*, jobject)
 {
-	LOGD ("finish called");
+	LOGD ("cleanup called");
 
 	assert (g_visionPipeline);
 

@@ -8,7 +8,7 @@ public class VisionPipeline {
     public static native void init (String cascadeName);
     
     // clean-up JNI part
-    public static native void finish ();
+    public static native void cleanup ();
     
     /*
      * entry point to process camera frames

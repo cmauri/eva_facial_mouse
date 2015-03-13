@@ -104,7 +104,7 @@ public class CameraListener extends OrientationEventListener implements CvCamera
     public void onCameraViewStopped() {
         EVIACAM.debug("onCameraViewStopped");
         // finish JNI part
-        VisionPipeline.finish();
+        VisionPipeline.cleanup();
     }
      
     @Override

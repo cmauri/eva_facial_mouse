@@ -32,11 +32,20 @@ namespace  eviacam {
 class VisionPipeline
 {
 public:
-	// Methods
 	VisionPipeline (const char* cascadePath);
 	virtual ~VisionPipeline();
 
-	bool processImage (CIplImage& image, float& xVel, float& yVel);
+	/*
+	 * entry point to process camera frames
+	 *
+	 * rotation: rotation (clockwise) in degrees that needs to be applied to the image
+	 *     before processing it so that the subject appears right.
+	 *     Valid values: 0, 90, 180, 270.
+	 *
+	 * xVel, yVel: output parameters where extracted motion is detected
+	 */
+
+	bool processImage (CIplImage& image, int rotation, float& xVel, float& yVel);
 
 	bool getTrackFace () const { return m_trackFace; }
 	void setTrackFace (bool state) { m_trackFace= state; }
@@ -51,6 +60,7 @@ private:
 	// Track area
 	bool m_trackFace;
 	CIplImage m_imgPrev, m_imgCurr;
+	CIplImage m_tmpImg;
 	NormROI2 m_floatTrackArea;
 
 	// Corner array
@@ -61,8 +71,10 @@ private:
 	//
 	// Private methods
 	//
-	void allocWorkingSpace (int width, int height);
-	void newTracker(CIplImage &image, float &xVel, float &yVel);
+
+	// return true if buffers reallocated
+	bool allocWorkingSpace (int width, int height);
+	void newTracker(CIplImage &image, int rotation, float &xVel, float &yVel);
 };
 
 }

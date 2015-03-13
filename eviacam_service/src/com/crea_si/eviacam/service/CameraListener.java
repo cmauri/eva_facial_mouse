@@ -111,7 +111,7 @@ public class CameraListener extends OrientationEventListener implements CvCamera
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         Mat rgba = inputFrame.rgba();
         PointF vel = new PointF(0, 0);
-        VisionPipeline.processFrame(rgba.getNativeObjAddr(), vel);
+        VisionPipeline.processFrame(rgba.getNativeObjAddr(), 0, vel);
         if (!mOrientationLandscape) {
             float tmp= vel.x;
             vel.x= -vel.y;
@@ -209,7 +209,7 @@ public class CameraListener extends OrientationEventListener implements CvCamera
 
     @Override
     public void onOrientationChanged(int orientation) {
-        EVIACAM.debug("onOrientationChanged: " + orientation);
+       // EVIACAM.debug("onOrientationChanged: " + orientation);
         
     }
 }

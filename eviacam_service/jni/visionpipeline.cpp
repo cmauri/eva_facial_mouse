@@ -26,7 +26,7 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
-
+#include <opencv/highgui.h>
 #include <math.h>
 
 namespace eviacam {
@@ -239,8 +239,8 @@ void VisionPipeline::newTracker(CIplImage &image, int rotation, float &xVel, flo
 			m_corners[i].x < trackAreaLocation.x + trackAreaSize.width &&
 			m_corners[i].y >= trackAreaLocation.y &&
 			m_corners[i].y < trackAreaLocation.y + trackAreaSize.height) {
-			xVel += m_corners[i].x - new_corners[i].x;
-			yVel += m_corners[i].y - new_corners[i].y;
+			xVel += new_corners[i].x - m_corners[i].x;
+			yVel += new_corners[i].y - m_corners[i].y;
 
 			// Save new corner location
 			m_corners[valid_corners++] = new_corners[i];
@@ -250,18 +250,14 @@ void VisionPipeline::newTracker(CIplImage &image, int rotation, float &xVel, flo
 
 	if (valid_corners) {
 		xVel = xVel / (float) valid_corners;
-		yVel = -yVel / (float) valid_corners;
+		yVel = yVel / (float) valid_corners;
 	}
 	else {
 		xVel = yVel = 0;
 	}
 
-	//
 	// update tracking area location
-	//
-	if (m_trackFace) {
-		m_floatTrackArea.move(cvPoint2D32f(-xVel, yVel));
-	}
+	if (m_trackFace) m_floatTrackArea.move(cvPoint2D32f(xVel, yVel));
 	
 	//
 	// Provide feedback
@@ -309,6 +305,7 @@ bool VisionPipeline::processImage (CIplImage& image, int rotation, float& xVel, 
 			bufferReallocation|= allocWorkingSpace(image.Height(), image.Width());
 			cvCvtColor(image.ptr(), m_tmpImg.ptr(), CV_BGR2GRAY);
 			cvTranspose(m_tmpImg.ptr(), m_imgCurr.ptr());
+			cvFlip(m_imgCurr.ptr(), NULL, 1);
 			break;
 		case 180:
 			bufferReallocation|= allocWorkingSpace(image.Width(), image.Height());
@@ -319,12 +316,20 @@ bool VisionPipeline::processImage (CIplImage& image, int rotation, float& xVel, 
 			bufferReallocation|= allocWorkingSpace(image.Height(), image.Width());
 			cvCvtColor(image.ptr(), m_tmpImg.ptr(), CV_BGR2GRAY);
 			cvTranspose(m_tmpImg.ptr(), m_imgCurr.ptr());
-			cvFlip(m_imgCurr.ptr(), NULL);
+			cvFlip(m_imgCurr.ptr(), NULL, 0);
 			break;
 		}
 
+		/*
+		static char count= 0;
+		if (count++== 10) {
+			cvSaveImage ("/mnt/sdcard/Download/frame.png", m_imgCurr.ptr());
+		}
+		*/
+
 		// process frame. skip if buffer reallocated
 		if (!bufferReallocation) newTracker(image, rotation, xVel, yVel);
+		else LOGV("Skip frame");
 
 		// Store current image as previous
 		m_imgPrev.Swap(&m_imgCurr);

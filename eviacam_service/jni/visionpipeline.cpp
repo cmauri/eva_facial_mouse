@@ -26,7 +26,7 @@
 
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
-
+#include <opencv/highgui.h>
 #include <math.h>
 
 namespace eviacam {
@@ -51,32 +51,67 @@ VisionPipeline::~VisionPipeline ()
 {
 }
 
-void VisionPipeline::allocWorkingSpace (CIplImage &image)
+bool VisionPipeline::allocWorkingSpace (int width, int height)
 {
 	bool retval;
 
 	if (!m_imgPrev.Initialized () ||
-		image.Width() != m_imgPrev.Width() ||
-		image.Height() != m_imgPrev.Height() ) {
+		width != m_imgPrev.Width() ||
+		height != m_imgPrev.Height() ) {
 
-		retval= m_imgPrev.Create (image.Width(), image.Height(), 
-								  IPL_DEPTH_8U, "GRAY");
+		retval= m_imgPrev.Create (width, height, IPL_DEPTH_8U, "GRAY");
+		// TODO provide better error checking
 		assert (retval);
 
-		retval= m_imgCurr.Create (image.Width(), image.Height(), 
-								  IPL_DEPTH_8U, "GRAY");
+		retval= m_imgCurr.Create (width, height, IPL_DEPTH_8U, "GRAY");
+		// TODO provide better error checking
 		assert (retval);
+
+		return true;
 	}
+
+	return false;
 }
 
 static 
-void DrawCorners(CIplImage &image, CvPoint2D32f corners[], int num_corners, CvScalar color)
-{
-	for (int i = 0; i < num_corners; i++)
-		cvCircle(image.ptr(), cvPoint(corners[i].x, corners[i].y), 1, color);
+cv::Point rotatePoint (int rotation, const cv::Point& p, int newWidth, int newHeight) {
+	cv::Point result;
+
+	switch (rotation) {
+	case 0:
+		result.x= p.x;
+		result.y= p.y;
+		break;
+	case 90:
+		result.x= p.y;
+		result.y= -p.x + newHeight;
+		break;
+	case 180:
+		result.x= -p.x + newWidth;
+		result.y= -p.y + newHeight;
+		break;
+	case 270:
+		result.x= -p.y + newWidth;
+		result.y= p.x;
+		break;
+	}
+
+	return result;
 }
 
-void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
+static
+void drawCorners(CIplImage &image, CvPoint2D32f corners[], int num_corners, CvScalar color, int rotation)
+{
+	for (int i = 0; i < num_corners; i++) {
+		cv::Point p= rotatePoint(
+				rotation,
+				cvPoint(corners[i].x, corners[i].y),
+				image.Width(), image.Height());
+		cvCircle(image.ptr(), p, 1, color);
+	}
+}
+
+void VisionPipeline::newTracker(CIplImage &image, int rotation, float &xVel, float &yVel)
 {
 	bool updateFeatures = false;
 
@@ -93,6 +128,7 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 	}
 	else
 		// need to update corners?
+		// TODO: force corner update when image rotated
 		if (m_corner_count< NUM_CORNERS) updateFeatures = true;
 	}
 
@@ -100,17 +136,14 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 	m_faceDetection.submitFrame(m_imgCurr);
 
 	// set current image size
-	m_floatTrackArea.setReferenceSize(image.GetSize());
+	m_floatTrackArea.setReferenceSize(m_imgCurr.GetSize());
 
 	// Get actual coordinates of floatTrackArea
 	CvPoint2D32f trackAreaLocation;
 	CvSize2D32f trackAreaSize;
 	m_floatTrackArea.get(trackAreaLocation, trackAreaSize);
 
-	// show tracking area
-	cv::Mat tmp(image.ptr());
-	cv::rectangle(tmp, cvPoint(trackAreaLocation.x, trackAreaLocation.y),
-			cvPoint(trackAreaLocation.x + trackAreaSize.width, trackAreaLocation.y + trackAreaSize.height), cvScalar(255, 0, 0) );
+
 
 	if (updateFeatures) {
 		// 
@@ -206,8 +239,8 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 			m_corners[i].x < trackAreaLocation.x + trackAreaSize.width &&
 			m_corners[i].y >= trackAreaLocation.y &&
 			m_corners[i].y < trackAreaLocation.y + trackAreaSize.height) {
-			xVel += m_corners[i].x - new_corners[i].x;
-			yVel += m_corners[i].y - new_corners[i].y;
+			xVel += new_corners[i].x - m_corners[i].x;
+			yVel += new_corners[i].y - m_corners[i].y;
 
 			// Save new corner location
 			m_corners[valid_corners++] = new_corners[i];
@@ -217,34 +250,86 @@ void VisionPipeline::newTracker(CIplImage &image, float &xVel, float &yVel)
 
 	if (valid_corners) {
 		xVel = xVel / (float) valid_corners;
-		yVel = -yVel / (float) valid_corners;
+		yVel = yVel / (float) valid_corners;
 	}
 	else {
 		xVel = yVel = 0;
 	}
 
-	//
 	// update tracking area location
-	//
-	if (m_trackFace) {
-		m_floatTrackArea.move(cvPoint2D32f(-xVel, yVel));
-	}
+	if (m_trackFace) m_floatTrackArea.move(cvPoint2D32f(xVel, yVel));
 	
 	//
-	// Draw corners
+	// Provide feedback
 	//
-	DrawCorners(image, m_corners, m_corner_count, cvScalar(0, 255, 0));
+
+	// draw tracking area
+	cv::Mat tmp(image.ptr());
+	cv::rectangle(tmp,
+			rotatePoint(
+					rotation,
+					cvPoint(trackAreaLocation.x, trackAreaLocation.y),
+					image.Width(), image.Height()),
+			rotatePoint(
+					rotation,
+					cvPoint(trackAreaLocation.x + trackAreaSize.width,
+							trackAreaLocation.y + trackAreaSize.height),
+					image.Width(), image.Height()),
+			cvScalar(255, 0, 0) );
+
+	// draw corners
+	drawCorners(image, m_corners, m_corner_count, cvScalar(0, 255, 0), rotation);
 }
 
 
-bool VisionPipeline::processImage (CIplImage& image, float& xVel, float& yVel)
+bool VisionPipeline::processImage (CIplImage& image, int rotation, float& xVel, float& yVel)
 {
 	try {
-		allocWorkingSpace(image);
+		bool bufferReallocation= false;
 
-		cvCvtColor(image.ptr(), m_imgCurr.ptr(), CV_BGR2GRAY);
+		// check and allocate temporal buffer
+		if (!m_tmpImg.Initialized() ||
+				image.Width() != m_tmpImg.Width() ||
+				image.Height() != m_tmpImg.Height()) {
+			m_tmpImg.Create (image.Width(), image.Height(), IPL_DEPTH_8U, "GRAY");
+			bufferReallocation= true;
+		}
 
-		newTracker(image, xVel, yVel);
+		// manage physical rotation of the camera
+		switch (rotation) {
+		case 0:
+			bufferReallocation|= allocWorkingSpace(image.Width(), image.Height());
+			cvCvtColor(image.ptr(), m_imgCurr.ptr(), CV_BGR2GRAY);
+			break;
+		case 90:
+			bufferReallocation|= allocWorkingSpace(image.Height(), image.Width());
+			cvCvtColor(image.ptr(), m_tmpImg.ptr(), CV_BGR2GRAY);
+			cvTranspose(m_tmpImg.ptr(), m_imgCurr.ptr());
+			cvFlip(m_imgCurr.ptr(), NULL, 1);
+			break;
+		case 180:
+			bufferReallocation|= allocWorkingSpace(image.Width(), image.Height());
+			cvCvtColor(image.ptr(), m_imgCurr.ptr(), CV_BGR2GRAY);
+			cvFlip(m_imgCurr.ptr(), NULL, -1);
+			break;
+		case 270:
+			bufferReallocation|= allocWorkingSpace(image.Height(), image.Width());
+			cvCvtColor(image.ptr(), m_tmpImg.ptr(), CV_BGR2GRAY);
+			cvTranspose(m_tmpImg.ptr(), m_imgCurr.ptr());
+			cvFlip(m_imgCurr.ptr(), NULL, 0);
+			break;
+		}
+
+		/*
+		static char count= 0;
+		if (count++== 10) {
+			cvSaveImage ("/mnt/sdcard/Download/frame.png", m_imgCurr.ptr());
+		}
+		*/
+
+		// process frame. skip if buffer reallocated
+		if (!bufferReallocation) newTracker(image, rotation, xVel, yVel);
+		else LOGV("Skip frame");
 
 		// Store current image as previous
 		m_imgPrev.Swap(&m_imgCurr);

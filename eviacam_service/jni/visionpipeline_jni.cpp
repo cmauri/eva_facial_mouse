@@ -23,10 +23,10 @@ JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_init
 	env->ReleaseStringUTFChars(jCascadeName, cascadeName);
 }
 
-JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_finish
+JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_cleanup
 	(JNIEnv*, jobject)
 {
-	LOGD ("finish called");
+	LOGD ("cleanup called");
 
 	assert (g_visionPipeline);
 
@@ -36,7 +36,7 @@ JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_finish
 }
 
 JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_processFrame
-	(JNIEnv* env, jobject, jlong addrFrame, jobject jPoint)
+	(JNIEnv* env, jobject, jlong addrFrame, jint rotation, jobject jPoint)
 {
 	assert (g_visionPipeline);
 
@@ -44,7 +44,7 @@ JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_processF
 
 	IplImage iplimg = *(cv::Mat*) addrFrame;
 	CIplImage frame(&iplimg);
-	g_visionPipeline->processImage(frame, xVel, yVel);
+	g_visionPipeline->processImage(frame, rotation, xVel, yVel);
 
 	jclass pointClass = env->GetObjectClass(jPoint);
 	jfieldID jXVelId = env->GetFieldID(pointClass, "x", "F");

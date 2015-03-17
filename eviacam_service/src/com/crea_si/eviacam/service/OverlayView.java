@@ -1,16 +1,20 @@
 package com.crea_si.eviacam.service;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.PointF;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.widget.RelativeLayout;
 
 public class OverlayView extends RelativeLayout {
-	Paint mPaintBox;
-	PointF mPointerLocation;
+    Paint mPaintBox;
+    PointF mPointerLocation;
+    Bitmap mPointerBitmap;
     
     public OverlayView(Context context) {
         super(context);
@@ -18,6 +22,10 @@ public class OverlayView extends RelativeLayout {
         mPaintBox = new Paint();
         setWillNotDraw(false);
         mPointerLocation= new PointF();
+        Drawable d = context.getResources().getDrawable(R.drawable.pointer);
+        mPointerBitmap =((BitmapDrawable) d).getBitmap();
+        
+        EVIACAM.debug("Bitmap size: " + mPointerBitmap.getWidth() + ", " + mPointerBitmap.getHeight());
     }
     
     public void updatePointerLocation(PointF p) {
@@ -26,10 +34,10 @@ public class OverlayView extends RelativeLayout {
         this.postInvalidate();
     }
 	
-	public void onDraw(Canvas canvas){
-	    super.onDraw(canvas);
+    public void onDraw(Canvas canvas){
+        super.onDraw(canvas);
 	    
-	    final int COLOR = Color.parseColor("#0099cc");
+        final int COLOR = Color.parseColor("#0099cc");
         final int ALPHA_EMPTY = 255;
         final int STROKE_WIDTH = 8;
         
@@ -38,11 +46,7 @@ public class OverlayView extends RelativeLayout {
         mPaintBox.setStrokeWidth(STROKE_WIDTH);
         mPaintBox.setStyle(Style.STROKE);
         
-	    // draw pointer
-	    canvas.drawCircle(mPointerLocation.x, mPointerLocation.y, 2, mPaintBox);
-	    
-		// Draw something
-	    //canvas.drawRect(10, 10, 100, 100, mPaintBox);
-	}	
+        // draw pointer
+        canvas.drawBitmap(mPointerBitmap, mPointerLocation.x, mPointerLocation.y, mPaintBox);
+    }	
 }
-

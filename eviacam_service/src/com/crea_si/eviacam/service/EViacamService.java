@@ -68,7 +68,7 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         mOverlayManager.createOverlay();
         
         // create pointer control object
-        mPointerControl= new PointerControl(mOverlayManager.getOverlayView());
+        mPointerControl= new PointerControl(mOverlayManager.getPointerView());
         
         // create camera & machine vision part
         mCameraListener= new CameraListener(mPointerControl);

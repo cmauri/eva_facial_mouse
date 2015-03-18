@@ -11,13 +11,15 @@ public class OverlayManager {
     private final int CAM_SURFACE_WIDTH= 320;
     private final int CAM_SURFACE_HEIGHT= 240;
 
-    private OverlayView mOverlayView;
+    private RelativeLayout mRootView;
+    private RelativeLayout mControlsView;
+    private PointerView mPointerView;
 
     /***
      *  // Set overlay window to provide visual feedback
      */
     void createOverlay() {        
-        if (mOverlayView != null) return;
+        if (mRootView != null) return;
         
         LayoutParams feedbackParams = new LayoutParams();
         
@@ -36,20 +38,38 @@ public class OverlayManager {
         feedbackParams.height = LayoutParams.MATCH_PARENT;
       
         Context c= EViacamService.getInstance().getApplicationContext();
-        mOverlayView = new OverlayView(c);
+        mRootView = new RelativeLayout(c);
         WindowManager wm= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
-        wm.addView(mOverlayView, feedbackParams);
+        wm.addView(mRootView, feedbackParams);
 
+        /*
+         * controls view layer 
+         */
+        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(mRootView.getWidth(), mRootView.getHeight());
+        lp.width= RelativeLayout.LayoutParams.MATCH_PARENT;
+        lp.height= RelativeLayout.LayoutParams.MATCH_PARENT;
+        
+        mControlsView= new RelativeLayout(c);
+        mControlsView.setLayoutParams(lp);
+        mRootView.addView(mControlsView);
+        
+        /*
+         * pointer view layer 
+         */
+        mPointerView= new PointerView(c);
+        mPointerView.setLayoutParams(lp);
+        mRootView.addView(mPointerView);
+        
         EVIACAM.debug("finish createOverlay");
     }    
     
     void destroyOverlay() {
-        if (mOverlayView == null) return;
+        if (mRootView == null) return;
         
         Context c= EViacamService.getInstance().getApplicationContext();
         WindowManager wm= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
-        wm.removeViewImmediate(mOverlayView);
-        mOverlayView = null;
+        wm.removeViewImmediate(mRootView);
+        mRootView = null;
         EVIACAM.debug("finish destroyOverlay");
     }
     
@@ -59,10 +79,10 @@ public class OverlayManager {
         lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
         v.setLayoutParams(lp);
 
-        mOverlayView.addView(v);
+        mControlsView.addView(v);
     }
     
-    OverlayView getOverlayView() {
-        return mOverlayView;
+    public PointerView getPointerView() {
+        return mPointerView;
     }
 }

@@ -3,87 +3,119 @@ package com.crea_si.eviacam.service;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-class Actions {    
-    /*
-     * Perform click under the element under p
-     */
-    public static void click (PointF p) {
-        // get root
-        final AccessibilityNodeInfo rootNode = 
-                EViacamService.getInstance().getRootInActiveWindow();
-        if (rootNode == null) return;
-        final AccessibilityNodeInfoCompat rootCompat = 
-                new AccessibilityNodeInfoCompat(rootNode);
+class AccessibilityAction {
+    // reference to the view on which contextual menus are drawn
+    ControlsView mControlsView;
     
-        //displayFullTree(rootCompat);
-        
-        // find clickable node under (x, y)
+    // tracks whether the contextual menu is open
+    private boolean mContextMenuOpen= false;
+
+    
+    public AccessibilityAction (ControlsView cv) {
+        mControlsView= cv;
+    }
+    
+    public void performAction (PointF p) {
+        // TODO: make it an attribute
         Point pInt= new Point();
         pInt.x= (int) p.x;
         pInt.y= (int) p.y;
         
-        AccessibilityNodeInfoCompat node= findClickable(rootCompat, pInt); 
-        if (node== null) return;
+        if (mContextMenuOpen) {
+            // TODO: now just close at the next performAction
+            mControlsView.showButtons(pInt, 0);
+            mContextMenuOpen= false;
+        }
+        else {
+            // TODO: make it static
+            final int mask= AccessibilityNodeInfo.ACTION_CLICK | AccessibilityNodeInfo.ACTION_LONG_CLICK;
+            
+            AccessibilityNodeInfo node= findActionable (pInt, mask);
+            
+            if (node == null) return;
+            
+            EVIACAM.debug("Actionable node found: (" + p.x + ", " + p.y + ")." + getNodeInfo(node));
+            
+            int availableActions= mask & node.getActions();
+            
+            if (Integer.bitCount(availableActions)> 1) {
+                // TODO: display menu
+                mControlsView.showButtons(pInt, availableActions);
+                mContextMenuOpen= true;
+            }
+            else {
+                node.performAction(availableActions);
+            }
+        }
+    }
+    
+    static private class RecursionInfo {
+        final public Point p;
+        final public Rect tmp= new Rect();
+        final public int actions;
         
-        // perform click
-        node.performAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
-        
-        EVIACAM.debug("Clickable found: (" + p.x + ", " + p.y + ")." + node.getText());        
-        EVIACAM.debug("Clicked node: " + getNodeInfo(node));
+        RecursionInfo (Point p, int actions) {
+            this.p = p;
+            this.actions= actions;
+        }
     }
     
     /*
-     * Stub used to avoid creating a Rect instance for each call
+     * find recursively the node under (x, y) that accepts some or all 
+     * actions encoded on the mask
      */
-    private static AccessibilityNodeInfoCompat findClickable(
-            AccessibilityNodeInfoCompat node, Point p) {
-        Rect window = new Rect();
+    private static AccessibilityNodeInfo findActionable (Point p, int actions) {
+        // get root node
+        final AccessibilityNodeInfo rootNode = 
+                EViacamService.getInstance().getRootInActiveWindow();
+        if (rootNode == null) return null;
         
-        return findClickable0(node, p, window);
+        // TODO: consider making it an attribute to avoid creating it each time
+        RecursionInfo ri= new RecursionInfo (p, actions);
+        
+        return findActionable0(rootNode, ri);
     }
     
     /*
-     * Find recursively the node under (x, y)
+     * 
      */
-    private static AccessibilityNodeInfoCompat findClickable0(
-            AccessibilityNodeInfoCompat node, Point p, Rect window) {
+    private static AccessibilityNodeInfo findActionable0(
+            AccessibilityNodeInfo node, RecursionInfo ri) {
 
-        node.getBoundsInScreen(window);
-        if (!window.contains(p.x, p.y)) {                
+        node.getBoundsInScreen(ri.tmp);
+        if (!ri.tmp.contains(ri.p.x, ri.p.y)) {
             // if window does not contain (x, y) stop recursion
             return null;
         }
-        
-        AccessibilityNodeInfoCompat result = null;
-        
-        if (node.isClickable()) {
+
+        AccessibilityNodeInfo result = null;
+
+        if ((node.getActions() & ri.actions) != 0) {
             // this is a good candidate but continue exploring children
             // there are controls such as ListView which are clickable
             // but do not have an useful action associated
-            result= node;
+            result = node;
         }
-        
+
         // propagate calls to children
-        for (int i= 0; i< node.getChildCount(); i++) {
-            AccessibilityNodeInfoCompat child= findClickable0(node.getChild(i), p, window);
-            
-            if (child != null) result= child;
+        for (int i = 0; i < node.getChildCount(); i++) {
+            AccessibilityNodeInfo child = findActionable0(node.getChild(i), ri);
+
+            if (child != null) result = child;
         }
-        
+
         return result;
     }
+
     
     /*
      * DEBUGGING CODE
      * 
      *  Code below is only intended for debugging
      */
-    
-    
-    static String getNodeInfo (AccessibilityNodeInfoCompat node) {
+    static private String getNodeInfo (AccessibilityNodeInfo node) {
         String result= "[";
         
         // actions
@@ -179,15 +211,13 @@ class Actions {
         return result;
     }
     
-    static
-    void displayFullTree (AccessibilityNodeInfoCompat node) {
+    static private void displayFullTree (AccessibilityNodeInfo node) {
         EVIACAM.debug("Accesibility tree dump:");
         
         displayFullTree0(node, "1");
     }
     
-    static
-    void displayFullTree0 (AccessibilityNodeInfoCompat node, String prefix) {
+    static private void displayFullTree0 (AccessibilityNodeInfo node, String prefix) {
         EVIACAM.debug(prefix + " " + getNodeInfo(node));
         
         // propagate calls to children

@@ -29,5 +29,7 @@
     <string name="thirty_seconds">30 s</string>
     <string name="time_without_detection">Time without face detection</string>
     <string name="time_without_detection_summary">After which pointer stops moving</string>
+    <string name="click">Click</string>
+    <string name="long_click">Long click</string>
     
 </resources>

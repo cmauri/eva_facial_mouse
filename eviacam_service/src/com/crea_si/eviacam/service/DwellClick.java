@@ -10,11 +10,13 @@ import android.media.ToneGenerator;
 import android.preference.PreferenceManager;
 
 class DwellClick implements OnSharedPreferenceChangeListener {
+    /*
+     * enums and constats
+     */
     private enum State {
         DISABLED, POINTER_MOVING, COUNTDOWN_STARTED, CLICK_DONE
     }
     
-    // constants
     private final int DWELL_TIME_DEFAULT;
     private final int DWELL_AREA_DEFAULT;
     private final boolean SOUND_ON_CLICK_DEFAULT;
@@ -23,23 +25,41 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private static final String KEY_DWELL_AREA= "dwell_area";
     private static final String KEY_SOUND_ON_CLICK= "sound_on_click";
     
-    // attributes
-    private State mState= State.POINTER_MOVING;
-    private float mDwellAreaSquared;
+    // reference to view on which pointer feedback is drawn 
+    //private PointerView mPointerView;
+    
+    // delegate to manage actions using accessibility API
+    AccessibilityAction mAccessibilityAction;
+    
+    // delegate to measure elapsed time
     private Countdown mCountdown;
-    private boolean mSoundOnClick;
-    private PointF mPrevPointerLocation= null;
-    // this attribute is modified from the main thread only (enable/disable methods)
-    // and is used to notify the working thread (updatePointerLocation method)
-    private boolean mRequestEnabled= true;
+    
+    // reference to shared preferences pool
     private SharedPreferences mSharedPref;
-    private ControlsView mControlsView;
+    
+    // current dwell click state
+    private State mState= State.POINTER_MOVING;
+
+    // modified from the main thread (enable/disable methods)
+    // used to modify state without using synchronization
+    private boolean mRequestEnabled= true;
+    
+    // dwell area tolerance. stored squared to avoid sqrt 
+    // for each updatePointerLocation call
+    private float mDwellAreaSquared;    
+    
+    // whether to play a sound when action performed
+    private boolean mSoundOnClick;
+    
+    // to remember previous pointer location and measure travelled distance
+    private PointF mPrevPointerLocation= null;
+
     
     public DwellClick(ControlsView cv) {
-        mControlsView= cv;
-        Context c= EViacamService.getInstance().getApplicationContext();
-        
+        mAccessibilityAction= new AccessibilityAction (cv);
+
         // get constants from resources
+        Context c= EViacamService.getInstance().getApplicationContext();
         Resources r= c.getResources();
         DWELL_TIME_DEFAULT= r.getInteger(R.integer.dwell_time_default) * 100;
         DWELL_AREA_DEFAULT= r.getInteger(R.integer.dwell_area_default);
@@ -86,16 +106,13 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         mRequestEnabled= false;
     }
     
-    private void performClick (PointF p) {
-        EVIACAM.debug("Click performed");
-        Actions.click(p);
+    private void performAction (PointF p) {
+        mAccessibilityAction.performAction(p);
 
         if (mSoundOnClick) {
             ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
             toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
         }
-        
-        mControlsView.showButtons();
     }
 
     private boolean movedAboveThreshold (PointF p1, PointF p2) {
@@ -141,7 +158,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
             }
             else {
                 if (mCountdown.hasFinished()) {
-                    performClick(pl);
+                    performAction(pl);
                     mState= State.CLICK_DONE;
                     // hide countdown
                 }

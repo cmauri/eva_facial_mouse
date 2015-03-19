@@ -8,11 +8,8 @@ import android.widget.RelativeLayout;
 import android.graphics.PixelFormat;
 
 public class OverlayManager {
-    private final int CAM_SURFACE_WIDTH= 320;
-    private final int CAM_SURFACE_HEIGHT= 240;
-
     private RelativeLayout mRootView;
-    private RelativeLayout mControlsView;
+    private ControlsView mControlsView;
     private PointerView mPointerView;
 
     /***
@@ -49,7 +46,7 @@ public class OverlayManager {
         lp.width= RelativeLayout.LayoutParams.MATCH_PARENT;
         lp.height= RelativeLayout.LayoutParams.MATCH_PARENT;
         
-        mControlsView= new RelativeLayout(c);
+        mControlsView= new ControlsView(c);
         mControlsView.setLayoutParams(lp);
         mRootView.addView(mControlsView);
         
@@ -74,15 +71,14 @@ public class OverlayManager {
     }
     
     void addCameraSurface(SurfaceView v) {
-        // Set layout and add to parent
-        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(CAM_SURFACE_WIDTH, CAM_SURFACE_HEIGHT);
-        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        v.setLayoutParams(lp);
-
-        mControlsView.addView(v);
+        mControlsView.addCameraSurface(v);
     }
     
     public PointerView getPointerView() {
         return mPointerView;
+    }
+    
+    public ControlsView getControlsView() {
+        return mControlsView;
     }
 }

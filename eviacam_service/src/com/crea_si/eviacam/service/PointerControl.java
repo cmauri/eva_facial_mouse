@@ -40,8 +40,8 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private DwellClick mDwellClick;
     
     // methods
-    public PointerControl(PointerView ov) {
-        mPointerView= ov;
+    public PointerControl(PointerView pv, ControlsView cv) {
+        mPointerView= pv;
         
         Context c= EViacamService.getInstance().getApplicationContext();
         
@@ -66,7 +66,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         
         readSettings();
         
-        mDwellClick= new DwellClick();
+        mDwellClick= new DwellClick(cv);
     }
     
     private void readSettings() {

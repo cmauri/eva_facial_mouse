@@ -33,8 +33,10 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     // and is used to notify the working thread (updatePointerLocation method)
     private boolean mRequestEnabled= true;
     private SharedPreferences mSharedPref;
+    private ControlsView mControlsView;
     
-    public DwellClick() {
+    public DwellClick(ControlsView cv) {
+        mControlsView= cv;
         Context c= EViacamService.getInstance().getApplicationContext();
         
         // get constants from resources
@@ -92,6 +94,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
             ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
             toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
         }
+        
+        mControlsView.showButtons();
     }
 
     private boolean movedAboveThreshold (PointF p1, PointF p2) {

@@ -17,7 +17,7 @@ class ActionsButtonsView extends LinearLayout {
     
     public ActionsButtonsView(Context context) {
         super(context);
-        this.setOrientation(LinearLayout.VERTICAL);
+        setOrientation(LinearLayout.VERTICAL);
         
         /*
          * create buttons, add to layout and make invisible (gone)
@@ -55,6 +55,9 @@ class ActionsButtonsView extends LinearLayout {
         else {
             mButtonLongClick.setVisibility(View.GONE);
         }
+        
+        // measure how much space will need
+        measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         
         mActionsMask= actions;
     }

@@ -6,7 +6,12 @@ import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 class AccessibilityAction {
-    // reference to the view on which contextual menus are drawn
+    
+    // accessibility actions we are interested on when searching nodes
+    static final int FULL_ACTION_MASK= 
+            AccessibilityNodeInfo.ACTION_CLICK | AccessibilityNodeInfo.ACTION_LONG_CLICK;
+    
+    // reference to the view on which action menus are drawn
     ControlsView mControlsView;
     
     // tracks whether the contextual menu is open
@@ -18,31 +23,27 @@ class AccessibilityAction {
     }
     
     public void performAction (PointF p) {
-        // TODO: make it an attribute
-        Point pInt= new Point();
-        pInt.x= (int) p.x;
-        pInt.y= (int) p.y;
-        
         if (mContextMenuOpen) {
             // TODO: now just close at the next performAction
-            mControlsView.showButtons(pInt, 0);
+            mControlsView.hideActionsMenu();
             mContextMenuOpen= false;
         }
         else {
-            // TODO: make it static
-            final int mask= AccessibilityNodeInfo.ACTION_CLICK | AccessibilityNodeInfo.ACTION_LONG_CLICK;
+            // TODO: consider making it an attribute
+            Point pInt= new Point();
+            pInt.x= (int) p.x;
+            pInt.y= (int) p.y;
             
-            AccessibilityNodeInfo node= findActionable (pInt, mask);
+            AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
             
             if (node == null) return;
             
             EVIACAM.debug("Actionable node found: (" + p.x + ", " + p.y + ")." + getNodeInfo(node));
             
-            int availableActions= mask & node.getActions();
+            int availableActions= FULL_ACTION_MASK & node.getActions();
             
             if (Integer.bitCount(availableActions)> 1) {
-                // TODO: display menu
-                mControlsView.showButtons(pInt, availableActions);
+                mControlsView.showActionsMenu(pInt, availableActions);
                 mContextMenuOpen= true;
             }
             else {

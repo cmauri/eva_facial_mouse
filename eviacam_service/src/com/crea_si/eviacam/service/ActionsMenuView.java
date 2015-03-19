@@ -7,7 +7,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-class ActionsButtonsView extends LinearLayout {
+class ActionsMenuView extends LinearLayout {
     // track last used mask to avoid unnecessary operations
     private int mActionsMask= 0;
     
@@ -15,7 +15,7 @@ class ActionsButtonsView extends LinearLayout {
     private View mButtonClick;
     private View mButtonLongClick;
     
-    public ActionsButtonsView(Context context) {
+    public ActionsMenuView(Context context) {
         super(context);
         setOrientation(LinearLayout.VERTICAL);
         

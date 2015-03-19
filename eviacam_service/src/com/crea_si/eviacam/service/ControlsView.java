@@ -43,6 +43,7 @@ public class ControlsView extends RelativeLayout {
             public void run() {
                 if (actions == 0) {
                     mActionsMenuView.setVisibility(View.GONE);
+                    setBackgroundColor(0);
                     return;
                 }
                 
@@ -51,7 +52,10 @@ public class ControlsView extends RelativeLayout {
                 
                 // update buttons list that need to display
                 mActionsMenuView.updateButtons(actions);
-                        
+                      
+                // dim background
+                setBackgroundColor(0x80000000);
+                
                 /*
                  * compute position in which actions menu will be displayed
                  * 

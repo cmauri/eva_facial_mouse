@@ -9,7 +9,17 @@ class AccessibilityAction {
     
     // accessibility actions we are interested on when searching nodes
     static final int FULL_ACTION_MASK= 
-            AccessibilityNodeInfo.ACTION_CLICK | AccessibilityNodeInfo.ACTION_LONG_CLICK;
+            AccessibilityNodeInfo.ACTION_CLICK | 
+            AccessibilityNodeInfo.ACTION_LONG_CLICK;  /* |
+            AccessibilityNodeInfo.ACTION_COLLAPSE |
+            AccessibilityNodeInfo.ACTION_COPY |
+            AccessibilityNodeInfo.ACTION_CUT |
+            AccessibilityNodeInfo.ACTION_DISMISS |
+            AccessibilityNodeInfo.ACTION_EXPAND |
+            AccessibilityNodeInfo.ACTION_PASTE |
+            AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
+            AccessibilityNodeInfo.ACTION_SCROLL_FORWARD |
+            AccessibilityNodeInfo.ACTION_SELECT;*/
     
     // reference to the view on which action menus are drawn
     ControlsView mControlsView;
@@ -17,23 +27,26 @@ class AccessibilityAction {
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
 
+    // node on which the action should be performed
+    private AccessibilityNodeInfo mNode;
     
     public AccessibilityAction (ControlsView cv) {
         mControlsView= cv;
     }
     
     public void performAction (PointF p) {
+        // TODO: consider making it an attribute
+        Point pInt= new Point();
+        pInt.x= (int) p.x;
+        pInt.y= (int) p.y;
+        
         if (mContextMenuOpen) {
-            // TODO: now just close at the next performAction
+            int action= mControlsView.testClick(pInt);
             mControlsView.hideActionsMenu();
             mContextMenuOpen= false;
+            if (action != 0) mNode.performAction(action);
         }
         else {
-            // TODO: consider making it an attribute
-            Point pInt= new Point();
-            pInt.x= (int) p.x;
-            pInt.y= (int) p.y;
-            
             AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
             
             if (node == null) return;
@@ -45,6 +58,7 @@ class AccessibilityAction {
             if (Integer.bitCount(availableActions)> 1) {
                 mControlsView.showActionsMenu(pInt, availableActions);
                 mContextMenuOpen= true;
+                mNode= node;
             }
             else {
                 node.performAction(availableActions);

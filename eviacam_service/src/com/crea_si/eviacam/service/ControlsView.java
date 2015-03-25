@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.RelativeLayout;
 
 public class ControlsView extends RelativeLayout {
@@ -86,5 +87,23 @@ public class ControlsView extends RelativeLayout {
     
     public void hideActionsMenu() {
         showActionsMenu(null, 0);
+    }
+    
+    /*
+     * get action under point p
+     */
+    
+    
+    public int testClick (Point p)  {
+        int[] location= new int[2];
+        
+        mActionsMenuView.getLocationOnScreen(location);
+        
+        if (p.x< location[0] || p.y< location[1]) return 0;
+
+        if (location[0] + mActionsMenuView.getWidth() < p.x || 
+            location[1] + mActionsMenuView.getHeight() < p.y) return 0;
+
+        return mActionsMenuView.testClick(p);
     }
 }

@@ -131,6 +131,10 @@ class AccessibilityAction {
     private static AccessibilityNodeInfo findActionable0(
             AccessibilityNodeInfo node, RecursionInfo ri) {
 
+        // sometimes, during the recursion, getChild() might return null
+        // check here and abort recursion in that case
+        if (node == null) return null;
+        
         node.getBoundsInScreen(ri.tmp);
         if (!ri.tmp.contains(ri.p.x, ri.p.y)) {
             // if window does not contain (x, y) stop recursion

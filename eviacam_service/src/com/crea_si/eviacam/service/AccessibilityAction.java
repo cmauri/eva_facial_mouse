@@ -10,7 +10,7 @@ class AccessibilityAction {
     // accessibility actions we are interested on when searching nodes
     static final int FULL_ACTION_MASK= 
             AccessibilityNodeInfo.ACTION_CLICK | 
-            AccessibilityNodeInfo.ACTION_LONG_CLICK;  /* |
+            AccessibilityNodeInfo.ACTION_LONG_CLICK |
             AccessibilityNodeInfo.ACTION_COLLAPSE |
             AccessibilityNodeInfo.ACTION_COPY |
             AccessibilityNodeInfo.ACTION_CUT |
@@ -18,7 +18,7 @@ class AccessibilityAction {
             AccessibilityNodeInfo.ACTION_EXPAND |
             AccessibilityNodeInfo.ACTION_PASTE |
             AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
-            AccessibilityNodeInfo.ACTION_SCROLL_FORWARD |
+            AccessibilityNodeInfo.ACTION_SCROLL_FORWARD; /* |
             AccessibilityNodeInfo.ACTION_SELECT;*/
     
     // reference to the view on which action menus are drawn

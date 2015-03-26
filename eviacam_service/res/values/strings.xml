@@ -31,5 +31,14 @@
     <string name="time_without_detection_summary">After which pointer stops moving</string>
     <string name="click">Click</string>
     <string name="long_click">Long click</string>
-    
+    <string name="collapse">Collapse</string>
+    <string name="copy">Copy</string>
+    <string name="cut">Cut</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="expand">Expand</string>
+    <string name="paste">Paste</string>
+    <string name="scroll_backward">Scroll backward</string>
+    <string name="scroll_forward">Scroll forward</string>
+    <string name="select">Select</string>
+
 </resources>

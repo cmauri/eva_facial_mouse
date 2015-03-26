@@ -35,22 +35,18 @@ class ActionsMenuView extends LinearLayout {
         /*
          * create buttons, add to layout and make invisible (gone)
          */
-    /*    
-        AccessibilityNodeInfo.ACTION_CLICK | 
-        AccessibilityNodeInfo.ACTION_LONG_CLICK |
-        AccessibilityNodeInfo.ACTION_COLLAPSE |
-        AccessibilityNodeInfo.ACTION_COPY |
-        AccessibilityNodeInfo.ACTION_CUT |
-        AccessibilityNodeInfo.ACTION_DISMISS |
-        AccessibilityNodeInfo.ACTION_EXPAND |
-        AccessibilityNodeInfo.ACTION_PASTE |
-        AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
-        AccessibilityNodeInfo.ACTION_SCROLL_FORWARD |
-        AccessibilityNodeInfo.ACTION_SELECT;
-      */  
         mActionButtons= new ActionButton[]{
             new ActionButton(AccessibilityNodeInfo.ACTION_CLICK, R.string.click, c),
-            new ActionButton(AccessibilityNodeInfo.ACTION_LONG_CLICK, R.string.long_click, c)
+            new ActionButton(AccessibilityNodeInfo.ACTION_LONG_CLICK, R.string.long_click, c),            
+            new ActionButton(AccessibilityNodeInfo.ACTION_COLLAPSE, R.string.collapse, c),
+            new ActionButton(AccessibilityNodeInfo.ACTION_COPY, R.string.copy, c),
+            new ActionButton(AccessibilityNodeInfo.ACTION_CUT, R.string.cut, c),            
+            new ActionButton(AccessibilityNodeInfo.ACTION_DISMISS, R.string.dismiss, c),            
+            new ActionButton(AccessibilityNodeInfo.ACTION_EXPAND, R.string.expand, c),
+            new ActionButton(AccessibilityNodeInfo.ACTION_PASTE, R.string.paste, c),
+            new ActionButton(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, R.string.scroll_backward, c),
+            new ActionButton(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.scroll_forward, c),
+            new ActionButton(AccessibilityNodeInfo.ACTION_SELECT, R.string.select, c)
         };
         
         for (int i= 0; i< mActionButtons.length; i++) {

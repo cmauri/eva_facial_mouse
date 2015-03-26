@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Point;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.RelativeLayout;
 
 public class ControlsView extends RelativeLayout {
@@ -73,7 +72,7 @@ public class ControlsView extends RelativeLayout {
                 else lp.leftMargin= p.x;
                 
                 // get actions menu expected height
-                int expectedHeight= mActionsMenuView.getMeasuredWidth();
+                int expectedHeight= mActionsMenuView.getMeasuredHeight();
                 
                 // fits below the pointer?
                 if (p.y + expectedHeight< getHeight()) lp.topMargin= p.y;

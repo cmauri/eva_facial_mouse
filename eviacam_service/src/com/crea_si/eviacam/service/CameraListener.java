@@ -52,7 +52,7 @@ public class CameraListener implements CvCameraViewListener2 {
                     System.loadLibrary("visionpipeline");
                     
                     // TODO: get cascade path from apk resources
-                    VisionPipeline.init("/mnt/sdcard/Download/haarcascade_profileface.xml");
+                    VisionPipeline.init("/mnt/sdcard/Download/haarcascade_frontalface_alt2.xml");
                     
                     // start camera capture
                     mCameraView.enableView();
@@ -184,6 +184,8 @@ public class CameraListener implements CvCameraViewListener2 {
         Mat rgba = inputFrame.rgba();
         int phyRotation = mCameraOrientation - mPhysicalOrientation.getCurrentOrientation();
         if (phyRotation< 0) phyRotation+= 360;
+        
+        // TODO: refactor as attribute to avoid an object creation for each frame
         PointF vel = new PointF(0, 0);
         
         // call jni part to track face

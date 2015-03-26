@@ -1,24 +1,22 @@
 package com.crea_si.eviacam.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
 class ActionsMenuView extends LinearLayout {
     
-    class ActionButton {
-        int action;
-        Button button;
-        ActionButton (int a, int textResource, Context c) {
+    private class ActionButton {
+        final int action;
+        final Button button;
+        ActionButton (int a, Button b) { 
             action= a;
-            Resources res= getResources();
-            button= new Button (c);
-            button.setText(res.getString(textResource));
-            button.setVisibility(View.GONE);
+            button= b;
         }
     }
     
@@ -26,46 +24,39 @@ class ActionsMenuView extends LinearLayout {
     private int mActionsMask= 0;
     
     // references to actions and buttons pairs
-    ActionButton[] mActionButtons;
+    List<ActionButton> mActionButtons= new ArrayList<ActionButton>();
     
     public ActionsMenuView(Context c) {
         super(c);
         setOrientation(LinearLayout.VERTICAL);
+    }
+    
+    /*
+     * create button, make invisible (gone), add to layout and store in 
+     * collection for further reference 
+     */
+    public void populateAction (int action, int labelId) {
+        Button b= new Button (getContext());
+        b.setText(getResources().getString(labelId));
+        b.setVisibility(View.GONE);
         
-        /*
-         * create buttons, add to layout and make invisible (gone)
-         */
-        mActionButtons= new ActionButton[]{
-            new ActionButton(AccessibilityNodeInfo.ACTION_CLICK, R.string.click, c),
-            new ActionButton(AccessibilityNodeInfo.ACTION_LONG_CLICK, R.string.long_click, c),            
-            new ActionButton(AccessibilityNodeInfo.ACTION_COLLAPSE, R.string.collapse, c),
-            new ActionButton(AccessibilityNodeInfo.ACTION_COPY, R.string.copy, c),
-            new ActionButton(AccessibilityNodeInfo.ACTION_CUT, R.string.cut, c),            
-            new ActionButton(AccessibilityNodeInfo.ACTION_DISMISS, R.string.dismiss, c),            
-            new ActionButton(AccessibilityNodeInfo.ACTION_EXPAND, R.string.expand, c),
-            new ActionButton(AccessibilityNodeInfo.ACTION_PASTE, R.string.paste, c),
-            new ActionButton(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, R.string.scroll_backward, c),
-            new ActionButton(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.scroll_forward, c),
-            new ActionButton(AccessibilityNodeInfo.ACTION_SELECT, R.string.select, c)
-        };
+        addView(b);
         
-        for (int i= 0; i< mActionButtons.length; i++) {
-            addView(mActionButtons[i].button);
-        }
+        mActionButtons.add(new ActionButton(action, b));
     }
     
     void updateButtons (int actions) {
         if (actions == mActionsMask) return;
         
-        for (int i= 0; i< mActionButtons.length; i++) {
-            if ((actions & mActionButtons[i].action) != 0) {
-                mActionButtons[i].button.setVisibility(View.VISIBLE);
+        for (ActionButton ab : mActionButtons) {
+            if ((actions & ab.action) != 0) {
+                ab.button.setVisibility(View.VISIBLE);
             }
             else {
-                mActionButtons[i].button.setVisibility(View.GONE);                
+                ab.button.setVisibility(View.GONE);                
             }
-        }        
-      
+        }
+
         // measure how much space will need
         measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         
@@ -87,11 +78,9 @@ class ActionsMenuView extends LinearLayout {
     }
     
     public int testClick (Point p)  {
-        for (int i= 0; i< mActionButtons.length; i++) {
-            if (mActionButtons[i].button.getVisibility() == View.VISIBLE && 
-                testClick(mActionButtons[i].button, p)) {
-
-                return mActionButtons[i].action;
+        for (ActionButton ab : mActionButtons) {
+            if (ab.button.getVisibility() == View.VISIBLE && testClick(ab.button, p)) {
+                return ab.action;
             }
         }
        

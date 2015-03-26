@@ -20,7 +20,8 @@ public class ControlsView extends RelativeLayout {
         // create and add buttons. initially these are hidden.
         mActionsMenuView= new ActionsMenuView(context);
         RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams.WRAP_CONTENT, 
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
         mActionsMenuView.setLayoutParams(lp);
         mActionsMenuView.setVisibility(View.GONE);
         addView(mActionsMenuView);
@@ -28,7 +29,8 @@ public class ControlsView extends RelativeLayout {
     
     public void addCameraSurface(SurfaceView v) {
         // set layout and add to parent
-        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(CAM_SURFACE_WIDTH, CAM_SURFACE_HEIGHT);
+        RelativeLayout.LayoutParams lp= 
+                new RelativeLayout.LayoutParams(CAM_SURFACE_WIDTH, CAM_SURFACE_HEIGHT);
         lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
         v.setLayoutParams(lp);
 
@@ -62,7 +64,8 @@ public class ControlsView extends RelativeLayout {
                  * it first tries to display it below and at the left of the pointer.
                  * if this is not possible move to the other side
                  */
-                RelativeLayout.LayoutParams lp= (RelativeLayout.LayoutParams) mActionsMenuView.getLayoutParams();
+                RelativeLayout.LayoutParams lp= (RelativeLayout.LayoutParams) 
+                        mActionsMenuView.getLayoutParams();
                 
                 // get actions menu expected width
                 int expectedWidth= mActionsMenuView.getMeasuredWidth();
@@ -89,10 +92,8 @@ public class ControlsView extends RelativeLayout {
     }
     
     /*
-     * get action under point p
+     * test if one button has been clicked
      */
-    
-    
     public int testClick (Point p)  {
         int[] location= new int[2];
         
@@ -104,5 +105,9 @@ public class ControlsView extends RelativeLayout {
             location[1] + mActionsMenuView.getHeight() < p.y) return 0;
 
         return mActionsMenuView.testClick(p);
+    }
+    
+    public void populateAction (int action, int labelId) {
+        mActionsMenuView.populateAction(action, labelId);
     }
 }

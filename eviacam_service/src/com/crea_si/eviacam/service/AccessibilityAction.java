@@ -6,20 +6,38 @@ import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 class AccessibilityAction {
+
+    /*
+     * class to put together an accessibility action 
+     * and the label to display to the user 
+     */
+    static 
+    private class ActionLabel {
+        int action;
+        int labelId;
+        ActionLabel(int a, int l) {
+            action= a;
+            labelId= l;
+        }
+    }
     
+    // store the pairs (accessibility action, label) of supported actions
+    static 
+    final ActionLabel[] mActionLabels = new ActionLabel[] {
+        new ActionLabel(AccessibilityNodeInfo.ACTION_CLICK, R.string.click),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_LONG_CLICK, R.string.long_click),            
+        new ActionLabel(AccessibilityNodeInfo.ACTION_COLLAPSE, R.string.collapse),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_COPY, R.string.copy),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_CUT, R.string.cut),            
+        new ActionLabel(AccessibilityNodeInfo.ACTION_DISMISS, R.string.dismiss),            
+        new ActionLabel(AccessibilityNodeInfo.ACTION_EXPAND, R.string.expand),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_PASTE, R.string.paste),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, R.string.scroll_backward),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.scroll_forward)
+    };
+
     // accessibility actions we are interested on when searching nodes
-    static final int FULL_ACTION_MASK= 
-            AccessibilityNodeInfo.ACTION_CLICK | 
-            AccessibilityNodeInfo.ACTION_LONG_CLICK |
-            AccessibilityNodeInfo.ACTION_COLLAPSE |
-            AccessibilityNodeInfo.ACTION_COPY |
-            AccessibilityNodeInfo.ACTION_CUT |
-            AccessibilityNodeInfo.ACTION_DISMISS |
-            AccessibilityNodeInfo.ACTION_EXPAND |
-            AccessibilityNodeInfo.ACTION_PASTE |
-            AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
-            AccessibilityNodeInfo.ACTION_SCROLL_FORWARD; /* |
-            AccessibilityNodeInfo.ACTION_SELECT;*/
+    final int FULL_ACTION_MASK;
     
     // reference to the view on which action menus are drawn
     ControlsView mControlsView;
@@ -32,7 +50,17 @@ class AccessibilityAction {
     
     public AccessibilityAction (ControlsView cv) {
         mControlsView= cv;
+        
+        // populate actions to view & compute action mask
+        int full_action_mask= 0;
+        for (ActionLabel al : mActionLabels) {
+            mControlsView.populateAction(al.action, al.labelId);
+            full_action_mask|= al.action;
+        }
+        
+        FULL_ACTION_MASK= full_action_mask;
     }
+
     
     public void performAction (PointF p) {
         // TODO: consider making it an attribute
@@ -67,6 +95,9 @@ class AccessibilityAction {
         }
     }
     
+    /*
+     * class to store information across recursive calls
+     */
     static private class RecursionInfo {
         final public Point p;
         final public Rect tmp= new Rect();
@@ -77,7 +108,7 @@ class AccessibilityAction {
             this.actions= actions;
         }
     }
-    
+ 
     /*
      * find recursively the node under (x, y) that accepts some or all 
      * actions encoded on the mask
@@ -95,7 +126,7 @@ class AccessibilityAction {
     }
     
     /*
-     * 
+     * actual recursive call 
      */
     private static AccessibilityNodeInfo findActionable0(
             AccessibilityNodeInfo node, RecursionInfo ri) {

@@ -10,12 +10,18 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
 public class EViacamService extends AccessibilityService implements ComponentCallbacks {
-    static private AccessibilityService sAccessibilityService;
-    private HeartBeat mHeartBeat;
-    private OverlayManager mOverlayManager;
-    private CameraListener mCameraListener;
-    private PointerControl mPointerControl;
     
+    // static attribute which holds an instance to the service instance
+    static private AccessibilityService sAccessibilityService;
+    
+    // for debugging, shows a toast at certain intervals so that we know 
+    // the service is still alive
+    private HeartBeat mHeartBeat;
+    
+    // reference to the engine
+    private EViacamEngine mEngine;
+    
+    // stores whether the service is running or not (see comments on init() )
     boolean mRunning= false;
 
     public EViacamService() {
@@ -26,7 +32,6 @@ public class EViacamService extends AccessibilityService implements ComponentCal
     public static AccessibilityService getInstance() {
         return sAccessibilityService;
     }
-    
     
     private void init() {
         // TODO: handle exceptions properly
@@ -62,22 +67,9 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
-        
-        // create overlay
-        mOverlayManager= new OverlayManager();
-        mOverlayManager.createOverlay();
-        
-        // create pointer control object
-        mPointerControl= new PointerControl(
-                mOverlayManager.getPointerView(), mOverlayManager.getControlsView());
-        
-        // create camera & machine vision part
-        mCameraListener= new CameraListener(mPointerControl);
-        mOverlayManager.addCameraSurface(mCameraListener.getCameraSurface());
-        
-        // start processing frames
-        mCameraListener.StartCamera();
-        
+     
+        mEngine= new EViacamEngine(this);
+                
         mRunning= true;
     }
     
@@ -85,14 +77,7 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         // TODO: handle exceptions properly
         if (!mRunning) return;
         
-        mCameraListener.StopCamera();
-        mCameraListener= null;
-
-        mPointerControl.cleanup();
-        mPointerControl= null;
-        
-        mOverlayManager.destroyOverlay();
-        mOverlayManager= null;
+        mEngine.cleanup();
         
         if (EVIACAM.DEBUG) {
             mHeartBeat.stop();
@@ -172,8 +157,8 @@ public class EViacamService extends AccessibilityService implements ComponentCal
      */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        if (mCameraListener != null) {
-            mCameraListener.onConfigurationChanged(newConfig);
+        if (mEngine != null) {
+            mEngine.onConfigurationChanged(newConfig);
         }
     }
 }

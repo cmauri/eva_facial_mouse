@@ -35,13 +35,13 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private float mDXPrevious, mDYPrevious; // previous values for the filter
     private int mMotionThreshold;
     private PointF mPointerLocation= new PointF();
-    private PointerView mPointerView;
+    private PointerLayerView mPointerLayerView;
     private SharedPreferences mSharedPref;
     private DwellClick mDwellClick;
     
     // methods
-    public PointerControl(PointerView pv, ControlsView cv) {
-        mPointerView= pv;
+    public PointerControl(PointerLayerView pv, ControlsLayerView cv) {
+        mPointerLayerView= pv;
         
         Context c= EViacamService.getInstance().getApplicationContext();
         
@@ -190,7 +190,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
             mPointerLocation.x= 0;
         }
         else {
-            int width= mPointerView.getWidth();
+            int width= mPointerLayerView.getWidth();
             if (mPointerLocation.x>= width)
                 mPointerLocation.x= width - 1;
         }
@@ -200,12 +200,12 @@ class PointerControl implements OnSharedPreferenceChangeListener {
             mPointerLocation.y= 0;
         }
         else {
-            int height= mPointerView.getHeight();
+            int height= mPointerLayerView.getHeight();
             if (mPointerLocation.y>= height)
                 mPointerLocation.y= height - 1;
         }
         
-        mPointerView.updatePosition(mPointerLocation);
+        mPointerLayerView.updatePosition(mPointerLocation);
         mDwellClick.updatePointerLocation(mPointerLocation);
     }
 }

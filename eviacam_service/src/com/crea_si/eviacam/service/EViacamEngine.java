@@ -17,22 +17,37 @@ public class EViacamEngine implements FrameProcessor {
     // object which provides the logic for the pointer motion and actions 
     private PointerControl mPointerControl;
     
-    // object which encapsulated rotation and orientation logic
+    // object which encapsulates rotation and orientation logic
     OrientationManager mOrientationManager;
         
     boolean mRunning= false;
 
     public EViacamEngine(Context c) {
-        // create overlay
+        /*
+         * build UI 
+         */
+
+        // create overlay root layer
         mOverlayView= new OverlayView(c);
         
+        // camera layer
+        CameraLayerView cameraLayer= new CameraLayerView(c);
+        mOverlayView.addFullScreenLayer(cameraLayer);
+
+        // controls layer
+        ControlsLayerView controlsLayer= new ControlsLayerView(c);
+        mOverlayView.addFullScreenLayer(controlsLayer);
+        
+        // pointer layer (should be the last one)
+        PointerLayerView pointerLayer= new PointerLayerView(c);
+        mOverlayView.addFullScreenLayer(pointerLayer);
+        
         // create pointer control object
-        mPointerControl= new PointerControl(
-                mOverlayView.getPointerView(), mOverlayView.getControlsView());
+        mPointerControl= new PointerControl(pointerLayer, controlsLayer);
         
         // create camera & machine vision part
         mCameraListener= new CameraListener(c, this);
-        mOverlayView.addCameraSurface(mCameraListener.getCameraSurface());
+        cameraLayer.addCameraSurface(mCameraListener.getCameraSurface());
         
         mOrientationManager= new OrientationManager(c, mCameraListener.getCameraOrientation());
         

@@ -26,7 +26,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private static final String KEY_SOUND_ON_CLICK= "sound_on_click";
     
     // reference to view on which pointer feedback is drawn 
-    //private PointerView mPointerView;
+    //private PointerLayerView mPointerView;
     
     // delegate to manage actions using accessibility API
     AccessibilityAction mAccessibilityAction;
@@ -55,7 +55,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private PointF mPrevPointerLocation= null;
 
     
-    public DwellClick(ControlsView cv) {
+    public DwellClick(ControlsLayerView cv) {
         mAccessibilityAction= new AccessibilityAction (cv);
 
         // get constants from resources

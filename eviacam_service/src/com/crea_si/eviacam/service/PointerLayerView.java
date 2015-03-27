@@ -9,12 +9,12 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 
-public class PointerView extends View {
+public class PointerLayerView extends View {
     Paint mPaintBox;
     PointF mPointerLocation;
     Bitmap mPointerBitmap;
     
-    public PointerView(Context context) {
+    public PointerLayerView(Context context) {
         super(context);
         
         mPaintBox = new Paint();

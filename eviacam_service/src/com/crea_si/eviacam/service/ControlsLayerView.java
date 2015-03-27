@@ -2,19 +2,14 @@ package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-public class ControlsView extends RelativeLayout {
-    // camera viewer size
-    private final int CAM_SURFACE_WIDTH= 320;
-    private final int CAM_SURFACE_HEIGHT= 240;
-    
+public class ControlsLayerView extends RelativeLayout {
     // reference to the view which draws the actions context menu 
     ActionsMenuView mActionsMenuView;
         
-    public ControlsView(Context context) {
+    public ControlsLayerView(Context context) {
         super(context);
         
         // create and add buttons. initially these are hidden.
@@ -25,16 +20,6 @@ public class ControlsView extends RelativeLayout {
         mActionsMenuView.setLayoutParams(lp);
         mActionsMenuView.setVisibility(View.GONE);
         addView(mActionsMenuView);
-    }
-    
-    public void addCameraSurface(SurfaceView v) {
-        // set layout and add to parent
-        RelativeLayout.LayoutParams lp= 
-                new RelativeLayout.LayoutParams(CAM_SURFACE_WIDTH, CAM_SURFACE_HEIGHT);
-        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        v.setLayoutParams(lp);
-
-        this.addView(v);
     }
     
     public void showActionsMenu(final Point p, final int actions) {

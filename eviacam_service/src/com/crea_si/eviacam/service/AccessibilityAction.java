@@ -40,7 +40,7 @@ class AccessibilityAction {
     final int FULL_ACTION_MASK;
     
     // reference to the view on which action menus are drawn
-    ControlsView mControlsView;
+    ControlsLayerView mControlsLayerView;
     
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
@@ -48,13 +48,13 @@ class AccessibilityAction {
     // node on which the action should be performed
     private AccessibilityNodeInfo mNode;
     
-    public AccessibilityAction (ControlsView cv) {
-        mControlsView= cv;
+    public AccessibilityAction (ControlsLayerView cv) {
+        mControlsLayerView= cv;
         
         // populate actions to view & compute action mask
         int full_action_mask= 0;
         for (ActionLabel al : mActionLabels) {
-            mControlsView.populateAction(al.action, al.labelId);
+            mControlsLayerView.populateAction(al.action, al.labelId);
             full_action_mask|= al.action;
         }
         
@@ -69,8 +69,8 @@ class AccessibilityAction {
         pInt.y= (int) p.y;
         
         if (mContextMenuOpen) {
-            int action= mControlsView.testClick(pInt);
-            mControlsView.hideActionsMenu();
+            int action= mControlsLayerView.testClick(pInt);
+            mControlsLayerView.hideActionsMenu();
             mContextMenuOpen= false;
             if (action != 0) mNode.performAction(action);
         }
@@ -85,7 +85,7 @@ class AccessibilityAction {
             int availableActions= FULL_ACTION_MASK & node.getActions();
             
             if (Integer.bitCount(availableActions)> 1) {
-                mControlsView.showActionsMenu(pInt, availableActions);
+                mControlsLayerView.showActionsMenu(pInt, availableActions);
                 mContextMenuOpen= true;
                 mNode= node;
             }

@@ -1,14 +1,12 @@
 package com.crea_si.eviacam.service;
 
 import android.content.Context;
-import android.view.SurfaceView;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.graphics.PixelFormat;
 
 public class OverlayView extends RelativeLayout {
-    private ControlsView mControlsView;
-    private PointerView mPointerView;
 
     OverlayView(Context c) {
         super(c);
@@ -33,26 +31,6 @@ public class OverlayView extends RelativeLayout {
       
         WindowManager wm= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         wm.addView(this, feedbackParams);
-        
-        /*
-         * controls view layer 
-         */
-        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(this.getWidth(), this.getHeight());
-        lp.width= RelativeLayout.LayoutParams.MATCH_PARENT;
-        lp.height= RelativeLayout.LayoutParams.MATCH_PARENT;
-        
-        mControlsView= new ControlsView(c);
-        mControlsView.setLayoutParams(lp);
-        this.addView(mControlsView);
-        
-        /*
-         * pointer view layer 
-         */
-        mPointerView= new PointerView(c);
-        mPointerView.setLayoutParams(lp);
-        this.addView(mPointerView);
-        
-        EVIACAM.debug("finish createOverlay");
     }
    
     void cleanup() {
@@ -62,15 +40,12 @@ public class OverlayView extends RelativeLayout {
         EVIACAM.debug("finish destroyOverlay");
     }
     
-    void addCameraSurface(SurfaceView v) {
-        mControlsView.addCameraSurface(v);
-    }
-    
-    public PointerView getPointerView() {
-        return mPointerView;
-    }
-    
-    public ControlsView getControlsView() {
-        return mControlsView;
+    void addFullScreenLayer (View v) {
+        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(this.getWidth(), this.getHeight());
+        lp.width= RelativeLayout.LayoutParams.MATCH_PARENT;
+        lp.height= RelativeLayout.LayoutParams.MATCH_PARENT;
+        
+        v.setLayoutParams(lp);
+        this.addView(v);
     }
 }

@@ -26,11 +26,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private static final String KEY_SOUND_ON_CLICK= "sound_on_click";
     
     // reference to view on which pointer feedback is drawn 
-    //private PointerView mPointerView;
-    
-    // delegate to manage actions using accessibility API
-    AccessibilityAction mAccessibilityAction;
-    
+    //private PointerLayerView mPointerView;
+  
     // delegate to measure elapsed time
     private Countdown mCountdown;
     
@@ -55,11 +52,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private PointF mPrevPointerLocation= null;
 
     
-    public DwellClick(ControlsView cv) {
-        mAccessibilityAction= new AccessibilityAction (cv);
-
+    public DwellClick(Context c) {
         // get constants from resources
-        Context c= EViacamService.getInstance().getApplicationContext();
         Resources r= c.getResources();
         DWELL_TIME_DEFAULT= r.getInteger(R.integer.dwell_time_default) * 100;
         DWELL_AREA_DEFAULT= r.getInteger(R.integer.dwell_area_default);
@@ -106,9 +100,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         mRequestEnabled= false;
     }
     
-    private void performAction (PointF p) {
-        mAccessibilityAction.performAction(p);
-
+    private void playSound () {
         if (mSoundOnClick) {
             ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
             toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
@@ -122,12 +114,22 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         return (dist> mDwellAreaSquared);
     }
     
-    // this method is called from a secondary thread
-    public void updatePointerLocation (PointF pl) {
+    /*
+     * given variation of the pointer position checks whether 
+     * need to generate a click
+     * 
+     * Return:
+     *  true if click generated
+     *  
+     * this method is called from a secondary thread
+     */
+    public boolean updatePointerLocation (PointF pl) {
+        boolean retval= false;
+        
         if (mPrevPointerLocation== null) {
             mPrevPointerLocation= new PointF();
             mPrevPointerLocation.set(pl);
-            return;
+            return retval;
         }
        
         // check if need to enable/disable 
@@ -158,7 +160,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
             }
             else {
                 if (mCountdown.hasFinished()) {
-                    performAction(pl);
+                    playSound ();
+                    retval= true;
                     mState= State.CLICK_DONE;
                     // hide countdown
                 }
@@ -173,6 +176,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
             }
         }
         
-        mPrevPointerLocation.set(pl);
+        mPrevPointerLocation.set(pl);  // deep copy
+        
+        return retval;
     }
 }

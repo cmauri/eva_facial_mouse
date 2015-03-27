@@ -35,16 +35,13 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private float mDXPrevious, mDYPrevious; // previous values for the filter
     private int mMotionThreshold;
     private PointF mPointerLocation= new PointF();
-    private PointerView mPointerView;
+    private PointerLayerView mPointerLayerView;
     private SharedPreferences mSharedPref;
-    private DwellClick mDwellClick;
     
     // methods
-    public PointerControl(PointerView pv, ControlsView cv) {
-        mPointerView= pv;
-        
-        Context c= EViacamService.getInstance().getApplicationContext();
-        
+    public PointerControl(Context c, PointerLayerView pv) {
+        mPointerLayerView= pv;
+       
         // get constants from resources
         Resources r= c.getResources();
         AXIS_SPEED_MIN= r.getInteger(R.integer.axis_speed_min);                
@@ -65,8 +62,6 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
         
         readSettings();
-        
-        mDwellClick= new DwellClick(cv);
     }
     
     private void readSettings() {
@@ -84,7 +79,6 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     
     // clean-up object
     public void cleanup() {
-        mDwellClick.cleanup();
         mSharedPref.unregisterOnSharedPreferenceChangeListener(this);
     }
     
@@ -190,7 +184,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
             mPointerLocation.x= 0;
         }
         else {
-            int width= mPointerView.getWidth();
+            int width= mPointerLayerView.getWidth();
             if (mPointerLocation.x>= width)
                 mPointerLocation.x= width - 1;
         }
@@ -200,12 +194,15 @@ class PointerControl implements OnSharedPreferenceChangeListener {
             mPointerLocation.y= 0;
         }
         else {
-            int height= mPointerView.getHeight();
+            int height= mPointerLayerView.getHeight();
             if (mPointerLocation.y>= height)
                 mPointerLocation.y= height - 1;
         }
         
-        mPointerView.updatePosition(mPointerLocation);
-        mDwellClick.updatePointerLocation(mPointerLocation);
+        mPointerLayerView.updatePosition(mPointerLocation);
+    }
+    
+    PointF getPointerLocation() {
+        return mPointerLocation;
     }
 }

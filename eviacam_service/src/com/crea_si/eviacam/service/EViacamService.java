@@ -68,7 +68,11 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
      
+        // start engine
         mEngine= new EViacamEngine(this);
+        
+        // set as foreground service
+        startForeground(mEngine.getNotificationId(), mEngine.getNotification(this));
                 
         mRunning= true;
     }
@@ -76,6 +80,8 @@ public class EViacamService extends AccessibilityService implements ComponentCal
     private void cleanup() {
         // TODO: handle exceptions properly
         if (!mRunning) return;
+        
+        stopForeground(true);
         
         mEngine.cleanup();
         

@@ -40,5 +40,7 @@
     <string name="scroll_backward">Scroll backward</string>
     <string name="scroll_forward">Scroll forward</string>
     <string name="select">Select</string>
+    <string name="running">Running</string>
+    <string name="stopped">Stopped</string>
 
 </resources>

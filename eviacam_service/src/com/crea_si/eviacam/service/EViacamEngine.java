@@ -8,8 +8,8 @@ import android.graphics.PointF;
 
 public class EViacamEngine implements FrameProcessor {
 
-    // object which manages the overlay windows
-    private OverlayManager mOverlayManager;
+    // root overlay view
+    private OverlayView mOverlayView;
     
     // object in charge of capturing & processing frames
     private CameraListener mCameraListener;
@@ -24,16 +24,15 @@ public class EViacamEngine implements FrameProcessor {
 
     public EViacamEngine(Context c) {
         // create overlay
-        mOverlayManager= new OverlayManager();
-        mOverlayManager.createOverlay();
+        mOverlayView= new OverlayView(c);
         
         // create pointer control object
         mPointerControl= new PointerControl(
-                mOverlayManager.getPointerView(), mOverlayManager.getControlsView());
+                mOverlayView.getPointerView(), mOverlayView.getControlsView());
         
         // create camera & machine vision part
         mCameraListener= new CameraListener(c, this);
-        mOverlayManager.addCameraSurface(mCameraListener.getCameraSurface());
+        mOverlayView.addCameraSurface(mCameraListener.getCameraSurface());
         
         mOrientationManager= new OrientationManager(c, mCameraListener.getCameraOrientation());
         
@@ -55,8 +54,8 @@ public class EViacamEngine implements FrameProcessor {
         mPointerControl.cleanup();
         mPointerControl= null;
         
-        mOverlayManager.destroyOverlay();
-        mOverlayManager= null;
+        mOverlayView.cleanup();
+        mOverlayView= null;
 
         mRunning= false;
     }

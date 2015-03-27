@@ -10,34 +10,25 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.graphics.PointF;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
-import android.view.Display;
-import android.view.Surface;
 import android.view.SurfaceView;
-import android.view.WindowManager;
+
 
 @SuppressWarnings("deprecation")
 public class CameraListener implements CvCameraViewListener2 {
 
+    Context mContext;
+    
+    // callback to process frames
+    FrameProcessor mFrameProcessor;
+    
     // opencv capture&view facility 
     private CameraBridgeViewBase mCameraView;
     
-    // delegate to manage pointer
-    private PointerControl mPointerControl;
-    
     // physical orientation of the camera (0, 90, 180, 270)
-    private int mCameraOrientation= 0;
-    
-    // orientation sensors listener. keeps updated the actual orientation of the
-    // device (independently of the screen orientation)
-    private PhysicalOrientation mPhysicalOrientation;
-    
-    // orientation of the screen
-    private int mScreenOrientation= 0;
-    
+    final private int mCameraOrientation;
+   
     // callback for camera initialization
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(
             EViacamService.getInstance().getApplicationContext()) {
@@ -56,9 +47,6 @@ public class CameraListener implements CvCameraViewListener2 {
                     
                     // start camera capture
                     mCameraView.enableView();
-                    
-                    // enable sensor listener
-                    mPhysicalOrientation.enable();
                 } break;
                 default:
                 {
@@ -69,8 +57,9 @@ public class CameraListener implements CvCameraViewListener2 {
         }
     };
     
-    public CameraListener(PointerControl pa) {
-        mPointerControl= pa;
+    public CameraListener(Context c, FrameProcessor fp) {
+        mContext= c;
+        mFrameProcessor= fp;
 
         /**
          * The orientation of the camera image. The value is the angle that the camera image needs 
@@ -85,24 +74,19 @@ public class CameraListener implements CvCameraViewListener2 {
          * 
          */
         // TODO: display error when no front camera detected
+        int cameraOrientation= 0;
         Camera.CameraInfo cameraInfo= new CameraInfo();
         for (int i= 0; i<  Camera.getNumberOfCameras(); i++) {
             Camera.getCameraInfo (i, cameraInfo);
             if (cameraInfo.facing== CameraInfo.CAMERA_FACING_FRONT) {
-                mCameraOrientation= cameraInfo.orientation;
-                EVIACAM.debug("Detected front camera. Orientation: " + mCameraOrientation);
+                cameraOrientation= cameraInfo.orientation;
+                EVIACAM.debug("Detected front camera. Orientation: " + cameraOrientation);
             }
         }
-        
-        mScreenOrientation= getScreenOrientation();
-
-        // create physical orientation manager
-        mPhysicalOrientation= 
-                new PhysicalOrientation(EViacamService.getInstance().getApplicationContext());
- 
+        mCameraOrientation= cameraOrientation;
+    
         // create capture view
-        mCameraView= new MyJavaCameraView(EViacamService.getInstance().getApplicationContext(), 
-                CameraBridgeViewBase.CAMERA_ID_FRONT);
+        mCameraView= new MyJavaCameraView(mContext, CameraBridgeViewBase.CAMERA_ID_FRONT);
         
         // set CameraBridgeViewBase parameters        
         // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)
@@ -116,49 +100,21 @@ public class CameraListener implements CvCameraViewListener2 {
         mCameraView.setVisibility(SurfaceView.VISIBLE);
     }
     
-    /**
-     * Returns the rotation of the screen from its "natural" orientation. 
-     * 
-     * The returned value may be Surface.ROTATION_0 (no rotation), Surface.ROTATION_90, 
-     * Surface.ROTATION_180, or Surface.ROTATION_270. For example, if a device has a 
-     * naturally tall screen, and the user has turned it on its side to go into a 
-     * landscape orientation, the value returned here may be either Surface.ROTATION_90 
-     * or Surface.ROTATION_270 depending on the direction it was turned. 
-     * 
-     * The angle is the rotation of the drawn graphics on the screen, which is the opposite 
-     * direction of the physical rotation of the device. For example, if the device is 
-     * rotated 90 degrees counter-clockwise, to compensate rendering will be rotated by 
-     * 90 degrees clockwise and thus the returned value here will be Surface.ROTATION_90.
-     * 
-     */
-    static
-    private int getScreenOrientation() {
-        Context c= EViacamService.getInstance().getApplicationContext();
-        WindowManager wm= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
-        Display d= wm.getDefaultDisplay();
-        switch (d.getRotation()) {
-        case Surface.ROTATION_0: return 0;
-        case Surface.ROTATION_90: return 90;
-        case Surface.ROTATION_180: return 180;
-        case Surface.ROTATION_270: return 270;
-        default:
-            throw new RuntimeException("wrong screen orientation");
-        }
-    }
-    
-    public void StartCamera() {
+    public void startCamera() {
         // Start OpenCV
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, 
-                EViacamService.getInstance().getApplicationContext(), mLoaderCallback);
+        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, mContext, mLoaderCallback);
     }
     
-    public void StopCamera() {
-        mPhysicalOrientation.disable();
+    public void stopCamera() {
         mCameraView.disableView();
     }
 
     SurfaceView getCameraSurface(){
         return mCameraView;
+    }
+
+    int getCameraOrientation() {
+        return mCameraOrientation;
     }
 
     @Override
@@ -182,59 +138,9 @@ public class CameraListener implements CvCameraViewListener2 {
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
         Mat rgba = inputFrame.rgba();
-        int phyRotation = mCameraOrientation - mPhysicalOrientation.getCurrentOrientation();
-        if (phyRotation< 0) phyRotation+= 360;
         
-        // TODO: refactor as attribute to avoid an object creation for each frame
-        PointF vel = new PointF(0, 0);
-        
-        // call jni part to track face
-        VisionPipeline.processFrame(rgba.getNativeObjAddr(), phyRotation, vel);
-        
-        // compensate mirror effect
-        vel.x= -vel.x;
-        
-        // calculate equivalent physical device rotation for the current screen orientation
-        int equivPhyRotation= 360 - mScreenOrientation;
-        if (equivPhyRotation== 360) equivPhyRotation= 0;
-       
-        // when is a mismatch between physical rotation and screen orientation
-        // need to cancel it out (e.g. activity that forces specific screen orientation
-        // but the device has not been rotated)
-        int diffRotation= equivPhyRotation -  mPhysicalOrientation.getCurrentOrientation();
-        if (diffRotation< 0) diffRotation+= 360;
-        switch (diffRotation) {
-        case 0: 
-            // Nothing to be done
-            break;
-        case 90: {
-            float tmp= vel.x;
-            vel.x= -vel.y;
-            vel.y= tmp;
-            break;
-        }
-        case 180:
-            vel.x= -vel.x;
-            vel.y= -vel.y;
-            break;
-        case 270: {
-            float tmp= vel.x;
-            vel.x= vel.y;
-            vel.y= -tmp;
-            break;
-        }
-        default:
-            throw new RuntimeException("wrong diffRotation");
-        }
-             
-        // send motion to pointer controller delegate
-        mPointerControl.updateMotion(vel);
+        mFrameProcessor.processFrame(rgba);
         
         return rgba;
-    }
-
-    public void onConfigurationChanged(Configuration newConfig) {
-        mScreenOrientation= getScreenOrientation();
-        EVIACAM.debug("Screen rotation changed: " + mScreenOrientation);
     }
 }

@@ -23,6 +23,9 @@ public class EViacamEngine implements FrameProcessor {
     // dwell clicking function
     private DwellClick mDwellClick;
     
+    // perform actions on the UI using the accessibility API
+    AccessibilityAction mAccessibilityAction;
+    
     // object which encapsulates rotation and orientation logic
     OrientationManager mOrientationManager;
         
@@ -52,7 +55,9 @@ public class EViacamEngine implements FrameProcessor {
         
         mPointerControl= new PointerControl(c, mPointerLayer);
         
-        mDwellClick= new DwellClick(controlsLayer);
+        mDwellClick= new DwellClick(c);
+        
+        mAccessibilityAction= new AccessibilityAction (controlsLayer);
         
         // create camera & machine vision part
         mCameraListener= new CameraListener(c, this);
@@ -94,7 +99,7 @@ public class EViacamEngine implements FrameProcessor {
     }
 
     /*
-     * process an incoming camera frame 
+     * process incoming camera frame 
      * 
      * this method is called from a secondary thread 
      */
@@ -102,10 +107,8 @@ public class EViacamEngine implements FrameProcessor {
     public void processFrame(Mat rgba) {
         int phyRotation = mOrientationManager.getPictureRotation();
         
-        // TODO: refactor as attribute to avoid an object creation for each frame
-        PointF motion = new PointF(0, 0);
-        
         // call jni part to track face
+        PointF motion = new PointF(0, 0);
         VisionPipeline.processFrame(rgba.getNativeObjAddr(), phyRotation, motion);
         
         // compensate mirror effect
@@ -114,13 +117,22 @@ public class EViacamEngine implements FrameProcessor {
         // fix motion orientation according to device rotation and screen orientation 
         mOrientationManager.fixVectorOrientation(motion);
              
-        // send motion to pointer controller delegate
+        // update pointer location given face motion
         mPointerControl.updateMotion(motion);
         
-        // dwell clicking
-        mDwellClick.updatePointerLocation(mPointerControl.getPointerLocation());
+        // get new pointer location
+        PointF pointerLocation= mPointerControl.getPointerLocation();
+        
+        // dwell clicking update
+        boolean clickGenerated= 
+                mDwellClick.updatePointerLocation(pointerLocation);
         
         // redraw pointer layer
         mPointerLayer.postInvalidate();
+        
+        // perform action when needed
+        if (clickGenerated) { 
+            mAccessibilityAction.performAction(pointerLocation);
+        }
     }
 }

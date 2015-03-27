@@ -37,14 +37,11 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private PointF mPointerLocation= new PointF();
     private PointerLayerView mPointerLayerView;
     private SharedPreferences mSharedPref;
-    private DwellClick mDwellClick;
     
     // methods
-    public PointerControl(PointerLayerView pv, ControlsLayerView cv) {
+    public PointerControl(Context c, PointerLayerView pv) {
         mPointerLayerView= pv;
-        
-        Context c= EViacamService.getInstance().getApplicationContext();
-        
+       
         // get constants from resources
         Resources r= c.getResources();
         AXIS_SPEED_MIN= r.getInteger(R.integer.axis_speed_min);                
@@ -65,8 +62,6 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
         
         readSettings();
-        
-        mDwellClick= new DwellClick(cv);
     }
     
     private void readSettings() {
@@ -84,7 +79,6 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     
     // clean-up object
     public void cleanup() {
-        mDwellClick.cleanup();
         mSharedPref.unregisterOnSharedPreferenceChangeListener(this);
     }
     
@@ -206,6 +200,9 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         }
         
         mPointerLayerView.updatePosition(mPointerLocation);
-        mDwellClick.updatePointerLocation(mPointerLocation);
+    }
+    
+    PointF getPointerLocation() {
+        return mPointerLocation;
     }
 }

@@ -11,11 +11,17 @@ public class EViacamEngine implements FrameProcessor {
     // root overlay view
     private OverlayView mOverlayView;
     
+    // layer for drawing the pointer and the dwell click feedback
+    PointerLayerView mPointerLayer;
+    
     // object in charge of capturing & processing frames
     private CameraListener mCameraListener;
     
     // object which provides the logic for the pointer motion and actions 
     private PointerControl mPointerControl;
+    
+    // dwell clicking function
+    private DwellClick mDwellClick;
     
     // object which encapsulates rotation and orientation logic
     OrientationManager mOrientationManager;
@@ -24,26 +30,29 @@ public class EViacamEngine implements FrameProcessor {
 
     public EViacamEngine(Context c) {
         /*
-         * build UI 
+         * UI stuff 
          */
 
         // create overlay root layer
         mOverlayView= new OverlayView(c);
         
-        // camera layer
         CameraLayerView cameraLayer= new CameraLayerView(c);
         mOverlayView.addFullScreenLayer(cameraLayer);
 
-        // controls layer
         ControlsLayerView controlsLayer= new ControlsLayerView(c);
         mOverlayView.addFullScreenLayer(controlsLayer);
         
         // pointer layer (should be the last one)
-        PointerLayerView pointerLayer= new PointerLayerView(c);
-        mOverlayView.addFullScreenLayer(pointerLayer);
+        mPointerLayer= new PointerLayerView(c);
+        mOverlayView.addFullScreenLayer(mPointerLayer);
         
-        // create pointer control object
-        mPointerControl= new PointerControl(pointerLayer, controlsLayer);
+        /*
+         * control stuff
+         */
+        
+        mPointerControl= new PointerControl(c, mPointerLayer);
+        
+        mDwellClick= new DwellClick(controlsLayer);
         
         // create camera & machine vision part
         mCameraListener= new CameraListener(c, this);
@@ -51,7 +60,9 @@ public class EViacamEngine implements FrameProcessor {
         
         mOrientationManager= new OrientationManager(c, mCameraListener.getCameraOrientation());
         
-        // start processing frames
+        /*
+         * start processing frames
+         */
         mCameraListener.startCamera();
 
         mRunning= true;
@@ -66,6 +77,9 @@ public class EViacamEngine implements FrameProcessor {
         mOrientationManager.cleanup();
         mOrientationManager= null;
 
+        mDwellClick.cleanup();
+        mDwellClick= null;
+        
         mPointerControl.cleanup();
         mPointerControl= null;
         
@@ -79,6 +93,11 @@ public class EViacamEngine implements FrameProcessor {
         if (mOrientationManager != null) mOrientationManager.onConfigurationChanged(newConfig);
     }
 
+    /*
+     * process an incoming camera frame 
+     * 
+     * this method is called from a secondary thread 
+     */
     @Override
     public void processFrame(Mat rgba) {
         int phyRotation = mOrientationManager.getPictureRotation();
@@ -97,5 +116,11 @@ public class EViacamEngine implements FrameProcessor {
              
         // send motion to pointer controller delegate
         mPointerControl.updateMotion(motion);
+        
+        // dwell clicking
+        mDwellClick.updatePointerLocation(mPointerControl.getPointerLocation());
+        
+        // redraw pointer layer
+        mPointerLayer.postInvalidate();
     }
 }

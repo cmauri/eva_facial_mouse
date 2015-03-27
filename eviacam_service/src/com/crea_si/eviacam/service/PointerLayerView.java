@@ -36,7 +36,6 @@ public class PointerLayerView extends View {
     public void updatePosition(PointF p) {
         mPointerLocation.x= p.x;
         mPointerLocation.y= p.y;
-        this.postInvalidate();
     }
 
     public void updateCountdown(int percent) {

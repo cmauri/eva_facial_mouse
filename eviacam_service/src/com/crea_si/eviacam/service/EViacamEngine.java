@@ -11,17 +11,35 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.PointF;
+import android.view.View;
 
 public class EViacamEngine implements FrameProcessor {
 
+    /*
+     * constants for notifications
+     */
     static private final int NOTIFICATION_ID= 1;
     static private final String NOTIFICATION_FILTER_ACTION= "ENABLE_DISABLE_EVIACAM";
+    static private final int NOTIFICATION_ACTION_PAUSE= 0;
+    static private final int NOTIFICATION_ACTION_RESUME= 1;
+    static private final String NOTIFICATION_ACTION_NAME= "action";
+    
+    /*
+     * states of the engine
+     */
+    static private final int STATE_NONE= 0;
+    static private final int STATE_RUNNING= 1;
+    static private final int STATE_PAUSED= 2;
+    static private final int STATE_STOPPED= 3;
     
     // root overlay view
     private OverlayView mOverlayView;
     
     // layer for drawing the pointer and the dwell click feedback
-    PointerLayerView mPointerLayer;
+    private PointerLayerView mPointerLayer;
+    
+    // layer for drawing different controls
+    ControlsLayerView mControlsLayer;
     
     // object in charge of capturing & processing frames
     private CameraListener mCameraListener;
@@ -33,39 +51,59 @@ public class EViacamEngine implements FrameProcessor {
     private DwellClick mDwellClick;
     
     // perform actions on the UI using the accessibility API
-    AccessibilityAction mAccessibilityAction;
+    private AccessibilityAction mAccessibilityAction;
     
     // object which encapsulates rotation and orientation logic
-    OrientationManager mOrientationManager;
-        
-    boolean mRunning= false;
+    private OrientationManager mOrientationManager;
+    
+    // current engine state
+    private int mCurrentState= STATE_NONE;
     
     // receiver for notifications
     private BroadcastReceiver mMessageReceiver= new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // update notification
-            // see here for details: http://stackoverflow.com/a/20142620/3519813
-            // TODO: do useful work
-            Notification noti= 
-                    getNotification(context, context.getText(R.string.stopped));
+            int action= intent.getIntExtra(NOTIFICATION_ACTION_NAME, -1);
+            Notification noti;
             
+            if (action == NOTIFICATION_ACTION_PAUSE) {
+                pause();
+                noti= getNotification(context, NOTIFICATION_ACTION_RESUME);
+                EVIACAM.debug("Got intent: PAUSE");
+            }
+            else if (action == NOTIFICATION_ACTION_RESUME) {
+                resume();
+                noti= getNotification(context, NOTIFICATION_ACTION_PAUSE);
+                EVIACAM.debug("Got intent: RESUME");
+            }
+            else {
+                // ignore intent
+                EVIACAM.debug("Got unknown intent");
+                return;
+            }
+                    
             NotificationManager notificationManager = 
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(NOTIFICATION_ID, noti);
-            
-            String message = intent.getStringExtra("message");            
-            EVIACAM.debug("Got message: " + message);
         }
     };
 
-    private Notification getNotification(Context c, CharSequence text) {
+    private Notification getNotification(Context c, int action) {
         // notification initialization 
         Intent intent = new Intent(NOTIFICATION_FILTER_ACTION);
+        intent.putExtra(NOTIFICATION_ACTION_NAME, action);
+        
         PendingIntent pIntent= PendingIntent.getBroadcast
                 (c, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        if (text == null) text= c.getText(R.string.running);
+        
+        CharSequence text;
+        if (action == NOTIFICATION_ACTION_PAUSE) {
+            text= c.getText(R.string.running_click_to_pause);
+        }
+        else {
+            text= c.getText(R.string.stopped_click_to_resume);
+        }
 
         Notification noti= new Notification.Builder(c)
             .setContentTitle(c.getText(R.string.app_name))
@@ -78,7 +116,7 @@ public class EViacamEngine implements FrameProcessor {
     }
     
     public Notification getNotification(Context c) {
-        return getNotification(c, null);
+        return getNotification(c, NOTIFICATION_ACTION_PAUSE);
     }
     
     public int getNotificationId() {
@@ -96,8 +134,8 @@ public class EViacamEngine implements FrameProcessor {
         CameraLayerView cameraLayer= new CameraLayerView(c);
         mOverlayView.addFullScreenLayer(cameraLayer);
 
-        ControlsLayerView controlsLayer= new ControlsLayerView(c);
-        mOverlayView.addFullScreenLayer(controlsLayer);
+        mControlsLayer= new ControlsLayerView(c);
+        mOverlayView.addFullScreenLayer(mControlsLayer);
         
         // pointer layer (should be the last one)
         mPointerLayer= new PointerLayerView(c);
@@ -111,7 +149,7 @@ public class EViacamEngine implements FrameProcessor {
         
         mDwellClick= new DwellClick(c);
         
-        mAccessibilityAction= new AccessibilityAction (controlsLayer);
+        mAccessibilityAction= new AccessibilityAction (mControlsLayer);
         
         // create camera & machine vision part
         mCameraListener= new CameraListener(c, this);
@@ -130,11 +168,11 @@ public class EViacamEngine implements FrameProcessor {
          */
         mCameraListener.startCamera();
 
-        mRunning= true;
+        mCurrentState= STATE_RUNNING;
     }
    
     public void cleanup() {
-        if (!mRunning) return;
+        if (mCurrentState == STATE_STOPPED) return;
                
         mCameraListener.stopCamera();
         mCameraListener= null;
@@ -148,12 +186,34 @@ public class EViacamEngine implements FrameProcessor {
         mPointerControl.cleanup();
         mPointerControl= null;
         
+        // nothing to be done for mPointerLayer
+        
         mOverlayView.cleanup();
         mOverlayView= null;
 
-        mRunning= false;
+        mCurrentState= STATE_STOPPED;
     }
    
+    private void pause() {
+        if (mCurrentState != STATE_RUNNING) return;
+        
+        // TODO: this is a basic method to pause the program
+        // pause/resume should reset internal state of some objects 
+        mCurrentState= STATE_PAUSED;
+        mControlsLayer.setVisibility(View.INVISIBLE);
+        mPointerLayer.setVisibility(View.INVISIBLE);
+    }
+    
+    private void resume() {
+        if (mCurrentState != STATE_PAUSED) return;
+        
+        // TODO: see comment on pause()
+        mPointerLayer.setVisibility(View.VISIBLE);
+        mControlsLayer.setVisibility(View.VISIBLE);        
+        mCurrentState= STATE_RUNNING;
+        
+    }    
+    
     public void onConfigurationChanged(Configuration newConfig) {
         if (mOrientationManager != null) mOrientationManager.onConfigurationChanged(newConfig);
     }
@@ -165,6 +225,8 @@ public class EViacamEngine implements FrameProcessor {
      */
     @Override
     public void processFrame(Mat rgba) {
+        if (mCurrentState != STATE_RUNNING) return;
+        
         int phyRotation = mOrientationManager.getPictureRotation();
         
         // call jni part to track face

@@ -6,39 +6,39 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 public class ControlsLayerView extends RelativeLayout {
-    // reference to the view which draws the actions context menu 
-    ActionsMenuView mActionsMenuView;
+    // view of the pointer context menu 
+    ContextMenuView mContextMenuView;
         
     public ControlsLayerView(Context context) {
         super(context);
         
         // create and add buttons. initially these are hidden.
-        mActionsMenuView= new ActionsMenuView(context);
+        mContextMenuView= new ContextMenuView(context);
         RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT, 
                 RelativeLayout.LayoutParams.WRAP_CONTENT);
-        mActionsMenuView.setLayoutParams(lp);
-        mActionsMenuView.setVisibility(View.GONE);
-        addView(mActionsMenuView);
+        mContextMenuView.setLayoutParams(lp);
+        mContextMenuView.setVisibility(View.GONE);
+        addView(mContextMenuView);
     }
     
-    public void showActionsMenu(final Point p, final int actions) {
+    public void showContextMenu(final Point p, final int actions) {
         // TODO: when the screen is rotated the menu vanishes
         
         this.post(new Runnable() {
             @Override
             public void run() {
                 if (actions == 0) {
-                    mActionsMenuView.setVisibility(View.GONE);
+                    mContextMenuView.setVisibility(View.GONE);
                     setBackgroundColor(0);
                     return;
                 }
                 
-                // set actions menu view as visible
-                mActionsMenuView.setVisibility(View.VISIBLE);
+                // set context menu view as visible
+                mContextMenuView.setVisibility(View.VISIBLE);
                 
                 // update buttons list that need to display
-                mActionsMenuView.updateButtons(actions);
+                mContextMenuView.updateButtons(actions);
                       
                 // dim background
                 setBackgroundColor(0x80000000);
@@ -50,30 +50,30 @@ public class ControlsLayerView extends RelativeLayout {
                  * if this is not possible move to the other side
                  */
                 RelativeLayout.LayoutParams lp= (RelativeLayout.LayoutParams) 
-                        mActionsMenuView.getLayoutParams();
+                        mContextMenuView.getLayoutParams();
                 
                 // get actions menu expected width
-                int expectedWidth= mActionsMenuView.getMeasuredWidth();
+                int expectedWidth= mContextMenuView.getMeasuredWidth();
                 
                 // fits at the left of the pointer?
                 if (p.x - expectedWidth> 0) lp.leftMargin= p.x - expectedWidth;
                 else lp.leftMargin= p.x;
                 
                 // get actions menu expected height
-                int expectedHeight= mActionsMenuView.getMeasuredHeight();
+                int expectedHeight= mContextMenuView.getMeasuredHeight();
                 
                 // fits below the pointer?
                 if (p.y + expectedHeight< getHeight()) lp.topMargin= p.y;
                 else lp.topMargin= p.y - expectedHeight;
 
                 // set menu position
-                mActionsMenuView.setLayoutParams(lp);
+                mContextMenuView.setLayoutParams(lp);
             }
         });
     }
     
-    public void hideActionsMenu() {
-        showActionsMenu(null, 0);
+    public void hideContextMenu() {
+        showContextMenu(null, 0);
     }
     
     /*
@@ -82,17 +82,17 @@ public class ControlsLayerView extends RelativeLayout {
     public int testClick (Point p)  {
         int[] location= new int[2];
         
-        mActionsMenuView.getLocationOnScreen(location);
+        mContextMenuView.getLocationOnScreen(location);
         
         if (p.x< location[0] || p.y< location[1]) return 0;
 
-        if (location[0] + mActionsMenuView.getWidth() < p.x || 
-            location[1] + mActionsMenuView.getHeight() < p.y) return 0;
+        if (location[0] + mContextMenuView.getWidth() < p.x || 
+            location[1] + mContextMenuView.getHeight() < p.y) return 0;
 
-        return mActionsMenuView.testClick(p);
+        return mContextMenuView.testClick(p);
     }
     
-    public void populateAction (int action, int labelId) {
-        mActionsMenuView.populateAction(action, labelId);
+    public void populateContextMenu (int action, int labelId) {
+        mContextMenuView.populateAction(action, labelId);
     }
 }

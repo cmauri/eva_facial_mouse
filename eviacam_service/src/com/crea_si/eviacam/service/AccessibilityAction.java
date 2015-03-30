@@ -54,7 +54,7 @@ class AccessibilityAction {
         // populate actions to view & compute action mask
         int full_action_mask= 0;
         for (ActionLabel al : mActionLabels) {
-            mControlsLayerView.populateAction(al.action, al.labelId);
+            mControlsLayerView.populateContextMenu(al.action, al.labelId);
             full_action_mask|= al.action;
         }
         
@@ -70,7 +70,7 @@ class AccessibilityAction {
         
         if (mContextMenuOpen) {
             int action= mControlsLayerView.testClick(pInt);
-            mControlsLayerView.hideActionsMenu();
+            mControlsLayerView.hideContextMenu();
             mContextMenuOpen= false;
             if (action != 0) mNode.performAction(action);
         }
@@ -85,7 +85,7 @@ class AccessibilityAction {
             int availableActions= FULL_ACTION_MASK & node.getActions();
             
             if (Integer.bitCount(availableActions)> 1) {
-                mControlsLayerView.showActionsMenu(pInt, availableActions);
+                mControlsLayerView.showContextMenu(pInt, availableActions);
                 mContextMenuOpen= true;
                 mNode= node;
             }

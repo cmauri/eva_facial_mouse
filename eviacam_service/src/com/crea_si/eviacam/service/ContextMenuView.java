@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-class ActionsMenuView extends LinearLayout {
+class ContextMenuView extends LinearLayout {
     
     private class ActionButton {
         final int action;
@@ -26,7 +26,7 @@ class ActionsMenuView extends LinearLayout {
     // references to actions and buttons pairs
     List<ActionButton> mActionButtons= new ArrayList<ActionButton>();
     
-    public ActionsMenuView(Context c) {
+    public ContextMenuView(Context c) {
         super(c);
         setOrientation(LinearLayout.VERTICAL);
     }

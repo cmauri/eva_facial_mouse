@@ -134,6 +134,9 @@ public class EViacamEngine implements FrameProcessor {
         CameraLayerView cameraLayer= new CameraLayerView(c);
         mOverlayView.addFullScreenLayer(cameraLayer);
 
+        DockPanelLayerView dockPanelView= new DockPanelLayerView(c);
+        mOverlayView.addFullScreenLayer(dockPanelView);
+        
         mControlsLayer= new ControlsLayerView(c);
         mOverlayView.addFullScreenLayer(mControlsLayer);
         

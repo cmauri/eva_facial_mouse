@@ -42,5 +42,8 @@
     <string name="select">Select</string>
     <string name="running_click_to_pause">Running (click to pause)</string>
     <string name="stopped_click_to_resume">Stopped (click to resume)</string>
+    <string name="back_button">Back button</string>
+    <string name="home_button">Home button</string>
+    <string name="recents_button">Recents button</string>
 
 </resources>

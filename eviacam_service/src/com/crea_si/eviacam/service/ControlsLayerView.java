@@ -80,14 +80,7 @@ public class ControlsLayerView extends RelativeLayout {
      * test if one button has been clicked
      */
     public int testClick (Point p)  {
-        int[] location= new int[2];
-        
-        mContextMenuView.getLocationOnScreen(location);
-        
-        if (p.x< location[0] || p.y< location[1]) return 0;
-
-        if (location[0] + mContextMenuView.getWidth() < p.x || 
-            location[1] + mContextMenuView.getHeight() < p.y) return 0;
+        if (!ViewUtils.isPointInsideView(p, mContextMenuView)) return 0;
 
         return mContextMenuView.testClick(p);
     }

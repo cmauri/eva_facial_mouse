@@ -63,23 +63,10 @@ class ContextMenuView extends LinearLayout {
         mActionsMask= actions;
     }
 
-    static 
-    private boolean testClick (View v, Point p) {
-        int[] location= new int[2];
-        
-        v.getLocationOnScreen(location);
-        
-        if (p.x< location[0] || p.y< location[1]) return false;
-
-        if (location[0] + v.getWidth() < p.x || 
-            location[1] + v.getHeight() < p.y) return false;
-        
-        return true;
-    }
-    
     public int testClick (Point p)  {
         for (ActionButton ab : mActionButtons) {
-            if (ab.button.getVisibility() == View.VISIBLE && testClick(ab.button, p)) {
+            if (ab.button.getVisibility() == View.VISIBLE &&
+                ViewUtils.isPointInsideView(p, ab.button)) {
                 return ab.action;
             }
         }

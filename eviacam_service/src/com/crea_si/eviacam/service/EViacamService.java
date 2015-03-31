@@ -12,7 +12,7 @@ import android.widget.Toast;
 public class EViacamService extends AccessibilityService implements ComponentCallbacks {
     
     // static attribute which holds an instance to the service instance
-    static private AccessibilityService sAccessibilityService;
+    private static AccessibilityService sAccessibilityService;
     
     // for debugging, shows a toast at certain intervals so that we know 
     // the service is still alive
@@ -21,8 +21,11 @@ public class EViacamService extends AccessibilityService implements ComponentCal
     // reference to the engine
     private EViacamEngine mEngine;
     
+    // reference to the notification management stuff
+    private ServiceNotification mServiceNotification;
+    
     // stores whether the service is running or not (see comments on init() )
-    boolean mRunning= false;
+    private boolean mRunning= false;
 
     public EViacamService() {
         super();
@@ -71,8 +74,12 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         // start engine
         mEngine= new EViacamEngine(this);
         
+        // add notification
+        mServiceNotification= new ServiceNotification(this, mEngine);
+        
         // set as foreground service
-        startForeground(mEngine.getNotificationId(), mEngine.getNotification(this));
+        startForeground(mServiceNotification.getNotificationId(), 
+                mServiceNotification.getNotification(this));
                 
         mRunning= true;
     }
@@ -81,6 +88,7 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         // TODO: handle exceptions properly
         if (!mRunning) return;
         
+        // stop being foreground service and remove notification
         stopForeground(true);
         
         mEngine.cleanup();

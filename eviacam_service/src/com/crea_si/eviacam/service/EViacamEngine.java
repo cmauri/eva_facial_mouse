@@ -2,13 +2,7 @@ package com.crea_si.eviacam.service;
 
 import org.opencv.core.Mat;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.view.View;
@@ -16,27 +10,21 @@ import android.view.View;
 public class EViacamEngine implements FrameProcessor {
 
     /*
-     * constants for notifications
-     */
-    private static final int NOTIFICATION_ID= 1;
-    private static final String NOTIFICATION_FILTER_ACTION= "ENABLE_DISABLE_EVIACAM";
-    private static final int NOTIFICATION_ACTION_PAUSE= 0;
-    private static final int NOTIFICATION_ACTION_RESUME= 1;
-    private static final String NOTIFICATION_ACTION_NAME= "action";
-    
-    /*
      * states of the engine
      */
-    static private final int STATE_NONE= 0;
-    static private final int STATE_RUNNING= 1;
-    static private final int STATE_PAUSED= 2;
-    static private final int STATE_STOPPED= 3;
+    private static final int STATE_NONE= 0;
+    private static final int STATE_RUNNING= 1;
+    private static  final int STATE_PAUSED= 2;
+    private static final int STATE_STOPPED= 3;
     
     // root overlay view
     private OverlayView mOverlayView;
     
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
+    
+    // layer for drawing the docking panel
+    private DockPanelLayerView mDockPanelView;
     
     // layer for drawing different controls
     private ControlsLayerView mControlsLayer;
@@ -59,70 +47,6 @@ public class EViacamEngine implements FrameProcessor {
     // current engine state
     private int mCurrentState= STATE_NONE;
     
-    // receiver for notifications
-    private BroadcastReceiver mMessageReceiver= new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // update notification
-            int action= intent.getIntExtra(NOTIFICATION_ACTION_NAME, -1);
-            Notification noti;
-            
-            if (action == NOTIFICATION_ACTION_PAUSE) {
-                pause();
-                noti= getNotification(context, NOTIFICATION_ACTION_RESUME);
-                EVIACAM.debug("Got intent: PAUSE");
-            }
-            else if (action == NOTIFICATION_ACTION_RESUME) {
-                resume();
-                noti= getNotification(context, NOTIFICATION_ACTION_PAUSE);
-                EVIACAM.debug("Got intent: RESUME");
-            }
-            else {
-                // ignore intent
-                EVIACAM.debug("Got unknown intent");
-                return;
-            }
-                    
-            NotificationManager notificationManager = 
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(NOTIFICATION_ID, noti);
-        }
-    };
-
-    private Notification getNotification(Context c, int action) {
-        // notification initialization 
-        Intent intent = new Intent(NOTIFICATION_FILTER_ACTION);
-        intent.putExtra(NOTIFICATION_ACTION_NAME, action);
-        
-        PendingIntent pIntent= PendingIntent.getBroadcast
-                (c, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        
-        CharSequence text;
-        if (action == NOTIFICATION_ACTION_PAUSE) {
-            text= c.getText(R.string.running_click_to_pause);
-        }
-        else {
-            text= c.getText(R.string.stopped_click_to_resume);
-        }
-
-        Notification noti= new Notification.Builder(c)
-            .setContentTitle(c.getText(R.string.app_name))
-            .setContentText(text)
-            .setSmallIcon(R.drawable.ic_launcher)
-            .setContentIntent(pIntent)
-            .build();
-        
-        return noti;
-    }
-    
-    public Notification getNotification(Context c) {
-        return getNotification(c, NOTIFICATION_ACTION_PAUSE);
-    }
-    
-    public int getNotificationId() {
-        return NOTIFICATION_ID;
-    }
-    
     public EViacamEngine(Context c) {
         /*
          * UI stuff 
@@ -134,8 +58,8 @@ public class EViacamEngine implements FrameProcessor {
         CameraLayerView cameraLayer= new CameraLayerView(c);
         mOverlayView.addFullScreenLayer(cameraLayer);
 
-        DockPanelLayerView dockPanelView= new DockPanelLayerView(c);
-        mOverlayView.addFullScreenLayer(dockPanelView);
+        mDockPanelView= new DockPanelLayerView(c);
+        mOverlayView.addFullScreenLayer(mDockPanelView);
         
         mControlsLayer= new ControlsLayerView(c);
         mOverlayView.addFullScreenLayer(mControlsLayer);
@@ -152,19 +76,13 @@ public class EViacamEngine implements FrameProcessor {
         
         mDwellClick= new DwellClick(c);
         
-        mAccessibilityAction= new AccessibilityAction (mControlsLayer, dockPanelView);
+        mAccessibilityAction= new AccessibilityAction (mControlsLayer, mDockPanelView);
         
         // create camera & machine vision part
         mCameraListener= new CameraListener(c, this);
         cameraLayer.addCameraSurface(mCameraListener.getCameraSurface());
         
         mOrientationManager= new OrientationManager(c, mCameraListener.getCameraOrientation());
-        
-        /*
-         * register notification receiver
-         */
-        IntentFilter iFilter= new IntentFilter(NOTIFICATION_FILTER_ACTION);
-        c.registerReceiver(mMessageReceiver, iFilter);
         
         /*
          * start processing frames
@@ -189,7 +107,7 @@ public class EViacamEngine implements FrameProcessor {
         mPointerControl.cleanup();
         mPointerControl= null;
         
-        // nothing to be done for mPointerLayer
+        // nothing to be done for layers
         
         mOverlayView.cleanup();
         mOverlayView= null;
@@ -197,21 +115,23 @@ public class EViacamEngine implements FrameProcessor {
         mCurrentState= STATE_STOPPED;
     }
    
-    private void pause() {
+    public void pause() {
         if (mCurrentState != STATE_RUNNING) return;
         
         // TODO: this is a basic method to pause the program
         // pause/resume should reset internal state of some objects 
         mCurrentState= STATE_PAUSED;
         mControlsLayer.setVisibility(View.INVISIBLE);
+        mDockPanelView.setVisibility(View.INVISIBLE);
         mPointerLayer.setVisibility(View.INVISIBLE);
     }
     
-    private void resume() {
+    public void resume() {
         if (mCurrentState != STATE_PAUSED) return;
         
         // TODO: see comment on pause()
         mPointerLayer.setVisibility(View.VISIBLE);
+        mDockPanelView.setVisibility(View.VISIBLE);
         mControlsLayer.setVisibility(View.VISIBLE);        
         mCurrentState= STATE_RUNNING;
         

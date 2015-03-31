@@ -1,8 +1,10 @@
 package com.crea_si.eviacam.service;
 
+import android.accessibilityservice.AccessibilityService;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 class AccessibilityAction {
@@ -11,8 +13,7 @@ class AccessibilityAction {
      * class to put together an accessibility action 
      * and the label to display to the user 
      */
-    static 
-    private class ActionLabel {
+    private static class ActionLabel {
         int action;
         int labelId;
         ActionLabel(int a, int l) {
@@ -22,8 +23,7 @@ class AccessibilityAction {
     }
     
     // store the pairs (accessibility action, label) of supported actions
-    static 
-    final ActionLabel[] mActionLabels = new ActionLabel[] {
+    private static final ActionLabel[] mActionLabels = new ActionLabel[] {
         new ActionLabel(AccessibilityNodeInfo.ACTION_CLICK, R.string.click),
         new ActionLabel(AccessibilityNodeInfo.ACTION_LONG_CLICK, R.string.long_click),            
         new ActionLabel(AccessibilityNodeInfo.ACTION_COLLAPSE, R.string.collapse),
@@ -37,10 +37,13 @@ class AccessibilityAction {
     };
 
     // accessibility actions we are interested on when searching nodes
-    final int FULL_ACTION_MASK;
+    private final int FULL_ACTION_MASK;
     
-    // reference to the view on which action menus are drawn
-    ControlsLayerView mControlsLayerView;
+    // layer view for context menu
+    private ControlsLayerView mControlsLayerView;
+    
+    // layer view for docking panel
+    private DockPanelLayerView mDockPanelLayerView;
     
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
@@ -48,8 +51,9 @@ class AccessibilityAction {
     // node on which the action should be performed
     private AccessibilityNodeInfo mNode;
     
-    public AccessibilityAction (ControlsLayerView cv) {
+    public AccessibilityAction (ControlsLayerView cv, DockPanelLayerView dplv) {
         mControlsLayerView= cv;
+        mDockPanelLayerView= dplv;
         
         // populate actions to view & compute action mask
         int full_action_mask= 0;
@@ -61,6 +65,30 @@ class AccessibilityAction {
         FULL_ACTION_MASK= full_action_mask;
     }
 
+    /*
+     * manage global actions, return false if action not generated
+     */
+    private boolean manageGlobalActions (Point p) {
+        int idDockPanelAction= mDockPanelLayerView.getViewIdBelowPoint(p);
+        if (idDockPanelAction == View.NO_ID) return false;
+        AccessibilityService s= EViacamService.getInstance();
+        
+        switch (idDockPanelAction) {
+        case R.id.back_button:
+            s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+            break;
+        case R.id.home_button:
+            s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
+            break;
+        case R.id.recents_button:
+            s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+            break;
+        default:
+            return false;
+        }
+        
+        return true;
+    }
     
     public void performAction (PointF p) {
         // TODO: consider making it an attribute
@@ -75,6 +103,9 @@ class AccessibilityAction {
             if (action != 0) mNode.performAction(action);
         }
         else {
+           
+            if (manageGlobalActions(pInt)) return;
+            
             AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
             
             if (node == null) return;
@@ -95,10 +126,11 @@ class AccessibilityAction {
         }
     }
     
+    
     /*
      * class to store information across recursive calls
      */
-    static private class RecursionInfo {
+    private static class RecursionInfo {
         final public Point p;
         final public Rect tmp= new Rect();
         final public int actions;

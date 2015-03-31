@@ -18,11 +18,11 @@ public class EViacamEngine implements FrameProcessor {
     /*
      * constants for notifications
      */
-    static private final int NOTIFICATION_ID= 1;
-    static private final String NOTIFICATION_FILTER_ACTION= "ENABLE_DISABLE_EVIACAM";
-    static private final int NOTIFICATION_ACTION_PAUSE= 0;
-    static private final int NOTIFICATION_ACTION_RESUME= 1;
-    static private final String NOTIFICATION_ACTION_NAME= "action";
+    private static final int NOTIFICATION_ID= 1;
+    private static final String NOTIFICATION_FILTER_ACTION= "ENABLE_DISABLE_EVIACAM";
+    private static final int NOTIFICATION_ACTION_PAUSE= 0;
+    private static final int NOTIFICATION_ACTION_RESUME= 1;
+    private static final String NOTIFICATION_ACTION_NAME= "action";
     
     /*
      * states of the engine
@@ -39,7 +39,7 @@ public class EViacamEngine implements FrameProcessor {
     private PointerLayerView mPointerLayer;
     
     // layer for drawing different controls
-    ControlsLayerView mControlsLayer;
+    private ControlsLayerView mControlsLayer;
     
     // object in charge of capturing & processing frames
     private CameraListener mCameraListener;
@@ -152,7 +152,7 @@ public class EViacamEngine implements FrameProcessor {
         
         mDwellClick= new DwellClick(c);
         
-        mAccessibilityAction= new AccessibilityAction (mControlsLayer);
+        mAccessibilityAction= new AccessibilityAction (mControlsLayer, dockPanelView);
         
         // create camera & machine vision part
         mCameraListener= new CameraListener(c, this);

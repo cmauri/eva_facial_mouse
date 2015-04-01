@@ -71,6 +71,9 @@ class AccessibilityAction {
     private boolean manageGlobalActions (Point p) {
         int idDockPanelAction= mDockPanelLayerView.getViewIdBelowPoint(p);
         if (idDockPanelAction == View.NO_ID) return false;
+        
+        if (mDockPanelLayerView.performClick(idDockPanelAction)) return true;
+        
         AccessibilityService s= EViacamService.getInstance();
         
         switch (idDockPanelAction) {

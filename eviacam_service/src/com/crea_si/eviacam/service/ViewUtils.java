@@ -34,6 +34,7 @@ class ViewUtils {
      * @return the view which meets these conditions, null otherwise
      */
     public static View findViewWithIdBelowPoint(Point p, View v) {
+        if (v.getVisibility() != View.VISIBLE) return null;
         if (!isPointInsideView(p, v)) return null;
         if (!(v instanceof ViewGroup)) {
             if (v.getId() != View.NO_ID) return v;

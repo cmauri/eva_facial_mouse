@@ -45,5 +45,6 @@
     <string name="back_button">Back button</string>
     <string name="home_button">Home button</string>
     <string name="recents_button">Recents button</string>
+    <string name="dock_panel_button">Expand/collapse dock panel</string>
 
 </resources>

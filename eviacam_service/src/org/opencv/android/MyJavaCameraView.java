@@ -43,13 +43,11 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
 
     public static class JavaCameraSizeAccessor implements ListItemAccessor {
 
-        @Override
         public int getWidth(Object obj) {
             Camera.Size size = (Camera.Size) obj;
             return size.width;
         }
 
-        @Override
         public int getHeight(Object obj) {
             Camera.Size size = (Camera.Size) obj;
             return size.height;
@@ -231,8 +229,6 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
         }
     }
 
-    private boolean mCameraFrameReady = false;
-
     @Override
     protected boolean connectCamera(int width, int height) {
 
@@ -244,8 +240,6 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
         if (!initializeCamera(width, height))
             return false;
 
-        mCameraFrameReady = false;
-
         /* now we can start update thread */
         Log.d(TAG, "Starting processing thread");
         mStopThread = false;
@@ -255,7 +249,6 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
         return true;
     }
 
-    @Override
     protected void disconnectCamera() {
         /* 1. We need to stop thread which updating the frames
          * 2. Stop camera and release it
@@ -278,16 +271,12 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
 
         /* Now release camera */
         releaseCamera();
-
-        mCameraFrameReady = false;
     }
 
-    @Override
     public void onPreviewFrame(byte[] frame, Camera arg1) {
         Log.d(TAG, "Preview Frame received. Frame size: " + frame.length);
         synchronized (this) {
-            mFrameChain[mChainIdx].put(0, 0, frame);
-            mCameraFrameReady = true;
+            mFrameChain[1 - mChainIdx].put(0, 0, frame);
             this.notify();
         }
         if (mCamera != null)
@@ -295,12 +284,10 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
     }
 
     private class JavaCameraFrame implements CvCameraViewFrame {
-        @Override
         public Mat gray() {
             return mYuvFrameData.submat(0, mHeight, 0, mWidth);
         }
 
-        @Override
         public Mat rgba() {
             Imgproc.cvtColor(mYuvFrameData, mRgba, Imgproc.COLOR_YUV2RGBA_NV21, 4);
             return mRgba;
@@ -326,25 +313,21 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
 
     private class CameraWorker implements Runnable {
 
-        @Override
         public void run() {
             do {
                 synchronized (MyJavaCameraView.this) {
                     try {
-                        while (!mCameraFrameReady && !mStopThread) {
-                            MyJavaCameraView.this.wait();
-                        }
+                        MyJavaCameraView.this.wait();
                     } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                    if (mCameraFrameReady)
-                        mChainIdx = 1 - mChainIdx;
                 }
 
-                if (!mStopThread && mCameraFrameReady) {
-                    mCameraFrameReady = false;
-                    if (!mFrameChain[1 - mChainIdx].empty())
-                        deliverAndDrawFrame(mCameraFrame[1 - mChainIdx]);
+                if (!mStopThread) {
+                    if (!mFrameChain[mChainIdx].empty())
+                        deliverAndDrawFrame(mCameraFrame[mChainIdx]);
+                    mChainIdx = 1 - mChainIdx;
                 }
             } while (!mStopThread);
             Log.d(TAG, "Finish processing thread");

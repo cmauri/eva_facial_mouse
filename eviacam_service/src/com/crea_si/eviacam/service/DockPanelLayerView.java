@@ -6,9 +6,11 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,65 +23,190 @@ public class DockPanelLayerView extends RelativeLayout {
     // whether is expanded or not
     private boolean mIsExpanded= true;
     
-    // arrow facing left
-    private Bitmap mArrowLeft;
+    // arrow icon when the panel is expanded
+    private Bitmap mToggleExpanded;
     
-    // arrow facing right
-    private Bitmap mArrowRight;
+    // arrow icon when the panel is collapsed
+    private Bitmap mToggleCollapsed;
     
     public DockPanelLayerView(Context context) {
         super(context);
-        
-        // inflate docking panel
-        LayoutInflater inflater = LayoutInflater.from(context);
-        mDockPanelView= (LinearLayout) inflater.inflate(R.layout.dock_panel_layout, this, false);
-        
-        addPanel(Gravity.START);
-        
-        // measure the size of the expand/collapse button
-        mDockPanelView.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        ImageButton ib= (ImageButton) mDockPanelView.findViewById(R.id.expand_collapse_dock_button);
-        int width= ib.getMeasuredWidth();
-        int height= ib.getMeasuredHeight();
-        
-        // get arrow left
-        Drawable d= context.getResources().getDrawable(R.drawable.arrow_left);
-        Bitmap origBitmap= ((BitmapDrawable) d).getBitmap();
-        mArrowLeft= Bitmap.createScaledBitmap(origBitmap, width, height, true);
-        ib.setImageBitmap(mArrowLeft);
-
-        // get arrow right
-        Matrix matrix = new Matrix(); 
-        matrix.preScale(-1.0f, 1.0f); 
-        mArrowRight = Bitmap.createBitmap(mArrowLeft, 0, 0, mArrowLeft.getWidth(), 
-                mArrowLeft.getHeight(), matrix, false);
+       
+        createAndAddDockPanel (Gravity.START);
     }
-  
-    private void addPanel(int gravity) {
-        RelativeLayout.LayoutParams lp= 
-                (RelativeLayout.LayoutParams) mDockPanelView.getLayoutParams();
+    
+    /**
+     * create container and set layout parameters
+     */
+    private static LinearLayout createContainerView (Context c, int gravity) {
         
+        LinearLayout container= new LinearLayout(c);
+        RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+ 
         switch (gravity) {
         case Gravity.END:
+            container.setOrientation(LinearLayout.HORIZONTAL);
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             // no break
         case Gravity.START:
             lp.addRule(RelativeLayout.CENTER_VERTICAL);
             break;
         case Gravity.TOP:
+            container.setOrientation(LinearLayout.VERTICAL);
             lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
             lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
             break;
         case Gravity.BOTTOM:
+            container.setOrientation(LinearLayout.VERTICAL);
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
             break;
         }
+        container.setLayoutParams(lp);
+        
+        return container;
+    }
+    
+    /**
+     * inflate contents view
+     */
+    private static View createPanelButtonsView (Context c, ViewGroup container, int gravity) {
+        LayoutInflater inflater = LayoutInflater.from(c);
+        LinearLayout contents= (LinearLayout) 
+                inflater.inflate(R.layout.dock_panel_layout, container, false);
+        
+        // set layout direction
+        if (gravity == Gravity.END || gravity == Gravity.START) {
+            contents.setOrientation(LinearLayout.VERTICAL);
+        }
+        else {
+            contents.setOrientation(LinearLayout.HORIZONTAL);
+        }
+        
+        return contents;
+    }
+    
+    private static boolean isVertical (int gravity) {
+        return (gravity == Gravity.END || gravity == Gravity.START);
+    }
+    
+    /**
+     * create toggle button
+     */
+    private View createToggleButtonView (int gravity) {
+        // first we need a relative layout for centering toggle
+        RelativeLayout buttonLayout= new RelativeLayout(this.getContext());
+        if (isVertical(gravity)) {
+            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams (
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            buttonLayout.setLayoutParams(llp);
+        }
+        else {
+            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams (
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            buttonLayout.setLayoutParams(llp);
+        }
+        
+        // size of the button
+        // TODO: move magic numbers to resources or obtain from other icons
+        int longSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, 
+                getResources().getDisplayMetrics());
+        int shortSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, 
+                getResources().getDisplayMetrics());
+        
+        // create the button
+        ImageButton ib= new ImageButton(this.getContext());
+        ib.setId(R.id.expand_collapse_dock_button);
+        ib.setBackgroundColor(getResources().getColor(R.color.half_alpha));
+        ib.setContentDescription(this.getContext().getText(R.string.dock_panel_button));
+        
+        // set layout params
+        if (isVertical(gravity)) {
+            RelativeLayout.LayoutParams rlp= new RelativeLayout.LayoutParams(shortSide, longSide);
+            rlp.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+            ib.setLayoutParams(rlp);
+        }
+        else {
+            RelativeLayout.LayoutParams rlp= new RelativeLayout.LayoutParams(longSide, shortSide);
+            rlp.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+            ib.setLayoutParams(rlp);
+        }
+        buttonLayout.addView(ib);
+        
+        // get original bitmap (which is arrow left)
+        Drawable d= this.getContext().getResources().getDrawable(R.drawable.arrow_left);
+        Bitmap origBitmap= ((BitmapDrawable) d).getBitmap();
+        
+        // scale to the final size
+        Bitmap arrowLeft= Bitmap.createScaledBitmap(origBitmap, shortSide, longSide, true);
+        
+        if (isVertical(gravity)) {
+            // arrow right
+            Matrix matrix = new Matrix(); 
+            matrix.preScale(-1.0f, 1.0f); 
+            Bitmap arrowRight = Bitmap.createBitmap(arrowLeft, 0, 0, arrowLeft.getWidth(), 
+                    arrowLeft.getHeight(), matrix, false);
+            
+            if (gravity == Gravity.START) {
+                mToggleExpanded= arrowLeft;
+                mToggleCollapsed= arrowRight;
+            }
+            else { // END
+                mToggleExpanded= arrowRight;
+                mToggleCollapsed= arrowLeft;
+            }
+        }
+        else {
+            // arrow up
+            Matrix matrix = new Matrix(); 
+            matrix.setRotate(90); 
+            Bitmap arrowUp = Bitmap.createBitmap(arrowLeft, 0, 0, arrowLeft.getWidth(), 
+                    arrowLeft.getHeight(), matrix, false);
+            
+            // arrow down
+            matrix.setScale(1.0f, -1.0f);
+            Bitmap arrowDown = Bitmap.createBitmap(arrowUp, 0, 0, arrowUp.getWidth(), 
+                    arrowUp.getHeight(), matrix, false);
 
-        mDockPanelView.setLayoutParams(lp);
-                
-        // add to this view
-        addView(mDockPanelView);
+            if (gravity == Gravity.TOP) {
+                mToggleExpanded= arrowUp;
+                mToggleCollapsed= arrowDown;
+            }
+            else { // BOTTOM
+                mToggleExpanded= arrowDown;
+                mToggleCollapsed= arrowUp;
+            }
+        }
+        ib.setImageBitmap(mToggleExpanded);
+        
+        return buttonLayout;
+    }
+    
+    private void createAndAddDockPanel (int gravity) {
+    
+        // create elements
+        LinearLayout container= createContainerView (this.getContext(), gravity);
+        
+        View panelButtons= createPanelButtonsView (this.getContext(), container, gravity);
+        
+        View toggleButton= createToggleButtonView(gravity);
+   
+        // assemble
+        if (gravity == Gravity.START || gravity == Gravity.TOP) {
+            container.addView(panelButtons);
+            container.addView(toggleButton);
+        }
+        else {
+            container.addView(toggleButton);
+            container.addView(panelButtons);
+        }
+        
+        mDockPanelView= container;
+        addView(mDockPanelView);        
     }
     
     /**
@@ -93,33 +220,7 @@ public class DockPanelLayerView extends RelativeLayout {
         
         return result.getId();
     }
-    
-    private void expand() {
-        if (mIsExpanded) return;
-        
-        View v= mDockPanelView.findViewById(R.id.collapsible_view);
-        if (v != null) v.setVisibility(View.VISIBLE);
-        
-        ImageButton ib= (ImageButton)
-                mDockPanelView.findViewById(R.id.expand_collapse_dock_button);
-        if (ib != null) ib.setImageBitmap(mArrowLeft);
-                
-        mIsExpanded= true;
-    }
-    
-    private void collapse() {
-        if (!mIsExpanded) return;
-        
-        View v= mDockPanelView.findViewById(R.id.collapsible_view);
-        if (v != null) v.setVisibility(View.GONE);
-        
-        ImageButton ib= (ImageButton)
-                mDockPanelView.findViewById(R.id.expand_collapse_dock_button);
-        if (ib != null) ib.setImageBitmap(mArrowRight);
-
-        mIsExpanded= false;
-    }
-    
+   
     /**
      * Gives an opportunity to process a click action for a given view
      *  
@@ -140,5 +241,31 @@ public class DockPanelLayerView extends RelativeLayout {
         }
         
         return false;
+    }
+    
+    private void expand() {
+        if (mIsExpanded) return;
+        
+        View v= mDockPanelView.findViewById(R.id.collapsible_view);
+        if (v != null) v.setVisibility(View.VISIBLE);
+        
+        ImageButton ib= (ImageButton)
+                mDockPanelView.findViewById(R.id.expand_collapse_dock_button);
+        if (ib != null) ib.setImageBitmap(mToggleExpanded);
+                
+        mIsExpanded= true;
+    }
+    
+    private void collapse() {
+        if (!mIsExpanded) return;
+        
+        View v= mDockPanelView.findViewById(R.id.collapsible_view);
+        if (v != null) v.setVisibility(View.GONE);
+        
+        ImageButton ib= (ImageButton)
+                mDockPanelView.findViewById(R.id.expand_collapse_dock_button);
+        if (ib != null) ib.setImageBitmap(mToggleCollapsed);
+
+        mIsExpanded= false;
     }
 }

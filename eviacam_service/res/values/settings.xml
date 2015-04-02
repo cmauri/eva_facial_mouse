@@ -9,7 +9,7 @@
     <integer name="acceleration_min">0</integer>
     <integer name="acceleration_max">5</integer>
     
-    <integer name="motion_smoothing_default">1</integer>
+    <integer name="motion_smoothing_default">2</integer>
     <integer name="motion_smoothing_min">0</integer>
     <integer name="motion_smoothing_max">8</integer>
     
@@ -21,12 +21,19 @@
     <integer name="dwell_time_min">1</integer>
     <integer name="dwell_time_max">50</integer>
     
-    <integer name="dwell_area_default">2</integer>
+    <integer name="dwell_area_default">5</integer>
     <integer name="dwell_area_min">0</integer>
     <integer name="dwell_area_max">8</integer>
 
     <bool name="sound_on_click_default">true</bool>
     
     <string name="time_without_detection_default">30</string>
+    
+    <string name="docking_panel_edge_left_value">1</string>
+    <string name="docking_panel_edge_right_value">2</string>
+    <string name="docking_panel_edge_top_value">3</string>
+    <string name="docking_panel_edge_bottom_value">4</string>
 
+    <integer name="docking_panel_edge_default">1</integer>
+    
 </resources>

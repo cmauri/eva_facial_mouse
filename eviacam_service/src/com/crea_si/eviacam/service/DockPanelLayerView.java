@@ -1,11 +1,15 @@
 package com.crea_si.eviacam.service;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,7 +19,21 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-public class DockPanelLayerView extends RelativeLayout {
+public class DockPanelLayerView extends RelativeLayout 
+    implements OnSharedPreferenceChangeListener {
+    
+    private static final String KEY_DOCKING_PANEL_EDGE= "docking_panel_edge";
+    
+    private static final int TOGGLE_BUTTON_SHORT_SIDE_DP= 15;
+    private static final int TOGGLE_BUTTON_LONG_SIDE_DP= 24;
+    
+    private final int DOCKING_PANEL_EDGE_DEFAULT;
+    private final int EDGE_RIGHT;
+    private final int EDGE_TOP;
+    private final int EDGE_BOTTOM;
+    
+    // reference to shared preferences pool
+    private SharedPreferences mSharedPref;
     
     // the docking panel
     private LinearLayout mDockPanelView;
@@ -32,7 +50,49 @@ public class DockPanelLayerView extends RelativeLayout {
     public DockPanelLayerView(Context context) {
         super(context);
        
-        createAndAddDockPanel (Gravity.START);
+        // get constants from resources
+        Resources r= context.getResources();
+        DOCKING_PANEL_EDGE_DEFAULT= r.getInteger(R.integer.docking_panel_edge_default);
+        EDGE_RIGHT= Integer.parseInt(r.getString(R.string.docking_panel_edge_right_value));
+        EDGE_TOP= Integer.parseInt(r.getString(R.string.docking_panel_edge_top_value));
+        EDGE_BOTTOM=  Integer.parseInt(r.getString(R.string.docking_panel_edge_bottom_value));
+        
+        // shared preferences
+        mSharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        
+        // register preference change listener
+        mSharedPref.registerOnSharedPreferenceChangeListener(this);
+        
+        readSettings();
+    }
+    
+    public void cleanup() {
+        mSharedPref.unregisterOnSharedPreferenceChangeListener(this);        
+    }
+    
+    private void readSettings() {
+        // get values from shared resources
+        int dockingEdge= Integer.parseInt(mSharedPref.getString(
+                KEY_DOCKING_PANEL_EDGE, Integer.toString(DOCKING_PANEL_EDGE_DEFAULT)));
+                
+        if (mDockPanelView != null) {
+            removeView(mDockPanelView);
+        }
+        
+        int gravity= Gravity.START;
+        if (dockingEdge == EDGE_RIGHT)  gravity= Gravity.END;
+        else if (dockingEdge == EDGE_TOP)    gravity= Gravity.TOP;
+        else if (dockingEdge == EDGE_BOTTOM) gravity= Gravity.BOTTOM;
+        
+        createAndAddDockPanel (gravity);
+    }
+    
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+            String key) {
+        if (key.equals(KEY_DOCKING_PANEL_EDGE)) {
+            readSettings();
+        }
     }
     
     /**
@@ -112,11 +172,10 @@ public class DockPanelLayerView extends RelativeLayout {
         }
         
         // size of the button
-        // TODO: move magic numbers to resources or obtain from other icons
-        int longSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, 
-                getResources().getDisplayMetrics());
-        int shortSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, 
-                getResources().getDisplayMetrics());
+        int longSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                TOGGLE_BUTTON_LONG_SIDE_DP, getResources().getDisplayMetrics());
+        int shortSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                TOGGLE_BUTTON_SHORT_SIDE_DP, getResources().getDisplayMetrics());
         
         // create the button
         ImageButton ib= new ImageButton(this.getContext());
@@ -206,7 +265,7 @@ public class DockPanelLayerView extends RelativeLayout {
         }
         
         mDockPanelView= container;
-        addView(mDockPanelView);        
+        addView(mDockPanelView);
     }
     
     /**

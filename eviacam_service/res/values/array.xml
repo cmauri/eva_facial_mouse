@@ -16,4 +16,17 @@
     <item>60</item>
 </string-array>
 
+<string-array name="docking_panel_edge_entries">
+    <item>@string/left</item>
+    <item>@string/right</item>
+    <item>@string/top</item>
+    <item>@string/bottom</item>    
+</string-array>
+<string-array name="docking_panel_edge_values">
+    <item>@string/docking_panel_edge_left_value</item>
+    <item>@string/docking_panel_edge_right_value</item>
+    <item>@string/docking_panel_edge_top_value</item>
+    <item>@string/docking_panel_edge_bottom_value</item>    
+</string-array>
+
 </resources>

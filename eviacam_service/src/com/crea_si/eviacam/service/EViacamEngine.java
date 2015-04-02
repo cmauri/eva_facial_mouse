@@ -107,7 +107,10 @@ public class EViacamEngine implements FrameProcessor {
         mPointerControl.cleanup();
         mPointerControl= null;
         
-        // nothing to be done for layers
+        // nothing to be done for mPointerLayer and mControlsLayer
+        
+        mDockPanelView.cleanup();
+        mDockPanelView= null;
         
         mOverlayView.cleanup();
         mOverlayView= null;
@@ -121,20 +124,22 @@ public class EViacamEngine implements FrameProcessor {
         // TODO: this is a basic method to pause the program
         // pause/resume should reset internal state of some objects 
         mCurrentState= STATE_PAUSED;
+        mPointerLayer.setVisibility(View.INVISIBLE);
         mControlsLayer.setVisibility(View.INVISIBLE);
         mDockPanelView.setVisibility(View.INVISIBLE);
-        mPointerLayer.setVisibility(View.INVISIBLE);
     }
     
     public void resume() {
         if (mCurrentState != STATE_PAUSED) return;
         
         // TODO: see comment on pause()
-        mPointerLayer.setVisibility(View.VISIBLE);
         mDockPanelView.setVisibility(View.VISIBLE);
-        mControlsLayer.setVisibility(View.VISIBLE);        
-        mCurrentState= STATE_RUNNING;
+        mControlsLayer.setVisibility(View.VISIBLE);
+        mPointerLayer.setVisibility(View.VISIBLE);
         
+        // make sure that changes during pause (e.g. docking panel edge) are applied        
+        mOverlayView.requestLayout();
+        mCurrentState= STATE_RUNNING;
     }    
     
     public void onConfigurationChanged(Configuration newConfig) {

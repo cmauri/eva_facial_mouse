@@ -11,6 +11,9 @@ public class EVIACAMIME {
     public static final boolean DEBUG = BuildConfig.DEBUG;
     
     public static void debug(String message) {
-        if ( DEBUG ) Log.d(TAG, message);
+        if ( DEBUG ) {
+            int pid= android.os.Process.myPid();
+            Log.d(TAG, String.format("Hello %d: %s", pid, message));
+        }
     }
 }

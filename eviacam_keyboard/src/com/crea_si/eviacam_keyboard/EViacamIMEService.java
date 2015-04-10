@@ -1,13 +1,19 @@
 package com.crea_si.eviacam_keyboard;
 
+import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.media.AudioManager;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityNodeProvider;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodSubtype;
 
 public class EViacamIMEService extends InputMethodService implements
         OnKeyboardActionListener {
@@ -22,7 +28,21 @@ public class EViacamIMEService extends InputMethodService implements
         super.onCreate();
         android.os.Debug.waitForDebugger();
     }
+    
+    @Override
+    public int onStartCommand (Intent intent, int flags, int startId) {
+        EVIACAMIME.debug("onStartCommand");
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        
+        return super.onStartCommand(intent, flags, startId);
+    }
 
+    @Override
+    public void onInitializeInterface () {
+        EVIACAMIME.debug("onInitializeInterface");
+    }
+    
     @Override
     public View onCreateInputView() {
         EVIACAMIME.debug("onCreateInputView");
@@ -31,9 +51,67 @@ public class EViacamIMEService extends InputMethodService implements
         mKeyboard = new Keyboard(this, R.xml.qwerty);
         mKeyboardView.setKeyboard(mKeyboard);
         mKeyboardView.setOnKeyboardActionListener(this);
+        
+        
+        mKeyboardView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                EVIACAMIME.debug("onViewAttachedToWindow");
+                if (mKeyboardView == v) {
+                    EVIACAMIME.debug("YEP!");
+                }
+                else {
+                    EVIACAMIME.debug("NOPE!");
+                }
+                debugDump();
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                EVIACAMIME.debug("onViewDetachedFromWindow");
+            }
+        });
+        
         return mKeyboardView;
     }
+    
+    public void onBindInput () {
+        EVIACAMIME.debug("onBindInput");
+        super.onBindInput();
+    }
+    
+    
+    @Override
+    public View onCreateCandidatesView() {
+        EVIACAMIME.debug("onCreateCandidatesView");
+        return super. onCreateCandidatesView();
+    }
+    
+    @Override
+    public void onStartInput (EditorInfo attribute, boolean restarting) {
+        EVIACAMIME.debug("onStartInput");
+        super.onStartInput(attribute, restarting);
+    }
+    
+    @Override
+    public void onStartInputView (EditorInfo info, boolean restarting) {
+        EVIACAMIME.debug("onStartInputView");
+        super.onStartInputView(info, restarting);
+    }
 
+    @Override
+    protected void onCurrentInputMethodSubtypeChanged(InputMethodSubtype newSubtype) {
+        EVIACAMIME.debug("onCurrentInputMethodSubtypeChanged");
+        super.onCurrentInputMethodSubtypeChanged(newSubtype);
+    }
+    
+    @Override
+    public void onFinishInput () {
+        EVIACAMIME.debug("onFinishInput");
+        super.onFinishInput();
+    }
+    
     @Override
     public void onDestroy() {
         EVIACAMIME.debug("onDestroy");
@@ -41,6 +119,10 @@ public class EViacamIMEService extends InputMethodService implements
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
+        EVIACAMIME.debug("onKey");
+        
+        debugDump();
+        
         InputConnection ic = getCurrentInputConnection();
         playClick(primaryCode);
         switch (primaryCode) {
@@ -109,5 +191,30 @@ public class EViacamIMEService extends InputMethodService implements
 
     @Override
     public void swipeUp() {
+    }
+    
+    private void debugDump() {
+        AccessibilityNodeInfo node= mKeyboardView.createAccessibilityNodeInfo();
+        AccessibilityNodeDebug.displayFullTree(node);
+        
+        node= AccessibilityNodeInfo.obtain(mKeyboardView);
+        AccessibilityNodeDebug.displayFullTree(node);
+        
+        // this return null
+        AccessibilityNodeProvider provider= mKeyboardView.getAccessibilityNodeProvider();
+        EVIACAMIME.debug("provider: " + provider);
+        
+        ViewUtils.dumpViewGroupHierarchy(mKeyboardView);
+        
+        int coord[]= new int[2];
+        mKeyboardView.getLocationOnScreen(coord);
+        EVIACAMIME.debug("Coord: " + coord[0] + ", " + coord[1]);
+        EVIACAMIME.debug("Size: " + mKeyboardView.getWidth() + " " + mKeyboardView.getHeight());
+        
+        EVIACAMIME.debug("Keyboard height: " + mKeyboard.getHeight());
+
+        for (Key key : mKeyboard.getKeys()) {
+            EVIACAMIME.debug("KEY: " + key.label+ " (" + key.x + " " + key.y + ")");
+        }
     }
 }

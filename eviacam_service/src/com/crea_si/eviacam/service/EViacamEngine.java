@@ -9,7 +9,9 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.Messenger;
+import android.os.RemoteException;
 import android.view.View;
 
 public class EViacamEngine implements FrameProcessor {
@@ -52,7 +54,8 @@ public class EViacamEngine implements FrameProcessor {
     // current engine state
     private int mCurrentState= STATE_NONE;
     
-    
+    ///////////////////////////////////////////////
+    static final int MSG_SAY_HELLO = 1;
     /** Messenger for communicating with the service. */
     Messenger mService = null;
 
@@ -70,6 +73,22 @@ public class EViacamEngine implements FrameProcessor {
             EVIACAM.debug("remoteIME:onServiceConnected");
             mService = new Messenger(service);
             mBound = true;
+            
+            
+            // Send test message
+            try {
+                Thread.sleep(3000);                 //1000 milliseconds is one second.
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+            
+            Message msg = Message.obtain(null, MSG_SAY_HELLO, 0, 0);
+            try {
+                mService.send(msg);
+            }
+            catch (Exception e) {
+                EVIACAM.debug("EXCEPTION:" + e.getMessage());
+            }
         }
 
         @Override

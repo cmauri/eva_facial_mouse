@@ -24,8 +24,14 @@ public class EViacamIMEService extends InputMethodService implements
 //    private ServiceNotification mServiceNotification;
     private MessengerService mMessengerService;
     
+    private static InputMethodService gInputMethodService;
+    static public InputMethodService getInstance() {
+        return gInputMethodService;
+    }
+    
     @Override
     public void onCreate() {
+        gInputMethodService= this;
         EVIACAMIME.debug("onCreate");
         super.onCreate();
         android.os.Debug.waitForDebugger();

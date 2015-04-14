@@ -21,12 +21,17 @@ public class EViacamIMEService extends InputMethodService implements
     private KeyboardView mKeyboardView;
     private Keyboard mKeyboard;
     private boolean mCaps = false;
-
+//    private ServiceNotification mServiceNotification;
+    private MessengerService mMessengerService;
+    
     @Override
     public void onCreate() {
         EVIACAMIME.debug("onCreate");
         super.onCreate();
         android.os.Debug.waitForDebugger();
+        //mServiceNotification= new ServiceNotification(this);
+        EVIACAMIME.debug("Class name:" + MessengerService.class.getName()); 
+        mMessengerService= new MessengerService();
     }
     
     @Override
@@ -64,7 +69,7 @@ public class EViacamIMEService extends InputMethodService implements
                 else {
                     EVIACAMIME.debug("NOPE!");
                 }
-                debugDump();
+                //debugDump();
             }
 
             @Override
@@ -121,7 +126,7 @@ public class EViacamIMEService extends InputMethodService implements
     public void onKey(int primaryCode, int[] keyCodes) {
         EVIACAMIME.debug("onKey");
         
-        debugDump();
+        //debugDump();
         
         InputConnection ic = getCurrentInputConnection();
         playClick(primaryCode);

@@ -27,6 +27,16 @@
 	            android:resource="@xml/method"/>
 
 	    </service>
+	    
+        <service 
+            android:name=".MessengerService"
+            android:label="IME messenger service">
+	        <intent-filter>
+                <action android:name="com.crea_si.eviacam_keyboard.MessengerService" />
+          </intent-filter>
+            
+        </service>
+        	            
 
     </application>
 

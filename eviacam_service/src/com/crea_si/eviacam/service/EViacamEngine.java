@@ -2,9 +2,14 @@ package com.crea_si.eviacam.service;
 
 import org.opencv.core.Mat;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.PointF;
+import android.os.IBinder;
+import android.os.Messenger;
 import android.view.View;
 
 public class EViacamEngine implements FrameProcessor {
@@ -46,6 +51,37 @@ public class EViacamEngine implements FrameProcessor {
     
     // current engine state
     private int mCurrentState= STATE_NONE;
+    
+    
+    /** Messenger for communicating with the service. */
+    Messenger mService = null;
+
+    /** Flag indicating whether we have called bind on the service. */
+    boolean mBound;
+    
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // This is called when the connection with the service has been
+            // established, giving us the object we can use to
+            // interact with the service.  We are communicating with the
+            // service using a Messenger, so here we get a client-side
+            // representation of that from the raw IBinder object.
+            EVIACAM.debug("remoteIME:onServiceConnected");
+            mService = new Messenger(service);
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            EVIACAM.debug("remoteIME:onServiceDisconnected");
+            mService = null;
+            mBound = false;
+        }
+    };
+    
     
     public EViacamEngine(Context c) {
         /*
@@ -89,6 +125,17 @@ public class EViacamEngine implements FrameProcessor {
          */
         mCameraListener.startCamera();
 
+        
+        try {
+            boolean retval= c.bindService(new Intent("com.crea_si.eviacam_keyboard.MessengerService"), mConnection, Context.BIND_AUTO_CREATE);
+            EVIACAM.debug("bindService returned:" + retval);
+        }
+        catch (Exception e) {
+            EVIACAM.debug("EXCEPTION:" + e.getMessage());
+        }
+        
+        
+        
         mCurrentState= STATE_RUNNING;
     }
    

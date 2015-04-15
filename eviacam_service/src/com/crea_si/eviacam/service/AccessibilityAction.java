@@ -38,12 +38,15 @@ class AccessibilityAction {
 
     // accessibility actions we are interested on when searching nodes
     private final int FULL_ACTION_MASK;
-    
+
     // layer view for context menu
     private ControlsLayerView mControlsLayerView;
     
     // layer view for docking panel
     private DockPanelLayerView mDockPanelLayerView;
+
+    // delegate to manage input method interaction
+    private final InputMethodAction mInputMethodAction;
     
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
@@ -55,6 +58,8 @@ class AccessibilityAction {
         mControlsLayerView= cv;
         mDockPanelLayerView= dplv;
         
+        mInputMethodAction= new InputMethodAction (cv.getContext());
+        
         // populate actions to view & compute action mask
         int full_action_mask= 0;
         for (ActionLabel al : mActionLabels) {
@@ -63,6 +68,10 @@ class AccessibilityAction {
         }
         
         FULL_ACTION_MASK= full_action_mask;
+    }
+    
+    public void cleanup () {
+        mInputMethodAction.cleanup();
     }
 
     /*
@@ -108,6 +117,8 @@ class AccessibilityAction {
         else {
            
             if (manageGlobalActions(pInt)) return;
+            
+            if (mInputMethodAction.click(p.x, p.y)) return;
             
             AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
             

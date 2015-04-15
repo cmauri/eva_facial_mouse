@@ -29,10 +29,10 @@
 	    </service>
 	    
         <service 
-            android:name=".MessengerService"
+            android:name=".RemoteBinderService"
             android:label="IME messenger service">
 	        <intent-filter>
-                <action android:name="com.crea_si.eviacam_keyboard.MessengerService" />
+                <action android:name="com.crea_si.eviacam_keyboard.RemoteBinderService" />
           </intent-filter>
             
         </service>

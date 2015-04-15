@@ -22,7 +22,7 @@ public class EViacamIMEService extends InputMethodService implements
     private Keyboard mKeyboard;
     private boolean mCaps = false;
 //    private ServiceNotification mServiceNotification;
-    private MessengerService mMessengerService;
+    private RemoteBinderService mRemoteBinderService;
     
     private static InputMethodService gInputMethodService;
     static public InputMethodService getInstance() {
@@ -36,8 +36,8 @@ public class EViacamIMEService extends InputMethodService implements
         super.onCreate();
         android.os.Debug.waitForDebugger();
         //mServiceNotification= new ServiceNotification(this);
-        EVIACAMIME.debug("Class name:" + MessengerService.class.getName()); 
-        mMessengerService= new MessengerService();
+        EVIACAMIME.debug("Class name:" + RemoteBinderService.class.getName()); 
+        mRemoteBinderService= new RemoteBinderService();
     }
     
     @Override

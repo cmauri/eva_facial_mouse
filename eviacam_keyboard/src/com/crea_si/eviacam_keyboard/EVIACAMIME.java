@@ -13,7 +13,12 @@ public class EVIACAMIME {
     public static void debug(String message) {
         if ( DEBUG ) {
             int pid= android.os.Process.myPid();
-            Log.d(TAG, String.format("Hello %d: %s", pid, message));
+            Log.d(TAG, String.format("[%d]: %s", pid, message));
         }
+    }
+    
+    public static void warning(String message) {
+        int pid= android.os.Process.myPid();
+        Log.w(TAG, String.format("[%d]: %s", pid, message));
     }
 }

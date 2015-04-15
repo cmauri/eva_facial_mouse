@@ -1,6 +1,5 @@
 package com.crea_si.eviacam_keyboard;
 
-import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
@@ -18,40 +17,46 @@ import android.view.inputmethod.InputMethodSubtype;
 public class EViacamIMEService extends InputMethodService implements
         OnKeyboardActionListener {
 
+    private static EViacamIMEService gInstance;
+    
     private KeyboardView mKeyboardView;
     private Keyboard mKeyboard;
     private boolean mCaps = false;
-//    private ServiceNotification mServiceNotification;
-    private RemoteBinderService mRemoteBinderService;
-    
-    private static InputMethodService gInputMethodService;
-    static public InputMethodService getInstance() {
-        return gInputMethodService;
-    }
-    
-    @Override
-    public void onCreate() {
-        gInputMethodService= this;
-        EVIACAMIME.debug("onCreate");
-        super.onCreate();
-        android.os.Debug.waitForDebugger();
-        //mServiceNotification= new ServiceNotification(this);
-        EVIACAMIME.debug("Class name:" + RemoteBinderService.class.getName()); 
-        mRemoteBinderService= new RemoteBinderService();
-    }
-    
-    @Override
-    public int onStartCommand (Intent intent, int flags, int startId) {
-        EVIACAMIME.debug("onStartCommand");
-        // We want this service to continue running until it is explicitly
-        // stopped, so return sticky.
+    private boolean mReadyForInput= false;
+
+    /**
+     * Performs a click on the location (x, y) when possible
+     * @param x - abscissa coordinate of the point (relative to the screen)
+     * @param y - ordinate coordinate of the point (relative to the screen)
+     * @return true if the point is within view bounds of the IME, false otherwise
+     */
+    public static boolean click(float x, float y) {
+        // is the IME has not been create just return false
+        if (gInstance == null) return false;
         
-        return super.onStartCommand(intent, flags, startId);
+        if (!gInstance.mReadyForInput) return false;
+        
+        InputConnection ic = gInstance.getCurrentInputConnection();
+        if (ic == null) return false;
+        
+        // TODO: perform click
+        ic.commitText("!", 1);
+        
+        return true;
     }
 
     @Override
-    public void onInitializeInterface () {
-        EVIACAMIME.debug("onInitializeInterface");
+    public void onCreate() {
+        gInstance= this;
+        EVIACAMIME.debug("onCreate");
+        super.onCreate();
+        android.os.Debug.waitForDebugger();
+    }
+    
+    @Override
+    public void onDestroy() {
+        EVIACAMIME.debug("onDestroy");
+        gInstance= null;
     }
     
     @Override
@@ -62,70 +67,23 @@ public class EViacamIMEService extends InputMethodService implements
         mKeyboard = new Keyboard(this, R.xml.qwerty);
         mKeyboardView.setKeyboard(mKeyboard);
         mKeyboardView.setOnKeyboardActionListener(this);
-        
-        
-        mKeyboardView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-
-            @Override
-            public void onViewAttachedToWindow(View v) {
-                EVIACAMIME.debug("onViewAttachedToWindow");
-                if (mKeyboardView == v) {
-                    EVIACAMIME.debug("YEP!");
-                }
-                else {
-                    EVIACAMIME.debug("NOPE!");
-                }
-                //debugDump();
-            }
-
-            @Override
-            public void onViewDetachedFromWindow(View v) {
-                EVIACAMIME.debug("onViewDetachedFromWindow");
-            }
-        });
-        
+        debugViewStateChanges(mKeyboardView);
         return mKeyboardView;
-    }
-    
-    public void onBindInput () {
-        EVIACAMIME.debug("onBindInput");
-        super.onBindInput();
-    }
-    
-    
-    @Override
-    public View onCreateCandidatesView() {
-        EVIACAMIME.debug("onCreateCandidatesView");
-        return super. onCreateCandidatesView();
-    }
-    
-    @Override
-    public void onStartInput (EditorInfo attribute, boolean restarting) {
-        EVIACAMIME.debug("onStartInput");
-        super.onStartInput(attribute, restarting);
     }
     
     @Override
     public void onStartInputView (EditorInfo info, boolean restarting) {
         EVIACAMIME.debug("onStartInputView");
+        mReadyForInput= true;
         super.onStartInputView(info, restarting);
+        
     }
 
     @Override
-    protected void onCurrentInputMethodSubtypeChanged(InputMethodSubtype newSubtype) {
-        EVIACAMIME.debug("onCurrentInputMethodSubtypeChanged");
-        super.onCurrentInputMethodSubtypeChanged(newSubtype);
-    }
-    
-    @Override
-    public void onFinishInput () {
-        EVIACAMIME.debug("onFinishInput");
-        super.onFinishInput();
-    }
-    
-    @Override
-    public void onDestroy() {
-        EVIACAMIME.debug("onDestroy");
+    public void onFinishInputView (boolean finishingInput) {
+        EVIACAMIME.debug("onFinishInputView");
+        mReadyForInput= false;
+        super.onFinishInputView(finishingInput);
     }
 
     @Override
@@ -175,7 +133,59 @@ public class EViacamIMEService extends InputMethodService implements
             am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD);
         }
     }
+    
+    //////////////// DEBUG CODE
+    private void debugViewStateChanges (View v) {
+        v.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                EVIACAMIME.debug("onViewAttachedToWindow");
+                if (mKeyboardView == v) {
+                    EVIACAMIME.debug("YEP!");
+                }
+                else {
+                    EVIACAMIME.debug("NOPE!");
+                }
+                //debugDump();
+            }
 
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                EVIACAMIME.debug("onViewDetachedFromWindow");
+            }
+        });
+    }
+    
+    @Override
+    public void onBindInput () {
+        EVIACAMIME.debug("onBindInput");
+        super.onBindInput();
+    }
+    
+    @Override
+    public View onCreateCandidatesView() {
+        EVIACAMIME.debug("onCreateCandidatesView");
+        return super. onCreateCandidatesView();
+    }
+    
+    @Override
+    public void onStartInput (EditorInfo attribute, boolean restarting) {
+        EVIACAMIME.debug("onStartInput");
+        super.onStartInput(attribute, restarting);
+    }
+    
+    @Override
+    public void onFinishInput () {
+        EVIACAMIME.debug("onFinishInput");
+        super.onFinishInput();
+    }   
+    
+    @Override
+    protected void onCurrentInputMethodSubtypeChanged(InputMethodSubtype newSubtype) {
+        EVIACAMIME.debug("onCurrentInputMethodSubtypeChanged");
+        super.onCurrentInputMethodSubtypeChanged(newSubtype);
+    }
+    
     @Override
     public void onPress(int primaryCode) {
     }

@@ -19,9 +19,12 @@ public class ServiceNotification {
     private static final int NOTIFICATION_ACTION_RESUME= 1;
     private static final String NOTIFICATION_ACTION_NAME= "action";
     
-    private EViacamEngine mEngine;
+    private final Context mContext;
+    
+    private final EViacamEngine mEngine;
     
     public ServiceNotification (Context c, EViacamEngine e) {
+        mContext= c;
         mEngine= e;
         
         /*
@@ -29,6 +32,10 @@ public class ServiceNotification {
          */
         IntentFilter iFilter= new IntentFilter(NOTIFICATION_FILTER_ACTION);
         c.registerReceiver(mMessageReceiver, iFilter);
+    }
+    
+    public void cleanup() {
+        mContext.unregisterReceiver(mMessageReceiver);
     }
     
     // receiver for notifications

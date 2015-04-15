@@ -18,32 +18,10 @@ public class EViacamIMEService extends InputMethodService implements
         OnKeyboardActionListener {
 
     private static EViacamIMEService gInstance;
-    
     private KeyboardView mKeyboardView;
     private Keyboard mKeyboard;
     private boolean mCaps = false;
     private boolean mReadyForInput= false;
-
-    /**
-     * Performs a click on the location (x, y) when possible
-     * @param x - abscissa coordinate of the point (relative to the screen)
-     * @param y - ordinate coordinate of the point (relative to the screen)
-     * @return true if the point is within view bounds of the IME, false otherwise
-     */
-    public static boolean click(float x, float y) {
-        // is the IME has not been create just return false
-        if (gInstance == null) return false;
-        
-        if (!gInstance.mReadyForInput) return false;
-        
-        InputConnection ic = gInstance.getCurrentInputConnection();
-        if (ic == null) return false;
-        
-        // TODO: perform click
-        ic.commitText("!", 1);
-        
-        return true;
-    }
 
     @Override
     public void onCreate() {
@@ -132,6 +110,56 @@ public class EViacamIMEService extends InputMethodService implements
         default:
             am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD);
         }
+    }
+    
+    /**
+     * Performs a click on the location (x, y) when possible
+     * @param x - abscissa coordinate of the point (relative to the screen)
+     * @param y - ordinate coordinate of the point (relative to the screen)
+     * @return true if the point is within view bounds of the IME, false otherwise
+     * 
+     * Needs to be static because is called from an external service
+     */
+    public static boolean click(int x, int y) {
+        // is the IME has not been create just return false
+        if (gInstance == null) return false;
+        
+        if (!gInstance.mReadyForInput) return false;
+        
+        InputConnection ic = gInstance.getCurrentInputConnection();
+        if (ic == null) return false;
+        
+        Keyboard.Key k= gInstance.getKeyBelow (x, y);
+        if (k != null) {
+            gInstance.onKey(k.codes[0], k.codes);
+        }
+        
+        return true;
+    }
+    
+    private Key getKeyBelow (int x, int y) {
+        if (mKeyboard == null) return null;
+        if (mKeyboardView == null) return null;
+        
+        // pointer is on the soft-keyboard view?
+        int coord[]= new int[2];
+        mKeyboardView.getLocationOnScreen(coord);
+        if (x< coord[0]) return null;
+        if (y< coord[1]) return null;
+       
+        // base coordinates on the keyboard edge
+        x= x - coord[0];
+        y= y - coord[1];
+        
+        // keys near the given point
+        int[] keys= mKeyboard.getNearestKeys ((int) x, (int) y);
+
+        for (int i : keys) {
+            Keyboard.Key k= mKeyboard.getKeys().get(i);
+            if (k.isInside(x, y)) return k;
+        }
+        
+        return null;
     }
     
     //////////////// DEBUG CODE

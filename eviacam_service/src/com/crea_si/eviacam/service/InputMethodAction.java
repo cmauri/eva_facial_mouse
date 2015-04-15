@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.view.inputmethod.InputMethodManager;
 
 import com.crea_si.input_method_aidl.IClickableIME;
 
@@ -18,11 +19,17 @@ class InputMethodAction implements ServiceConnection {
     // flag indicating whether we have called bind on the service
     private boolean mBound;
     
+    InputMethodManager mInputMethodManager;
+    
     // binder with the remote input method service
     private IClickableIME mRemoteService; 
 
     public InputMethodAction(Context c) {
         mContext= c;
+        
+        mInputMethodManager= (InputMethodManager) 
+                c.getSystemService (Context.INPUT_METHOD_SERVICE);
+        
         // TODO: attempt to bind when IME open
         if (!c.bindService(new Intent(REMOTE_ACTION), this, Context.BIND_AUTO_CREATE)) {
             EVIACAM.debug("Cannot bind remote IME");
@@ -58,6 +65,7 @@ class InputMethodAction implements ServiceConnection {
     public boolean click(float x, float y) {
         if (!mBound) return false;
         if (mRemoteService == null) return false;
+        if (!mInputMethodManager.isActive()) return false;
         
         try {
             return mRemoteService.click(x, y);

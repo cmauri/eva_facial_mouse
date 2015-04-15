@@ -35,7 +35,7 @@ public class RemoteBinderService extends Service {
         FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return EViacamIMEService.click(x, y);
+                return EViacamIMEService.click((int) x, (int) y);
             }
         });
         

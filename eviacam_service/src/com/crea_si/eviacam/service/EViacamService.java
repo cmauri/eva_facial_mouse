@@ -91,7 +91,11 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         // stop being foreground service and remove notification
         stopForeground(true);
         
+        mServiceNotification.cleanup();
+        mServiceNotification= null;
+        
         mEngine.cleanup();
+        mEngine= null;
         
         if (EVIACAM.DEBUG) {
             mHeartBeat.stop();

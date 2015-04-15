@@ -47,21 +47,21 @@ public class EViacamIMEService extends InputMethodService implements
 
     @Override
     public void onCreate() {
+        EVIACAMIME.debug("EViacamIMEService: onCreate");
         gInstance= this;
-        EVIACAMIME.debug("onCreate");
         super.onCreate();
         android.os.Debug.waitForDebugger();
     }
     
     @Override
     public void onDestroy() {
-        EVIACAMIME.debug("onDestroy");
+        EVIACAMIME.debug("EViacamIMEService: onDestroy");
         gInstance= null;
     }
     
     @Override
     public View onCreateInputView() {
-        EVIACAMIME.debug("onCreateInputView");
+        EVIACAMIME.debug("EViacamIMEService: onCreateInputView");
         mKeyboardView = (KeyboardView) getLayoutInflater().inflate(
                 R.layout.keyboard, null);
         mKeyboard = new Keyboard(this, R.xml.qwerty);
@@ -73,7 +73,7 @@ public class EViacamIMEService extends InputMethodService implements
     
     @Override
     public void onStartInputView (EditorInfo info, boolean restarting) {
-        EVIACAMIME.debug("onStartInputView");
+        EVIACAMIME.debug("EViacamIMEService: onStartInputView");
         mReadyForInput= true;
         super.onStartInputView(info, restarting);
         
@@ -81,14 +81,14 @@ public class EViacamIMEService extends InputMethodService implements
 
     @Override
     public void onFinishInputView (boolean finishingInput) {
-        EVIACAMIME.debug("onFinishInputView");
+        EVIACAMIME.debug("EViacamIMEService: onFinishInputView");
         mReadyForInput= false;
         super.onFinishInputView(finishingInput);
     }
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
-        EVIACAMIME.debug("onKey");
+        EVIACAMIME.debug("EViacamIMEService: onKey");
         
         //debugDump();
         
@@ -158,31 +158,31 @@ public class EViacamIMEService extends InputMethodService implements
     
     @Override
     public void onBindInput () {
-        EVIACAMIME.debug("onBindInput");
+        EVIACAMIME.debug("EViacamIMEService: onBindInput");
         super.onBindInput();
     }
     
     @Override
     public View onCreateCandidatesView() {
-        EVIACAMIME.debug("onCreateCandidatesView");
+        EVIACAMIME.debug("EViacamIMEService: onCreateCandidatesView");
         return super. onCreateCandidatesView();
     }
     
     @Override
     public void onStartInput (EditorInfo attribute, boolean restarting) {
-        EVIACAMIME.debug("onStartInput");
+        EVIACAMIME.debug("EViacamIMEService: onStartInput");
         super.onStartInput(attribute, restarting);
     }
     
     @Override
     public void onFinishInput () {
-        EVIACAMIME.debug("onFinishInput");
+        EVIACAMIME.debug("EViacamIMEService: onFinishInput");
         super.onFinishInput();
     }   
     
     @Override
     protected void onCurrentInputMethodSubtypeChanged(InputMethodSubtype newSubtype) {
-        EVIACAMIME.debug("onCurrentInputMethodSubtypeChanged");
+        EVIACAMIME.debug("EViacamIMEService: onCurrentInputMethodSubtypeChanged");
         super.onCurrentInputMethodSubtypeChanged(newSubtype);
     }
     

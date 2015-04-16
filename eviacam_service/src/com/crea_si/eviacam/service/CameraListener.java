@@ -93,7 +93,7 @@ public class CameraListener implements CvCameraViewListener2 {
         // crashes with a "Callback buffer was too small! error", it works at 352x288
         
         mCameraView.setMaxFrameSize(352, 288);
-        mCameraView.enableFpsMeter(); // For testing
+        //mCameraView.enableFpsMeter(); // For testing
         mCameraView.setCvCameraViewListener(this);
         
         // Set View parameters

@@ -10,12 +10,14 @@ import android.widget.Toast;
 
 
 public class HeartBeat {
-    private Timer mTimer;
-    private Context mContext;
+    private final Timer mTimer;
+    private final Context mContext;
+    private final String mMessage;
     
-    public HeartBeat(Context context) {
+    public HeartBeat(Context context, String msg) {
         mContext= context;
         mTimer= new Timer();
+        mMessage= msg;
     }
     
     public void start() {
@@ -35,9 +37,8 @@ public class HeartBeat {
     private final Handler toastHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Toast.makeText(mContext, "test", Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(
+                    mContext, mMessage, Toast.LENGTH_SHORT).show();
         }
     };
-
 }

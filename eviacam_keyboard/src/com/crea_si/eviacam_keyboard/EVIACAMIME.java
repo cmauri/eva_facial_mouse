@@ -8,17 +8,23 @@ import android.util.Log;
 public class EVIACAMIME {
     public static final String TAG = EVIACAMIME.class.getSimpleName();
     
-    public static final boolean DEBUG = BuildConfig.DEBUG;
+    private static final boolean DEBUG = BuildConfig.DEBUG;
+    
+    private static final boolean ATTACH_DEBUGGER = DEBUG;
+    
+    private static final boolean DEBUG_MESSAGES = DEBUG;
+    
+    public static void debugInit() {
+        if (!ATTACH_DEBUGGER) return;
+        android.os.Debug.waitForDebugger();
+    }
     
     public static void debug(String message) {
-        if ( DEBUG ) {
-            int pid= android.os.Process.myPid();
-            Log.d(TAG, String.format("[%d]: %s", pid, message));
-        }
+        if (!DEBUG_MESSAGES) return;
+        Log.d(TAG, message);
     }
     
     public static void warning(String message) {
-        int pid= android.os.Process.myPid();
-        Log.w(TAG, String.format("[%d]: %s", pid, message));
+        Log.w(TAG, message);
     }
 }

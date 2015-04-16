@@ -22,7 +22,7 @@ import android.view.inputmethod.InputMethodSubtype;
 public class EViacamIMEService extends InputMethodService implements
         OnKeyboardActionListener {
 
-    private static EViacamIMEService gInstance;
+    private static EViacamIMEService sInstance;
     private IBinder mIdentifiyingToken;
     private KeyboardView mKeyboardView;
     private Keyboard mKeyboard;
@@ -31,16 +31,16 @@ public class EViacamIMEService extends InputMethodService implements
 
     @Override
     public void onCreate() {
+        EVIACAMIME.debugInit();
         EVIACAMIME.debug("EViacamIMEService: onCreate");
-        gInstance= this;
+        sInstance= this;
         super.onCreate();
-        android.os.Debug.waitForDebugger();
     }
     
     @Override
     public void onDestroy() {
         EVIACAMIME.debug("EViacamIMEService: onDestroy");
-        gInstance= null;
+        sInstance= null;
     }
     
     @Override
@@ -128,26 +128,26 @@ public class EViacamIMEService extends InputMethodService implements
      */
     public static boolean click(int x, int y) {
         // is the IME has not been create just return false
-        if (gInstance == null) return false;
+        if (sInstance == null) return false;
         
-        if (!gInstance.mReadyForInput) return false;
+        if (!sInstance.mReadyForInput) return false;
         
-        InputConnection ic = gInstance.getCurrentInputConnection();
+        InputConnection ic = sInstance.getCurrentInputConnection();
         if (ic == null) return false;
         
         // has clicked inside the keyboard?
-        if (gInstance.mKeyboardView == null) return false;
+        if (sInstance.mKeyboardView == null) return false;
         int coord[]= new int[2];
-        gInstance.mKeyboardView.getLocationOnScreen(coord);
+        sInstance.mKeyboardView.getLocationOnScreen(coord);
         if (x < coord[0] || y < coord[1]) return false;
         
         // adjust coordinates relative to the edge of the keyboard
         x= x - coord[0];
         y= y - coord[1];
         
-        Keyboard.Key k= gInstance.getKeyBelow (x, y);
+        Keyboard.Key k= sInstance.getKeyBelow (x, y);
         if (k != null) {
-            gInstance.onKey(k.codes[0], k.codes);
+            sInstance.onKey(k.codes[0], k.codes);
         }
         
         return true;
@@ -177,16 +177,16 @@ public class EViacamIMEService extends InputMethodService implements
      */
     public static void openIME() {
         // is the IME has not been create just returns
-        if (gInstance == null) return;
+        if (sInstance == null) return;
         
         // no identifying token? should not happen but just in case
-        if (gInstance.mIdentifiyingToken == null) return;
+        if (sInstance.mIdentifiyingToken == null) return;
         
         InputMethodManager imm= 
-                (InputMethodManager) gInstance.getSystemService(INPUT_METHOD_SERVICE);
+                (InputMethodManager) sInstance.getSystemService(INPUT_METHOD_SERVICE);
         
         imm.showSoftInputFromInputMethod(
-                gInstance.mIdentifiyingToken, InputMethodManager.SHOW_FORCED);
+                sInstance.mIdentifiyingToken, InputMethodManager.SHOW_FORCED);
     }
     
     /** 

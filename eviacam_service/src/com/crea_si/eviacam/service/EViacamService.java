@@ -7,16 +7,11 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.Toast;
 
 public class EViacamService extends AccessibilityService implements ComponentCallbacks {
     
     // static attribute which holds an instance to the service instance
     private static AccessibilityService sAccessibilityService;
-    
-    // for debugging, shows a toast at certain intervals so that we know 
-    // the service is still alive
-    private HeartBeat mHeartBeat;
     
     // reference to the engine
     private EViacamEngine mEngine;
@@ -53,20 +48,14 @@ public class EViacamService extends AccessibilityService implements ComponentCal
             return;
         }
         
+        EVIACAM.debugInit(this);
+        
         /**
          * Unsubscribe all accessibility events. Cannot be removed directly from
          * @xml/accessibilityservice, otherwise onUnbind and onDestroy // never
          * get called
          */
         setServiceInfo(new AccessibilityServiceInfo());
-
-        if (EVIACAM.DEBUG) {
-            // debugging stuff
-            android.os.Debug.waitForDebugger();
-            Toast.makeText(getApplicationContext(), "onServiceConnected", Toast.LENGTH_SHORT).show();
-            mHeartBeat = new HeartBeat(this);
-            mHeartBeat.start();
-        }
         
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
@@ -96,12 +85,9 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         
         mEngine.cleanup();
         mEngine= null;
-        
-        if (EVIACAM.DEBUG) {
-            mHeartBeat.stop();
-            mHeartBeat= null;
-        }
-        
+
+        EVIACAM.debugCleanup();
+
         mRunning= false;
     }
     

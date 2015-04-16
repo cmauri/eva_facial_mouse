@@ -38,12 +38,15 @@ class AccessibilityAction {
 
     // accessibility actions we are interested on when searching nodes
     private final int FULL_ACTION_MASK;
-    
+
     // layer view for context menu
     private ControlsLayerView mControlsLayerView;
     
     // layer view for docking panel
     private DockPanelLayerView mDockPanelLayerView;
+
+    // delegate to manage input method interaction
+    private final InputMethodAction mInputMethodAction;
     
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
@@ -55,6 +58,8 @@ class AccessibilityAction {
         mControlsLayerView= cv;
         mDockPanelLayerView= dplv;
         
+        mInputMethodAction= new InputMethodAction (cv.getContext());
+        
         // populate actions to view & compute action mask
         int full_action_mask= 0;
         for (ActionLabel al : mActionLabels) {
@@ -64,10 +69,12 @@ class AccessibilityAction {
         
         FULL_ACTION_MASK= full_action_mask;
     }
+    
+    public void cleanup () {
+        mInputMethodAction.cleanup();
+    }
 
-    /*
-     * manage global actions, return false if action not generated
-     */
+    /** Manages global actions, return false if action not generated */
     private boolean manageGlobalActions (Point p) {
         int idDockPanelAction= mDockPanelLayerView.getViewIdBelowPoint(p);
         if (idDockPanelAction == View.NO_ID) return false;
@@ -93,8 +100,18 @@ class AccessibilityAction {
         return true;
     }
     
+    private void performActionOnNode(AccessibilityNodeInfo node, int action) {
+        if (action == 0) return;
+        // TODO: currently only checks for EditText instances, check with EditText subclasses
+        if ((action & AccessibilityNodeInfo.ACTION_CLICK) != 0 &&
+                node.getClassName().toString().equalsIgnoreCase("android.widget.EditText")) {
+            mInputMethodAction.openIME();
+            node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+        }
+        node.performAction(action);
+    }
+    
     public void performAction (PointF p) {
-        // TODO: consider making it an attribute
         Point pInt= new Point();
         pInt.x= (int) p.x;
         pInt.y= (int) p.y;
@@ -103,17 +120,24 @@ class AccessibilityAction {
             int action= mControlsLayerView.testClick(pInt);
             mControlsLayerView.hideContextMenu();
             mContextMenuOpen= false;
-            if (action != 0) mNode.performAction(action);
+            performActionOnNode(mNode, action);
         }
         else {
            
+            // manage clicks on global actions menu
             if (manageGlobalActions(pInt)) return;
             
+            // manage actions for the IME
+            if (mInputMethodAction.click(pInt.x, pInt.y)) return;
+            
+            /**
+             * Find node under (x, y) and its available actions
+             */
             AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
             
             if (node == null) return;
             
-            EVIACAM.debug("Actionable node found: (" + p.x + ", " + p.y + ")." + 
+            EVIACAM.debug("Actionable node found: (" + pInt.x + ", " + pInt.y + ")." + 
                     AccessibilityNodeDebug.getNodeInfo(node));
             
             int availableActions= FULL_ACTION_MASK & node.getActions();
@@ -124,12 +148,11 @@ class AccessibilityAction {
                 mNode= node;
             }
             else {
-                node.performAction(availableActions);
+                performActionOnNode(node, availableActions);
             }
         }
     }
-    
-    
+
     /*
      * class to store information across recursive calls
      */

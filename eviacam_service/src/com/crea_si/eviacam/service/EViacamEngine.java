@@ -100,6 +100,9 @@ public class EViacamEngine implements FrameProcessor {
         
         mOrientationManager.cleanup();
         mOrientationManager= null;
+        
+        mAccessibilityAction.cleanup();
+        mAccessibilityAction= null;
 
         mDwellClick.cleanup();
         mDwellClick= null;

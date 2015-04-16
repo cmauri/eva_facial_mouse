@@ -10,16 +10,17 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.crea_si.input_method_aidl.IClickableIME;
 
+/**
+ * Handles the communication with the IME
+ */
+
 class InputMethodAction implements ServiceConnection {
     
     private static final String REMOTE_ACTION= "com.crea_si.eviacam_keyboard.RemoteBinderService";
     
     private final Context mContext;
     
-    // flag indicating whether we have called bind on the service
-    private boolean mBound;
-    
-    InputMethodManager mInputMethodManager;
+    private final InputMethodManager mInputMethodManager;
     
     // binder with the remote input method service
     private IClickableIME mRemoteService; 
@@ -30,7 +31,8 @@ class InputMethodAction implements ServiceConnection {
         mInputMethodManager= (InputMethodManager) 
                 c.getSystemService (Context.INPUT_METHOD_SERVICE);
         
-        // TODO: attempt to bind when IME open
+        // attempt to bind when IME open
+        // TODO: support multiple compatible IMEs  
         if (!c.bindService(new Intent(REMOTE_ACTION), this, Context.BIND_AUTO_CREATE)) {
             EVIACAM.debug("Cannot bind remote IME");
         }
@@ -50,22 +52,25 @@ class InputMethodAction implements ServiceConnection {
         // interact with the service.
         EVIACAM.debug("remoteIME:onServiceConnected: " + className.toString());
         mRemoteService = IClickableIME.Stub.asInterface(service);
-        mBound = true;
     }
 
     @Override
     public void onServiceDisconnected(ComponentName className) {
         // This is called when the connection with the service has been
         // unexpectedly disconnected -- that is, its process crashed.
+        
+        // TODO: rebind in case the service gets disconnected
         EVIACAM.debug("remoteIME:onServiceDisconnected");
+        mContext.unbindService(this);
         mRemoteService = null;
-        mBound = false;
     }
     
-    public boolean click(float x, float y) {
-        if (!mBound) return false;
-        if (mRemoteService == null) return false;
-        if (!mInputMethodManager.isActive()) return false;
+    public boolean click(int x, int y) {
+        if (mRemoteService == null) {
+            EVIACAM.debug("InputMethodAction: click: no remote service available");
+            return false;
+        }
+        //if (!mInputMethodManager.isActive()) return false;
         
         try {
             return mRemoteService.click(x, y);
@@ -74,5 +79,17 @@ class InputMethodAction implements ServiceConnection {
         }
     }
     
- 
+    public void openIME() {
+        if (mRemoteService == null) {
+            EVIACAM.debug("InputMethodAction: openIME: no remote service available");
+            return;
+        }
+        if (mInputMethodManager.isActive()) return; // already open
+        try {
+            mRemoteService.openIME();
+        } catch (RemoteException e) {
+            // Nothing to be done
+            EVIACAM.debug("InputMethodAction: exception while trying to open IME");
+        }
+    }
 }

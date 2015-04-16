@@ -1,23 +1,29 @@
 package com.crea_si.eviacam_keyboard;
 
+import android.inputmethodservice.AbstractInputMethodService;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.media.AudioManager;
+import android.os.IBinder;
+import android.os.ResultReceiver;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeProvider;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputBinding;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 public class EViacamIMEService extends InputMethodService implements
         OnKeyboardActionListener {
 
     private static EViacamIMEService gInstance;
+    private IBinder mIdentifiyingToken;
     private KeyboardView mKeyboardView;
     private Keyboard mKeyboard;
     private boolean mCaps = false;
@@ -129,6 +135,16 @@ public class EViacamIMEService extends InputMethodService implements
         InputConnection ic = gInstance.getCurrentInputConnection();
         if (ic == null) return false;
         
+        // has clicked inside the keyboard?
+        if (gInstance.mKeyboardView == null) return false;
+        int coord[]= new int[2];
+        gInstance.mKeyboardView.getLocationOnScreen(coord);
+        if (x < coord[0] || y < coord[1]) return false;
+        
+        // adjust coordinates relative to the edge of the keyboard
+        x= x - coord[0];
+        y= y - coord[1];
+        
         Keyboard.Key k= gInstance.getKeyBelow (x, y);
         if (k != null) {
             gInstance.onKey(k.codes[0], k.codes);
@@ -136,21 +152,10 @@ public class EViacamIMEService extends InputMethodService implements
         
         return true;
     }
-    
+
     private Key getKeyBelow (int x, int y) {
         if (mKeyboard == null) return null;
-        if (mKeyboardView == null) return null;
-        
-        // pointer is on the soft-keyboard view?
-        int coord[]= new int[2];
-        mKeyboardView.getLocationOnScreen(coord);
-        if (x< coord[0]) return null;
-        if (y< coord[1]) return null;
-       
-        // base coordinates on the keyboard edge
-        x= x - coord[0];
-        y= y - coord[1];
-        
+
         // keys near the given point
         int[] keys= mKeyboard.getNearestKeys ((int) x, (int) y);
 
@@ -160,6 +165,89 @@ public class EViacamIMEService extends InputMethodService implements
         }
         
         return null;
+    }
+    
+    /**
+     * Performs a click on the location (x, y) when possible
+     * @param x - abscissa coordinate of the point (relative to the screen)
+     * @param y - ordinate coordinate of the point (relative to the screen)
+     * @return true if the point is within view bounds of the IME, false otherwise
+     * 
+     * Needs to be static because is called from an external service
+     */
+    public static void openIME() {
+        // is the IME has not been create just returns
+        if (gInstance == null) return;
+        
+        // no identifying token? should not happen but just in case
+        if (gInstance.mIdentifiyingToken == null) return;
+        
+        InputMethodManager imm= 
+                (InputMethodManager) gInstance.getSystemService(INPUT_METHOD_SERVICE);
+        
+        imm.showSoftInputFromInputMethod(
+                gInstance.mIdentifiyingToken, InputMethodManager.SHOW_FORCED);
+    }
+    
+    /** 
+     * Trick to obtain the identifying token given to the input method when it is started 
+     */
+    @Override
+    public AbstractInputMethodService.AbstractInputMethodImpl onCreateInputMethodInterface() {
+        return new AbstractInputMethodHook(super.onCreateInputMethodInterface());
+    }
+    
+    class AbstractInputMethodHook extends AbstractInputMethodService.AbstractInputMethodImpl {
+        private AbstractInputMethodService.AbstractInputMethodImpl mBase;
+
+        AbstractInputMethodHook(AbstractInputMethodService.AbstractInputMethodImpl impl) {
+            super();
+            this.mBase = impl;
+        }
+        
+        /** Needed token is supplied here */
+        @Override
+        public void attachToken(IBinder token) {
+            mBase.attachToken(token);
+            mIdentifiyingToken= token;            
+        }
+        
+        /** Following methods just delegate to base */
+        @Override
+        public void bindInput(InputBinding binding) {
+            mBase.bindInput(binding);            
+        }
+
+        @Override
+        public void unbindInput() {
+            mBase.unbindInput();
+        }
+
+        @Override
+        public void startInput(InputConnection inputConnection, EditorInfo info) {
+            mBase.startInput(inputConnection, info);
+        }
+
+        @Override
+        public void restartInput(InputConnection inputConnection,
+                EditorInfo attribute) {
+            mBase.restartInput(inputConnection, attribute);
+        }
+
+        @Override
+        public void showSoftInput(int flags, ResultReceiver resultReceiver) {
+            mBase.showSoftInput(flags, resultReceiver);
+        }
+
+        @Override
+        public void hideSoftInput(int flags, ResultReceiver resultReceiver) {
+            mBase.hideSoftInput(flags, resultReceiver);
+        }
+
+        @Override
+        public void changeInputMethodSubtype(InputMethodSubtype subtype) {
+            mBase.changeInputMethodSubtype(subtype);
+        }
     }
     
     //////////////// DEBUG CODE

@@ -7,5 +7,10 @@ interface IClickableIME {
      * @param y - ordinate coordinate of the point (relative to the screen)
      * @return true if the point is within view bounds of the IME, false otherwise
      */
-    boolean click (float x, float y);
+    boolean click (int x, int y);
+    
+    /**
+     * Open the IME
+     */
+    void openIME();
 }

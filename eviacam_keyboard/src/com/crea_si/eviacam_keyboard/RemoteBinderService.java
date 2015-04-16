@@ -13,36 +13,51 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 /**
- * Listens to and dispatches remote click requests for this IME
+ * Listens to and dispatches remote requests
+ * 
+ * TODO: improve security
  */
 
 public class RemoteBinderService extends Service {
     
-    // handler for the main thread, used to forward calls 
+    // handler used to forward calls to the main thread 
     Handler mMainThreadHandler;
     
     // binder stub, receives remote requests on a secondary thread
     private final IClickableIME.Stub mBinder= new IClickableIME.Stub() {
         @Override
-        public boolean click(float x, float y) throws RemoteException {
+        public boolean click(int x, int y) throws RemoteException {
             // pass the control to the main thread to facilitate implementation of the IME
+            EVIACAMIME.debug("RemoteBinderService: click"); 
             return click_main_thread(x, y);
+        }
+
+        @Override
+        public void openIME() throws RemoteException {
+            Runnable r= new Runnable() {
+                @Override
+                public void run() {
+                    EVIACAMIME.debug("RemoteBinderService: openIME"); 
+                    EViacamIMEService.openIME();                    
+                }                
+            };
+            mMainThreadHandler.post(r);
         }
     };
     
     /** Calls click on the main thread and waits for the result */
-    private boolean click_main_thread(final float x, final float y) {
+    private boolean click_main_thread(final int x, final int y) {
         FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return EViacamIMEService.click((int) x, (int) y);
+                return EViacamIMEService.click(x, y);
             }
         });
         
         mMainThreadHandler.post(futureResult);
         
         try {
-            // this block until the result is calculated!
+            // this block until the result is calculated
             return futureResult.get();
         } 
         catch (ExecutionException e) {

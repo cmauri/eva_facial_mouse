@@ -1,5 +1,11 @@
 package com.crea_si.eviacam.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
@@ -42,9 +48,16 @@ public class CameraListener implements CvCameraViewListener2 {
                     // initialize JNI part
                     System.loadLibrary("visionpipeline");
                     
-                    // TODO: get cascade path from apk resources
-                    VisionPipeline.init("/mnt/sdcard/Download/haarcascade_frontalface_alt2.xml");
-                    
+                    /** Load haarcascade from resources */
+                    try {
+                        File f= resourceToTempFile (mContext, R.raw.haarcascade, "xml");
+                        VisionPipeline.init(f.getAbsolutePath());
+                        f.delete();
+                    }
+                    catch (IOException e) {
+                        EVIACAM.debug("Cannot write haarcascade temp file. Continuing anyway");
+                    }
+
                     // start camera capture
                     mCameraView.enableView();
                 } break;
@@ -57,6 +70,49 @@ public class CameraListener implements CvCameraViewListener2 {
         }
     };
     
+    /** 
+     * Load a resource into a temporary file
+     * 
+     * @param c - context
+     * @param rid - resource id
+     * @param suffix - extension of the temporary file
+     * @return a File object representing the temporary file
+     * @throws IOException
+     */
+    private static File resourceToTempFile (Context c, int rid, String suffix) 
+            throws IOException {
+        InputStream is= null;
+        OutputStream os= null;
+        File outFile = null;
+        
+        is= c.getResources().openRawResource(rid);
+        try {
+            outFile = File.createTempFile("tmp", suffix, c.getCacheDir());
+            os= new FileOutputStream(outFile);
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = is.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            if (outFile != null) {
+                outFile.delete();
+                outFile= null;
+            }
+            throw e;
+        }
+        finally {
+            try {
+                if (is != null) is.close();
+                if (os != null) os.close();
+            } catch (IOException e) {
+                throw e;
+            }
+        }
+
+        return outFile;
+    }
+
     public CameraListener(Context c, FrameProcessor fp) {
         mContext= c;
         mFrameProcessor= fp;

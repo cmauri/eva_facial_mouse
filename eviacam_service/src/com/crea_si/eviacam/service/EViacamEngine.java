@@ -180,7 +180,9 @@ public class EViacamEngine implements FrameProcessor {
         boolean clickGenerated= 
                 mDwellClick.updatePointerLocation(pointerLocation);
         
-        // redraw pointer layer
+        // update pointer position and click progress
+        mPointerLayer.updatePosition(pointerLocation);
+        mPointerLayer.updateClickProgress(mDwellClick.getClickProgressPercent());
         mPointerLayer.postInvalidate();
         
         // perform action when needed

@@ -10,8 +10,8 @@ import android.media.ToneGenerator;
 import android.preference.PreferenceManager;
 
 class DwellClick implements OnSharedPreferenceChangeListener {
-    /*
-     * enums and constats
+    /**
+     * Enums and constants
      */
     private enum State {
         DISABLED, POINTER_MOVING, COUNTDOWN_STARTED, CLICK_DONE
@@ -24,9 +24,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private static final String KEY_DWELL_TIME= "dwell_time";
     private static final String KEY_DWELL_AREA= "dwell_area";
     private static final String KEY_SOUND_ON_CLICK= "sound_on_click";
-    
-    // reference to view on which pointer feedback is drawn 
-    //private PointerLayerView mPointerView;
   
     // delegate to measure elapsed time
     private Countdown mCountdown;
@@ -113,14 +110,13 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         float dist= dx * dx + dy * dy;
         return (dist> mDwellAreaSquared);
     }
-    
-    /*
-     * given variation of the pointer position checks whether 
-     * need to generate a click
+
+    /**
+     * Given the current position of the pointer calculates if needs to generate a click
      * 
-     * Return:
-     *  true if click generated
-     *  
+     * @param pl - position of the pointer
+     * @return true if click generated
+     * 
      * this method is called from a secondary thread
      */
     public boolean updatePointerLocation (PointF pl) {
@@ -141,7 +137,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         else {
             if (!mRequestEnabled) {
                 mState = State.DISABLED;
-                // hide countdown
             }
         }
        
@@ -150,23 +145,17 @@ class DwellClick implements OnSharedPreferenceChangeListener {
             if (!movedAboveThreshold (mPrevPointerLocation, pl)) {
                 mState= State.COUNTDOWN_STARTED;
                 mCountdown.reset();
-                // display countdown
             }
         }
         else if (mState == State.COUNTDOWN_STARTED) {
             if (movedAboveThreshold (mPrevPointerLocation, pl)) {
                 mState= State.POINTER_MOVING;
-                // hide countdown
             }
             else {
                 if (mCountdown.hasFinished()) {
                     playSound ();
                     retval= true;
                     mState= State.CLICK_DONE;
-                    // hide countdown
-                }
-                else {
-                    // update countdown
                 }
             }
         }
@@ -179,5 +168,15 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         mPrevPointerLocation.set(pl);  // deep copy
         
         return retval;
+    }
+    
+    /**
+     * Get click progress percent
+     * @return value in the range 0 to 100
+     */
+    public int getClickProgressPercent() {
+        if (mState != State.COUNTDOWN_STARTED) return 0;
+        
+        return mCountdown.getElapsedPercent();
     }
 }

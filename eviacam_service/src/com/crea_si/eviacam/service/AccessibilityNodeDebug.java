@@ -24,6 +24,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 class AccessibilityNodeDebug {
     static 
     public String getNodeInfo (AccessibilityNodeInfo node) {
+        if (node == null) return null;
+        
         String result= "[";
         
         // actions

@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 
 public class EViacamEngine implements FrameProcessor {
 
@@ -167,7 +168,11 @@ public class EViacamEngine implements FrameProcessor {
     public void onConfigurationChanged(Configuration newConfig) {
         if (mOrientationManager != null) mOrientationManager.onConfigurationChanged(newConfig);
     }
-    
+
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (mAccessibilityAction != null) mAccessibilityAction.onAccessibilityEvent(event);
+    } 
+
     /*
      * process incoming camera frame 
      * 

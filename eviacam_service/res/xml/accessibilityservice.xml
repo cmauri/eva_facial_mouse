@@ -22,7 +22,7 @@
  <!-- android:accessibilityEventTypes and  android:accessibilityFeedbackType need some
  actual values, otherwise onUnbind and onDestroy are never called -->
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeViewClicked"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged|typeViewScrolled"
     android:accessibilityFeedbackType="feedbackSpoken"
     android:description="@string/eviacam_service_description" 
     android:settingsActivity="com.crea_si.eviacam.service.SettingsActivity"

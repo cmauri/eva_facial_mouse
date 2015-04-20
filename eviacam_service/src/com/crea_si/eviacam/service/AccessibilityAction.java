@@ -24,6 +24,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 class AccessibilityAction {
@@ -171,6 +172,46 @@ class AccessibilityAction {
             }
         }
     }
+    
+    /**
+     * Process events from accessiility service
+     */
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        // TODO: TYPE_WINDOW_CONTENT_CHANGED events come in short bursts,
+        // filter repetitive events
+        
+        if (event == null) {
+            // Called during the initialization
+            // TODO: handle this case
+            return;
+        }
+        
+        AccessibilityNodeInfo node= event.getSource();
+        
+        switch (event.getEventType()) {
+        case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
+            EVIACAM.debug("WINDOW_STATE_CHANGED: " + AccessibilityNodeDebug.getNodeInfo(node));
+            break;
+        case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
+            switch (event.getContentChangeTypes ()) {
+            case AccessibilityEvent.CONTENT_CHANGE_TYPE_CONTENT_DESCRIPTION:
+            case AccessibilityEvent.CONTENT_CHANGE_TYPE_TEXT:
+                EVIACAM.debug("WINDOW_CONTENT_TEXT|CONTENT_DESC_CHANGED: ignored");
+                break;  // just ignore these events
+            case AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE:
+                EVIACAM.debug("WINDOW_CONTENT_CHANGED_SUBTREE: " + AccessibilityNodeDebug.getNodeInfo(node));
+                break;
+            case AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED:
+                EVIACAM.debug("WINDOW_CONTENT_CHANGED_UNDEFINED: " + AccessibilityNodeDebug.getNodeInfo(node));
+            }
+            break;
+        case AccessibilityEvent.TYPE_VIEW_SCROLLED:
+            EVIACAM.debug("VIEW_SCROLLED: " + AccessibilityNodeDebug.getNodeInfo(node));
+            break;
+        }
+        
+        event.recycle();
+    } 
 
     /*
      * class to store information across recursive calls

@@ -15,12 +15,12 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-class AsyncServiceHelper
+class MyAsyncServiceHelper
 {
     public static boolean initOpenCV(String Version, final Context AppContext,
             final LoaderCallbackInterface Callback)
     {
-        AsyncServiceHelper helper = new AsyncServiceHelper(Version, AppContext, Callback);
+        MyAsyncServiceHelper helper = new MyAsyncServiceHelper(Version, AppContext, Callback);
         if (AppContext.bindService(new Intent("org.opencv.engine.BIND"),
                 helper.mServiceConnection, Context.BIND_AUTO_CREATE))
         {
@@ -34,7 +34,7 @@ class AsyncServiceHelper
         }
     }
 
-    protected AsyncServiceHelper(String Version, Context AppContext, LoaderCallbackInterface Callback)
+    protected MyAsyncServiceHelper(String Version, Context AppContext, LoaderCallbackInterface Callback)
     {
         mOpenCVersion = Version;
         mUserAppCallback = Callback;

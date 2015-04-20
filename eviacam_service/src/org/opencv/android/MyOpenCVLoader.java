@@ -5,7 +5,7 @@ import android.content.Context;
 /**
  * Helper class provides common initialization methods for OpenCV library.
  */
-public class OpenCVLoader
+public class MyOpenCVLoader
 {
     /**
      * OpenCV Library version 2.4.2.
@@ -82,6 +82,6 @@ public class OpenCVLoader
     public static boolean initAsync(String Version, Context AppContext,
             LoaderCallbackInterface Callback)
     {
-        return AsyncServiceHelper.initOpenCV(Version, AppContext, Callback);
+        return MyAsyncServiceHelper.initOpenCV(Version, AppContext, Callback);
     }
 }

@@ -45,6 +45,9 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     // whether to play a sound when action performed
     private boolean mSoundOnClick;
     
+    // audio manager for FX notifications
+    AudioManager mAudioManager;
+    
     // to remember previous pointer location and measure travelled distance
     private PointF mPrevPointerLocation= null;
 
@@ -57,6 +60,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         SOUND_ON_CLICK_DEFAULT= r.getBoolean(R.bool.sound_on_click_default);
         
         mCountdown= new Countdown(DWELL_TIME_DEFAULT);
+        
+        mAudioManager= (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
         
         // shared preferences
         mSharedPref = PreferenceManager.getDefaultSharedPreferences(c);
@@ -99,8 +104,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     
     private void playSound () {
         if (mSoundOnClick) {
-            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+            mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
         }
     }
 

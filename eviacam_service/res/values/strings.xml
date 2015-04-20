@@ -1,9 +1,9 @@
 <resources>
 
-    <string name="app_name">Enable Viacam</string>
-    <string name="service_name">Enable Viacam</string>
-    <string name="eviacam_service_description">Enable Viacam is a mouse replacement software that moves the pointer as you move your head.</string>
-    <string name="eviacam_preferences_title">Enable Viacam settings</string>
+    <string name="app_name">Enable Viacam Android</string>
+    <string name="service_name">Enable Viacam Android</string>
+    <string name="eviacam_service_description">Enable Viacam Android is a mouse replacement software that moves the pointer as you move your head.</string>
+    <string name="eviacam_preferences_title">Enable Viacam Android settings</string>
     <string name="motion_settings">Motion settings</string>
     <string name="x_axis_speed">X axis speed</string>
     <string name="x_axis_speed_summary">Sets response sensitivity for the X axis</string>

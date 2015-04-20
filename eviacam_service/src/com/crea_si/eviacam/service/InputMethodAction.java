@@ -72,8 +72,9 @@ class InputMethodAction implements ServiceConnection {
         mLastBindAttempTimeStamp= tstamp;
         
         EVIACAM.debug("Attemp to bind to remote IME");
-        if (!mContext.bindService(
-                new Intent(REMOTE_ACTION), this, Context.BIND_AUTO_CREATE)) {
+        Intent intent= new Intent(REMOTE_ACTION);
+        intent.setPackage("com.crea_si.eviacam_keyboard");
+        if (!mContext.bindService(intent, this, Context.BIND_AUTO_CREATE)) {
             EVIACAM.debug("Cannot bind remote IME");
         }
     }

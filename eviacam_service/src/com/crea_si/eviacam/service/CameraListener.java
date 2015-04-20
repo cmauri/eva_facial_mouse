@@ -12,7 +12,7 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.MyJavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
-import org.opencv.android.OpenCVLoader;
+import org.opencv.android.MyOpenCVLoader;
 import org.opencv.core.Mat;
 
 import android.content.Context;
@@ -158,7 +158,7 @@ public class CameraListener implements CvCameraViewListener2 {
     
     public void startCamera() {
         // Start OpenCV
-        OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_9, mContext, mLoaderCallback);
+        MyOpenCVLoader.initAsync(MyOpenCVLoader.OPENCV_VERSION_2_4_9, mContext, mLoaderCallback);
     }
     
     public void stopCamera() {

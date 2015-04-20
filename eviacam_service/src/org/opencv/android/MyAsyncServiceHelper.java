@@ -21,8 +21,9 @@ class MyAsyncServiceHelper
             final LoaderCallbackInterface Callback)
     {
         MyAsyncServiceHelper helper = new MyAsyncServiceHelper(Version, AppContext, Callback);
-        if (AppContext.bindService(new Intent("org.opencv.engine.BIND"),
-                helper.mServiceConnection, Context.BIND_AUTO_CREATE))
+        Intent intent = new Intent("org.opencv.engine.BIND");
+        intent.setPackage("org.opencv.engine");
+        if (AppContext.bindService(intent, helper.mServiceConnection, Context.BIND_AUTO_CREATE))
         {
             return true;
         }

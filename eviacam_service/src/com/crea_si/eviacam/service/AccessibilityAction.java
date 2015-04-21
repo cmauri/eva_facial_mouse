@@ -19,10 +19,14 @@
 
  package com.crea_si.eviacam.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.accessibilityservice.AccessibilityService;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Build;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -65,6 +69,9 @@ class AccessibilityAction {
     // layer view for docking panel
     private DockPanelLayerView mDockPanelLayerView;
 
+    // layer for the scrolling user interface
+    private ScrollLayerView mScrollLayerView;
+
     // delegate to manage input method interaction
     private final InputMethodAction mInputMethodAction;
     
@@ -74,9 +81,11 @@ class AccessibilityAction {
     // node on which the action should be performed
     private AccessibilityNodeInfo mNode;
     
-    public AccessibilityAction (ControlsLayerView cv, DockPanelLayerView dplv) {
+    public AccessibilityAction (
+            ControlsLayerView cv, DockPanelLayerView dplv, ScrollLayerView slv) {
         mControlsLayerView= cv;
         mDockPanelLayerView= dplv;
+        mScrollLayerView= slv;
         
         mInputMethodAction= new InputMethodAction (cv.getContext());
         
@@ -193,27 +202,40 @@ class AccessibilityAction {
             EVIACAM.debug("WINDOW_STATE_CHANGED: " + AccessibilityNodeDebug.getNodeInfo(node));
             break;
         case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
-            switch (event.getContentChangeTypes ()) {
-            case AccessibilityEvent.CONTENT_CHANGE_TYPE_CONTENT_DESCRIPTION:
-            case AccessibilityEvent.CONTENT_CHANGE_TYPE_TEXT:
-                EVIACAM.debug("WINDOW_CONTENT_TEXT|CONTENT_DESC_CHANGED: ignored");
-                break;  // just ignore these events
-            case AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE:
-                EVIACAM.debug("WINDOW_CONTENT_CHANGED_SUBTREE: " + AccessibilityNodeDebug.getNodeInfo(node));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                switch (event.getContentChangeTypes ()) {
+                case AccessibilityEvent.CONTENT_CHANGE_TYPE_CONTENT_DESCRIPTION:
+                case AccessibilityEvent.CONTENT_CHANGE_TYPE_TEXT:
+                    EVIACAM.debug("WINDOW_CONTENT_TEXT|CONTENT_DESC_CHANGED: ignored");
+                    return;  // just ignore these events
+                case AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE:
+                    EVIACAM.debug("WINDOW_CONTENT_CHANGED_SUBTREE: " + AccessibilityNodeDebug.getNodeInfo(node));
+                    break;
+                case AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED:
+                    EVIACAM.debug("WINDOW_CONTENT_CHANGED_UNDEFINED: " + AccessibilityNodeDebug.getNodeInfo(node));
+                }
                 break;
-            case AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED:
-                EVIACAM.debug("WINDOW_CONTENT_CHANGED_UNDEFINED: " + AccessibilityNodeDebug.getNodeInfo(node));
             }
-            break;
+            else {
+                EVIACAM.debug("WINDOW_CONTENT_CHANGED: " + AccessibilityNodeDebug.getNodeInfo(node));
+            }
         case AccessibilityEvent.TYPE_VIEW_SCROLLED:
             EVIACAM.debug("VIEW_SCROLLED: " + AccessibilityNodeDebug.getNodeInfo(node));
             break;
         }
         
-        event.recycle();
+        List<AccessibilityNodeInfo> nodes= findNodes (
+                AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
+                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+
+        mScrollLayerView.clearScrollAreas();
+        
+        for (AccessibilityNodeInfo n : nodes) {
+            mScrollLayerView.addScrollArea(n);
+        }
     } 
 
-    /*
+    /**
      * class to store information across recursive calls
      */
     private static class RecursionInfo {
@@ -227,8 +249,8 @@ class AccessibilityAction {
         }
     }
  
-    /*
-     * find recursively the node under (x, y) that accepts some or all 
+    /**
+     * Find recursively the node under (x, y) that accepts some or all
      * actions encoded on the mask
      */
     private static AccessibilityNodeInfo findActionable (Point p, int actions) {
@@ -243,9 +265,7 @@ class AccessibilityAction {
         return findActionable0(rootNode, ri);
     }
     
-    /*
-     * actual recursive call 
-     */
+    /** Actual recursive call for findActionable */
     private static AccessibilityNodeInfo findActionable0(
             AccessibilityNodeInfo node, RecursionInfo ri) {
 
@@ -276,5 +296,38 @@ class AccessibilityAction {
         }
 
         return result;
+    }
+
+    /**
+     * Find recursively all nodes that support certain actions
+     *
+     * @param actions - bitmask of actions
+     * @return - list with the node, may be void
+     */
+    public static List<AccessibilityNodeInfo> findNodes (int actions) {
+        final List<AccessibilityNodeInfo> result= new ArrayList<AccessibilityNodeInfo>();
+        // get root node
+        final AccessibilityNodeInfo rootNode =
+                EViacamService.getInstance().getRootInActiveWindow();
+
+        findNodes0 (actions, rootNode, result);
+
+        return result;
+    }
+
+    /** Actual recursive call for findNode */
+    private static void findNodes0 (final int actions, final AccessibilityNodeInfo node,
+            final List<AccessibilityNodeInfo> result) {
+
+        if (node == null) return;
+
+        if ((node.getActions() & actions) != 0) {
+            result.add(node);
+        }
+
+        // propagate calls to children
+        for (int i = 0; i < node.getChildCount(); i++) {
+            findNodes0 (actions, node.getChild(i), result);
+        }
     }
 }

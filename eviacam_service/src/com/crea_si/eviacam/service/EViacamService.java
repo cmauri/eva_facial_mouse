@@ -20,7 +20,6 @@
  package com.crea_si.eviacam.service;
 
 import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.ComponentCallbacks;
 import android.content.Intent;
 import android.content.res.Configuration;

@@ -197,45 +197,65 @@ class AccessibilityAction {
     /**
      * Process events from accessiility service
      */
+    private long mLastEventTStamp = 0;
+    private static final long EVENT_HANDLING_INTERVAL= 1000;
     public void onAccessibilityEvent(AccessibilityEvent event) {
         // TODO: TYPE_WINDOW_CONTENT_CHANGED events come in short bursts,
-        // filter repetitive events
-        
-        if (event == null) {
-            // Called during the initialization
-            // TODO: handle this case
-            return;
-        }
-        
-        AccessibilityNodeInfo node= event.getSource();
-        
+        // filter repetitive events, consider making a secondary thread
+
+        String text= "";
         switch (event.getEventType()) {
         case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-            EVIACAM.debug("WINDOW_STATE_CHANGED: " + AccessibilityNodeDebug.getNodeInfo(node));
+            text= "WINDOW_STATE_CHANGED: ";
             break;
         case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 switch (event.getContentChangeTypes ()) {
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_CONTENT_DESCRIPTION:
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_TEXT:
-                    EVIACAM.debug("WINDOW_CONTENT_TEXT|CONTENT_DESC_CHANGED: ignored");
+                    EVIACAM.debug("WINDOW_CONTENT_TEXT|CONTENT_DESC_CHANGED: IGNORED");
                     return;  // just ignore these events
+                    
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE:
-                    EVIACAM.debug("WINDOW_CONTENT_CHANGED_SUBTREE: " + AccessibilityNodeDebug.getNodeInfo(node));
+                    text= "WINDOW_CONTENT_CHANGED_SUBTREE: ";
                     break;
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED:
-                    EVIACAM.debug("WINDOW_CONTENT_CHANGED_UNDEFINED: " + AccessibilityNodeDebug.getNodeInfo(node));
+                    text= "WINDOW_CONTENT_CHANGED_UNDEFINED: ";
                 }
                 break;
             }
             else {
-                EVIACAM.debug("WINDOW_CONTENT_CHANGED: " + AccessibilityNodeDebug.getNodeInfo(node));
+                text= "WINDOW_CONTENT_CHANGED: ";
             }
         case AccessibilityEvent.TYPE_VIEW_SCROLLED:
-            EVIACAM.debug("VIEW_SCROLLED: " + AccessibilityNodeDebug.getNodeInfo(node));
+            text= "VIEW_SCROLLED: ";
             break;
+        default:
+            text= "UNKNOWN EVENT: ";
         }
         
+        /*
+        long tstamp= System.currentTimeMillis();
+        long diff= tstamp - mLastEventTStamp;
+        EVIACAM.debug("diff: " + diff + " event tstamp:" + event.getEventTime() + " tstamp minus" + (tstamp - event.getEventTime()));
+        if (diff < EVENT_HANDLING_INTERVAL) {
+            EVIACAM.debug("IGNORED EVENT");
+            return;
+        }
+        */
+        long tstamp= event.getEventTime();
+        long diff= (tstamp - mLastEventTStamp);
+        if (diff < EVENT_HANDLING_INTERVAL) {
+            text+= "IGNORED: " + diff;
+            EVIACAM.debug(text);
+            return;
+        }
+        text+= "PROCESSED: " + diff;
+        EVIACAM.debug(text);
+
+        mLastEventTStamp= tstamp;
+
+        /** Process event */
         List<AccessibilityNodeInfo> nodes= findNodes (
                 AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
                 AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);

@@ -248,7 +248,7 @@ class AccessibilityAction {
         if (diff < EVENT_HANDLING_INTERVAL) {
             text+= "IGNORED: " + diff;
             EVIACAM.debug(text);
-            return;
+            //return;
         }
         text+= "PROCESSED: " + diff;
         EVIACAM.debug(text);
@@ -256,9 +256,16 @@ class AccessibilityAction {
         mLastEventTStamp= tstamp;
 
         /** Process event */
+        /*
         List<AccessibilityNodeInfo> nodes= findNodes (
                 AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
                 AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+*/        
+        final List<AccessibilityNodeInfo> nodes= new ArrayList<AccessibilityNodeInfo>();
+        findNodes0(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
+                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, 
+                (AccessibilityNodeInfo) event.getSource(),
+                nodes);
 
         mScrollLayerView.clearScrollAreas();
         

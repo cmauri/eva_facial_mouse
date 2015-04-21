@@ -40,6 +40,11 @@ public class ScrollLayerView extends RelativeLayout {
     public class NodeAction {
         public AccessibilityNodeInfo node;
         public int actions;
+        
+        NodeAction(AccessibilityNodeInfo n, int a) {
+            this.node= n;
+            this.actions= a;
+        }
     }
     
     /** Class to store button with a NodeAction */
@@ -50,8 +55,8 @@ public class ScrollLayerView extends RelativeLayout {
     }
     
     /** Button size in device pixels */
-    private static final int SCROLL_BUTTON_WIDTH_DP= 24;
-    private static final int SCROLL_BUTTON_HEIGHT_DP= 24;
+    private static final int SCROLL_BUTTON_WIDTH_DP= 28;
+    private static final int SCROLL_BUTTON_HEIGHT_DP= 28;
     
     /** Button size in pixels */
     private final int SCROLL_BUTTON_WIDTH;
@@ -90,16 +95,27 @@ public class ScrollLayerView extends RelativeLayout {
      * 
      * @param p - the point in screen coordinates
      * @return a NodeAction object if found, null otherwise
+     * 
+     * Remarks: this method might be called safely from a secondary thread 
      */
-    public NodeAction getContaining(Point p)  {
-        // TODO
-        //if (!ViewUtils.isPointInsideView(p, mContextMenuView)) return 0;
+    public synchronized NodeAction getContaining(Point p)  {
+        for (int i= 0; i< mScrollAreasCount; i++) {
+            ButtonNodeAction bna= mScrollAreas.get(i);
+            if ((bna.buttonBackward.getVisibility() == View.VISIBLE) &&
+                    ViewUtils.isPointInsideView(p, bna.buttonBackward)) {
+                return new NodeAction(bna.node, AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+            }
+            if ((bna.buttonForward.getVisibility() == View.VISIBLE) &&
+                    ViewUtils.isPointInsideView(p, bna.buttonForward)) {
+                return new NodeAction(bna.node, AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            }
+        }
 
         return null;
     }
     
     /** Remove all scrollable areas */
-    public void clearScrollAreas() {
+    public synchronized void clearScrollAreas() {
         // Do not erase buttons, just hide them for reuse
         for (int i= 0; i< mScrollAreasCount; i++) {
             ButtonNodeAction bna= mScrollAreas.get(i);
@@ -116,7 +132,7 @@ public class ScrollLayerView extends RelativeLayout {
      *  
      * @param node - the node of the scrollable area
      */
-    public void addScrollArea(AccessibilityNodeInfo node) {
+    public synchronized void addScrollArea(AccessibilityNodeInfo node) {
         if (node == null || !node.isScrollable()) return;
 
         /** Grow the list when necessary */

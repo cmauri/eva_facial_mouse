@@ -129,6 +129,15 @@ class AccessibilityAction {
         return true;
     }
     
+    private boolean manageScrollActions(Point p) {
+        ScrollLayerView.NodeAction na= mScrollLayerView.getContaining(p);
+        if (na == null) return false;
+        
+        na.node.performAction(na.actions);
+        
+        return true;
+    }
+    
     private void performActionOnNode(AccessibilityNodeInfo node, int action) {
         if (action == 0) return;
         // TODO: currently only checks for EditText instances, check with EditText subclasses
@@ -155,6 +164,9 @@ class AccessibilityAction {
            
             // manage clicks on global actions menu
             if (manageGlobalActions(pInt)) return;
+            
+            // manage clicks for scroll buttons
+            if (manageScrollActions(pInt)) return;
             
             // manage actions for the IME
             if (mInputMethodAction.click(pInt.x, pInt.y)) return;

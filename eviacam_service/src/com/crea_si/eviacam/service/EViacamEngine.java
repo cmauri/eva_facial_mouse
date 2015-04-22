@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 
 public class EViacamEngine implements FrameProcessor {
 
@@ -44,6 +45,9 @@ public class EViacamEngine implements FrameProcessor {
     
     // layer for drawing the docking panel
     private DockPanelLayerView mDockPanelView;
+
+    // layer for the scrolling user interface
+    private ScrollLayerView mScrollLayerView;
     
     // layer for drawing different controls
     private ControlsLayerView mControlsLayer;
@@ -79,6 +83,9 @@ public class EViacamEngine implements FrameProcessor {
 
         mDockPanelView= new DockPanelLayerView(c);
         mOverlayView.addFullScreenLayer(mDockPanelView);
+
+        mScrollLayerView= new ScrollLayerView(c);
+        mOverlayView.addFullScreenLayer(mScrollLayerView);
         
         mControlsLayer= new ControlsLayerView(c);
         mOverlayView.addFullScreenLayer(mControlsLayer);
@@ -95,7 +102,8 @@ public class EViacamEngine implements FrameProcessor {
         
         mDwellClick= new DwellClick(c);
         
-        mAccessibilityAction= new AccessibilityAction (mControlsLayer, mDockPanelView);
+        mAccessibilityAction= new AccessibilityAction (
+                mControlsLayer, mDockPanelView, mScrollLayerView);
         
         // create camera & machine vision part
         mCameraListener= new CameraListener(c, this);
@@ -129,7 +137,7 @@ public class EViacamEngine implements FrameProcessor {
         mPointerControl.cleanup();
         mPointerControl= null;
         
-        // nothing to be done for mPointerLayer and mControlsLayer
+        // nothing to be done for mPointerLayer, mScrollLayerView and mControlsLayer
         
         mDockPanelView.cleanup();
         mDockPanelView= null;
@@ -147,6 +155,7 @@ public class EViacamEngine implements FrameProcessor {
         // pause/resume should reset internal state of some objects 
         mCurrentState= STATE_PAUSED;
         mPointerLayer.setVisibility(View.INVISIBLE);
+        mScrollLayerView.setVisibility(View.INVISIBLE);
         mControlsLayer.setVisibility(View.INVISIBLE);
         mDockPanelView.setVisibility(View.INVISIBLE);
     }
@@ -157,6 +166,7 @@ public class EViacamEngine implements FrameProcessor {
         // TODO: see comment on pause()
         mDockPanelView.setVisibility(View.VISIBLE);
         mControlsLayer.setVisibility(View.VISIBLE);
+        mScrollLayerView.setVisibility(View.VISIBLE);
         mPointerLayer.setVisibility(View.VISIBLE);
         
         // make sure that changes during pause (e.g. docking panel edge) are applied        
@@ -167,7 +177,11 @@ public class EViacamEngine implements FrameProcessor {
     public void onConfigurationChanged(Configuration newConfig) {
         if (mOrientationManager != null) mOrientationManager.onConfigurationChanged(newConfig);
     }
-    
+
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        if (mAccessibilityAction != null) mAccessibilityAction.onAccessibilityEvent(event);
+    } 
+
     /*
      * process incoming camera frame 
      * 
@@ -203,6 +217,9 @@ public class EViacamEngine implements FrameProcessor {
         mPointerLayer.updatePosition(pointerLocation);
         mPointerLayer.updateClickProgress(mDwellClick.getClickProgressPercent());
         mPointerLayer.postInvalidate();
+        
+        // this needs to be called regularly
+        mAccessibilityAction.refresh();
         
         // perform action when needed
         if (clickGenerated) { 

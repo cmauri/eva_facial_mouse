@@ -19,17 +19,30 @@
 
  package com.crea_si.eviacam.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.accessibilityservice.AccessibilityService;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Build;
+import android.os.Handler;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+
+/**
+ * Manages actions relative to the Android accessibility API 
+ */
 
 class AccessibilityAction {
 
-    /*
-     * class to put together an accessibility action 
+    // delay after which an accessibility event is processed
+    private static final long SCROLLING_SCAN_RUN_DELAY= 700;
+    
+    /**
+     * Class to put together an accessibility action 
      * and the label to display to the user 
      */
     private static class ActionLabel {
@@ -64,18 +77,34 @@ class AccessibilityAction {
     // layer view for docking panel
     private DockPanelLayerView mDockPanelLayerView;
 
+    // layer view for the scrolling controls
+    private ScrollLayerView mScrollLayerView;
+
     // delegate to manage input method interaction
     private final InputMethodAction mInputMethodAction;
     
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
 
-    // node on which the action should be performed
+    // node on which the action should be performed when context menu open
     private AccessibilityNodeInfo mNode;
     
-    public AccessibilityAction (ControlsLayerView cv, DockPanelLayerView dplv) {
+    // handler to execute in the main thread
+    private final Handler mHandler;
+    
+    // time stamp at which scrolling scan need to execute
+    private long mRunScrollingScanTStamp = 0;
+    
+    // is set to true when scrolling scan needs to be run
+    private boolean mNeedToRunScrollingScan = false;
+    
+    public AccessibilityAction (
+            ControlsLayerView cv, DockPanelLayerView dplv, ScrollLayerView slv) {
         mControlsLayerView= cv;
         mDockPanelLayerView= dplv;
+        mScrollLayerView= slv;
+        
+        mHandler = new Handler();
         
         mInputMethodAction= new InputMethodAction (cv.getContext());
         
@@ -119,6 +148,17 @@ class AccessibilityAction {
         return true;
     }
     
+    /** Checks and run scrolling actions */
+    private boolean manageScrollActions(Point p) {
+        ScrollLayerView.NodeAction na= mScrollLayerView.getContaining(p);
+        if (na == null) return false;
+        
+        na.node.performAction(na.actions);
+        
+        return true;
+    }
+    
+    /** Perform an action to a node focusing it when necessary */
     private void performActionOnNode(AccessibilityNodeInfo node, int action) {
         if (action == 0) return;
         // TODO: currently only checks for EditText instances, check with EditText subclasses
@@ -130,28 +170,36 @@ class AccessibilityAction {
         node.performAction(action);
     }
     
+    /**
+     * Performs action (click) on a specific location of the screen
+     * 
+     * @param p - point in screen coordinates
+     */
     public void performAction (PointF p) {
         Point pInt= new Point();
         pInt.x= (int) p.x;
         pInt.y= (int) p.y;
         
         if (mContextMenuOpen) {
+            /** When context menu open only check it */
             int action= mControlsLayerView.testClick(pInt);
             mControlsLayerView.hideContextMenu();
             mContextMenuOpen= false;
             performActionOnNode(mNode, action);
         }
         else {
-           
-            // manage clicks on global actions menu
+            // Manages clicks on global actions menu
             if (manageGlobalActions(pInt)) return;
             
-            // manage actions for the IME
+            // Manages clicks for scrolling buttons
+            if (manageScrollActions(pInt)) return;
+            
+            // Manages actions for the IME
             if (mInputMethodAction.click(pInt.x, pInt.y)) return;
             
-            /**
-             * Find node under (x, y) and its available actions
-             */
+            /** Manages actions on an arbitrary position of the screen  */
+            
+            // Finds node under (x, y) and its available actions
             AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
             
             if (node == null) return;
@@ -162,18 +210,101 @@ class AccessibilityAction {
             int availableActions= FULL_ACTION_MASK & node.getActions();
             
             if (Integer.bitCount(availableActions)> 1) {
+                /** Multiple actions available, shows context menu */
                 mControlsLayerView.showContextMenu(pInt, availableActions);
                 mContextMenuOpen= true;
                 mNode= node;
             }
             else {
+                // One action, goes ahead
                 performActionOnNode(node, availableActions);
             }
         }
     }
+    
+    /**
+     * Needs to be called at regular intervals
+     * 
+     * Remarks: checks whether needs to start a scrolling nodes exploration
+     */
+    public void refresh() {
+        if (!mNeedToRunScrollingScan) return;
+        if (System.currentTimeMillis()< mRunScrollingScanTStamp) return;
+        mNeedToRunScrollingScan = false;
+        
+        /** Need to run scrolling scan */
+        EVIACAM.debug("Scanning for scrollables");
+        final List<AccessibilityNodeInfo> nodes= findNodes (
+                AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
+                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+       
+        /** Interaction with the UI needs to be done in the main thread */
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                mScrollLayerView.clearScrollAreas();
 
-    /*
-     * class to store information across recursive calls
+                for (AccessibilityNodeInfo n : nodes) {
+                    mScrollLayerView.addScrollArea(n);
+                }
+            }
+        };
+        mHandler.post(r);
+    }
+
+    
+    /**
+     * Process events from accessibility service to refresh scrolling controls
+     * 
+     * @param event - the event
+     * 
+     * Expects three types of events: 
+     *  TYPE_WINDOW_STATE_CHANGED
+     *  TYPE_WINDOW_CONTENT_CHANGED
+     *  TYPE_VIEW_SCROLLED
+     * 
+     * Remarks: it seems that events come in short bursts so tries to save CPU 
+     * time and improve responsiveness by delaying the execution of the scan
+     * so that consecutive events only fire an actual scan. 
+     */
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        switch (event.getEventType()) {
+        case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
+            EVIACAM.debug("WINDOW_STATE_CHANGED");
+            break;
+        case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                switch (event.getContentChangeTypes ()) {
+                case AccessibilityEvent.CONTENT_CHANGE_TYPE_CONTENT_DESCRIPTION:
+                case AccessibilityEvent.CONTENT_CHANGE_TYPE_TEXT:
+                    EVIACAM.debug("WINDOW_CONTENT_TEXT|CONTENT_DESC_CHANGED: IGNORED");
+                    return;  // just ignore these events
+                case AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE:
+                    EVIACAM.debug("WINDOW_CONTENT_CHANGED_SUBTREE");
+                    break;
+                case AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED:
+                    EVIACAM.debug("WINDOW_CONTENT_CHANGED_UNDEFINED");
+                }
+                break;
+            }
+            else {
+                EVIACAM.debug("WINDOW_CONTENT_CHANGED");
+            }
+        case AccessibilityEvent.TYPE_VIEW_SCROLLED:
+            EVIACAM.debug("VIEW_SCROLLED");
+            break;
+        default:
+            EVIACAM.debug("UNKNOWN EVENT: IGNORED");
+            return;
+        }
+
+        /** Schedule scrolling nodes scanning after SCROLLING_SCAN_RUN_DELAY ms */
+        mRunScrollingScanTStamp= System.currentTimeMillis() + SCROLLING_SCAN_RUN_DELAY;
+        mNeedToRunScrollingScan= true;
+    } 
+
+    /**
+     * Class to store information across recursive calls
      */
     private static class RecursionInfo {
         final public Point p;
@@ -186,8 +317,8 @@ class AccessibilityAction {
         }
     }
  
-    /*
-     * find recursively the node under (x, y) that accepts some or all 
+    /**
+     * Find recursively the node under (x, y) that accepts some or all
      * actions encoded on the mask
      */
     private static AccessibilityNodeInfo findActionable (Point p, int actions) {
@@ -196,15 +327,12 @@ class AccessibilityAction {
                 EViacamService.getInstance().getRootInActiveWindow();
         if (rootNode == null) return null;
         
-        // TODO: consider making it an attribute to avoid creating it each time
         RecursionInfo ri= new RecursionInfo (p, actions);
         
         return findActionable0(rootNode, ri);
     }
     
-    /*
-     * actual recursive call 
-     */
+    /** Actual recursive call for findActionable */
     private static AccessibilityNodeInfo findActionable0(
             AccessibilityNodeInfo node, RecursionInfo ri) {
 
@@ -221,7 +349,7 @@ class AccessibilityAction {
         AccessibilityNodeInfo result = null;
 
         if ((node.getActions() & ri.actions) != 0) {
-            // this is a good candidate but continue exploring children
+            // this is a good candidate but continues exploring children
             // there are controls such as ListView which are clickable
             // but do not have an useful action associated
             result = node;
@@ -235,5 +363,38 @@ class AccessibilityAction {
         }
 
         return result;
+    }
+
+    /**
+     * Finds recursively all nodes that support certain actions
+     *
+     * @param actions - bitmask of actions
+     * @return - list with the node, may be void
+     */
+    public static List<AccessibilityNodeInfo> findNodes (int actions) {
+        final List<AccessibilityNodeInfo> result= new ArrayList<AccessibilityNodeInfo>();
+        // get root node
+        final AccessibilityNodeInfo rootNode =
+                EViacamService.getInstance().getRootInActiveWindow();
+
+        findNodes0 (actions, rootNode, result);
+
+        return result;
+    }
+
+    /** Actual recursive call for findNode */
+    private static void findNodes0 (final int actions, final AccessibilityNodeInfo node,
+            final List<AccessibilityNodeInfo> result) {
+
+        if (node == null) return;
+
+        if ((node.getActions() & actions) != 0) {
+            result.add(node);
+        }
+
+        // propagate calls to children
+        for (int i = 0; i < node.getChildCount(); i++) {
+            findNodes0 (actions, node.getChild(i), result);
+        }
     }
 }

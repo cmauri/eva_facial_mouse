@@ -20,7 +20,6 @@
  package com.crea_si.eviacam.service;
 
 import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.ComponentCallbacks;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -74,7 +73,7 @@ public class EViacamService extends AccessibilityService implements ComponentCal
          * @xml/accessibilityservice, otherwise onUnbind and onDestroy // never
          * get called
          */
-        setServiceInfo(new AccessibilityServiceInfo());
+        //setServiceInfo(new AccessibilityServiceInfo());
         
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
@@ -161,7 +160,9 @@ public class EViacamService extends AccessibilityService implements ComponentCal
      */
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        EVIACAM.debug("onAccessibilityEvent");
+        if (mEngine != null) {
+            mEngine.onAccessibilityEvent(event);
+        }
     }
 
     /**

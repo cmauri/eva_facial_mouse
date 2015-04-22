@@ -31,7 +31,7 @@ public class EVIACAM {
     
     private static final boolean DEBUG = BuildConfig.DEBUG;
     
-    private static final boolean ATTACH_DEBUGGER = DEBUG;
+    private static final boolean ATTACH_DEBUGGER = false;
     
     private static final boolean DEBUG_MESSAGES = DEBUG;
     

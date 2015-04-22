@@ -218,6 +218,9 @@ public class EViacamEngine implements FrameProcessor {
         mPointerLayer.updateClickProgress(mDwellClick.getClickProgressPercent());
         mPointerLayer.postInvalidate();
         
+        // this needs to be called regularly
+        mAccessibilityAction.refresh();
+        
         // perform action when needed
         if (clickGenerated) { 
             mAccessibilityAction.performAction(pointerLocation);

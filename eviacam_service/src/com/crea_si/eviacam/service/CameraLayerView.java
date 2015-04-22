@@ -25,8 +25,8 @@ import android.widget.RelativeLayout;
 
 public class CameraLayerView extends RelativeLayout {
     // camera viewer size
-    private final int CAM_SURFACE_WIDTH= 320;
-    private final int CAM_SURFACE_HEIGHT= 240;
+    private final int CAM_SURFACE_WIDTH= 64;
+    private final int CAM_SURFACE_HEIGHT= 48;
         
     public CameraLayerView(Context context) {
         super(context);

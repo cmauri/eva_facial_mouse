@@ -39,7 +39,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 class AccessibilityAction {
 
     // delay after which an accessibility event is processed
-    private static final long SCROLLING_SCAN_RUN_DELAY= 500;
+    private static final long SCROLLING_SCAN_RUN_DELAY= 700;
     
     /**
      * Class to put together an accessibility action 
@@ -233,32 +233,25 @@ class AccessibilityAction {
         mNeedToRunScrollingScan = false;
         
         /** Need to run scrolling scan */
-        // Spawn a thread.
-        Thread thread = new Thread() {
+        EVIACAM.debug("Scanning for scrollables");
+        final List<AccessibilityNodeInfo> nodes= findNodes (
+                AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
+                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+       
+        /** Interaction with the UI needs to be done in the main thread */
+        Runnable r = new Runnable() {
             @Override
             public void run() {
-                EVIACAM.debug("Scanning for scrollables");
-                final List<AccessibilityNodeInfo> nodes= findNodes (
-                        AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
-                        AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-               
-                /** Interaction with the UI needs to be done in the main thread */
-                Runnable r = new Runnable() {
-                    @Override
-                    public void run() {
-                        mScrollLayerView.clearScrollAreas();
+                mScrollLayerView.clearScrollAreas();
 
-                        for (AccessibilityNodeInfo n : nodes) {
-                            mScrollLayerView.addScrollArea(n);
-                        }
-                    }
-                };
-                mHandler.post(r);
+                for (AccessibilityNodeInfo n : nodes) {
+                    mScrollLayerView.addScrollArea(n);
+                }
             }
         };
-
-        thread.start();
+        mHandler.post(r);
     }
+
     
     /**
      * Process events from accessibility service to refresh scrolling controls

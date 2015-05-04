@@ -54,7 +54,8 @@
         <!-- Splash screen -->
         <activity
             android:name=".SplashActivity" 
-            android:exported="false" >
+            android:exported="false" 
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar" >
         </activity>
 
     </application>

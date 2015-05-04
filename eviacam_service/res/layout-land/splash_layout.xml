@@ -27,7 +27,7 @@
     <ImageView android:id="@+id/splashscreen"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:src="@drawable/splash_vertical"
+        android:src="@drawable/splash_horizontal"
         android:layout_gravity="center" />
 
     <TextView android:layout_width="fill_parent"

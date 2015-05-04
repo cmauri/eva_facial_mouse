@@ -39,7 +39,7 @@ public class SplashActivity extends Activity {
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                SplashActivity.this.finish();
+                // SplashActivity.this.finish();
             }
         }, SPLASH_DISPLAY_LENGTH);
     }

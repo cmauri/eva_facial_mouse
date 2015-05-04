@@ -22,6 +22,7 @@ package com.crea_si.eviacam.service;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 
 public class SplashActivity extends Activity {
 
@@ -41,5 +42,10 @@ public class SplashActivity extends Activity {
                 SplashActivity.this.finish();
             }
         }, SPLASH_DISPLAY_LENGTH);
+    }
+    
+    /** Close activity when clicked */
+    public void onClick(View view) {
+        this.finish();
     }
 }

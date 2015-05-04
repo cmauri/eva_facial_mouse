@@ -50,6 +50,12 @@
                 <category android:name="android.accessibilityservice.SERVICE_SETTINGS" />
             </intent-filter>
         </activity>
+        
+        <!-- Splash screen -->
+        <activity
+            android:name=".SplashActivity" 
+            android:exported="false" >
+        </activity>
 
     </application>
 

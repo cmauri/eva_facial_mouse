@@ -75,6 +75,11 @@ public class EViacamService extends AccessibilityService implements ComponentCal
          */
         //setServiceInfo(new AccessibilityServiceInfo());
         
+        // display splash
+        Intent dialogIntent = new Intent(this, SplashActivity.class);
+        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(dialogIntent);
+        
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
      

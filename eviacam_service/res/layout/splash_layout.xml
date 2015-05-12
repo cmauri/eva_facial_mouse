@@ -30,8 +30,10 @@
         android:src="@drawable/splash_vertical"
         android:layout_gravity="center" />
 
-    <TextView android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Hello World, splash" />
+    <LinearLayout android:id="@+id/camera_view"
+        android:orientation="vertical"
+        android:layout_width="5px"
+        android:layout_height="5px"
+     />
 
 </LinearLayout>

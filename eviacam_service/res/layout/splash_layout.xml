@@ -30,10 +30,4 @@
         android:src="@drawable/splash_vertical"
         android:layout_gravity="center" />
 
-    <LinearLayout android:id="@+id/camera_view"
-        android:orientation="vertical"
-        android:layout_width="5px"
-        android:layout_height="5px"
-     />
-
 </LinearLayout>

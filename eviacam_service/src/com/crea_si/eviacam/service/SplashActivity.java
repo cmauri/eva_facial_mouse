@@ -24,17 +24,12 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.MyJavaCameraView;
 import org.opencv.android.MyOpenCVLoader;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
-import org.opencv.core.Mat;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.SurfaceView;
 import android.view.View;
-import android.widget.LinearLayout;
 
-public class SplashActivity extends Activity implements CvCameraViewListener2 {
+public class SplashActivity extends Activity {
 
     /** Duration of wait */
     private static final int SPLASH_DISPLAY_LENGTH = 4000;
@@ -46,15 +41,11 @@ public class SplashActivity extends Activity implements CvCameraViewListener2 {
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                {
-                    EVIACAM.debug("OpenCV loaded successfully (from activity)");
-                } break;
-                default:
-                {
-                    super.onManagerConnected(status);
-                } break;
+            if (status == LoaderCallbackInterface.SUCCESS) {
+                EVIACAM.debug("OpenCV loaded successfully (from activity)");
+            }
+            else {
+                super.onManagerConnected(status);
             }
         }
     };
@@ -67,23 +58,9 @@ public class SplashActivity extends Activity implements CvCameraViewListener2 {
         super.onCreate(bundle);
         setContentView(R.layout.splash_layout);
 
-        
-        // create capture view
+        // Try to init camera. Does it here (activity) so that installation dialog
+        // could be properly displayed
         mCameraView= new MyJavaCameraView(this, CameraBridgeViewBase.CAMERA_ID_FRONT);
-        
-        // set CameraBridgeViewBase parameters        
-        // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)
-        // crashes with a "Callback buffer was too small! error", it works at 352x288
-        
-        mCameraView.setMaxFrameSize(352, 288);
-        //mCameraView.enableFpsMeter(); // For testing
-        mCameraView.setCvCameraViewListener(this);
-        
-        // Set View parameters
-        mCameraView.setVisibility(SurfaceView.VISIBLE);
-        
-        LinearLayout l = (LinearLayout) this.findViewById(R.id.camera_view);
-        l.addView(mCameraView);
         
         // Start OpenCV
         MyOpenCVLoader.initAsync(MyOpenCVLoader.OPENCV_VERSION_2_4_9, this, mLoaderCallback);
@@ -102,23 +79,5 @@ public class SplashActivity extends Activity implements CvCameraViewListener2 {
     /** Close activity when clicked */
     public void onClick(View view) {
         this.finish();
-    }
-
-    @Override
-    public void onCameraViewStarted(int width, int height) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void onCameraViewStopped() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

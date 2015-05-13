@@ -96,17 +96,20 @@ public class ServiceNotification {
                 (c, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         
         CharSequence text;
+        int iconId;
         if (action == NOTIFICATION_ACTION_PAUSE) {
             text= c.getText(R.string.running_click_to_pause);
+            iconId = R.drawable.ic_notification_enabled;
         }
         else {
             text= c.getText(R.string.stopped_click_to_resume);
+            iconId = R.drawable.ic_notification_disabled;
         }
 
         Notification noti= new Notification.Builder(c)
             .setContentTitle(c.getText(R.string.app_name))
             .setContentText(text)
-            .setSmallIcon(R.drawable.ic_launcher)
+            .setSmallIcon(iconId)
             .setContentIntent(pIntent)
             .build();
         

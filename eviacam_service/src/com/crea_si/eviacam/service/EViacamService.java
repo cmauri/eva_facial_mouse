@@ -26,10 +26,21 @@ import android.content.res.Configuration;
 import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
 
+/**
+ * The Enable Viacam accessibility service
+ */
+
 public class EViacamService extends AccessibilityService implements ComponentCallbacks {
     
+    /**
+     * States of the accessibility service
+     */
+    private static final int STATE_STOP= 0;
+    private static final int STATE_CHECKING_OPENCV= 1;
+    private static final int STATE_RUNNING= 2;
+
     // static attribute which holds an instance to the service instance
-    private static AccessibilityService sAccessibilityService;
+    private static EViacamService sAccessibilityService;
     
     // reference to the engine
     private EViacamEngine mEngine;
@@ -37,8 +48,8 @@ public class EViacamService extends AccessibilityService implements ComponentCal
     // reference to the notification management stuff
     private ServiceNotification mServiceNotification;
     
-    // stores whether the service is running or not (see comments on init() )
-    private boolean mRunning= false;
+    // stores the states of the service (see comments on init() )
+    private int mState= STATE_STOP;
 
     public EViacamService() {
         super();
@@ -60,7 +71,7 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         // on an emulator happens quite often) and the service continues 
         // running although it shows it is disabled
         // this does not solve the issue but at least the service does not crash
-        if (mRunning) {
+        if (mState != STATE_STOP) {
             EVIACAM.debug("ALREADY RUNNING");
             //stopSelf();
             return;
@@ -68,16 +79,32 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         
         EVIACAM.debugInit(this);
         
-        /**
-         * Unsubscribe all accessibility events. Cannot be removed directly from
-         * @xml/accessibilityservice, otherwise onUnbind and onDestroy // never
-         * get called
-         */
-        //setServiceInfo(new AccessibilityServiceInfo());
-        
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
-     
+        
+        /**
+         * Display splash and detect OpenCV installation. The service from now on waits 
+         * until the detection process finishes and a notification is received.
+         */
+        Intent dialogIntent = new Intent(this, SplashActivity.class);
+        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(dialogIntent);
+        
+        mState = STATE_CHECKING_OPENCV;
+    }
+    
+    /** Called from splash activity to notify the openCV is properly installed */
+    public static void initCVReady() {
+        EViacamService s= EViacamService.sAccessibilityService;
+        if (s != null) {
+            s.startEngine();
+        }
+    }
+    
+    /** Finished the initialization process by starting the engine */
+    private void startEngine() {
+        if (mState == STATE_RUNNING) return;
+        
         // start engine
         mEngine= new EViacamEngine(this);
         
@@ -88,25 +115,27 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         startForeground(mServiceNotification.getNotificationId(), 
                 mServiceNotification.getNotification(this));
                 
-        mRunning= true;
+        mState = STATE_RUNNING;
     }
     
     private void cleanup() {
         // TODO: handle exceptions properly
-        if (!mRunning) return;
+        if (mState == STATE_STOP) return;
         
-        // stop being foreground service and remove notification
-        stopForeground(true);
+        if (mState == STATE_RUNNING) {
+            // stop being foreground service and remove notification
+            stopForeground(true);
         
-        mServiceNotification.cleanup();
-        mServiceNotification= null;
+            mServiceNotification.cleanup();
+            mServiceNotification= null;
         
-        mEngine.cleanup();
-        mEngine= null;
+            mEngine.cleanup();
+            mEngine= null;
+        }
 
         EVIACAM.debugCleanup();
 
-        mRunning= false;
+        mState = STATE_STOP;
     }
     
     /**

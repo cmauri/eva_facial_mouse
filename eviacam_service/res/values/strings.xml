@@ -74,5 +74,7 @@
     <string name="right">Right</string>
     <string name="top">Top</string>
     <string name="bottom">Bottom</string>
-
+    <string name="installation_cancelled">Installation cancelled</string>
+    <string name="needs_opencv_retry"> needs OpenCV manager to run. Retry installation?</string>
+    
 </resources>

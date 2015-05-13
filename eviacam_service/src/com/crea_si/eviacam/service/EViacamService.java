@@ -23,23 +23,21 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentCallbacks;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
 
+/**
+ * The Enable Viacam accessibility service
+ */
+
 public class EViacamService extends AccessibilityService implements ComponentCallbacks {
     
-    /*
-     * states of the accessibility service
+    /**
+     * States of the accessibility service
      */
     private static final int STATE_STOP= 0;
     private static final int STATE_CHECKING_OPENCV= 1;
     private static final int STATE_RUNNING= 2;
-    
-    /**
-     * Handler of incoming messages from splash screen
-     */
-    private Handler mAccessibilityServiceHandler;
 
     // static attribute which holds an instance to the service instance
     private static EViacamService sAccessibilityService;
@@ -60,21 +58,6 @@ public class EViacamService extends AccessibilityService implements ComponentCal
     
     public static AccessibilityService getInstance() {
         return sAccessibilityService;
-    }
-    
-    public static void initCVReady() {
-        Runnable r= new Runnable() {
-            @Override
-            public void run() {
-                EVIACAM.debug("EViacamService: openCVReady"); 
-                EViacamService.sAccessibilityService.startEngine();
-            }                
-        };
-        
-        EViacamService s= EViacamService.sAccessibilityService;
-        if (s != null) {
-            s.mAccessibilityServiceHandler.post(r);
-        }
     }
     
     private void init() {
@@ -99,8 +82,6 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
         
-        mAccessibilityServiceHandler= new Handler();
-        
         /**
          * Display splash and detect OpenCV installation. The service from now on waits 
          * until the detection process finishes and a notification is received.
@@ -112,6 +93,15 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         mState = STATE_CHECKING_OPENCV;
     }
     
+    /** Called from splash activity to notify the openCV is properly installed */
+    public static void initCVReady() {
+        EViacamService s= EViacamService.sAccessibilityService;
+        if (s != null) {
+            s.startEngine();
+        }
+    }
+    
+    /** Finished the initialization process by starting the engine */
     private void startEngine() {
         if (mState == STATE_RUNNING) return;
         

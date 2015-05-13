@@ -32,27 +32,27 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 
 /**
- * Displays an splash screen, and checks and guides the installation of openCV manager.
+ * Displays an splash screen, and checks and guides the installation of the openCV manager.
+ * Does it here (activity) so that installation dialog could be properly displayed.
  */
 
 public class SplashActivity extends Activity {
 
     /** Duration of wait */
-    private static final int SPLASH_DISPLAY_LENGTH = 3000;
+    private static final int SPLASH_DISPLAY_LENGTH = 4000;
     
-    /** opencv capture&view facility */ 
+    /** openCV capture & view facility */ 
     private CameraBridgeViewBase mCameraView;
     
     /** 
-     * Stores whether opencv has been initialized. 
+     * Stores whether openCV has been initialized. 
      * Is static to "survive" among different activity instantiations.
      */
     private static boolean sOpenCVReady = false;
 
-    /** Callback for opencv initialization */
+    /** Callback for openCV initialization */
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -69,6 +69,7 @@ public class SplashActivity extends Activity {
         }
     };
     
+    /** Handles the case when openCV has been properly installed */
     private void manageOpenCVInstallSucess() {
         EVIACAM.debug("SplashActivity: openCV loaded successfully");
 
@@ -85,34 +86,27 @@ public class SplashActivity extends Activity {
         startActivity(dialogIntent);
     }
     
+    /** Handles the case when openCV installation has been cancelled */
     private void manageOpenCVInstallCancel() {
         AlertDialog installCancelDlg = new AlertDialog.Builder(this).create();
         installCancelDlg.setTitle(getText(R.string.installation_cancelled));
-        installCancelDlg.setMessage(getString(R.string.app_name) + " " + getText(R.string.needs_opencv_retry));
+        installCancelDlg.setMessage(getString(R.string.app_name) + " " + 
+                                    getText(R.string.needs_opencv_retry));
         installCancelDlg.setCancelable(false); // This blocks the 'BACK' button
-        installCancelDlg.setButton(AlertDialog.BUTTON_POSITIVE, "Retry", new OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int which)
-            {
-                MyOpenCVLoader.initAsync(MyOpenCVLoader.OPENCV_VERSION_2_4_9, SplashActivity.this, mLoaderCallback);
+        installCancelDlg.setButton(AlertDialog.BUTTON_POSITIVE, "Retry", new OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                MyOpenCVLoader.initAsync(MyOpenCVLoader.OPENCV_VERSION_2_4_9, 
+                                         SplashActivity.this, mLoaderCallback);
             }
         });
-
         installCancelDlg.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which)
-            {
-                SplashActivity.this.finishActivity();
+            public void onClick(DialogInterface dialog, int which) {
+                SplashActivity.this.finish();
             }
         });
         
         installCancelDlg.show();
     }
-    
-    private void finishActivity() {
-        SplashActivity.this.finish();
-    }
-    
     
     /** Called when the activity is first created. */
     @Override
@@ -121,18 +115,6 @@ public class SplashActivity extends Activity {
 
         super.onCreate(bundle);
         setContentView(R.layout.splash_layout);
-    }
-    
-    @Override
-    protected void onStart() {
-        super.onStart();
-        EVIACAM.debug("SplashActivity: onStart");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        EVIACAM.debug("SplashActivity: onRestart");
     }
 
     @Override
@@ -150,15 +132,13 @@ public class SplashActivity extends Activity {
                 @Override
                 public void run() {
                     EVIACAM.debug("SplashActivity: finish after timeout");
-                   
-                    SplashActivity.this.finishActivity();
+                    SplashActivity.this.finish();
                 }
             }, SPLASH_DISPLAY_LENGTH);
         }
         else {
 
-            // Try to init camera. Does it here (activity) so that installation dialog
-            // could be properly displayed
+            /** Tries to initialize openCV */ 
             mCameraView= new MyJavaCameraView(this, CameraBridgeViewBase.CAMERA_ID_FRONT);
             MyOpenCVLoader.initAsync(MyOpenCVLoader.OPENCV_VERSION_2_4_9, this, mLoaderCallback);
         }
@@ -172,12 +152,6 @@ public class SplashActivity extends Activity {
             mCameraView.disableView();
             mCameraView= null;
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState (Bundle outState) {
-        super.onSaveInstanceState(outState);
-        EVIACAM.debug("SplashActivity: onSaveInstanceState");
     }
     
     @Override
@@ -198,11 +172,5 @@ public class SplashActivity extends Activity {
             mCameraView.disableView();
             mCameraView= null;
         }
-    }
-    
-    /** Close activity when clicked */
-    protected void onClick(View view) {
-        EVIACAM.debug("SplashActivity: onClick");
-        //finishActivity();
     }
 }

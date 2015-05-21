@@ -109,7 +109,7 @@
         <ListPreference
             android:key="docking_panel_edge"
             android:title="@string/docking_panel_edge"
-            android:summary="@string/docking_panel_edge_summary"
+            android:summary="%s"
             android:entries="@array/docking_panel_edge_entries"
             android:entryValues="@array/docking_panel_edge_values"
             android:defaultValue="@integer/docking_panel_edge_default"
@@ -122,7 +122,7 @@
         <ListPreference
             android:key="time_without_detection"
             android:title="@string/time_without_detection"
-            android:summary="@string/time_without_detection_summary"
+            android:summary="%s"
             android:entries="@array/time_without_detection_entries"
             android:entryValues="@array/time_without_detection_values"
             android:defaultValue="@string/time_without_detection_default"

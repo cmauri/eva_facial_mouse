@@ -44,6 +44,7 @@
             android:label="@string/eviacam_preferences_title"
             android:launchMode="singleTop"
             android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
+            android:theme="@android:style/Theme.DeviceDefault"
             tools:ignore="ExportedActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

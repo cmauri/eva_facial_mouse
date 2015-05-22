@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,7 +25,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.media.AudioManager;
-import android.media.ToneGenerator;
 import android.preference.PreferenceManager;
 
 class DwellClick implements OnSharedPreferenceChangeListener {
@@ -39,11 +38,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private final int DWELL_TIME_DEFAULT;
     private final int DWELL_AREA_DEFAULT;
     private final boolean SOUND_ON_CLICK_DEFAULT;
-    
-    private static final String KEY_DWELL_TIME= "dwell_time";
-    private static final String KEY_DWELL_AREA= "dwell_area";
-    private static final String KEY_SOUND_ON_CLICK= "sound_on_click";
-  
+
     // delegate to measure elapsed time
     private Countdown mCountdown;
     
@@ -88,16 +83,16 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         // register preference change listener
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
         
-        readSettings();
+        updateSettings();
     }
     
-    private void readSettings() {
+    private void updateSettings() {
         // get values from shared resources
-        int dwellTime= mSharedPref.getInt(KEY_DWELL_TIME, DWELL_TIME_DEFAULT) * 100;
+        int dwellTime= mSharedPref.getInt(Settings.KEY_DWELL_TIME, DWELL_TIME_DEFAULT) * 100;
         mCountdown.setTimeToWait(dwellTime);
-        int dwellArea= mSharedPref.getInt(KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
+        int dwellArea= mSharedPref.getInt(Settings.KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
         mDwellAreaSquared= dwellArea * dwellArea;
-        mSoundOnClick= mSharedPref.getBoolean(KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
+        mSoundOnClick= mSharedPref.getBoolean(Settings.KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
     }
     
     public void cleanup() {
@@ -107,9 +102,9 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(KEY_DWELL_TIME) || key.equals(KEY_DWELL_AREA) ||
-            key.equals(KEY_SOUND_ON_CLICK)) {
-                readSettings();
+        if (key.equals(Settings.KEY_DWELL_TIME) || key.equals(Settings.KEY_DWELL_AREA) ||
+            key.equals(Settings.KEY_SOUND_ON_CLICK)) {
+                updateSettings();
         }
     }
        

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -40,8 +40,6 @@ import android.widget.RelativeLayout;
 
 public class DockPanelLayerView extends RelativeLayout 
     implements OnSharedPreferenceChangeListener {
-    
-    private static final String KEY_DOCKING_PANEL_EDGE= "docking_panel_edge";
     
     private static final int TOGGLE_BUTTON_SHORT_SIDE_DP= 15;
     private static final int TOGGLE_BUTTON_LONG_SIDE_DP= 24;
@@ -82,17 +80,17 @@ public class DockPanelLayerView extends RelativeLayout
         // register preference change listener
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
         
-        readSettings();
+        updateSettings();
     }
     
     public void cleanup() {
         mSharedPref.unregisterOnSharedPreferenceChangeListener(this);        
     }
     
-    private void readSettings() {
+    private void updateSettings() {
         // get values from shared resources
         int dockingEdge= Integer.parseInt(mSharedPref.getString(
-                KEY_DOCKING_PANEL_EDGE, Integer.toString(DOCKING_PANEL_EDGE_DEFAULT)));
+                Settings.KEY_DOCKING_PANEL_EDGE, Integer.toString(DOCKING_PANEL_EDGE_DEFAULT)));
                 
         if (mDockPanelView != null) {
             removeView(mDockPanelView);
@@ -109,8 +107,8 @@ public class DockPanelLayerView extends RelativeLayout
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(KEY_DOCKING_PANEL_EDGE)) {
-            readSettings();
+        if (key.equals(Settings.KEY_DOCKING_PANEL_EDGE)) {
+            updateSettings();
         }
     }
     

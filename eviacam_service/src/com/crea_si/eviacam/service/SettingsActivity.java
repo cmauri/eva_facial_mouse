@@ -60,13 +60,13 @@ public class SettingsActivity extends Activity {
             /**
              * Listeners for list preference entries
              */
-            ListPreference lp = (ListPreference) findPreference("docking_panel_edge");
+            ListPreference lp = (ListPreference) findPreference(Settings.KEY_DOCKING_PANEL_EDGE);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
             
-            lp = (ListPreference) findPreference("time_without_detection");
+            lp = (ListPreference) findPreference(Settings.KEY_TIME_WITHOUT_DETECTION);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
             
-            lp = (ListPreference) findPreference(SettingsKeys.KEY_UI_ELEMENTS_SIZE);
+            lp = (ListPreference) findPreference(Settings.KEY_UI_ELEMENTS_SIZE);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
         }
     }

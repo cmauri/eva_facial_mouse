@@ -79,13 +79,13 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
     
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
-        if (key.equals(SettingsKeys.KEY_UI_ELEMENTS_SIZE)) {
+        if (key.equals(Settings.KEY_UI_ELEMENTS_SIZE)) {
             updateSettings(sp);
         }
     }
     
     private void updateSettings(SharedPreferences sp) {
-        float size= Float.parseFloat(sp.getString(SettingsKeys.KEY_UI_ELEMENTS_SIZE, null));
+        float size= Settings.getUIElementsSize(sp);
 
         // re-scale pointer accordingly
         BitmapDrawable bd = (BitmapDrawable) 

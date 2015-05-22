@@ -114,6 +114,15 @@
             android:entryValues="@array/docking_panel_edge_values"
             android:defaultValue="@integer/docking_panel_edge_default"
         />
+        
+        <ListPreference
+            android:key="ui_elements_size"
+            android:title="@string/ui_elements_size"
+            android:summary="%s"
+            android:entries="@array/ui_elements_size_entries"
+            android:entryValues="@array/ui_elements_size_values"
+            android:defaultValue="@string/ui_elements_size_default"
+        />
 
     </PreferenceCategory>
     

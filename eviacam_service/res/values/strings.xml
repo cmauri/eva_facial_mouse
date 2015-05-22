@@ -74,5 +74,10 @@
     <string name="bottom">Bottom</string>
     <string name="installation_cancelled">Installation cancelled</string>
     <string name="needs_opencv_retry"> needs OpenCV manager to run. Retry installation?</string>
+    <string name="ui_elements_size">Interface elements size</string>
+    <string name="xlarge">Extra large</string>
+    <string name="large">Large</string>
+    <string name="normal">Normal</string>
+    <string name="small">Small</string>
     
 </resources>

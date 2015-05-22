@@ -65,6 +65,9 @@ public class SettingsActivity extends Activity {
             
             lp = (ListPreference) findPreference("time_without_detection");
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
+            
+            lp = (ListPreference) findPreference(SettingsKeys.KEY_UI_ELEMENTS_SIZE);
+            lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
         }
     }
     

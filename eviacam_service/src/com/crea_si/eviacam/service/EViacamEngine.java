@@ -137,10 +137,13 @@ public class EViacamEngine implements FrameProcessor {
         mPointerControl.cleanup();
         mPointerControl= null;
         
-        // nothing to be done for mPointerLayer, mScrollLayerView and mControlsLayer
+        // nothing to be done for mScrollLayerView and mControlsLayer
         
         mDockPanelView.cleanup();
         mDockPanelView= null;
+        
+        mPointerLayer.cleanup();
+        mPointerLayer= null;
         
         mOverlayView.cleanup();
         mOverlayView= null;

@@ -49,4 +49,18 @@
     <item>@string/docking_panel_edge_bottom_value</item>    
 </string-array>
 
+<string-array name="ui_elements_size_entries">
+    <item>@string/small</item>
+    <item>@string/normal</item>
+    <item>@string/large</item>
+    <item>@string/xlarge</item>
+</string-array>
+<string-array name="ui_elements_size_values">
+    <item>0.8</item>
+    <item>1</item>
+    <item>1.5</item>
+    <item>2</item>
+</string-array>
+
+
 </resources>

@@ -30,22 +30,31 @@
     <ImageButton
         android:id="@+id/back_button"
         android:layout_width="32dip"
-        android:layout_height="32dip"	        
-        android:background="@drawable/back_icon"
+        android:layout_height="32dip"
+        android:padding="2dip"
+        android:src="@drawable/back_icon"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
         android:contentDescription="@string/back_button" />
-    
+
     <ImageButton
         android:id="@+id/home_button"
         android:layout_width="32dip"
         android:layout_height="32dip"
-        android:background="@drawable/home_icon" 
+        android:padding="2dip"
+        android:src="@drawable/home_icon"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
         android:contentDescription="@string/home_button" />
     
     <ImageButton
         android:id="@+id/recents_button"
         android:layout_width="32dip"
         android:layout_height="32dip"
-        android:background="@drawable/recents_icon" 
+        android:padding="2dip"
+        android:src="@drawable/recents_icon"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
         android:contentDescription="@string/recents_button" />
 
 </LinearLayout>

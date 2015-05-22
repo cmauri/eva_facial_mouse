@@ -35,14 +35,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class DockPanelLayerView extends RelativeLayout 
     implements OnSharedPreferenceChangeListener {
     
-    private static final int TOGGLE_BUTTON_SHORT_SIDE_DP= 15;
-    private static final int TOGGLE_BUTTON_LONG_SIDE_DP= 24;
+    private static final int TOGGLE_BUTTON_SHORT_SIDE_DP= 18;
+    private static final int TOGGLE_BUTTON_LONG_SIDE_DP= 30;
+    private static final int TOGGLE_BUTTON_PADDING_DP= 2;
     
     private final int DOCKING_PANEL_EDGE_DEFAULT;
     private final int EDGE_RIGHT;
@@ -199,6 +201,10 @@ public class DockPanelLayerView extends RelativeLayout
         ib.setId(R.id.expand_collapse_dock_button);
         ib.setBackgroundColor(getResources().getColor(R.color.half_alpha));
         ib.setContentDescription(this.getContext().getText(R.string.dock_panel_button));
+        ib.setScaleType(ScaleType.FIT_CENTER);
+        int padding_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                TOGGLE_BUTTON_PADDING_DP, getResources().getDisplayMetrics());
+        ib.setPadding(padding_px, padding_px, padding_px, padding_px);
         
         // set layout params
         if (isVertical(gravity)) {

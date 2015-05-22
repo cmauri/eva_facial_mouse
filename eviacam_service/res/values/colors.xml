@@ -21,4 +21,5 @@
 -->
 <resources>
     <color name="half_alpha">#80000000</color>
+    <color name="transparent">#00000000</color>
 </resources>

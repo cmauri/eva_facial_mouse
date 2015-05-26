@@ -51,9 +51,6 @@ public class DockPanelLayerView extends RelativeLayout
     private final int EDGE_TOP;
     private final int EDGE_BOTTOM;
     
-    // reference to shared preferences pool
-    private SharedPreferences mSharedPref;
-    
     // the docking panel
     private LinearLayout mDockPanelView;
     
@@ -77,40 +74,41 @@ public class DockPanelLayerView extends RelativeLayout
         EDGE_BOTTOM=  Integer.parseInt(r.getString(R.string.docking_panel_edge_bottom_value));
         
         // shared preferences
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        
-        // register preference change listener
-        mSharedPref.registerOnSharedPreferenceChangeListener(this);
-        
-        updateSettings();
+        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(context);
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateSettings(sp);
     }
     
     public void cleanup() {
-        mSharedPref.unregisterOnSharedPreferenceChangeListener(this);        
+        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(getContext());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
     }
     
-    private void updateSettings() {
+    private void updateSettings(SharedPreferences sp) {
         // get values from shared resources
-        int dockingEdge= Integer.parseInt(mSharedPref.getString(
+        int dockingEdge= Integer.parseInt(sp.getString(
                 Settings.KEY_DOCKING_PANEL_EDGE, Integer.toString(DOCKING_PANEL_EDGE_DEFAULT)));
-                
-        if (mDockPanelView != null) {
-            removeView(mDockPanelView);
-        }
         
         int gravity= Gravity.START;
         if (dockingEdge == EDGE_RIGHT)  gravity= Gravity.END;
         else if (dockingEdge == EDGE_TOP)    gravity= Gravity.TOP;
         else if (dockingEdge == EDGE_BOTTOM) gravity= Gravity.BOTTOM;
         
-        createAndAddDockPanel (gravity);
+        float size = Settings.getUIElementsSize(sp);
+        
+        if (mDockPanelView != null) {
+            removeView(mDockPanelView);
+        }
+        
+        createAndAddDockPanel (gravity, size);
     }
     
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(Settings.KEY_DOCKING_PANEL_EDGE)) {
-            updateSettings();
+        if (key.equals(Settings.KEY_DOCKING_PANEL_EDGE) ||
+            key.equals(Settings.KEY_UI_ELEMENTS_SIZE)) {
+            updateSettings(sharedPreferences);
         }
     }
     
@@ -149,12 +147,25 @@ public class DockPanelLayerView extends RelativeLayout
     }
     
     /**
-     * inflate contents view
+     * Inflate contents view and apply size
      */
-    private static View createPanelButtonsView (Context c, ViewGroup container, int gravity) {
+    private static View createPanelButtonsView (
+            Context c, ViewGroup container, int gravity, float size) {
         LayoutInflater inflater = LayoutInflater.from(c);
         LinearLayout contents= (LinearLayout) 
                 inflater.inflate(R.layout.dock_panel_layout, container, false);
+        
+        // Resize buttons as needed
+        for (int i= 0; i< contents.getChildCount(); i++) {
+            View v= contents.getChildAt(i);
+            if (v instanceof ImageButton) {
+                ImageButton ib = (ImageButton) v;
+                ViewGroup.LayoutParams lp = ib.getLayoutParams();
+                lp.width *= size;
+                lp.height *= size;
+                ib.setLayoutParams(lp);
+            }
+        }
         
         // set layout direction
         if (gravity == Gravity.END || gravity == Gravity.START) {
@@ -174,7 +185,7 @@ public class DockPanelLayerView extends RelativeLayout
     /**
      * create toggle button
      */
-    private View createToggleButtonView (int gravity) {
+    private View createToggleButtonView (int gravity, float size) {
         // first we need a relative layout for centering toggle
         RelativeLayout buttonLayout= new RelativeLayout(this.getContext());
         if (isVertical(gravity)) {
@@ -191,10 +202,10 @@ public class DockPanelLayerView extends RelativeLayout
         }
         
         // size of the button
-        int longSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-                TOGGLE_BUTTON_LONG_SIDE_DP, getResources().getDisplayMetrics());
-        int shortSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-                TOGGLE_BUTTON_SHORT_SIDE_DP, getResources().getDisplayMetrics());
+        int longSide= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                TOGGLE_BUTTON_LONG_SIDE_DP, getResources().getDisplayMetrics()) * size);
+        int shortSide= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                TOGGLE_BUTTON_SHORT_SIDE_DP, getResources().getDisplayMetrics()) *size);
         
         // create the button
         ImageButton ib= new ImageButton(this.getContext());
@@ -268,14 +279,14 @@ public class DockPanelLayerView extends RelativeLayout
         return buttonLayout;
     }
     
-    private void createAndAddDockPanel (int gravity) {
+    private void createAndAddDockPanel (int gravity, float size) {
     
         // create elements
-        LinearLayout container= createContainerView (this.getContext(), gravity);
+        LinearLayout container= createContainerView (getContext(), gravity);
         
-        View panelButtons= createPanelButtonsView (this.getContext(), container, gravity);
+        View panelButtons= createPanelButtonsView (getContext(), container, gravity, size);
         
-        View toggleButton= createToggleButtonView(gravity);
+        View toggleButton= createToggleButtonView(gravity, size);
    
         // assemble
         if (gravity == Gravity.START || gravity == Gravity.TOP) {

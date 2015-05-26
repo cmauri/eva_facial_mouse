@@ -141,6 +141,9 @@ class AccessibilityAction {
         case R.id.recents_button:
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
             break;
+        case R.id.notifications_button:
+            s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
+            break;
         default:
             return false;
         }

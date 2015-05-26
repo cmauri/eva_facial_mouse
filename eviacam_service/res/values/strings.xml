@@ -65,6 +65,7 @@
     <string name="back_button">Back button</string>
     <string name="home_button">Home button</string>
     <string name="recents_button">Recents button</string>
+    <string name="notifications_button">Notifications button</string>
     <string name="interface_settings">Interface settings</string>
     <string name="dock_panel_button">Expand/collapse dock menu</string>
     <string name="docking_panel_edge">Dock menu position</string>

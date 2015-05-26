@@ -32,7 +32,7 @@
         android:layout_width="32dip"
         android:layout_height="32dip"
         android:padding="2dip"
-        android:src="@drawable/back_icon"
+        android:src="@drawable/ic_back"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
         android:contentDescription="@string/back_button" />
@@ -42,7 +42,7 @@
         android:layout_width="32dip"
         android:layout_height="32dip"
         android:padding="2dip"
-        android:src="@drawable/home_icon"
+        android:src="@drawable/ic_home"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
         android:contentDescription="@string/home_button" />
@@ -52,9 +52,19 @@
         android:layout_width="32dip"
         android:layout_height="32dip"
         android:padding="2dip"
-        android:src="@drawable/recents_icon"
+        android:src="@drawable/ic_recents"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
         android:contentDescription="@string/recents_button" />
+    
+    <ImageButton
+        android:id="@+id/notifications_button"
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_notifications"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/notifications_button" />
 
 </LinearLayout>

@@ -23,18 +23,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.ImageView.ScaleType;
 
-public class ScrollLayerView extends RelativeLayout {
+/**
+ * Layer to draw scrolling buttons
+ *  
+ */
+public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenceChangeListener {
     
     /** */
     public class NodeAction {
@@ -55,41 +61,46 @@ public class ScrollLayerView extends RelativeLayout {
     }
     
     /** Button size in device pixels */
-    private static final int SCROLL_BUTTON_WIDTH_DP= 28;
-    private static final int SCROLL_BUTTON_HEIGHT_DP= 28;
+    private static final int SCROLL_BUTTON_WIDTH_DP= 30;
+    private static final int SCROLL_BUTTON_HEIGHT_DP= 30;
+    private static final int SCROLL_BUTTON_PADDING_DP= 2;
     
-    /** Button size in pixels */
-    private final int SCROLL_BUTTON_WIDTH;
-    private final int SCROLL_BUTTON_HEIGHT;
-    
-    /** Icon bitmaps */
-    private Bitmap mScrollBackwardIcon;
-    private Bitmap mScrollForwardIcon;
+    /** Factor to scale the size of the buttons */
+    private float mSizeMultiplier = 1.0f;
     
     // scroll areas
     private List<ButtonNodeAction> mScrollAreas = new ArrayList<ButtonNodeAction>();
     private int mScrollAreasCount = 0;
     
-    public ScrollLayerView(Context context) {
-        super(context);
+    public ScrollLayerView(Context c) {
+        super(c);
         
-        // size of icons
-        SCROLL_BUTTON_WIDTH= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-                SCROLL_BUTTON_WIDTH_DP, getResources().getDisplayMetrics());
-        SCROLL_BUTTON_HEIGHT= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-                SCROLL_BUTTON_HEIGHT_DP, getResources().getDisplayMetrics());
-        
-        // scroll backward icon
-        Drawable d= context.getResources().getDrawable(R.drawable.scrollback_icon);
-        mScrollBackwardIcon= Bitmap.createScaledBitmap(
-                ((BitmapDrawable) d).getBitmap(), SCROLL_BUTTON_WIDTH, SCROLL_BUTTON_HEIGHT, true);
-
-        // scroll forward icon
-        d= context.getResources().getDrawable(R.drawable.scrollfor_icon);
-        mScrollForwardIcon= Bitmap.createScaledBitmap(
-                ((BitmapDrawable) d).getBitmap(), SCROLL_BUTTON_WIDTH, SCROLL_BUTTON_HEIGHT, true);
+        // Preferences
+        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(c);
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateSettings(sp);
     }
     
+    private synchronized void updateSettings(SharedPreferences sp) {
+        mSizeMultiplier= Settings.getUIElementsSize(sp);
+
+        // Force buttons full refresh
+        clearScrollAreas();
+        mScrollAreas.clear();
+    }
+    
+    public void cleanup() {
+        PreferenceManager.getDefaultSharedPreferences(this.getContext()).
+            unregisterOnSharedPreferenceChangeListener(this);
+    }
+    
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
+        if (key.equals(Settings.KEY_UI_ELEMENTS_SIZE)) {
+            updateSettings(sp);
+        }
+    }
+
     /**
      * Gets the NodeAction pair containing a given point
      * 
@@ -127,6 +138,29 @@ public class ScrollLayerView extends RelativeLayout {
         mScrollAreasCount= 0;
     }
     
+    /** Create a scrolling button */
+    private ImageButton createScrollButton(Drawable d) {
+        ImageButton b= new ImageButton(getContext());
+        b.setBackgroundColor(getResources().getColor(R.color.half_alpha));
+        b.setContentDescription(getContext().getText(R.string.scroll_backward));
+        
+        int scrollButtonWidth= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                SCROLL_BUTTON_WIDTH_DP, getResources().getDisplayMetrics()) * mSizeMultiplier);
+        int scrollButtonHeight= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                SCROLL_BUTTON_HEIGHT_DP, getResources().getDisplayMetrics()) * mSizeMultiplier);
+        int padding_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                SCROLL_BUTTON_PADDING_DP, getResources().getDisplayMetrics());
+        
+        RelativeLayout.LayoutParams rlp= new 
+                RelativeLayout.LayoutParams(scrollButtonWidth, scrollButtonHeight);
+        b.setLayoutParams(rlp);
+        b.setScaleType(ScaleType.FIT_CENTER);
+        b.setPadding(padding_px, padding_px, padding_px, padding_px);
+        b.setImageDrawable(d);
+        
+        return b;
+    }
+    
     /**
      * Add a scrollable area
      *  
@@ -142,33 +176,18 @@ public class ScrollLayerView extends RelativeLayout {
         
         // Pick last element from the list
         ButtonNodeAction bna= mScrollAreas.get(mScrollAreasCount++);
-        
         bna.node= node;
         
         /** Create buttons if needed */        
         if (bna.buttonBackward == null) {
-            bna.buttonBackward = new ImageButton(this.getContext());
-            bna.buttonBackward.setBackgroundColor(
-                    getResources().getColor(R.color.half_alpha));
-            bna.buttonBackward.setContentDescription(
-                    getContext().getText(R.string.scroll_backward));
-            RelativeLayout.LayoutParams rlp= new RelativeLayout.LayoutParams(
-                    SCROLL_BUTTON_WIDTH, SCROLL_BUTTON_HEIGHT);
-            bna.buttonBackward.setLayoutParams(rlp);
-            bna.buttonBackward.setImageBitmap(mScrollBackwardIcon);
-            this.addView(bna.buttonBackward);
+            Drawable d= getContext().getResources().getDrawable(R.drawable.scrollback_icon);
+            bna.buttonBackward= createScrollButton(d);
+            addView(bna.buttonBackward);
         }
         if (bna.buttonForward == null) {
-            bna.buttonForward = new ImageButton(this.getContext());
-            bna.buttonForward.setBackgroundColor(
-                    getResources().getColor(R.color.half_alpha));
-            bna.buttonForward.setContentDescription(
-                    getContext().getText(R.string.scroll_forward));
-            RelativeLayout.LayoutParams rlp= new RelativeLayout.LayoutParams(
-                    SCROLL_BUTTON_WIDTH, SCROLL_BUTTON_HEIGHT);
-            bna.buttonForward.setLayoutParams(rlp);
-            bna.buttonForward.setImageBitmap(mScrollForwardIcon);
-            this.addView(bna.buttonForward);
+            Drawable d= getContext().getResources().getDrawable(R.drawable.scrollfor_icon);
+            bna.buttonForward= createScrollButton(d);
+            addView(bna.buttonForward);
         }
         
         /** Set visibility and position */
@@ -190,8 +209,8 @@ public class ScrollLayerView extends RelativeLayout {
         if ((node.getActions() & AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) != 0) {
             RelativeLayout.LayoutParams rlp= (RelativeLayout.LayoutParams) 
                     bna.buttonForward.getLayoutParams();
-            rlp.leftMargin = tmpRect.left + tmpRect.width() - SCROLL_BUTTON_WIDTH;
-            rlp.topMargin = tmpRect.top + tmpRect.height() - SCROLL_BUTTON_HEIGHT;
+            rlp.leftMargin = tmpRect.left + tmpRect.width() - rlp.width;
+            rlp.topMargin = tmpRect.top + tmpRect.height() - rlp.height;
             bna.buttonForward.setLayoutParams(rlp);
             bna.buttonForward.setVisibility(View.VISIBLE);
         }

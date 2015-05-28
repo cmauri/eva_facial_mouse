@@ -80,7 +80,7 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         EVIACAM.debugInit(this);
         
         // set default configuration values if the service is run for the first time
-        PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, false);
+        PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, true);
         
         /**
          * Display splash and detect OpenCV installation. The service from now on waits 

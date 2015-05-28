@@ -56,7 +56,10 @@ public class EViacamIMEService extends InputMethodService implements
     @Override
     public void onDestroy() {
         EVIACAMIME.debug("EViacamIMEService: onDestroy");
+        super.onDestroy();
         sInstance= null;
+        mKeyboardView = null;
+        mKeyboard= null;
     }
     
     @Override

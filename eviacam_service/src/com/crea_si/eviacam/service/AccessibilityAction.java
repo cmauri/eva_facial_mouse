@@ -197,15 +197,18 @@ class AccessibilityAction {
             // Manages clicks for scrolling buttons
             if (manageScrollActions(pInt)) return;
             
-            // Manages actions for the IME
-            if (mInputMethodAction.click(pInt.x, pInt.y)) return;
-            
             /** Manages actions on an arbitrary position of the screen  */
             
             // Finds node under (x, y) and its available actions
             AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
             
-            if (node == null) return;
+            if (node == null) {
+                // When no actionable found check for the IME (see comments in
+                // findActionable method for further details)
+                mInputMethodAction.click(pInt.x, pInt.y);
+
+                return; // Done
+            }
             
             EVIACAM.debug("Actionable node found: (" + pInt.x + ", " + pInt.y + ")." + 
                     AccessibilityNodeDebug.getNodeInfo(node));
@@ -331,6 +334,8 @@ class AccessibilityAction {
         if (rootNode == null) return null;
         
         RecursionInfo ri= new RecursionInfo (p, actions);
+
+        //AccessibilityNodeDebug.displayFullTree(rootNode);
         
         return findActionable0(rootNode, ri);
     }
@@ -345,9 +350,18 @@ class AccessibilityAction {
         
         node.getBoundsInScreen(ri.tmp);
         if (!ri.tmp.contains(ri.p.x, ri.p.y)) {
-            // if window does not contain (x, y) stop recursion
+            // If window does not contain (x, y) stop recursion. It seems that
+            // (at least for Jelly Bean) when part of the view is covered
+            // by another window (e.g. IME), reported bounds EXCLUDE
+            // the area covered by such a window. Therefore, this allows to
+            // skip zones of the view covered by the IME.
+            // TODO: check for other Android versions.
             return null;
         }
+
+        // Although it seems that is not needed, we check and give out if the
+        // node is not visible. Just in case.
+        if (!node.isVisibleToUser()) return null;
 
         AccessibilityNodeInfo result = null;
 
@@ -374,7 +388,7 @@ class AccessibilityAction {
      * @param actions - bitmask of actions
      * @return - list with the node, may be void
      */
-    public static List<AccessibilityNodeInfo> findNodes (int actions) {
+    private static List<AccessibilityNodeInfo> findNodes (int actions) {
         final List<AccessibilityNodeInfo> result= new ArrayList<AccessibilityNodeInfo>();
         // get root node
         final AccessibilityNodeInfo rootNode =

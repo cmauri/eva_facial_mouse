@@ -59,6 +59,18 @@ public class RemoteBinderService extends Service {
             };
             mMainThreadHandler.post(r);
         }
+
+        @Override
+        public void closeIME() throws RemoteException {
+            Runnable r= new Runnable() {
+                @Override
+                public void run() {
+                    EVIACAMIME.debug("RemoteBinderService: closeIME");
+                    EViacamIMEService.closeIME();
+                }
+            };
+            mMainThreadHandler.post(r);
+        }
     };
     
     /** Calls click on the main thread and waits for the result */

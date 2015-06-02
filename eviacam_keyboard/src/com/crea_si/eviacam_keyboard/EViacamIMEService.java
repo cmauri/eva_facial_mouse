@@ -187,11 +187,8 @@ public class EViacamIMEService extends InputMethodService implements
     }
     
     /**
-     * Performs a click on the location (x, y) when possible
-     * @param x - abscissa coordinate of the point (relative to the screen)
-     * @param y - ordinate coordinate of the point (relative to the screen)
-     * @return true if the point is within view bounds of the IME, false otherwise
-     * 
+     * Opens the IME
+     *  
      * Needs to be static because is called from an external service
      */
     public static void openIME() {
@@ -207,7 +204,24 @@ public class EViacamIMEService extends InputMethodService implements
         imm.showSoftInputFromInputMethod(
                 sInstance.mIdentifiyingToken, InputMethodManager.SHOW_FORCED);
     }
-    
+
+    /**
+     * Closes the IME
+     *
+     * Needs to be static because is called from an external service
+     */
+    public static void closeIME() {
+        // is the IME has not been create just returns
+        if (sInstance == null) return;
+
+        // no identifying token? should not happen but just in case
+        if (sInstance.mIdentifiyingToken == null) return;
+
+        InputMethodManager imm=
+                (InputMethodManager) sInstance.getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromInputMethod(sInstance.mIdentifiyingToken, 0);
+    }
+
     /** 
      * Trick to obtain the identifying token given to the input method when it is started 
      */

@@ -145,4 +145,19 @@ class InputMethodAction implements ServiceConnection {
             EVIACAM.debug("InputMethodAction: exception while trying to open IME");
         }
     }
+
+    public void closeIME() {
+        if (mRemoteService == null) {
+            EVIACAM.debug("InputMethodAction: closeIME: no remote service available");
+            keepBindAlive();
+            return;
+        }
+        // Does not check mInputMethodManager.isActive because does not mean IME is open
+        try {
+            mRemoteService.closeIME();
+        } catch (RemoteException e) {
+            // Nothing to be done
+            EVIACAM.debug("InputMethodAction: exception while trying to close IME");
+        }
+    }
 }

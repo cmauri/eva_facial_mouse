@@ -136,12 +136,15 @@ class AccessibilityAction {
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             break;
         case R.id.home_button:
+            mInputMethodAction.closeIME();
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
             break;
         case R.id.recents_button:
+            mInputMethodAction.closeIME();
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
             break;
         case R.id.notifications_button:
+            mInputMethodAction.closeIME();
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
             break;
         default:
@@ -206,7 +209,6 @@ class AccessibilityAction {
              * 
              * TODO: for Kitkat: try to hide IME when node opens a pop-up
              * TODO: for Lollipop: check getWindows()
-             * TODO: close IME when notification opened
              * TODO: add an option to open/close IME
              */
             if (mInputMethodAction.click(pInt.x, pInt.y)) return;

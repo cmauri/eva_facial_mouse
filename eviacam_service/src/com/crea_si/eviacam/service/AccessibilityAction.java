@@ -197,19 +197,27 @@ class AccessibilityAction {
             // Manages clicks for scrolling buttons
             if (manageScrollActions(pInt)) return;
             
+            /**
+             * Manages actions for the IME.
+             * 
+             * LIMITATIONS: when a pop up or dialog is covering the IME there is no way to
+             * know (at least for API < 21) such circumstance. Therefore, we give preference
+             * to the IME. This may lead to situations where the pop up is not accessible.
+             * 
+             * TODO: for Kitkat: try to hide IME when node opens a pop-up
+             * TODO: for Lollipop: check getWindows()
+             * TODO: close IME when notification opened
+             * TODO: add an option to open/close IME
+             */
+            if (mInputMethodAction.click(pInt.x, pInt.y)) return;
+            
             /** Manages actions on an arbitrary position of the screen  */
             
             // Finds node under (x, y) and its available actions
             AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
             
-            if (node == null) {
-                // When no actionable found check for the IME (see comments in
-                // findActionable method for further details)
-                mInputMethodAction.click(pInt.x, pInt.y);
+            if (node == null) return;
 
-                return; // Done
-            }
-            
             EVIACAM.debug("Actionable node found: (" + pInt.x + ", " + pInt.y + ")." + 
                     AccessibilityNodeDebug.getNodeInfo(node));
             
@@ -335,7 +343,7 @@ class AccessibilityAction {
         
         RecursionInfo ri= new RecursionInfo (p, actions);
 
-        //AccessibilityNodeDebug.displayFullTree(rootNode);
+        AccessibilityNodeDebug.displayFullTree(rootNode);
         
         return findActionable0(rootNode, ri);
     }
@@ -350,12 +358,16 @@ class AccessibilityAction {
         
         node.getBoundsInScreen(ri.tmp);
         if (!ri.tmp.contains(ri.p.x, ri.p.y)) {
-            // If window does not contain (x, y) stop recursion. It seems that
-            // (at least for Jelly Bean) when part of the view is covered
-            // by another window (e.g. IME), reported bounds EXCLUDE
-            // the area covered by such a window. Therefore, this allows to
-            // skip zones of the view covered by the IME.
-            // TODO: check for other Android versions.
+            /**
+             * If node does not contain (x, y) stop recursion. It seems that, when part
+             * of the view is covered by another window (e.g. IME), reported bounds 
+             * EXCLUDE the area covered by such a window. Unfortunately, this does not
+             * always works, for instance, when a extracted view is shown (e.g. usually
+             * in landscape mode). This behavior can be changed (see [1]) in the IME
+             * but perhaps this is not the best approach.
+             * 
+             * [1] http://stackoverflow.com/questions/14252184/how-can-i-make-my-custom-keyboard-to-show-in-fullscreen-mode-always
+             */
             return null;
         }
 

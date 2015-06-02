@@ -173,6 +173,12 @@ class AccessibilityAction {
             mInputMethodAction.openIME();
             node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
         }
+        
+        // Here we tried to check whether for Kitkat and higher versions canOpenPopup() allows
+        // to know if the node will actually open a popup and thus IME could be hidden. However
+        // after some test with menu options with popups it seems that this function always
+        // return false.
+        
         node.performAction(action);
     }
     
@@ -207,7 +213,6 @@ class AccessibilityAction {
              * know (at least for API < 21) such circumstance. Therefore, we give preference
              * to the IME. This may lead to situations where the pop up is not accessible.
              * 
-             * TODO: for Kitkat: try to hide IME when node opens a pop-up
              * TODO: for Lollipop: check getWindows()
              * TODO: add an option to open/close IME
              */

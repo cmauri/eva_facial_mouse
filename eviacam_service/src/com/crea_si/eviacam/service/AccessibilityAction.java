@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -350,7 +350,7 @@ class AccessibilityAction {
         
         RecursionInfo ri= new RecursionInfo (p, actions);
 
-        AccessibilityNodeDebug.displayFullTree(rootNode);
+        //AccessibilityNodeDebug.displayFullTree(rootNode);
         
         return findActionable0(rootNode, ri);
     }
@@ -392,7 +392,8 @@ class AccessibilityAction {
         }
 
         // propagate calls to children
-        for (int i = 0; i < node.getChildCount(); i++) {
+        final int child_count = node.getChildCount();
+        for (int i = 0; i < child_count; i++) {
             AccessibilityNodeInfo child = findActionable0(node.getChild(i), ri);
 
             if (child != null) result = child;
@@ -423,13 +424,15 @@ class AccessibilityAction {
             final List<AccessibilityNodeInfo> result) {
 
         if (node == null) return;
+        if (!node.isVisibleToUser()) return;
 
         if ((node.getActions() & actions) != 0) {
             result.add(node);
         }
 
         // propagate calls to children
-        for (int i = 0; i < node.getChildCount(); i++) {
+        final int child_count = node.getChildCount();
+        for (int i = 0; i < child_count; i++) {
             findNodes0 (actions, node.getChild(i), result);
         }
     }

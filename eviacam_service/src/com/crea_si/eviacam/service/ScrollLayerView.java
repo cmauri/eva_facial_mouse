@@ -138,27 +138,46 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         mScrollAreasCount= 0;
     }
     
+    private int getScrollButtonWidth() {
+        return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                SCROLL_BUTTON_WIDTH_DP, getResources().getDisplayMetrics()) * mSizeMultiplier);
+    }
+    
+    private int getScrollButtonHeight() {
+        return (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                SCROLL_BUTTON_HEIGHT_DP, getResources().getDisplayMetrics()) * mSizeMultiplier);
+    }
+    
     /** Create a scrolling button */
     private ImageButton createScrollButton(Drawable d) {
         ImageButton b= new ImageButton(getContext());
         b.setBackgroundColor(getResources().getColor(R.color.half_alpha));
         b.setContentDescription(getContext().getText(R.string.scroll_backward));
         
-        int scrollButtonWidth= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                SCROLL_BUTTON_WIDTH_DP, getResources().getDisplayMetrics()) * mSizeMultiplier);
-        int scrollButtonHeight= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                SCROLL_BUTTON_HEIGHT_DP, getResources().getDisplayMetrics()) * mSizeMultiplier);
         int padding_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
                 SCROLL_BUTTON_PADDING_DP, getResources().getDisplayMetrics());
         
         RelativeLayout.LayoutParams rlp= new 
-                RelativeLayout.LayoutParams(scrollButtonWidth, scrollButtonHeight);
+                RelativeLayout.LayoutParams(getScrollButtonWidth(), getScrollButtonHeight());
         b.setLayoutParams(rlp);
         b.setScaleType(ScaleType.FIT_CENTER);
         b.setPadding(padding_px, padding_px, padding_px, padding_px);
         b.setImageDrawable(d);
         
         return b;
+    }
+    
+    /** Check if two rectangles overlap */
+    static private boolean overlaps (int x1, int x2, int y1, int y2, int width, int height) {
+        return y1 < y2 + height && y1 + height > y2 && x1 < x2 + width && x1 + width > x2;
+    }
+    
+    /** Set the position of a button */
+    private void setButtonPosition(ImageButton b, int x, int y) {
+        RelativeLayout.LayoutParams rlp= (RelativeLayout.LayoutParams) b.getLayoutParams();
+        rlp.leftMargin = x;
+        rlp.topMargin = y;
+        b.setLayoutParams(rlp);
     }
     
     /**
@@ -175,7 +194,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         }
         
         // Pick last element from the list
-        ButtonNodeAction bna= mScrollAreas.get(mScrollAreasCount++);
+        final ButtonNodeAction bna= mScrollAreas.get(mScrollAreasCount++);
         bna.node= node;
         
         /** Create buttons if needed */        
@@ -190,28 +209,56 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
             addView(bna.buttonForward);
         }
         
-        /** Set visibility and position */
-        Rect tmpRect = new Rect();
+        /** 
+         * Set visibility and position of the scroll buttons
+         * 
+         * We take into account whether they are really needed (i.e. support the corresponding
+         * action) and the position of the buttons placed previously. We just move the button
+         * down (or up) if it overlaps with previously placed buttons. This does not guarantee
+         * that buttons will never overlap, but will probably work in most cases.
+         */
+        final Rect tmpRect = new Rect();
         node.getBoundsInScreen(tmpRect);
         
-        if ((node.getActions() & AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD) != 0) {
-            RelativeLayout.LayoutParams rlp= (RelativeLayout.LayoutParams) 
-                    bna.buttonBackward.getLayoutParams();
-            rlp.leftMargin = tmpRect.left;
-            rlp.topMargin = tmpRect.top;
-            bna.buttonBackward.setLayoutParams(rlp);
+        final int width = getScrollButtonWidth();
+        final int height = getScrollButtonHeight();
+        
+        final int actions = node.getActions();
+        
+        /** Scroll backward buttons */
+        if ((actions & AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD) != 0) {
+            final int x = tmpRect.left;
+            int y = tmpRect.top;
+
+            for (int i= 0; i< mScrollAreasCount; i++) {
+                ImageButton other_button= mScrollAreas.get(i).buttonBackward;
+                if (other_button.getVisibility() != View.VISIBLE) continue;
+                if (overlaps(x, other_button.getLeft(), y, other_button.getTop(), width, height)) {
+                    y+= height; // move down
+                }
+            }
+
+            setButtonPosition(bna.buttonBackward, x, y);
             bna.buttonBackward.setVisibility(View.VISIBLE);
         }
         else {
             bna.buttonBackward.setVisibility(View.GONE);
         }
         
-        if ((node.getActions() & AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) != 0) {
-            RelativeLayout.LayoutParams rlp= (RelativeLayout.LayoutParams) 
-                    bna.buttonForward.getLayoutParams();
-            rlp.leftMargin = tmpRect.left + tmpRect.width() - rlp.width;
-            rlp.topMargin = tmpRect.top + tmpRect.height() - rlp.height;
-            bna.buttonForward.setLayoutParams(rlp);
+        /** Scroll forward buttons */
+        if ((actions & AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) != 0) {
+            final int x = tmpRect.right - width;
+            int y = tmpRect.bottom - height;
+        
+            for (int i= 0; i< mScrollAreasCount; i++) {
+                ImageButton other_button= mScrollAreas.get(i).buttonForward;
+                if (other_button.getVisibility() != View.VISIBLE) continue;
+                if (overlaps(x, other_button.getLeft(), y, other_button.getTop(), width, height)) {
+                    y-= height; // move up
+                }
+            }
+            
+            setButtonPosition(bna.buttonForward, x, y);
             bna.buttonForward.setVisibility(View.VISIBLE);
         }
         else {

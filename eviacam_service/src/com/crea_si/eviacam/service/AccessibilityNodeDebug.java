@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -133,7 +133,7 @@ class AccessibilityNodeDebug {
         displayFullTree0(node, "1");
     }
     
-    static private void displayFullTree0 (AccessibilityNodeInfo node, String prefix) {
+    static void displayFullTree0 (AccessibilityNodeInfo node, String prefix) {
         EVIACAM.debug(prefix + " " + getNodeInfo(node));
         
         // propagate calls to children

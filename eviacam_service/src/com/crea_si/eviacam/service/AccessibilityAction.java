@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
@@ -31,6 +32,7 @@ import android.os.Handler;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityWindowInfo;
 
 /**
  * Manages actions relative to the Android accessibility API 
@@ -116,6 +118,14 @@ class AccessibilityAction {
         }
         
         FULL_ACTION_MASK= full_action_mask;
+        
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AccessibilityService s= EViacamService.getInstance();
+            AccessibilityServiceInfo asi= s.getServiceInfo();
+            asi.flags|= AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
+            s.setServiceInfo(asi);
+        }
     }
     
     public void cleanup () {
@@ -205,6 +215,14 @@ class AccessibilityAction {
             
             // Manages clicks for scrolling buttons
             if (manageScrollActions(pInt)) return;
+            
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                AccessibilityService s= EViacamService.getInstance();
+                
+                List<AccessibilityWindowInfo> l= s.getWindows();
+                AccessibilityWindowDebug.displayFullWindowTree (l);
+            }
             
             /**
              * Manages actions for the IME.

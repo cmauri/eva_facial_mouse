@@ -177,18 +177,28 @@ class AccessibilityAction {
     /** Perform an action to a node focusing it when necessary */
     private void performActionOnNode(AccessibilityNodeInfo node, int action) {
         if (action == 0) return;
+        
+        /**
+         * Focus the node.
+         * 
+         * REMARKS: tried to see whether it solved the problem with the icon panel of WhatsApp.
+         * but it did not work (see comments in AccessibilityAction.performAction method). We 
+         * leave here because it seems reasonable to focus the node on which the action is performed.
+         */
+        node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+        
         // TODO: currently only checks for EditText instances, check with EditText subclasses
         if ((action & AccessibilityNodeInfo.ACTION_CLICK) != 0 &&
                 node.getClassName().toString().equalsIgnoreCase("android.widget.EditText")) {
             mInputMethodAction.openIME();
-            node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
         }
         
-        // Here we tried to check whether for Kitkat and higher versions canOpenPopup() allows
-        // to know if the node will actually open a popup and thus IME could be hidden. However
-        // after some test with menu options with popups it seems that this function always
-        // return false.
-        
+        /**
+         * Here we tried to check whether for Kitkat and higher versions canOpenPopup() allows
+         * to know if the node will actually open a popup and thus IME could be hidden. However
+         * after some test with menu options with popups it seems that this function always
+         *  return false.
+         */
         node.performAction(action);
     }
     
@@ -216,30 +226,84 @@ class AccessibilityAction {
             // Manages clicks for scrolling buttons
             if (manageScrollActions(pInt)) return;
             
+            AccessibilityNodeInfo root= null;
             
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                /**
+                 * According to the documentation [1]: "This method returns only the windows
+                 * that a sighted user can interact with, as opposed to all windows.".
+                 * Unfortunately this does not seem to be the actual behavior. On Lollypop 
+                 * API 21 (Nexus 7) the windows of the IME is not returned. With API 22
+                 * the window of the IME is only returned for the google keyboard (and allows
+                 * to interact with it). For other keyboards (e.g. AnySoftKeyboard or 
+                 * Go Keyboard 2015) does not work.
+                 * 
+                 * UPDATE: this does not always happens, sometimes an IME window is reported,
+                 * needs more work (tested under API 22 and bundled eviacam IME and 
+                 * Go Keyboard 2015).
+                 * 
+                 * logcat excerpt
+                 * W3 AccessibilityWindowInfo[id=1544, type=TYPE_INPUT_METHOD, layer=21040, bounds=Rect(0, 33 - 1280, 800), focused=false, active=false, hasParent=false, hasChildren=false]
+                 * W3.1 [...............VI]; android.widget.FrameLayout; null; null; ; [ACTION_SELECT, ACTION_CLEAR_SELECTION, ACTION_ACCESSIBILITY_FOCUS, ]Rect(0, 808 - 800, 1280)
+                 * W4 AccessibilityWindowInfo[id=1516, type=TYPE_APPLICATION, layer=21035, bounds=Rect(0, 0 - 1280, 800), focused=true, active=true, hasParent=false, hasChildren=false]
+                 * W4.1 [...............VI]; android.widget.FrameLayout; null; null; ; [ACTION_SELECT, ACTION_CLEAR_SELECTION, ACTION_ACCESSIBILITY_FOCUS, ]Rect(0, 0 - 800, 1280)
+                 * 
+                 * Further tests with WhatsApp client show that if the input text of a chat
+                 * is not focused the window containing the emoticons is not reported (although
+                 * is visible and the user can interact with it).
+                 * 
+                 * [1] http://developer.android.com/reference/android/accessibilityservice/AccessibilityService.html#getWindows()
+                 */
                 AccessibilityService s= EViacamService.getInstance();
-                
                 List<AccessibilityWindowInfo> l= s.getWindows();
+                
+                // DEBUG CODE
                 AccessibilityWindowDebug.displayFullWindowTree (l);
+                // DEBUG CODE
+                
+                Rect bounds = new Rect();
+                for (AccessibilityWindowInfo awi : l) {
+                    awi.getBoundsInScreen(bounds);
+                    if (bounds.contains(pInt.x, pInt.y)) {
+                        AccessibilityNodeInfo rootCandidate= awi.getRoot();
+                        if (rootCandidate == null) continue;
+                        /**
+                         * Check bounds for the candidate root node. Sometimes windows bounds
+                         *  are larger than root bounds
+                         */
+                        rootCandidate.getBoundsInScreen(bounds);
+                        if (bounds.contains(pInt.x, pInt.y)) {
+                            root = rootCandidate;
+                            break;
+                        }
+                    }
+                }
+                
+                /**
+                 * Give an opportunity to the bundled eviacam keyboard
+                 * 
+                 * TODO: check whether this is really needed (e.g. checking which IME is 
+                 * currently active, if the node is already an IME)
+                 */
+                if (mInputMethodAction.click(pInt.x, pInt.y)) return;
             }
-            
-            /**
-             * Manages actions for the IME.
-             * 
-             * LIMITATIONS: when a pop up or dialog is covering the IME there is no way to
-             * know (at least for API < 21) such circumstance. Therefore, we give preference
-             * to the IME. This may lead to situations where the pop up is not accessible.
-             * 
-             * TODO: for Lollipop: check getWindows()
-             * TODO: add an option to open/close IME
-             */
-            if (mInputMethodAction.click(pInt.x, pInt.y)) return;
+            else {
+                /**
+                 * Manages actions for the IME.
+                 * 
+                 * LIMITATIONS: when a pop up or dialog is covering the IME there is no way to
+                 * know (at least for API < 21) such circumstance. Therefore, we give preference
+                 * to the IME. This may lead to situations where the pop up is not accessible.
+                 * 
+                 * TODO: add an option to open/close IME
+                 */
+                if (mInputMethodAction.click(pInt.x, pInt.y)) return;
+            }
             
             /** Manages actions on an arbitrary position of the screen  */
             
             // Finds node under (x, y) and its available actions
-            AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
+            AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK, root);
             
             if (node == null) return;
 
@@ -360,17 +424,18 @@ class AccessibilityAction {
      * Find recursively the node under (x, y) that accepts some or all
      * actions encoded on the mask
      */
-    private static AccessibilityNodeInfo findActionable (Point p, int actions) {
+    private static AccessibilityNodeInfo findActionable (Point p, int actions, AccessibilityNodeInfo root) {
         // get root node
-        final AccessibilityNodeInfo rootNode = 
-                EViacamService.getInstance().getRootInActiveWindow();
-        if (rootNode == null) return null;
+        if (root == null) {
+            root = EViacamService.getInstance().getRootInActiveWindow();
+        }
+        if (root == null) return null;
         
         RecursionInfo ri= new RecursionInfo (p, actions);
 
         //AccessibilityNodeDebug.displayFullTree(rootNode);
         
-        return findActionable0(rootNode, ri);
+        return findActionable0(root, ri);
     }
     
     /** Actual recursive call for findActionable */

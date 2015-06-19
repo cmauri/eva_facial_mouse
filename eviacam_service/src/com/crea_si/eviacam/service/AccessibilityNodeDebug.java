@@ -134,6 +134,8 @@ class AccessibilityNodeDebug {
     }
     
     static void displayFullTree0 (AccessibilityNodeInfo node, String prefix) {
+        if (node == null) return;
+
         EVIACAM.debug(prefix + " " + getNodeInfo(node));
         
         // propagate calls to children

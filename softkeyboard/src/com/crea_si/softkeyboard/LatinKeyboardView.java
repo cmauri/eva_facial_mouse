@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package com.example.android.softkeyboard;
+/**
+ * Modified by Cesar Mauri (CREA) 2015 for the Enable Viacam for Android project
+ */
+package com.crea_si.softkeyboard;
 
 import android.content.Context;
 import android.inputmethodservice.Keyboard;

@@ -43,6 +43,11 @@ public class ImePreferences extends PreferenceActivity {
         setTitle(R.string.settings_name);
     }
 
+    @Override
+    protected boolean isValidFragment(String fragmentName) {
+        return ImePreferences.Settings.class.getName().equals(fragmentName);
+    }
+
     public static class Settings extends InputMethodSettingsFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {

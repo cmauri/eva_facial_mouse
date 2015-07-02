@@ -16,10 +16,13 @@
 ** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
+/**
+ * Modified by Cesar Mauri (CREA) 2015 for the Enable Viacam for Android project
+ */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Title for Latin keyboard  -->
-    <string name="ime_name">Sample Soft Keyboard</string>
+    <string name="ime_name">Enable Viacam Keyboard</string>
 
     <!-- Symbols that are commonly considered word separators in this language -->
     <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>

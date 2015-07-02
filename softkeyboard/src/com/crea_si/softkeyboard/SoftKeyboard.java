@@ -18,9 +18,13 @@
  */
 package com.crea_si.softkeyboard;
 
+import android.inputmethodservice.AbstractInputMethodService;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
+import android.os.IBinder;
+import android.os.ResultReceiver;
 import android.text.InputType;
 import android.text.method.MetaKeyKeyListener;
 import android.view.KeyCharacterMap;
@@ -28,6 +32,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputBinding;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
@@ -44,7 +49,9 @@ import java.util.List;
  */
 public class SoftKeyboard extends InputMethodService 
         implements KeyboardView.OnKeyboardActionListener {
-    static final boolean DEBUG = false;
+
+	private static SoftKeyboard sInstance;
+	private IBinder mIdentifiyingToken;
     
     /**
      * This boolean indicates the optional example code for performing
@@ -54,7 +61,7 @@ public class SoftKeyboard extends InputMethodService
      * a QWERTY keyboard to Chinese), but may not be used for input methods
      * that are primarily intended to be used for on-screen text entry.
      */
-    static final boolean PROCESS_HARD_KEYS = true;
+    static final boolean PROCESS_HARD_KEYS = false;
 
     private InputMethodManager mInputMethodManager;
 
@@ -78,12 +85,17 @@ public class SoftKeyboard extends InputMethodService
     
     private String mWordSeparators;
     
+    private boolean mReadyForInput= false;
+    
     /**
      * Main initialization of the input method component.  Be sure to call
      * to super class.
      */
     @Override public void onCreate() {
         super.onCreate();
+        EVIACAMSOFTKBD.debugInit();
+        EVIACAMSOFTKBD.debug("SoftKeyboard: onCreate");
+        sInstance= this;
         mInputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         mWordSeparators = getResources().getString(R.string.word_separators);
     }
@@ -245,14 +257,33 @@ public class SoftKeyboard extends InputMethodService
             mInputView.closing();
         }
     }
+	
+    /**
+     * Called by the system to notify a Service that it is no longer used 
+     * and is being removed. 
+     */
+    @Override
+    public void onDestroy() {
+        EVIACAMSOFTKBD.debug("SoftKeyboard: onDestroy");
+        sInstance= null;
+        super.onDestroy();
+    }
     
-    @Override public void onStartInputView(EditorInfo attribute, boolean restarting) {
+    @Override 
+    public void onStartInputView(EditorInfo attribute, boolean restarting) {
         super.onStartInputView(attribute, restarting);
         // Apply the selected keyboard to the input view.
         mInputView.setKeyboard(mCurKeyboard);
         mInputView.closing();
         final InputMethodSubtype subtype = mInputMethodManager.getCurrentInputMethodSubtype();
         mInputView.setSubtypeOnSpaceKey(subtype);
+		mReadyForInput= true;
+    }
+
+    @Override
+    public void onFinishInputView (boolean finishingInput) {
+        mReadyForInput= false;
+        super.onFinishInputView(finishingInput);
     }
 
     @Override
@@ -530,6 +561,55 @@ public class SoftKeyboard extends InputMethodService
         }
     }
 
+    /**
+     * Performs a click on the location (x, y) when possible
+     * @param x - abscissa coordinate of the point (relative to the screen)
+     * @param y - ordinate coordinate of the point (relative to the screen)
+     * @return true if the point is within view bounds of the IME, false otherwise
+     *
+     * Needs to be static because is called from an external service
+     */
+    public static boolean click(int x, int y) {
+        // is the IME has not been create just return false
+        if (sInstance == null) return false;
+
+        if (!sInstance.mReadyForInput) return false;
+
+        InputConnection ic = sInstance.getCurrentInputConnection();
+        if (ic == null) return false;
+
+        // has clicked inside the keyboard?
+        if (sInstance.mInputView == null) return false;
+        int coord[]= new int[2];
+        sInstance.mInputView.getLocationOnScreen(coord);
+        if (x < coord[0] || y < coord[1]) return false;
+
+        // adjust coordinates relative to the edge of the keyboard
+        x= x - coord[0];
+        y= y - coord[1];
+
+        Keyboard.Key k= sInstance.getKeyBelow (x, y);
+        if (k != null) {
+            sInstance.onKey(k.codes[0], k.codes);
+        }
+
+        return true;
+    }
+
+    private Key getKeyBelow (int x, int y) {
+        if (mCurKeyboard == null) return null;
+
+        // keys near the given point
+        int[] keys= mCurKeyboard.getNearestKeys ((int) x, (int) y);
+
+        for (int i : keys) {
+            Keyboard.Key k= mCurKeyboard.getKeys().get(i);
+            if (k.isInside(x, y)) return k;
+        }
+
+        return null;
+    }
+
     public void onText(CharSequence text) {
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
@@ -670,7 +750,104 @@ public class SoftKeyboard extends InputMethodService
             commitTyped(getCurrentInputConnection());
         }
     }
-    
+
+    /**
+     * Opens the IME
+     *
+     * Needs to be static because is called from an external service
+     */
+    public static void openIME() {
+        // the IME has not been created, just returns
+        if (sInstance == null) return;
+
+        // no identifying token? should not happen but just in case
+        if (sInstance.mIdentifiyingToken == null) return;
+
+        InputMethodManager imm=
+                (InputMethodManager) sInstance.getSystemService(INPUT_METHOD_SERVICE);
+
+        imm.showSoftInputFromInputMethod(
+                sInstance.mIdentifiyingToken, InputMethodManager.SHOW_FORCED);
+    }
+
+    /**
+     * Closes the IME
+     *
+     * Needs to be static because is called from an external service
+     */
+    public static void closeIME() {
+        // is the IME has not been create just returns
+        if (sInstance == null) return;
+
+        // no identifying token? should not happen but just in case
+        if (sInstance.mIdentifiyingToken == null) return;
+
+        InputMethodManager imm=
+                (InputMethodManager) sInstance.getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromInputMethod(sInstance.mIdentifiyingToken, 0);
+    }
+
+    /**
+     * Trick to obtain the identifying token given to the input method when it is started 
+     */
+    @Override
+    public AbstractInputMethodService.AbstractInputMethodImpl onCreateInputMethodInterface() {
+        return new AbstractInputMethodHook(super.onCreateInputMethodInterface());
+    }
+
+    class AbstractInputMethodHook extends AbstractInputMethodService.AbstractInputMethodImpl {
+        private AbstractInputMethodService.AbstractInputMethodImpl mBase;
+
+        AbstractInputMethodHook(AbstractInputMethodService.AbstractInputMethodImpl impl) {
+            super();
+            this.mBase = impl;
+        }
+
+        /** Needed token is supplied here */
+        @Override
+        public void attachToken(IBinder token) {
+            mBase.attachToken(token);
+            mIdentifiyingToken= token;
+        }
+
+        /** Following methods just delegate to base */
+        @Override
+        public void bindInput(InputBinding binding) {
+            mBase.bindInput(binding);
+        }
+
+        @Override
+        public void unbindInput() {
+            mBase.unbindInput();
+        }
+
+        @Override
+        public void startInput(InputConnection inputConnection, EditorInfo info) {
+            mBase.startInput(inputConnection, info);
+        }
+
+        @Override
+        public void restartInput(InputConnection inputConnection,
+                EditorInfo attribute) {
+            mBase.restartInput(inputConnection, attribute);
+        }
+
+        @Override
+        public void showSoftInput(int flags, ResultReceiver resultReceiver) {
+            mBase.showSoftInput(flags, resultReceiver);
+        }
+
+        @Override
+        public void hideSoftInput(int flags, ResultReceiver resultReceiver) {
+            mBase.hideSoftInput(flags, resultReceiver);
+        }
+
+        @Override
+        public void changeInputMethodSubtype(InputMethodSubtype subtype) {
+            mBase.changeInputMethodSubtype(subtype);
+        }
+    }
+
     public void swipeRight() {
         if (mCompletionOn) {
             pickDefaultCandidate();

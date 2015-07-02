@@ -853,7 +853,17 @@ public class SoftKeyboard extends InputMethodService
             pickDefaultCandidate();
         }
     }
-    
+
+    @Override
+    public void onUpdateExtractingVisibility(EditorInfo ei) {
+        setExtractViewShown(false);
+    }
+
+    @Override
+    public boolean onEvaluateFullscreenMode() {
+        return false;
+    }
+
     public void swipeLeft() {
         handleBackspace();
     }

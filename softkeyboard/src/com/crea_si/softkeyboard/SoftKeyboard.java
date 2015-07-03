@@ -99,7 +99,41 @@ public class SoftKeyboard extends InputMethodService
         mInputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         mWordSeparators = getResources().getString(R.string.word_separators);
     }
-    
+
+    /**
+     * Create the keyboards according to the current subtype
+     *
+     * TODO: there is probably a better way to choose between different
+     * keyboard layouts when changing the subtype (e.g. when changing language)
+     */
+    private void createKeyboards (InputMethodSubtype subtype) {
+        boolean needUpdateCurrent= false;
+        if (mCurKeyboard != null && mCurKeyboard == mQwertyKeyboard) {
+            needUpdateCurrent= true;
+        }
+
+        final String locale= subtype.getLocale();
+        if (locale.compareTo("es")== 0) {
+            mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty_es);
+        }
+        else if (locale.compareTo("ca")== 0) {
+            mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty_ca);
+        }
+        else {
+            mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty);
+        }
+
+        /** These do not change. Create once */
+        if (mSymbolsKeyboard == null) {
+            mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols);
+        }
+        if (mSymbolsShiftedKeyboard == null) {
+            mSymbolsShiftedKeyboard = new LatinKeyboard(this, R.xml.symbols_shift);
+        }
+
+        if (needUpdateCurrent) mCurKeyboard = mQwertyKeyboard;
+    }
+
     /**
      * This is the point where you can do all of your UI initialization.  It
      * is called after creation and any configuration change.
@@ -113,11 +147,10 @@ public class SoftKeyboard extends InputMethodService
             if (displayWidth == mLastDisplayWidth) return;
             mLastDisplayWidth = displayWidth;
         }
-        mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty);
-        mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols);
-        mSymbolsShiftedKeyboard = new LatinKeyboard(this, R.xml.symbols_shift);
+        final InputMethodSubtype subtype = mInputMethodManager.getCurrentInputMethodSubtype();
+        createKeyboards (subtype);
     }
-    
+
     /**
      * Called by the framework when your view for creating input needs to
      * be generated.  This will be called the first time your input method
@@ -269,15 +302,22 @@ public class SoftKeyboard extends InputMethodService
         super.onDestroy();
     }
     
+    /**
+     * Switch to the specific keyboard subtype
+     */
+    private void applyCurrentKeyboard(InputMethodSubtype subtype) {
+        mInputView.setKeyboard(mCurKeyboard);
+        mInputView.closing();
+        mInputView.setSubtypeOnSpaceKey(subtype);
+    }
+
     @Override 
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         super.onStartInputView(attribute, restarting);
         // Apply the selected keyboard to the input view.
-        mInputView.setKeyboard(mCurKeyboard);
-        mInputView.closing();
         final InputMethodSubtype subtype = mInputMethodManager.getCurrentInputMethodSubtype();
-        mInputView.setSubtypeOnSpaceKey(subtype);
-		mReadyForInput= true;
+        applyCurrentKeyboard(subtype);
+        mReadyForInput= true;
     }
 
     @Override
@@ -288,7 +328,11 @@ public class SoftKeyboard extends InputMethodService
 
     @Override
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
-        mInputView.setSubtypeOnSpaceKey(subtype);
+        /**
+         * When subtype changes we need to recreate the keyboard layouts and apply them
+         */
+        createKeyboards (subtype);
+        applyCurrentKeyboard(subtype);
     }
 
     /**
@@ -610,6 +654,7 @@ public class SoftKeyboard extends InputMethodService
         return null;
     }
 
+    @Override
     public void onText(CharSequence text) {
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;

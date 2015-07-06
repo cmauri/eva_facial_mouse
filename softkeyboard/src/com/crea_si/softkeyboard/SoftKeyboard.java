@@ -464,13 +464,13 @@ public class SoftKeyboard extends InputMethodService
                             // First, tell the editor that it is no longer in the
                             // shift state, since we are consuming this.
                             ic.clearMetaKeyStates(KeyEvent.META_ALT_ON);
-                            keyDownUp(KeyEvent.KEYCODE_A);
-                            keyDownUp(KeyEvent.KEYCODE_N);
-                            keyDownUp(KeyEvent.KEYCODE_D);
-                            keyDownUp(KeyEvent.KEYCODE_R);
-                            keyDownUp(KeyEvent.KEYCODE_O);
-                            keyDownUp(KeyEvent.KEYCODE_I);
-                            keyDownUp(KeyEvent.KEYCODE_D);
+                            keyDownUp(KeyEvent.KEYCODE_A, ic);
+                            keyDownUp(KeyEvent.KEYCODE_N, ic);
+                            keyDownUp(KeyEvent.KEYCODE_D, ic);
+                            keyDownUp(KeyEvent.KEYCODE_R, ic);
+                            keyDownUp(KeyEvent.KEYCODE_O, ic);
+                            keyDownUp(KeyEvent.KEYCODE_I, ic);
+                            keyDownUp(KeyEvent.KEYCODE_D, ic);
                             // And we consume this event.
                             return true;
                         }
@@ -544,26 +544,24 @@ public class SoftKeyboard extends InputMethodService
     /**
      * Helper to send a key down / key up pair to the current editor.
      */
-    private void keyDownUp(int keyEventCode) {
-        getCurrentInputConnection().sendKeyEvent(
-                new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
-        getCurrentInputConnection().sendKeyEvent(
-                new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
+    private void keyDownUp(int keyEventCode, InputConnection ic) {
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keyEventCode));
+        ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, keyEventCode));
     }
     
     /**
      * Helper to send a character to the editor as raw key events.
      */
-    private void sendKey(int keyCode) {
+    private void sendKey(int keyCode, InputConnection ic) {
         switch (keyCode) {
             case '\n':
-                keyDownUp(KeyEvent.KEYCODE_ENTER);
+                keyDownUp(KeyEvent.KEYCODE_ENTER, ic);
                 break;
             default:
                 if (keyCode >= '0' && keyCode <= '9') {
-                    keyDownUp(keyCode - '0' + KeyEvent.KEYCODE_0);
+                    keyDownUp(keyCode - '0' + KeyEvent.KEYCODE_0, ic);
                 } else {
-                    getCurrentInputConnection().commitText(String.valueOf((char) keyCode), 1);
+                    ic.commitText(String.valueOf((char) keyCode), 1);
                 }
                 break;
         }
@@ -573,11 +571,14 @@ public class SoftKeyboard extends InputMethodService
 
     public void onKey(int primaryCode, int[] keyCodes) {
         if (isWordSeparator(primaryCode)) {
+            InputConnection ic= getCurrentInputConnection();
+            if (ic == null) return;
+
             // Handle separator
             if (mComposing.length() > 0) {
-                commitTyped(getCurrentInputConnection());
+                commitTyped(ic);
             }
-            sendKey(primaryCode);
+            sendKey(primaryCode, ic);
             updateShiftKeyState(getCurrentInputEditorInfo());
         } else if (primaryCode == Keyboard.KEYCODE_DELETE) {
             handleBackspace();
@@ -697,17 +698,20 @@ public class SoftKeyboard extends InputMethodService
     }
     
     private void handleBackspace() {
+        InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+
         final int length = mComposing.length();
         if (length > 1) {
             mComposing.delete(length - 1, length);
-            getCurrentInputConnection().setComposingText(mComposing, 1);
+            ic.setComposingText(mComposing, 1);
             updateCandidates();
         } else if (length > 0) {
             mComposing.setLength(0);
-            getCurrentInputConnection().commitText("", 0);
+            ic.commitText("", 0);
             updateCandidates();
         } else {
-            keyDownUp(KeyEvent.KEYCODE_DEL);
+            keyDownUp(KeyEvent.KEYCODE_DEL, ic);
         }
         updateShiftKeyState(getCurrentInputEditorInfo());
     }

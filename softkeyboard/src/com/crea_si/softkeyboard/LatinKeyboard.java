@@ -28,7 +28,7 @@ import android.view.inputmethod.EditorInfo;
 public class LatinKeyboard extends Keyboard {
 
     private Key mEnterKey;
-    private Key mSwitchLanguageKey;
+    private Key mSpaceKey;
     
     public LatinKeyboard(Context context, int xmlLayoutResId) {
         super(context, xmlLayoutResId);
@@ -42,12 +42,11 @@ public class LatinKeyboard extends Keyboard {
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y, 
             XmlResourceParser parser) {
-        final int keyLanguageSwitchCode= res.getInteger(R.integer.key_language_switch);
         Key key = new LatinKey(res, parent, x, y, parser);
         if (key.codes[0] == 10) {
             mEnterKey = key;
-        } else if (key.codes[0] == keyLanguageSwitchCode) {
-            mSwitchLanguageKey = key;
+        } else if (key.codes[0] == ' ') {
+            mSpaceKey = key;
         }
         return key;
     }
@@ -89,8 +88,8 @@ public class LatinKeyboard extends Keyboard {
     }
 
     void setSwitchLanguageIcon(final Drawable icon) {
-        if (mSwitchLanguageKey != null) {
-            mSwitchLanguageKey.icon = icon;
+        if (mSpaceKey != null) {
+            mSpaceKey.icon = icon;
         }
     }
 

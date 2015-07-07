@@ -62,7 +62,8 @@ public class SoftKeyboard extends InputMethodService
      */
     static final boolean PROCESS_HARD_KEYS = false;
 
-  //  private final int mSwitchLanguageKeyCode;
+    private static final int SWITCH_LANGUAGE_KEYCODE = -101;
+    
     private InputMethodManager mInputMethodManager;
     private IBinder mIdentifiyingToken;
 
@@ -597,7 +598,7 @@ public class SoftKeyboard extends InputMethodService
             if (current == mSymbolsKeyboard) {
                 current.setShifted(false);
             }
-        } else if (primaryCode == -101) {
+        } else if (primaryCode == SWITCH_LANGUAGE_KEYCODE) {
             mInputMethodManager.switchToNextInputMethod (mIdentifiyingToken, true);
         } else {
             handleCharacter(primaryCode, keyCodes);

@@ -124,13 +124,8 @@ public class SoftKeyboard extends InputMethodService
             mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty);
         }
 
-        /** These do not change. Create once */
-        if (mSymbolsKeyboard == null) {
-            mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols);
-        }
-        if (mSymbolsShiftedKeyboard == null) {
-            mSymbolsShiftedKeyboard = new LatinKeyboard(this, R.xml.symbols_shift);
-        }
+        mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols);
+        mSymbolsShiftedKeyboard = new LatinKeyboard(this, R.xml.symbols_shift);
 
         if (needUpdateCurrent) mCurKeyboard = mQwertyKeyboard;
     }

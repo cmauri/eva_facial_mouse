@@ -41,11 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Example of writing an input method for a soft keyboard.  This code is
- * focused on simplicity over completeness, so it should in no way be considered
- * to be a complete soft keyboard implementation.  Its purpose is to provide
- * a basic example for how you would get started writing an input method, to
- * be fleshed out as appropriate.
+ * Basic working IME which works in conjunction with Enable Viacam service
  */
 public class SoftKeyboard extends InputMethodService 
         implements KeyboardView.OnKeyboardActionListener {
@@ -167,9 +163,12 @@ public class SoftKeyboard extends InputMethodService
      * be generated, like {@link #onCreateInputView}.
      */
     @Override public View onCreateCandidatesView() {
+        return null;
+        /*
         mCandidateView = new CandidateView(this);
         mCandidateView.setService(this);
         return mCandidateView;
+        */
     }
 
     /**

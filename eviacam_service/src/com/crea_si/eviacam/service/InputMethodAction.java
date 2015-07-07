@@ -35,7 +35,8 @@ import com.crea_si.input_method_aidl.IClickableIME;
 
 class InputMethodAction implements ServiceConnection {
     
-    private static final String REMOTE_ACTION= "com.crea_si.eviacam_keyboard.RemoteBinderService";
+    private static final String REMOTE_PACKAGE= "com.crea_si.softkeyboard";
+    private static final String REMOTE_ACTION= REMOTE_PACKAGE + ".RemoteBinderService";
     
     // period (in milliseconds) to try to rebing again to the IME
     private static final int BIND_RETRY_PERIOD = 2000;
@@ -92,9 +93,14 @@ class InputMethodAction implements ServiceConnection {
         
         EVIACAM.debug("Attemp to bind to remote IME");
         Intent intent= new Intent(REMOTE_ACTION);
-        intent.setPackage("com.crea_si.eviacam_keyboard");
-        if (!mContext.bindService(intent, this, Context.BIND_AUTO_CREATE)) {
-            EVIACAM.debug("Cannot bind remote IME");
+        intent.setPackage(REMOTE_PACKAGE);
+        try {
+            if (!mContext.bindService(intent, this, Context.BIND_AUTO_CREATE)) {
+                EVIACAM.debug("Cannot bind remote IME");
+            }
+        }
+        catch(SecurityException e) {
+            EVIACAM.debug("Cannot bind remote IME. Security exception.");
         }
     }
     

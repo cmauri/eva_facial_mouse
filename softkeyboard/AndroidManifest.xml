@@ -1,0 +1,47 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" 
+    package="com.crea_si.softkeyboard"
+    android:versionCode="1"
+    android:versionName="1.0">
+    
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="22" />
+    
+    <application 
+        android:allowBackup="true"
+        android:label="@string/ime_name"
+        android:theme="@android:style/Theme.DeviceDefault" >
+
+        <service 
+            android:name=".SoftKeyboard"
+            android:label="@string/ime_name"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+
+            <meta-data 
+                android:name="android.view.im" 
+                android:resource="@xml/method" />
+        </service>
+
+        <activity 
+            android:name=".ImePreferences" 
+            android:label="@string/settings_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".RemoteBinderService"
+            android:label="IME messenger service"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.crea_si.softkeyboard.RemoteBinderService" />
+            </intent-filter>
+        </service>
+
+    </application>
+</manifest>

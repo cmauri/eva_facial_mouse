@@ -51,7 +51,6 @@ public class SoftKeyboard extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
 
 	private static SoftKeyboard sInstance;
-	private IBinder mIdentifiyingToken;
     
     /**
      * This boolean indicates the optional example code for performing
@@ -63,7 +62,9 @@ public class SoftKeyboard extends InputMethodService
      */
     static final boolean PROCESS_HARD_KEYS = false;
 
+  //  private final int mSwitchLanguageKeyCode;
     private InputMethodManager mInputMethodManager;
+    private IBinder mIdentifiyingToken;
 
     private LatinKeyboardView mInputView;
     private CandidateView mCandidateView;
@@ -308,7 +309,7 @@ public class SoftKeyboard extends InputMethodService
     private void applyCurrentKeyboard(InputMethodSubtype subtype) {
         mInputView.setKeyboard(mCurKeyboard);
         mInputView.closing();
-        mInputView.setSubtypeOnSpaceKey(subtype);
+        mInputView.setSubtype(subtype);
     }
 
     @Override 
@@ -601,6 +602,8 @@ public class SoftKeyboard extends InputMethodService
             if (current == mSymbolsKeyboard) {
                 current.setShifted(false);
             }
+        } else if (primaryCode == -101) {
+            mInputMethodManager.switchToNextInputMethod (mIdentifiyingToken, true);
         } else {
             handleCharacter(primaryCode, keyCodes);
         }

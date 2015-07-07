@@ -640,13 +640,14 @@ public class SoftKeyboard extends InputMethodService
     }
 
     private Key getKeyBelow (int x, int y) {
-        if (mCurKeyboard == null) return null;
+        Keyboard kbd= mInputView.getKeyboard();
+        if (kbd == null) return null;
 
         // keys near the given point
-        int[] keys= mCurKeyboard.getNearestKeys ((int) x, (int) y);
+        int[] keys= kbd.getNearestKeys ((int) x, (int) y);
 
         for (int i : keys) {
-            Keyboard.Key k= mCurKeyboard.getKeys().get(i);
+            Keyboard.Key k= kbd.getKeys().get(i);
             if (k.isInside(x, y)) return k;
         }
 

@@ -157,6 +157,9 @@ class AccessibilityAction {
             mInputMethodAction.closeIME();
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
             break;
+        case R.id.softkeyboard_button:
+            mInputMethodAction.openIME();
+            break;
         default:
             return false;
         }

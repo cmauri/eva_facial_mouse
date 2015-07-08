@@ -68,6 +68,7 @@
     <string name="notifications_button">Notifications button</string>
     <string name="interface_settings">Interface settings</string>
     <string name="dock_panel_button">Expand/collapse dock menu</string>
+    <string name="softkeyboard_button">Open/close softkeyboard</string>
     <string name="docking_panel_edge">Dock menu position</string>
     <string name="left">Left</string>
     <string name="right">Right</string>

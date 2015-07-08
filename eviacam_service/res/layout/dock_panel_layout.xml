@@ -66,5 +66,15 @@
         android:background="@color/transparent"
         android:scaleType="fitCenter"
         android:contentDescription="@string/notifications_button" />
+    
+    <ImageButton
+        android:id="@+id/softkeyboard_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_keyboard"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/softkeyboard_button" />
 
 </LinearLayout>

@@ -59,6 +59,7 @@ public class SoftKeyboard extends InputMethodService
     static final boolean PROCESS_HARD_KEYS = false;
 
     private static final int SWITCH_LANGUAGE_KEYCODE = -101;
+    private static final int SWITCH_NAVIGATION = -102;
     
     private InputMethodManager mInputMethodManager;
     private IBinder mIdentifiyingToken;
@@ -78,6 +79,7 @@ public class SoftKeyboard extends InputMethodService
     private LatinKeyboard mSymbolsKeyboard;
     private LatinKeyboard mSymbolsShiftedKeyboard;
     private LatinKeyboard mQwertyKeyboard;
+    private LatinKeyboard mNavigationKeyboard;
     
     private LatinKeyboard mCurKeyboard;
     
@@ -121,8 +123,10 @@ public class SoftKeyboard extends InputMethodService
             mQwertyKeyboard = new LatinKeyboard(this, R.xml.qwerty);
         }
 
+        //mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols);
         mSymbolsKeyboard = new LatinKeyboard(this, R.xml.symbols);
         mSymbolsShiftedKeyboard = new LatinKeyboard(this, R.xml.symbols_shift);
+        mNavigationKeyboard = new LatinKeyboard(this, R.xml.navigation);
 
         if (needUpdateCurrent) mCurKeyboard = mQwertyKeyboard;
     }
@@ -566,7 +570,16 @@ public class SoftKeyboard extends InputMethodService
     // Implementation of KeyboardViewListener
 
     public void onKey(int primaryCode, int[] keyCodes) {
-        if (isWordSeparator(primaryCode)) {
+        if (primaryCode >= KeyEvent.KEYCODE_DPAD_UP &&
+                primaryCode <= KeyEvent.KEYCODE_DPAD_CENTER ||
+                primaryCode == KeyEvent.KEYCODE_PAGE_UP ||
+                primaryCode == KeyEvent.KEYCODE_PAGE_DOWN ||
+                primaryCode == KeyEvent.KEYCODE_MOVE_HOME ||
+                primaryCode == KeyEvent.KEYCODE_MOVE_END) {
+            InputConnection ic= getCurrentInputConnection();
+            if (ic == null) return;
+            keyDownUp(primaryCode, ic);
+        } else if (isWordSeparator(primaryCode)) {
             InputConnection ic= getCurrentInputConnection();
             if (ic == null) return;
 
@@ -599,6 +612,9 @@ public class SoftKeyboard extends InputMethodService
             }
         } else if (primaryCode == SWITCH_LANGUAGE_KEYCODE) {
             mInputMethodManager.switchToNextInputMethod (mIdentifiyingToken, true);
+        } else if (primaryCode == SWITCH_NAVIGATION) {
+            Keyboard current = mNavigationKeyboard;
+            mInputView.setKeyboard(current);
         } else {
             handleCharacter(primaryCode, keyCodes);
         }

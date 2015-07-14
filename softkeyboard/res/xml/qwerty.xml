@@ -72,9 +72,11 @@
     
     <Row android:rowEdgeFlags="bottom">
         <Key android:codes="@integer/key_switch_alpha_symbol" android:keyLabel="123"
-             android:keyWidth="15%p" android:keyEdgeFlags="left"/>
+             android:keyWidth="10%p" android:keyEdgeFlags="left"/>
+        <Key android:codes="@integer/key_navigation_switch" android:keyLabel="Nav"
+             android:keyWidth="10%p" android:keyEdgeFlags="left"/>
         <Key android:codes="@integer/key_language_switch" 
-             android:keyWidth="15%p"
+             android:keyWidth="10%p"
              android:keyIcon="@drawable/sym_keyboard_language_switch" />
         <Key android:codes="44" android:keyLabel="," android:keyWidth="10%p"/>
         <Key android:codes="@integer/key_space" android:keyIcon="@drawable/sym_keyboard_space" 

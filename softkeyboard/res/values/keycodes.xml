@@ -33,4 +33,5 @@
     <integer name="key_settings">-6</integer>
     <integer name="key_shortcut">-7</integer>
     <integer name="key_language_switch">-101</integer>
+    <integer name="key_navigation_switch">-102</integer>
 </resources>

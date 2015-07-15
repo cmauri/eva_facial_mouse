@@ -78,6 +78,10 @@ public class RemoteBinderService extends Service {
         FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
+                // TODO: if an exception is thrown, calling code always receive
+                // a RemoteException, it would be better to provide more information
+                // on the caller. See here:
+                // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
                 return SoftKeyboard.click(x, y);
             }
         });

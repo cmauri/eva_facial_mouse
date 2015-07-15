@@ -1,13 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" 
     package="com.crea_si.softkeyboard"
-    android:versionCode="1"
-    android:versionName="1.0">
+    android:versionCode="2"
+    android:versionName="0.82">
     
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="22" />
     
-    <application 
+    <application
+        android:name=".SoftKeyboardApplication"
         android:allowBackup="true"
         android:label="@string/ime_name"
         android:theme="@android:style/Theme.DeviceDefault" >
@@ -42,6 +43,14 @@
                 <action android:name="com.crea_si.softkeyboard.RemoteBinderService" />
             </intent-filter>
         </service>
+
+        <!-- ACRA activity -->
+        <activity android:name="org.acra.CrashReportDialog"
+        android:theme="@android:style/Theme.Dialog"
+        android:process=":error_report"
+        android:launchMode="singleInstance"
+        android:excludeFromRecents="true"
+        android:finishOnTaskLaunch="true" />
 
     </application>
 </manifest>

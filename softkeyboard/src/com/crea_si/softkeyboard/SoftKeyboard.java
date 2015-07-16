@@ -576,7 +576,9 @@ public class SoftKeyboard extends InputMethodService
                 primaryCode == KeyEvent.KEYCODE_PAGE_UP ||
                 primaryCode == KeyEvent.KEYCODE_PAGE_DOWN ||
                 primaryCode == KeyEvent.KEYCODE_MOVE_HOME ||
-                primaryCode == KeyEvent.KEYCODE_MOVE_END) {
+                primaryCode == KeyEvent.KEYCODE_MOVE_END ||
+                primaryCode == KeyEvent.KEYCODE_TAB ||
+                primaryCode == KeyEvent.KEYCODE_FORWARD_DEL) {
             InputConnection ic= getCurrentInputConnection();
             if (ic == null) return;
             keyDownUp(primaryCode, ic);

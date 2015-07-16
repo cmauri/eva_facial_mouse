@@ -24,6 +24,7 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 import android.inputmethodservice.KeyboardView;
 import android.os.IBinder;
+import android.os.Message;
 import android.os.ResultReceiver;
 import android.text.InputType;
 import android.text.method.MetaKeyKeyListener;
@@ -909,6 +910,11 @@ public class SoftKeyboard extends InputMethodService
         @Override
         public void changeInputMethodSubtype(InputMethodSubtype subtype) {
             mBase.changeInputMethodSubtype(subtype);
+        }
+
+        // It seems that some Samsung devices expect this method to exists
+        public void updateFloatingState(int i) {
+            // Just do nothing
         }
     }
 

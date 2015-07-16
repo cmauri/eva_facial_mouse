@@ -12,7 +12,10 @@
 bin/
 gen/
 obj/
-libs/armeabi-v7a/
+libs/armeabi
+libs/armeabi-v7a
+libs/mips
+libs/x86
 
 # Gradle files
 .gradle/

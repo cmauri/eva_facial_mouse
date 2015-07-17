@@ -896,8 +896,14 @@ public class SoftKeyboard extends InputMethodService
             mBase.changeInputMethodSubtype(subtype);
         }
 
-        // It seems that some Samsung devices expect this method to exists
+        /*
+         * It seems that some Samsung devices expect some of these methods to exist
+         */
         public void updateFloatingState(int i) {
+            // Just do nothing
+        }
+
+        public void updateWacomState(int i) {
             // Just do nothing
         }
     }

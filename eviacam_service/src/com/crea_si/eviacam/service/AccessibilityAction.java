@@ -172,6 +172,15 @@ class AccessibilityAction {
         ScrollLayerView.NodeAction na= mScrollLayerView.getContaining(p);
         if (na == null) return false;
         
+        /*
+         * Workaround: give focus to the node to scroll. 
+         * 
+         * We had to do so because when scrolling some listview control
+         * focus seems to be on the first element (but actually is on the
+         * listview itself) and scrolling gets stuck.
+         * 
+         */
+        na.node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
         na.node.performAction(na.actions);
         
         return true;

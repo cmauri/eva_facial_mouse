@@ -106,6 +106,10 @@ public class InputViewManager {
         }
     }
     
+    public int getSelectedLayout() {
+        return mCurrentLayout;
+    }
+    
     /**
      * Select qwerty keyboard according of a specific subtype (language)
      *

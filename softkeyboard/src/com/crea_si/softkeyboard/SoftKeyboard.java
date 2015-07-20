@@ -122,7 +122,12 @@ public class SoftKeyboard extends InputMethodService
     @Override 
     public void onStartInput(EditorInfo attribute, boolean restarting) {
         super.onStartInput(attribute, restarting);
-        
+
+        // When navigation layout enabled do not change automatically 
+        if (mInputViewManager.getSelectedLayout() == InputViewManager.NAVIGATION_LAYOUT) {
+            return;
+        }
+
         // Reset our state.  We want to do this even if restarting, because
         // the underlying state of the text editor could have changed in any way.
         mComposing.setLength(0);
@@ -206,7 +211,6 @@ public class SoftKeyboard extends InputMethodService
     @Override 
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         super.onStartInputView(attribute, restarting);
-        //onStartInput2(attribute, restarting);
         mInputViewManager.enableSelected(null);
         mInputViewManager.updateEnterLabel(attribute);
         mReadyForInput= true;
@@ -236,12 +240,6 @@ public class SoftKeyboard extends InputMethodService
         setCandidatesViewShown(false);
         
         mInputViewManager.closing();
-        /*
-        mInputViewManager.mCurKeyboard = mInputViewManager.mQwertyKeyboard;
-        if (mInputViewManager.mInputView != null) {
-            mInputViewManager.mInputView.closing();
-        }
-        */
     }
 	
     /**

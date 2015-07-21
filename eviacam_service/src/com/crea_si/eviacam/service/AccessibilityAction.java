@@ -160,6 +160,9 @@ class AccessibilityAction {
         case R.id.softkeyboard_button:
             mInputMethodAction.openIME();
             break;
+        case R.id.scroll_refresh_button:
+            refresh();
+            break;
         default:
             return false;
         }

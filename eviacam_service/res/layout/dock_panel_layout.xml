@@ -77,4 +77,14 @@
         android:scaleType="fitCenter"
         android:contentDescription="@string/softkeyboard_button" />
 
+     <ImageButton
+        android:id="@+id/scroll_refresh_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_scroll_refresh"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/scroll_refresh_button" />
+
 </LinearLayout>

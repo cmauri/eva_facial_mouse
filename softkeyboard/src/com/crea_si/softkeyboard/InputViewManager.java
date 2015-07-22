@@ -168,6 +168,7 @@ public class InputViewManager {
      * @param subtype (can be null)
      */
     public void enableSelected(InputMethodSubtype subtype) {
+        if (mInputView== null) return;
         mInputView.setKeyboard(getSelectedKeyboard());
         mInputView.closing();
         if (subtype == null) {
@@ -180,18 +181,15 @@ public class InputViewManager {
      * Cleanup when closing the keyboard
      */
     public void closing() {
-        if (mInputView != null) {
-            mInputView.closing();
-        }
+        if (mInputView== null) return;
+        mInputView.closing();
     }
     
     /*
      * Handle backspace key
      */
     public boolean handleBack() {
-        if (mInputView == null) {
-            throw new IllegalStateException();
-        }
+        if (mInputView== null) return false;
         return mInputView.handleBack();
     }
     
@@ -217,6 +215,7 @@ public class InputViewManager {
      * Update label for the enter key according to what editor says
      */
     public void updateEnterLabel(EditorInfo attr) {
+        if (mInputView == null) return;
         LatinKeyboard current= (LatinKeyboard) mInputView.getKeyboard();
         current.setImeOptions(mIMEService.getResources(), attr.imeOptions);
     }

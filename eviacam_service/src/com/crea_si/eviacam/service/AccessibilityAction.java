@@ -272,9 +272,9 @@ class AccessibilityAction {
                 AccessibilityService s= EViacamService.getInstance();
                 List<AccessibilityWindowInfo> l= s.getWindows();
                 
-                // DEBUG CODE
-                AccessibilityWindowDebug.displayFullWindowTree (l);
-                // DEBUG CODE
+                if (EVIACAM.DEBUG) {
+                    AccessibilityWindowDebug.displayFullWindowTree (l);
+                }
                 
                 Rect bounds = new Rect();
                 for (AccessibilityWindowInfo awi : l) {

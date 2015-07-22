@@ -143,7 +143,7 @@ class InputMethodAction implements ServiceConnection {
             keepBindAlive();
             return;
         }
-        if (mInputMethodManager.isActive()) return; // already open
+        //if (mInputMethodManager.isActive()) return; // already open
         try {
             mRemoteService.openIME();
         } catch (RemoteException e) {

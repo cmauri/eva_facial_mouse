@@ -46,6 +46,7 @@
     <integer name="dwell_area_max">8</integer>
 
     <bool name="sound_on_click_default">true</bool>
+    <bool name="consecutive_clicks_default">true</bool>
     
     <string name="time_without_detection_default">30</string>
     

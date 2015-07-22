@@ -46,6 +46,7 @@
     <string name="motion_threshold_summary">Minimum displacement (in pixels) to start moving pointer</string>
     <string name="after_one_minute">After 1 minute</string>
     <string name="sound_on_click">Play sound on click</string>
+    <string name="consecutive_clicks">Enable consecutive clicks</string>
     <string name="after_ten_seconds">After 10 seconds</string>
     <string name="after_thirty_seconds">After 30 seconds</string>
     <string name="time_without_detection">Stop pointer when face not detected</string>

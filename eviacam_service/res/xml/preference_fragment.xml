@@ -102,6 +102,12 @@
             android:defaultValue="@bool/sound_on_click_default"
         />
         
+        <CheckBoxPreference 
+            android:key="consecutive_clicks"
+            android:title="@string/consecutive_clicks"
+            android:defaultValue="@bool/consecutive_clicks_default"
+        />
+        
     </PreferenceCategory>
     
     <PreferenceCategory android:title="@string/interface_settings">

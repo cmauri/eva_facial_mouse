@@ -30,6 +30,7 @@ public class Settings {
      public static final String KEY_DWELL_TIME= "dwell_time";
      public static final String KEY_DWELL_AREA= "dwell_area";
      public static final String KEY_SOUND_ON_CLICK= "sound_on_click";
+     public static final String KEY_CONSECUTIVE_CLIKCS= "consecutive_clicks";
      public static final String KEY_DOCKING_PANEL_EDGE= "docking_panel_edge";
      public static final String KEY_UI_ELEMENTS_SIZE= "ui_elements_size";
      public static final String KEY_TIME_WITHOUT_DETECTION= "time_without_detection";

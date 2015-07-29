@@ -25,7 +25,6 @@ import java.util.List;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
@@ -99,6 +98,9 @@ class AccessibilityAction {
     
     // is set to true when scrolling scan needs to be run
     private boolean mNeedToRunScrollingScan = false;
+
+    // is click generation temporarily disabled?
+    private boolean mClickDisabled = false;
     
     public AccessibilityAction (
             ControlsLayerView cv, DockPanelLayerView dplv, ScrollLayerView slv) {
@@ -161,7 +163,11 @@ class AccessibilityAction {
             mInputMethodAction.openIME();
             break;
         case R.id.scroll_refresh_button:
-            refresh();
+            refreshScrollingButtons();
+            break;
+        case R.id.disable_click_button:
+            mClickDisabled= !mClickDisabled;
+            if (mClickDisabled) refreshScrollingButtons();
             break;
         default:
             return false;
@@ -226,17 +232,30 @@ class AccessibilityAction {
             mContextMenuOpen= false;
         }
     }
+    
+    /**
+     * Check if the point is over an element which is actionable
+     * 
+     * @param p point in screen coordinates
+     * @return true if the element below is actionable
+     * 
+     * Remarks: it is used to implement a button to disable/enable
+     * clicking function. It does not check if the node below the pointer
+     * is actually actionable.
+     */
+    public boolean isActionable (Point p) {
+        if (!mClickDisabled) return true;
+
+        // Click disabled mode, only specific button in the dock panel works
+        return (mDockPanelLayerView.getViewIdBelowPoint(p) == R.id.disable_click_button);
+    }
 
     /**
      * Performs action (click) on a specific location of the screen
      * 
-     * @param p - point in screen coordinates
+     * @param pInt - point in screen coordinates
      */
-    public void performAction (PointF p) {
-        Point pInt= new Point();
-        pInt.x= (int) p.x;
-        pInt.y= (int) p.y;
-        
+    public void performAction (Point pInt) {
         if (mContextMenuOpen) {
             /** When context menu open only check it */
             int action= mControlsLayerView.testClick(pInt);
@@ -352,28 +371,33 @@ class AccessibilityAction {
      * Remarks: checks whether needs to start a scrolling nodes exploration
      */
     public void refresh() {
+        if (mClickDisabled) return;
         if (!mNeedToRunScrollingScan) return;
         if (System.currentTimeMillis()< mRunScrollingScanTStamp) return;
         mNeedToRunScrollingScan = false;
-        
-        /** Need to run scrolling scan */
-        EVIACAM.debug("Scanning for scrollables");
-        final List<AccessibilityNodeInfo> nodes= findNodes (
-                AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
-                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-       
-        /** Interaction with the UI needs to be done in the main thread */
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                mScrollLayerView.clearScrollAreas();
+        refreshScrollingButtons();
+    }
 
+    Runnable mRefreshScrollingRunnable = new Runnable() {
+        @Override
+        public void run() {
+            EVIACAM.debug("Scanning for scrollables");
+            mScrollLayerView.clearScrollAreas();
+
+            if (!mClickDisabled) {
+                final List<AccessibilityNodeInfo> nodes= findNodes (
+                    AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
+                    AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
                 for (AccessibilityNodeInfo n : nodes) {
                     mScrollLayerView.addScrollArea(n);
                 }
             }
-        };
-        mHandler.post(r);
+        }
+    };
+
+    private void refreshScrollingButtons() {
+        /** Interaction with the UI needs to be done in the main thread */
+        mHandler.post(mRefreshScrollingRunnable);
     }
 
     

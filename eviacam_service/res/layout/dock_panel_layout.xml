@@ -87,4 +87,14 @@
         android:scaleType="fitCenter"
         android:contentDescription="@string/scroll_refresh_button" />
 
+     <ImageButton
+        android:id="@+id/disable_click_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_disable_click"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/disable_click_button" />
+
 </LinearLayout>

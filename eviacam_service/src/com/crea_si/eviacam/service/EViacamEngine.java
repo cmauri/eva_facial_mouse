@@ -22,6 +22,7 @@ import org.opencv.core.Mat;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -213,9 +214,18 @@ public class EViacamEngine implements FrameProcessor {
         // get new pointer location
         PointF pointerLocation= mPointerControl.getPointerLocation();
         
-        // dwell clicking update
-        boolean clickGenerated= 
-                mDwellClick.updatePointerLocation(pointerLocation);
+        Point pInt= new Point();
+        pInt.x= (int) pointerLocation.x;
+        pInt.y= (int) pointerLocation.y;
+        
+        boolean clickGenerated= false;
+        if (mAccessibilityAction.isActionable(pInt)) {
+            // dwell clicking update
+            clickGenerated= mDwellClick.updatePointerLocation(pointerLocation);
+        }
+        else {
+            mDwellClick.reset();
+        }
         
         // update pointer position and click progress
         mPointerLayer.updatePosition(pointerLocation);
@@ -226,8 +236,8 @@ public class EViacamEngine implements FrameProcessor {
         mAccessibilityAction.refresh();
         
         // perform action when needed
-        if (clickGenerated) { 
-            mAccessibilityAction.performAction(pointerLocation);
+        if (clickGenerated) {
+            mAccessibilityAction.performAction(pInt);
         }
     }
 }

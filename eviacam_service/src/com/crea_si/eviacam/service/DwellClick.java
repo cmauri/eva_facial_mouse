@@ -32,7 +32,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
      * Enums and constants
      */
     private enum State {
-        DISABLED, POINTER_MOVING, COUNTDOWN_STARTED, CLICK_DONE
+        POINTER_MOVING, COUNTDOWN_STARTED, CLICK_DONE
     }
     
     private final int DWELL_TIME_DEFAULT;
@@ -49,10 +49,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     // current dwell click state
     private State mState= State.POINTER_MOVING;
 
-    // modified from the main thread (enable/disable methods)
-    // used to modify state without using synchronization
-    private boolean mRequestEnabled= true;
-    
     // dwell area tolerance. stored squared to avoid sqrt 
     // for each updatePointerLocation call
     private float mDwellAreaSquared;    
@@ -66,9 +62,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     // audio manager for FX notifications
     AudioManager mAudioManager;
     
-    // to remember previous pointer location and measure travelled distance
+    // to remember previous pointer location and measure traveled distance
     private PointF mPrevPointerLocation= null;
-
     
     public DwellClick(Context c) {
         // get constants from resources
@@ -114,14 +109,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
                 updateSettings();
         }
     }
-       
-    public void enable () {
-        mRequestEnabled= true;
-    }
-    
-    public void disable () {
-        mRequestEnabled= false;
-    }
     
     private void playSound () {
         if (mSoundOnClick) {
@@ -151,18 +138,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
             mPrevPointerLocation= new PointF();
             mPrevPointerLocation.set(pl);
             return retval;
-        }
-       
-        // check if need to enable/disable 
-        if (mState == State.DISABLED) {
-            if (mRequestEnabled) {
-                mState = State.POINTER_MOVING;
-            }
-        }
-        else {
-            if (!mRequestEnabled) {
-                mState = State.DISABLED;
-            }
         }
        
         // state machine

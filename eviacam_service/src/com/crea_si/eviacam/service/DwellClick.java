@@ -32,7 +32,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
      * Enums and constants
      */
     private enum State {
-        POINTER_MOVING, COUNTDOWN_STARTED, CLICK_DONE
+        RESET, POINTER_MOVING, COUNTDOWN_STARTED, CLICK_DONE
     }
     
     private final int DWELL_TIME_DEFAULT;
@@ -47,7 +47,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private SharedPreferences mSharedPref;
     
     // current dwell click state
-    private State mState= State.POINTER_MOVING;
+    private State mState= State.RESET;
 
     // dwell area tolerance. stored squared to avoid sqrt 
     // for each updatePointerLocation call
@@ -63,7 +63,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     AudioManager mAudioManager;
     
     // to remember previous pointer location and measure traveled distance
-    private PointF mPrevPointerLocation= null;
+    private PointF mPrevPointerLocation= new PointF();
     
     public DwellClick(Context c) {
         // get constants from resources
@@ -124,6 +124,13 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     }
 
     /**
+     * Reset dwell click internal state 
+     */
+    public void reset () {
+        mState= State.RESET;
+    }
+    
+    /**
      * Given the current position of the pointer calculates if needs to generate a click
      * 
      * @param pl - position of the pointer
@@ -133,15 +140,15 @@ class DwellClick implements OnSharedPreferenceChangeListener {
      */
     public boolean updatePointerLocation (PointF pl) {
         boolean retval= false;
-        
-        if (mPrevPointerLocation== null) {
-            mPrevPointerLocation= new PointF();
-            mPrevPointerLocation.set(pl);
-            return retval;
-        }
        
         // state machine
-        if (mState == State.POINTER_MOVING) {
+        if (mState == State.RESET) {
+            /* Means previous pointer position is not valid. Change to
+             * POINTER_MOVING state and allow pointer position update.
+             */
+            mState= State.POINTER_MOVING;
+        }
+        else if (mState == State.POINTER_MOVING) {
             if (!movedAboveThreshold (mPrevPointerLocation, pl)) {
                 mState= State.COUNTDOWN_STARTED;
                 mCountdown.reset();

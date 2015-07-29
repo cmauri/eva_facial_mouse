@@ -74,26 +74,26 @@ class AccessibilityAction {
     private final int FULL_ACTION_MASK;
 
     // layer view for context menu
-    private ControlsLayerView mControlsLayerView;
+    private final ControlsLayerView mControlsLayerView;
     
     // layer view for docking panel
-    private DockPanelLayerView mDockPanelLayerView;
+    private final DockPanelLayerView mDockPanelLayerView;
 
     // layer view for the scrolling controls
-    private ScrollLayerView mScrollLayerView;
+    private final ScrollLayerView mScrollLayerView;
 
     // delegate to manage input method interaction
     private final InputMethodAction mInputMethodAction;
-    
+
+    // handler to execute in the main thread
+    private final Handler mHandler;
+
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
 
     // node on which the action should be performed when context menu open
     private AccessibilityNodeInfo mNode;
-    
-    // handler to execute in the main thread
-    private final Handler mHandler;
-    
+
     // time stamp at which scrolling scan need to execute
     private long mRunScrollingScanTStamp = 0;
     
@@ -216,7 +216,17 @@ class AccessibilityAction {
          */
         node.performAction(action);
     }
-    
+
+    /**
+     * Reset internal state
+     */
+    public void reset () {
+        if (mContextMenuOpen) {
+            mControlsLayerView.hideContextMenu();
+            mContextMenuOpen= false;
+        }
+    }
+
     /**
      * Performs action (click) on a specific location of the screen
      * 
@@ -271,10 +281,6 @@ class AccessibilityAction {
                  */
                 AccessibilityService s= EViacamService.getInstance();
                 List<AccessibilityWindowInfo> l= s.getWindows();
-                
-                if (EVIACAM.DEBUG) {
-                    AccessibilityWindowDebug.displayFullWindowTree (l);
-                }
                 
                 Rect bounds = new Rect();
                 for (AccessibilityWindowInfo awi : l) {

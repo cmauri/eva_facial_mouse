@@ -75,6 +75,8 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
         
         updateSettings();
+        
+        reset();
     }
     
     private void updateSettings() {
@@ -167,6 +169,14 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         if (smoothness< MOTION_SMOOTHING_MIN) smoothness= MOTION_SMOOTHING_MIN;
         else if (smoothness> MOTION_SMOOTHING_MAX) smoothness= MOTION_SMOOTHING_MAX;
         mLowPassFilterWeight= (float) Math.log10((double) smoothness + 1);
+    }
+    
+    /**
+     * Reset pointer location by centering it
+     */
+    public void reset () {
+        mPointerLocation.x = mPointerLayerView.getWidth() / 2;
+        mPointerLocation.y = mPointerLayerView.getHeight() / 2;
     }
     
     public void updateMotion(PointF vel) {

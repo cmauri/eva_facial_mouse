@@ -16,8 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import org.opencv.core.Mat;
 
@@ -34,7 +33,7 @@ public class EViacamEngine implements FrameProcessor {
      */
     private static final int STATE_NONE= 0;
     private static final int STATE_RUNNING= 1;
-    private static  final int STATE_PAUSED= 2;
+    private static final int STATE_PAUSED= 2;
     private static final int STATE_STOPPED= 3;
     
     // root overlay view
@@ -153,9 +152,7 @@ public class EViacamEngine implements FrameProcessor {
    
     public void pause() {
         if (mCurrentState != STATE_RUNNING) return;
-        
-        // TODO: this is a basic method to pause the program
-        // pause/resume should reset internal state of some objects 
+
         mCurrentState= STATE_PAUSED;
         mPointerLayer.setVisibility(View.INVISIBLE);
         mScrollLayerView.setVisibility(View.INVISIBLE);
@@ -165,8 +162,12 @@ public class EViacamEngine implements FrameProcessor {
     
     public void resume() {
         if (mCurrentState != STATE_PAUSED) return;
-        
-        // TODO: see comment on pause()
+
+        mPointerControl.reset();
+        mDwellClick.reset();
+        mAccessibilityAction.reset();
+        // TODO: reset tracker internal state?
+
         mDockPanelView.setVisibility(View.VISIBLE);
         mControlsLayer.setVisibility(View.VISIBLE);
         mScrollLayerView.setVisibility(View.VISIBLE);

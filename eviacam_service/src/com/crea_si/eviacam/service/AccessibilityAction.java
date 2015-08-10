@@ -168,6 +168,13 @@ class AccessibilityAction {
         case R.id.disable_click_button:
             mClickDisabled= !mClickDisabled;
             if (mClickDisabled) refreshScrollingButtons();
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    mDockPanelLayerView.setClickDisabledAppearance(mClickDisabled);
+                }
+            };
+            mHandler.post(r);
             break;
         default:
             return false;
@@ -248,6 +255,15 @@ class AccessibilityAction {
 
         // Click disabled mode, only specific button in the dock panel works
         return (mDockPanelLayerView.getViewIdBelowPoint(p) == R.id.disable_click_button);
+    }
+    
+    /**
+     * Return the status of the click feature 
+     * 
+     * @return true if disabled
+     */
+    public boolean getClickDisabled() {
+        return mClickDisabled;
     }
 
     /**

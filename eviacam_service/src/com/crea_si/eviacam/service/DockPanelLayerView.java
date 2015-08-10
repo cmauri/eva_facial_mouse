@@ -50,6 +50,8 @@ public class DockPanelLayerView extends RelativeLayout
     private final int EDGE_RIGHT;
     private final int EDGE_TOP;
     private final int EDGE_BOTTOM;
+    private static final float DEFAULT_ALPHA= 1.0f;
+    private final float DISABLED_ALPHA;
     
     // the docking panel
     private LinearLayout mDockPanelView;
@@ -63,6 +65,9 @@ public class DockPanelLayerView extends RelativeLayout
     // arrow icon when the panel is collapsed
     private Bitmap mToggleCollapsed;
     
+    // buttons have disabled appearance?
+    private boolean mClickDisabledAppearance= false;
+    
     public DockPanelLayerView(Context context) {
         super(context);
        
@@ -72,6 +77,7 @@ public class DockPanelLayerView extends RelativeLayout
         EDGE_RIGHT= Integer.parseInt(r.getString(R.string.docking_panel_edge_right_value));
         EDGE_TOP= Integer.parseInt(r.getString(R.string.docking_panel_edge_top_value));
         EDGE_BOTTOM=  Integer.parseInt(r.getString(R.string.docking_panel_edge_bottom_value));
+        DISABLED_ALPHA= (float) (r.getColor(R.color.disabled_alpha) >> 24) / 255.0f;
         
         // shared preferences
         SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(context);
@@ -300,6 +306,9 @@ public class DockPanelLayerView extends RelativeLayout
         
         mDockPanelView= container;
         addView(mDockPanelView);
+        
+        // update click disabled appearance
+        setClickDisabledAppearance (mClickDisabledAppearance);
     }
     
     /**
@@ -360,5 +369,34 @@ public class DockPanelLayerView extends RelativeLayout
         if (ib != null) ib.setImageBitmap(mToggleCollapsed);
 
         mIsExpanded= false;
+    }
+    
+    /**
+     * Enable or disable faded appearance of the buttons 
+     * 
+     * @param value
+     */
+    public void setClickDisabledAppearance (boolean value) {
+        mClickDisabledAppearance= value;
+        float alpha= (value? DISABLED_ALPHA : DEFAULT_ALPHA);
+
+        setChildrenClickDisabledAppearance (mDockPanelView, alpha);
+    }
+    
+    /*
+     * Recursive function change alpha to all buttons except the click disable one
+     */
+    private static void setChildrenClickDisabledAppearance (View v, float alpha) {
+        if (v == null) return;
+
+        if (v instanceof ImageButton) {
+            if (v.getId() != R.id.disable_click_button) v.setAlpha(alpha);
+        }
+        else if (v instanceof ViewGroup) {
+            ViewGroup vg= (ViewGroup) v;
+            for (int i= 0; i< vg.getChildCount(); i++) {
+                setChildrenClickDisabledAppearance (vg.getChildAt(i), alpha);
+            }
+        }
     }
 }

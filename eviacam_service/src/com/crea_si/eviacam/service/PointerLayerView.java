@@ -44,11 +44,17 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
     // Radius of the visual progress feedback (in DIP)
     private static final float PROGRESS_INDICATOR_RADIUS_DIP = 30;
     
+    private static final int DEFAULT_ALPHA= 255;
+    private final int DISABLED_ALPHA;
+    
     // cached paint box
     private final Paint mPaintBox;
     
     // the location where the pointer needs to be painted
     private PointF mPointerLocation;
+    
+    // alpha value for drawing pointer
+    private int mAlphaPointer= DEFAULT_ALPHA;
     
     // bitmap of the (mouse) pointer
     private Bitmap mPointerBitmap;
@@ -65,6 +71,8 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
         mPaintBox = new Paint();
         setWillNotDraw(false);
         mPointerLocation= new PointF();
+        
+        DISABLED_ALPHA= c.getResources().getColor(R.color.disabled_alpha) >> 24;
         
         // preferences
         SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(c);
@@ -123,11 +131,10 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
             mPaintBox.setStyle(Paint.Style.STROKE);
             mPaintBox.setColor(0x80FFFFFF);
             canvas.drawCircle(mPointerLocation.x, mPointerLocation.y, radius, mPaintBox);
-
-            mPaintBox.setAlpha(255);
         }
         
         // draw pointer
+        mPaintBox.setAlpha(mAlphaPointer);
         canvas.drawBitmap(mPointerBitmap, mPointerLocation.x, mPointerLocation.y, mPaintBox);
     }
 
@@ -138,5 +145,14 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
 
     public void updateClickProgress(int percent) {
         mClickProgressPercent= percent;
-    }	
+    }
+    
+    /**
+     * Enable or disable faded appearance of the pointer 
+     * 
+     * @param value
+     */
+    public void setClickDisabledAppearance (boolean value) {
+        mAlphaPointer= (value? DISABLED_ALPHA : DEFAULT_ALPHA);
+    }
 }

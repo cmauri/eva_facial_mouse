@@ -24,6 +24,7 @@ package com.crea_si.eviacam.service;
 
 import org.acra.*; 
 import org.acra.annotation.*; 
+
 import android.app.Application;
 
 @ReportsCrashes( 
@@ -37,7 +38,8 @@ import android.app.Application;
 
 public class EViacamApplication extends Application {
     public void onCreate() {
-        super.onCreate(); 
+        super.onCreate();
+        EVIACAM.debugInit(this);
         ACRA.init(this);
     }
 }

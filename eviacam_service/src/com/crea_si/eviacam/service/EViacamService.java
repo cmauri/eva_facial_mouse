@@ -55,14 +55,8 @@ public class EViacamService extends AccessibilityService implements ComponentCal
         super();
         sAccessibilityService= this;
     }
-    
-    public static AccessibilityService getInstance() {
-        return sAccessibilityService;
-    }
-    
+
     private void init() {
-        // TODO: handle exceptions properly
-        
         // TODO:
         // http://stackoverflow.com/questions/28752238/accessibilityservice-onunbind-not-always-called-when-running-on-emulator
         
@@ -76,8 +70,6 @@ public class EViacamService extends AccessibilityService implements ComponentCal
             //stopSelf();
             return;
         }
-        
-        EVIACAM.debugInit(this);
         
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(this, R.xml.preference_fragment, true);

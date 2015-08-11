@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,51 +43,19 @@ import android.view.SurfaceView;
 @SuppressWarnings("deprecation")
 public class CameraListener implements CvCameraViewListener2 {
 
-    Context mContext;
+    private final Context mContext;
     
     // callback to process frames
-    FrameProcessor mFrameProcessor;
+    private final FrameProcessor mFrameProcessor;
     
     // opencv capture&view facility 
-    private CameraBridgeViewBase mCameraView;
+    private final CameraBridgeViewBase mCameraView;
     
     // physical orientation of the camera (0, 90, 180, 270)
-    final private int mCameraOrientation;
+    private final int mCameraOrientation;
    
     // callback for camera initialization
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(
-            EViacamService.getInstance().getApplicationContext()) {
-        @Override
-        public void onManagerConnected(int status) {
-            switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                {
-                    EVIACAM.debug("OpenCV loaded successfully");
-                    
-                    // initialize JNI part
-                    System.loadLibrary("visionpipeline");
-                    
-                    /** Load haarcascade from resources */
-                    try {
-                        File f= resourceToTempFile (mContext, R.raw.haarcascade, "xml");
-                        VisionPipeline.init(f.getAbsolutePath());
-                        f.delete();
-                    }
-                    catch (IOException e) {
-                        EVIACAM.debug("Cannot write haarcascade temp file. Continuing anyway");
-                    }
-
-                    // start camera capture
-                    mCameraView.enableView();
-                } break;
-                default:
-                {
-                    // TODO: manage errors
-                    super.onManagerConnected(status);
-                } break;
-            }
-        }
-    };
+    private final BaseLoaderCallback mLoaderCallback;
     
     /** 
      * Load a resource into a temporary file
@@ -135,6 +103,37 @@ public class CameraListener implements CvCameraViewListener2 {
     public CameraListener(Context c, FrameProcessor fp) {
         mContext= c;
         mFrameProcessor= fp;
+        mLoaderCallback = new BaseLoaderCallback(c) {
+            @Override
+            public void onManagerConnected(int status) {
+                switch (status) {
+                    case LoaderCallbackInterface.SUCCESS:
+                    {
+                        EVIACAM.debug("OpenCV loaded successfully");
+                        
+                        // initialize JNI part
+                        System.loadLibrary("visionpipeline");
+                        
+                        /** Load haarcascade from resources */
+                        try {
+                            File f= resourceToTempFile (mContext, R.raw.haarcascade, "xml");
+                            VisionPipeline.init(f.getAbsolutePath());
+                            f.delete();
+                        }
+                        catch (IOException e) {
+                            EVIACAM.debug("Cannot write haarcascade temp file. Continuing anyway");
+                        }
+
+                        // start camera capture
+                        mCameraView.enableView();
+                    } break;
+                    default:
+                    {
+                        // TODO: manage errors
+                        super.onManagerConnected(status);
+                    } break;
+                }
+            }};
 
         /**
          * The orientation of the camera image. The value is the angle that the camera image needs 

@@ -20,6 +20,7 @@ package com.crea_si.eviacam.service;
 
 import org.opencv.core.Mat;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -70,46 +71,46 @@ public class EViacamEngine implements FrameProcessor {
     // current engine state
     private int mCurrentState= STATE_NONE;
     
-    public EViacamEngine(Context c) {
+    public EViacamEngine(AccessibilityService as) {
         /*
          * UI stuff 
          */
 
         // create overlay root layer
-        mOverlayView= new OverlayView(c);
+        mOverlayView= new OverlayView(as);
         
-        CameraLayerView cameraLayer= new CameraLayerView(c);
+        CameraLayerView cameraLayer= new CameraLayerView(as);
         mOverlayView.addFullScreenLayer(cameraLayer);
 
-        mDockPanelView= new DockPanelLayerView(c);
+        mDockPanelView= new DockPanelLayerView(as);
         mOverlayView.addFullScreenLayer(mDockPanelView);
 
-        mScrollLayerView= new ScrollLayerView(c);
+        mScrollLayerView= new ScrollLayerView(as);
         mOverlayView.addFullScreenLayer(mScrollLayerView);
         
-        mControlsLayer= new ControlsLayerView(c);
+        mControlsLayer= new ControlsLayerView(as);
         mOverlayView.addFullScreenLayer(mControlsLayer);
         
         // pointer layer (should be the last one)
-        mPointerLayer= new PointerLayerView(c);
+        mPointerLayer= new PointerLayerView(as);
         mOverlayView.addFullScreenLayer(mPointerLayer);
         
         /*
          * control stuff
          */
         
-        mPointerControl= new PointerControl(c, mPointerLayer);
+        mPointerControl= new PointerControl(as, mPointerLayer);
         
-        mDwellClick= new DwellClick(c);
+        mDwellClick= new DwellClick(as);
         
         mAccessibilityAction= new AccessibilityAction (
-                mControlsLayer, mDockPanelView, mScrollLayerView);
-        
+                as, mControlsLayer, mDockPanelView, mScrollLayerView);
+
         // create camera & machine vision part
-        mCameraListener= new CameraListener(c, this);
+        mCameraListener= new CameraListener(as, this);
         cameraLayer.addCameraSurface(mCameraListener.getCameraSurface());
         
-        mOrientationManager= new OrientationManager(c, mCameraListener.getCameraOrientation());
+        mOrientationManager= new OrientationManager(as, mCameraListener.getCameraOrientation());
         
         /*
          * start processing frames

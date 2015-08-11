@@ -30,7 +30,7 @@ import android.view.accessibility.AccessibilityEvent;
  * The Enable Viacam accessibility service
  */
 
-public class EViacamService extends AccessibilityService implements ComponentCallbacks {
+public class TheAccessibilityService extends AccessibilityService implements ComponentCallbacks {
     
     /**
      * States of the accessibility service
@@ -40,7 +40,7 @@ public class EViacamService extends AccessibilityService implements ComponentCal
     private static final int STATE_RUNNING= 2;
 
     // static attribute which holds an instance to the service instance
-    private static EViacamService sAccessibilityService;
+    private static TheAccessibilityService sAccessibilityService;
     
     // reference to the engine
     private EViacamEngine mEngine;
@@ -51,7 +51,7 @@ public class EViacamService extends AccessibilityService implements ComponentCal
     // stores the states of the service (see comments on init() )
     private int mState= STATE_STOP;
 
-    public EViacamService() {
+    public TheAccessibilityService() {
         super();
         sAccessibilityService= this;
     }
@@ -87,7 +87,7 @@ public class EViacamService extends AccessibilityService implements ComponentCal
     
     /** Called from splash activity to notify the openCV is properly installed */
     public static void initCVReady() {
-        EViacamService s= EViacamService.sAccessibilityService;
+        TheAccessibilityService s= TheAccessibilityService.sAccessibilityService;
         if (s != null) {
             s.startEngine();
         }

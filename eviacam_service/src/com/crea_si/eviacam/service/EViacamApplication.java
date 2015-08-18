@@ -39,7 +39,6 @@ import android.app.Application;
 public class EViacamApplication extends Application {
     public void onCreate() {
         super.onCreate();
-        EVIACAM.debugInit(this);
         ACRA.init(this);
     }
 }

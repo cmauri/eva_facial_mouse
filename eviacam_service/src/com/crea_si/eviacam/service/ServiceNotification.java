@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -40,9 +40,9 @@ public class ServiceNotification {
     
     private final Context mContext;
     
-    private final EViacamEngine mEngine;
+    private final CommonEngine mEngine;
     
-    public ServiceNotification (Context c, EViacamEngine e) {
+    public ServiceNotification (Context c, CommonEngine e) {
         mContext= c;
         mEngine= e;
         

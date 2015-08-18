@@ -18,29 +18,13 @@
  */
 package com.crea_si.eviacam.service;
 
-import org.opencv.core.Mat;
-
 import android.accessibilityservice.AccessibilityService;
-import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-public class EViacamEngine implements FrameProcessor {
-
-    /*
-     * states of the engine
-     */
-    private static final int STATE_NONE= 0;
-    private static final int STATE_RUNNING= 1;
-    private static final int STATE_PAUSED= 2;
-    private static final int STATE_STOPPED= 3;
-    
-    // root overlay view
-    private OverlayView mOverlayView;
-    
+public class MouseEmulationEngine {
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
     
@@ -53,9 +37,6 @@ public class EViacamEngine implements FrameProcessor {
     // layer for drawing different controls
     private ControlsLayerView mControlsLayer;
     
-    // object in charge of capturing & processing frames
-    private CameraListener mCameraListener;
-    
     // object which provides the logic for the pointer motion and actions 
     private PointerControl mPointerControl;
     
@@ -65,79 +46,44 @@ public class EViacamEngine implements FrameProcessor {
     // perform actions on the UI using the accessibility API
     private AccessibilityAction mAccessibilityAction;
     
-    // object which encapsulates rotation and orientation logic
-    private OrientationManager mOrientationManager;
-    
-    // current engine state
-    private int mCurrentState= STATE_NONE;
-    
-    public EViacamEngine(AccessibilityService as) {
+    public MouseEmulationEngine(AccessibilityService as, OverlayView ov) {
         /*
          * UI stuff 
          */
-
-        // create overlay root layer
-        mOverlayView= new OverlayView(as);
-        
-        CameraLayerView cameraLayer= new CameraLayerView(as);
-        mOverlayView.addFullScreenLayer(cameraLayer);
-
         mDockPanelView= new DockPanelLayerView(as);
-        mOverlayView.addFullScreenLayer(mDockPanelView);
+        ov.addFullScreenLayer(mDockPanelView);
 
         mScrollLayerView= new ScrollLayerView(as);
-        mOverlayView.addFullScreenLayer(mScrollLayerView);
+        ov.addFullScreenLayer(mScrollLayerView);
         
         mControlsLayer= new ControlsLayerView(as);
-        mOverlayView.addFullScreenLayer(mControlsLayer);
+        ov.addFullScreenLayer(mControlsLayer);
         
         // pointer layer (should be the last one)
         mPointerLayer= new PointerLayerView(as);
-        mOverlayView.addFullScreenLayer(mPointerLayer);
-        
+        ov.addFullScreenLayer(mPointerLayer);
+
         /*
          * control stuff
          */
-        
         mPointerControl= new PointerControl(as, mPointerLayer);
         
         mDwellClick= new DwellClick(as);
         
         mAccessibilityAction= new AccessibilityAction (
                 as, mControlsLayer, mDockPanelView, mScrollLayerView);
-
-        // create camera & machine vision part
-        mCameraListener= new CameraListener(as, this);
-        cameraLayer.addCameraSurface(mCameraListener.getCameraSurface());
-        
-        mOrientationManager= new OrientationManager(as, mCameraListener.getCameraOrientation());
-        
-        /*
-         * start processing frames
-         */
-        mCameraListener.startCamera();
-
-        mCurrentState= STATE_RUNNING;
     }
    
     public void cleanup() {
-        if (mCurrentState == STATE_STOPPED) return;
-               
-        mCameraListener.stopCamera();
-        mCameraListener= null;
-        
-        mOrientationManager.cleanup();
-        mOrientationManager= null;
-        
         mAccessibilityAction.cleanup();
         mAccessibilityAction= null;
 
         mDwellClick.cleanup();
         mDwellClick= null;
-        
+
         mPointerControl.cleanup();
         mPointerControl= null;
-        
+
         // nothing to be done for mScrollLayerView and mControlsLayer
         
         mDockPanelView.cleanup();
@@ -145,17 +91,9 @@ public class EViacamEngine implements FrameProcessor {
         
         mPointerLayer.cleanup();
         mPointerLayer= null;
-        
-        mOverlayView.cleanup();
-        mOverlayView= null;
-
-        mCurrentState= STATE_STOPPED;
     }
    
     public void pause() {
-        if (mCurrentState != STATE_RUNNING) return;
-
-        mCurrentState= STATE_PAUSED;
         mPointerLayer.setVisibility(View.INVISIBLE);
         mScrollLayerView.setVisibility(View.INVISIBLE);
         mControlsLayer.setVisibility(View.INVISIBLE);
@@ -163,26 +101,15 @@ public class EViacamEngine implements FrameProcessor {
     }
     
     public void resume() {
-        if (mCurrentState != STATE_PAUSED) return;
-
         mPointerControl.reset();
         mDwellClick.reset();
         mAccessibilityAction.reset();
-        // TODO: reset tracker internal state?
 
         mDockPanelView.setVisibility(View.VISIBLE);
         mControlsLayer.setVisibility(View.VISIBLE);
         mScrollLayerView.setVisibility(View.VISIBLE);
         mPointerLayer.setVisibility(View.VISIBLE);
-        
-        // make sure that changes during pause (e.g. docking panel edge) are applied        
-        mOverlayView.requestLayout();
-        mCurrentState= STATE_RUNNING;
     }    
-    
-    public void onConfigurationChanged(Configuration newConfig) {
-        if (mOrientationManager != null) mOrientationManager.onConfigurationChanged(newConfig);
-    }
 
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (mAccessibilityAction != null) mAccessibilityAction.onAccessibilityEvent(event);
@@ -193,22 +120,7 @@ public class EViacamEngine implements FrameProcessor {
      * 
      * this method is called from a secondary thread 
      */
-    @Override
-    public void processFrame(Mat rgba) {
-        if (mCurrentState != STATE_RUNNING) return;
-        
-        int phyRotation = mOrientationManager.getPictureRotation();
-        
-        // call jni part to track face
-        PointF motion = new PointF(0, 0);
-        VisionPipeline.processFrame(rgba.getNativeObjAddr(), phyRotation, motion);
-        
-        // compensate mirror effect
-        motion.x= -motion.x;
-        
-        // fix motion orientation according to device rotation and screen orientation 
-        mOrientationManager.fixVectorOrientation(motion);
-             
+    public void processMotion(PointF motion) {
         // update pointer location given face motion
         mPointerControl.updateMotion(motion);
         

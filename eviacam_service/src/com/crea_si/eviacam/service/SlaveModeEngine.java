@@ -24,46 +24,39 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 public class SlaveModeEngine {
-    
+    private AbsolutePad mAbsolutePad= new AbsolutePad();
+
     private AbsolutePadView mAbsolutePadView;
-    
+
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
-    
-    // object which provides the logic for the pointer motion and actions 
-    private PointerControl mPointerControl;
-    
+
     public SlaveModeEngine(Context c, OverlayView ov) {
         /*
          * UI stuff 
          */
         mAbsolutePadView= new AbsolutePadView(c);
+        
+        // TODO
+        mAbsolutePadView.setInnerRadiusRatio(mAbsolutePad.getInnerRadiusRatio());
+        
         ov.addFullScreenLayer(mAbsolutePadView);
 
         // pointer layer (should be the last one)
         mPointerLayer= new PointerLayerView(c);
         ov.addFullScreenLayer(mPointerLayer);
-
-        /*
-         * control stuff
-         */
-        mPointerControl= new PointerControl(c, mPointerLayer);
     }
-   
-    public void cleanup() {
-        mPointerControl.cleanup();
-        mPointerControl= null;
 
+    public void cleanup() {
         mPointerLayer.cleanup();
         mPointerLayer= null;
     }
-   
+
     public void pause() {
         mPointerLayer.setVisibility(View.INVISIBLE);
     }
-    
+
     public void resume() {
-        mPointerControl.reset();
         mPointerLayer.setVisibility(View.VISIBLE);
     }    
 
@@ -72,27 +65,26 @@ public class SlaveModeEngine {
     } 
 
     /*
-     * process incoming camera frame 
+     * process motion from the face
      * 
      * this method is called from a secondary thread 
      */
+    private PointF ptrLocation= new PointF();
     public void processMotion(PointF motion) {
         // update pointer location given face motion
-        mPointerControl.updateMotion(motion);
-        
+        int sector= mAbsolutePad.updateMotion(motion);
+
+        // TODO: 
+        mAbsolutePadView.setInnerRadiusRatio(mAbsolutePad.getInnerRadiusRatio());
+
         // get new pointer location
-        PointF pointerLocation= mPointerControl.getPointerLocation();
-        
-        /*
-        Point pInt= new Point();
-        pInt.x= (int) pointerLocation.x;
-        pInt.y= (int) pointerLocation.y;
-        */
-        
+        mAbsolutePadView.toCanvasCoords(mAbsolutePad.getPointerLocationNorm(), ptrLocation);
+
+        mAbsolutePadView.setHighlightedSector(sector);
         mAbsolutePadView.postInvalidate();
-        
+
         // update pointer position and click progress
-        mPointerLayer.updatePosition(pointerLocation);
+        mPointerLayer.updatePosition(ptrLocation);
         mPointerLayer.postInvalidate();
     }
 }

@@ -27,7 +27,7 @@ import android.graphics.PointF;
 import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
 
-public class CommonEngine implements FrameProcessor {
+public class EngineManager implements FrameProcessor, AccessibilityServiceEngine {
     /*
      * states of the engine
      */
@@ -38,10 +38,10 @@ public class CommonEngine implements FrameProcessor {
     private static final int STATE_STOPPED= 4;
 
     // static reference to the single common engine instance
-    private static CommonEngine sCommonEngine= null;
+    private static EngineManager sEngineManager= null;
 
     // reference to the accessibility service
-    private final AccessibilityService mAccessibilityService;
+    private AccessibilityService mAccessibilityService;
 
     // current engine state
     private int mCurrentState= STATE_NONE;
@@ -61,25 +61,35 @@ public class CommonEngine implements FrameProcessor {
     // reference to the notification management stuff
     private ServiceNotification mServiceNotification;
 
-    public CommonEngine(AccessibilityService as) {
-        mAccessibilityService= as;
-        initStage1(as);
+    public static EngineManager getInstance() {
+        if (sEngineManager== null) {
+            sEngineManager= new EngineManager();
+        }
+        return sEngineManager;
     }
     
+    private EngineManager() { }
+
+    public AccessibilityServiceEngine startAsAccessibilityService (AccessibilityService as) {
+        mAccessibilityService= as;
+        initStage1(as);
+        return this;
+    }
+
+    /*
+    public SlaveModeEngine startInSlaveMode () {
+        return null;
+    }*/    
+
     /** Called from splash activity to notify the openCV is properly installed */
     public static void initCVReady() {
-        CommonEngine ce= CommonEngine.sCommonEngine;
+        EngineManager ce= EngineManager.sEngineManager;
         if (ce == null) return;
         
         ce.initStage2();
     }
     
     private void initStage1 (AccessibilityService as) {
-        if (sCommonEngine != null) {
-            throw new IllegalStateException("Common engine already initialized");
-        }
-        sCommonEngine= this;
-
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(mAccessibilityService, R.xml.preference_fragment, true);
         
@@ -164,7 +174,7 @@ public class CommonEngine implements FrameProcessor {
             /*
              *  stage 1 cleanup 
              */
-            sCommonEngine= null;
+            sEngineManager= null;
         }
 
         mCurrentState= STATE_STOPPED;

@@ -40,9 +40,9 @@ public class ServiceNotification {
     
     private final Context mContext;
     
-    private final CommonEngine mEngine;
+    private final EngineManager mEngine;
     
-    public ServiceNotification (Context c, CommonEngine e) {
+    public ServiceNotification (Context c, EngineManager e) {
         mContext= c;
         mEngine= e;
         

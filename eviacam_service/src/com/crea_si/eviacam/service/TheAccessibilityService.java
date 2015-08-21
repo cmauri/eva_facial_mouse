@@ -31,7 +31,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 public class TheAccessibilityService extends AccessibilityService implements ComponentCallbacks {
     // reference to the engine
-    private CommonEngine mEngine;
+    private AccessibilityServiceEngine mEngine;
 
     // stores whether it was previously initialized (see comments on init() )
     private boolean mInitialized= false;
@@ -48,23 +48,28 @@ public class TheAccessibilityService extends AccessibilityService implements Com
          */
         if (mInitialized) {
             EVIACAM.debug("ALREADY RUNNING");
-            //stopSelf();
             return;
         }
-        
+
         EVIACAM.debugInit(this);
+
+        mEngine= EngineManager.getInstance().startAsAccessibilityService(this);
         
-        mEngine= new CommonEngine (this);
-        
+        // When the engine is not properly initialized (i.e. is in slave mode)
+        // the above call returns null. As is not possible to stop the accessibility
+        // service just take into account an avoid further actions.
+
         mInitialized= true;
     }
 
     private void cleanup() {
         // TODO: handle exceptions properly
         if (!mInitialized) return;
-        
-        mEngine.cleanup();
-        mEngine= null;
+
+        if (mEngine!= null) {
+            mEngine.cleanup();
+            mEngine= null;
+        }
 
         EVIACAM.debugCleanup();
 

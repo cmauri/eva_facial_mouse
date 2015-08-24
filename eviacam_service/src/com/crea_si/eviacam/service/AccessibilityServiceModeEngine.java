@@ -22,7 +22,7 @@ package com.crea_si.eviacam.service;
 import android.content.res.Configuration;
 import android.view.accessibility.AccessibilityEvent;
 
-interface AccessibilityServiceEngine {
+interface AccessibilityServiceModeEngine {
     public void onConfigurationChanged(Configuration newConfig);
     public void onAccessibilityEvent(AccessibilityEvent event);
     public void cleanup();

@@ -27,7 +27,7 @@ import android.graphics.PointF;
 import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
 
-public class EngineManager implements FrameProcessor, AccessibilityServiceEngine {
+public class EngineManager implements FrameProcessor, AccessibilityServiceModeEngine {
     /*
      * states of the engine
      */
@@ -56,7 +56,7 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceEngine
     private OrientationManager mOrientationManager;
     
     // reference to the mouse emulation engine
-    private MouseEmulationEngine mMouseEmulationEngine;
+    private AccessibilityServiceModeEngineImpl mAccessibilityServiceModeEngineImpl;
     
     // reference to the notification management stuff
     private ServiceNotification mServiceNotification;
@@ -70,7 +70,7 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceEngine
     
     private EngineManager() { }
 
-    public AccessibilityServiceEngine startAsAccessibilityService (AccessibilityService as) {
+    public AccessibilityServiceModeEngine startAsAccessibilityService (AccessibilityService as) {
         mAccessibilityService= as;
         initStage1(as);
         return this;
@@ -117,7 +117,8 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceEngine
         /*
          * TODO: set up specific engine
          */
-        mMouseEmulationEngine= new MouseEmulationEngine(mAccessibilityService, mOverlayView);
+        mAccessibilityServiceModeEngineImpl= 
+                new AccessibilityServiceModeEngineImpl(mAccessibilityService, mOverlayView);
 
         /*
          * camera and machine vision stuff
@@ -162,8 +163,8 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceEngine
             mOrientationManager.cleanup();
             mOrientationManager= null;
 
-            mMouseEmulationEngine.cleanup();
-            mMouseEmulationEngine= null;
+            mAccessibilityServiceModeEngineImpl.cleanup();
+            mAccessibilityServiceModeEngineImpl= null;
             
             mOverlayView.cleanup();
             mOverlayView= null;
@@ -185,7 +186,9 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceEngine
         mCurrentState= STATE_PAUSED;
 
         // pause specific engine
-        if (mMouseEmulationEngine!= null) mMouseEmulationEngine.pause();
+        if (mAccessibilityServiceModeEngineImpl!= null) {
+            mAccessibilityServiceModeEngineImpl.pause();
+        }
     }
     
     public void resume() {
@@ -194,7 +197,9 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceEngine
         // TODO: reset tracker internal state?
 
         // resume specific engine
-        if (mMouseEmulationEngine!= null) mMouseEmulationEngine.resume();
+        if (mAccessibilityServiceModeEngineImpl!= null) {
+            mAccessibilityServiceModeEngineImpl.resume();
+        }
 
         // make sure that changes during pause (e.g. docking panel edge) are applied
         mOverlayView.requestLayout();
@@ -206,8 +211,8 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceEngine
     }
 
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (mMouseEmulationEngine!= null) {
-            mMouseEmulationEngine.onAccessibilityEvent(event);
+        if (mAccessibilityServiceModeEngineImpl!= null) {
+            mAccessibilityServiceModeEngineImpl.onAccessibilityEvent(event);
         }
     }
 
@@ -233,6 +238,6 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceEngine
         mOrientationManager.fixVectorOrientation(motion);
 
         // process motion on specific engine
-        mMouseEmulationEngine.processMotion(motion);
+        mAccessibilityServiceModeEngineImpl.processMotion(motion);
     }
 }

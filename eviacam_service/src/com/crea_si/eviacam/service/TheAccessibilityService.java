@@ -31,7 +31,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 public class TheAccessibilityService extends AccessibilityService implements ComponentCallbacks {
     // reference to the engine
-    private AccessibilityServiceEngine mEngine;
+    private AccessibilityServiceModeEngine mEngine;
 
     // stores whether it was previously initialized (see comments on init() )
     private boolean mInitialized= false;
@@ -44,7 +44,8 @@ public class TheAccessibilityService extends AccessibilityService implements Com
          * although it shows it is disabled this does not solve the issue but at
          * least the service does not crash
          *
-         * http://stackoverflow.com/questions/28752238/accessibilityservice-onunbind-not-always-called-when-running-on-emulator
+         * http://stackoverflow.com/questions/28752238/accessibilityservice-onunbind-not-always-
+         * called-when-running-on-emulator
          */
         if (mInitialized) {
             EVIACAM.debug("ALREADY RUNNING");

@@ -24,7 +24,7 @@ import android.graphics.PointF;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-public class MouseEmulationEngine {
+public class AccessibilityServiceModeEngineImpl {
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
     
@@ -46,7 +46,7 @@ public class MouseEmulationEngine {
     // perform actions on the UI using the accessibility API
     private AccessibilityAction mAccessibilityAction;
     
-    public MouseEmulationEngine(AccessibilityService as, OverlayView ov) {
+    public AccessibilityServiceModeEngineImpl(AccessibilityService as, OverlayView ov) {
         /*
          * UI stuff 
          */

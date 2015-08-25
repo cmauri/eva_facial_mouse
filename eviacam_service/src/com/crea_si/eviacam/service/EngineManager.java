@@ -21,43 +21,60 @@ package com.crea_si.eviacam.service;
 import org.opencv.core.Mat;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.Service;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
 
-public class EngineManager implements FrameProcessor, AccessibilityServiceModeEngine {
+public class EngineManager implements
+    FrameProcessor, AccessibilityServiceModeEngine, SlaveModeEngine {
     /*
      * states of the engine
      */
-    private static final int STATE_NONE= 0;
+    private static final int STATE_STOPPED= 0;
     private static final int STATE_CHECKING_OPENCV= 1;
     private static final int STATE_RUNNING= 2;
     private static final int STATE_PAUSED= 3;
-    private static final int STATE_STOPPED= 4;
+
+    /*
+     * modes of operation from the point of view of the service
+     * that starts the engine
+     */
+    private static final int A11Y_SERVICE_MODE= 0;
+    private static final int SLAVE_MODE= 1;
 
     // static reference to the single common engine instance
     private static EngineManager sEngineManager= null;
 
-    // reference to the accessibility service
-    private AccessibilityService mAccessibilityService;
+    // reference to the service which started the engine
+    private Service mService;
+
+    // reference to the specific engine (motion processor)
+    private MotionProcessor mMotionProcessor;
+
+    // reference to the engine when running as mouse emulation
+    private MouseEmulationEngine mMouseEmulationEngine;
 
     // current engine state
-    private int mCurrentState= STATE_NONE;
+    private int mCurrentState= STATE_STOPPED;
+
+    // current engine mode
+    private int mMode= -1;
+
+    // slave mode submode
+    private int mSlaveSubMode= -1;
 
     // root overlay view
     private OverlayView mOverlayView;
-    
+
     // object in charge of capturing & processing frames
     private CameraListener mCameraListener;
-    
+
     // object which encapsulates rotation and orientation logic
     private OrientationManager mOrientationManager;
-    
-    // reference to the mouse emulation engine
-    private AccessibilityServiceModeEngineImpl mAccessibilityServiceModeEngineImpl;
-    
+
     // reference to the notification management stuff
     private ServiceNotification mServiceNotification;
 
@@ -70,16 +87,43 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceModeEn
     
     private EngineManager() { }
 
+    /**
+     * Try to start the engine as a request from an accessibility service
+     * 
+     * @param as the reference to the accessibility service
+     * @return a reference to the engine interface or null if cannot be started
+     */
     public AccessibilityServiceModeEngine startAsAccessibilityService (AccessibilityService as) {
-        mAccessibilityService= as;
-        initStage1(as);
+        if (mCurrentState != STATE_STOPPED) {
+            // Already started, if was as accessibility service something went wrong
+            if (mMode == A11Y_SERVICE_MODE) throw new IllegalStateException();
+            
+            // Otherwise assume that has been started in slave mode and just returns null
+            return null;
+        }
+
+        mService= as;
+        mMode= A11Y_SERVICE_MODE;
+        mSlaveSubMode= -1;
+        initStage1();
         return this;
     }
 
-    /*
-    public SlaveModeEngine startInSlaveMode () {
-        return null;
-    }*/    
+    public SlaveModeEngine startInSlaveMode (Service s, int submode) {
+        if (mCurrentState != STATE_STOPPED) {
+            // Already started, if was in slave mode something went wrong
+            if (mMode == SLAVE_MODE) throw new IllegalStateException();
+         
+            // Otherwise assume that has been started in accessibility service mode
+            return null;
+        }
+
+        mService= s;
+        mMode= SLAVE_MODE;
+        mSlaveSubMode= submode;        
+        initStage1();
+        return this;
+    }    
 
     /** Called from splash activity to notify the openCV is properly installed */
     public static void initCVReady() {
@@ -89,45 +133,52 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceModeEn
         ce.initStage2();
     }
     
-    private void initStage1 (AccessibilityService as) {
+    private void initStage1 () {
         // set default configuration values if the service is run for the first time
-        PreferenceManager.setDefaultValues(mAccessibilityService, R.xml.preference_fragment, true);
+        PreferenceManager.setDefaultValues(mService, R.xml.preference_fragment, true);
         
         /*
          * Display splash and detect OpenCV installation. The service from now on waits 
          * until the detection process finishes and a notification is received.
          */
-        Intent dialogIntent = new Intent(mAccessibilityService, SplashActivity.class);
+        Intent dialogIntent = new Intent(mService, SplashActivity.class);
         dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mAccessibilityService.startActivity(dialogIntent);
+        mService.startActivity(dialogIntent);
         
         mCurrentState = STATE_CHECKING_OPENCV;
     }
     
     private void initStage2 () {
-        if (mCurrentState== STATE_RUNNING) return;
+        if (mCurrentState!= STATE_CHECKING_OPENCV) return;
 
         /*
          * Create UI stuff: root overlay and camera view
          */
-        mOverlayView= new OverlayView(mAccessibilityService);
-        CameraLayerView cameraLayer= new CameraLayerView(mAccessibilityService);
+        mOverlayView= new OverlayView(mService);
+        CameraLayerView cameraLayer= new CameraLayerView(mService);
         mOverlayView.addFullScreenLayer(cameraLayer);
 
         /*
-         * TODO: set up specific engine
+         * Create specific engine
          */
-        mAccessibilityServiceModeEngineImpl= 
-                new AccessibilityServiceModeEngineImpl(mAccessibilityService, mOverlayView);
+        if (mMode == A11Y_SERVICE_MODE || mSlaveSubMode== SlaveModeEngine.MOUSE) {
+            // Start as accessibility service in mouse emulation mode
+            // TODO: implement different behavior when (mSlaveSubMode== SlaveModeEngine.MOUSE)
+            mMotionProcessor= mMouseEmulationEngine= new MouseEmulationEngine(
+                    (AccessibilityService) mService, mOverlayView);
+        } 
+        else {
+            mMotionProcessor= new GamePadEngine(mService, mOverlayView);
+        }
 
         /*
          * camera and machine vision stuff
          */
-        mCameraListener= new CameraListener(mAccessibilityService, this);
+        mCameraListener= new CameraListener(mService, this);
         cameraLayer.addCameraSurface(mCameraListener.getCameraSurface());
 
         // orientation manager
-        mOrientationManager= new OrientationManager(mAccessibilityService,
+        mOrientationManager= new OrientationManager(mService,
                                                     mCameraListener.getCameraOrientation());
         // start processing frames
         mCameraListener.startCamera();
@@ -135,9 +186,9 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceModeEn
         /*
          * add notification and set as foreground service
          */
-        mServiceNotification= new ServiceNotification(mAccessibilityService, this);
-        mAccessibilityService.startForeground(mServiceNotification.getNotificationId(), 
-                mServiceNotification.getNotification(mAccessibilityService));
+        mServiceNotification= new ServiceNotification(mService, this);
+        mService.startForeground(mServiceNotification.getNotificationId(), 
+                mServiceNotification.getNotification(mService));
 
         
         mCurrentState= STATE_RUNNING;
@@ -152,19 +203,22 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceModeEn
              */
 
             // stop being foreground service and remove notification
-            mAccessibilityService.stopForeground(true);
+            mService.stopForeground(true);
 
             mServiceNotification.cleanup();
             mServiceNotification= null;
             
+            EVIACAM.debug("before stopCamera");
             mCameraListener.stopCamera();
+            EVIACAM.debug("after stopCamera");
             mCameraListener= null;
-            
+
             mOrientationManager.cleanup();
             mOrientationManager= null;
 
-            mAccessibilityServiceModeEngineImpl.cleanup();
-            mAccessibilityServiceModeEngineImpl= null;
+            mMotionProcessor.cleanup();
+            mMotionProcessor= null;
+            mMouseEmulationEngine= null;
             
             mOverlayView.cleanup();
             mOverlayView= null;
@@ -186,8 +240,8 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceModeEn
         mCurrentState= STATE_PAUSED;
 
         // pause specific engine
-        if (mAccessibilityServiceModeEngineImpl!= null) {
-            mAccessibilityServiceModeEngineImpl.pause();
+        if (mMotionProcessor!= null) {
+            mMotionProcessor.pause();
         }
     }
     
@@ -197,8 +251,8 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceModeEn
         // TODO: reset tracker internal state?
 
         // resume specific engine
-        if (mAccessibilityServiceModeEngineImpl!= null) {
-            mAccessibilityServiceModeEngineImpl.resume();
+        if (mMotionProcessor!= null) {
+            mMotionProcessor.resume();
         }
 
         // make sure that changes during pause (e.g. docking panel edge) are applied
@@ -211,8 +265,8 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceModeEn
     }
 
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (mAccessibilityServiceModeEngineImpl!= null) {
-            mAccessibilityServiceModeEngineImpl.onAccessibilityEvent(event);
+        if (mMouseEmulationEngine!= null && mMode == A11Y_SERVICE_MODE) {
+            mMouseEmulationEngine.onAccessibilityEvent(event);
         }
     }
 
@@ -238,6 +292,6 @@ public class EngineManager implements FrameProcessor, AccessibilityServiceModeEn
         mOrientationManager.fixVectorOrientation(motion);
 
         // process motion on specific engine
-        mAccessibilityServiceModeEngineImpl.processMotion(motion);
+        mMotionProcessor.processMotion(motion);
     }
 }

@@ -19,11 +19,9 @@
 
 package com.crea_si.eviacam.service;
 
-interface SlaveModeEngine extends Engine {
-    /*
-     * In slave mode there several possibilities when started
-     */
-    public static final int MOUSE= 0;
-    public static final int ABSOLUTE_PAD= 1;
-    public static final int RELATIVE_PAD= 2;
+import android.content.res.Configuration;
+
+interface Engine {
+    public void onConfigurationChanged(Configuration newConfig);
+    public void cleanup();
 }

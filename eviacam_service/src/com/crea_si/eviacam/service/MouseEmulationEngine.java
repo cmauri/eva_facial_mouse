@@ -24,7 +24,7 @@ import android.graphics.PointF;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-public class AccessibilityServiceModeEngineImpl {
+public class MouseEmulationEngine implements MotionProcessor {
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
     
@@ -46,7 +46,7 @@ public class AccessibilityServiceModeEngineImpl {
     // perform actions on the UI using the accessibility API
     private AccessibilityAction mAccessibilityAction;
     
-    public AccessibilityServiceModeEngineImpl(AccessibilityService as, OverlayView ov) {
+    public MouseEmulationEngine(AccessibilityService as, OverlayView ov) {
         /*
          * UI stuff 
          */
@@ -73,7 +73,8 @@ public class AccessibilityServiceModeEngineImpl {
         mAccessibilityAction= new AccessibilityAction (
                 as, mControlsLayer, mDockPanelView, mScrollLayerView);
     }
-   
+    
+    @Override
     public void cleanup() {
         mAccessibilityAction.cleanup();
         mAccessibilityAction= null;
@@ -93,6 +94,7 @@ public class AccessibilityServiceModeEngineImpl {
         mPointerLayer= null;
     }
    
+    @Override
     public void pause() {
         mPointerLayer.setVisibility(View.INVISIBLE);
         mScrollLayerView.setVisibility(View.INVISIBLE);
@@ -100,6 +102,7 @@ public class AccessibilityServiceModeEngineImpl {
         mDockPanelView.setVisibility(View.INVISIBLE);
     }
     
+    @Override
     public void resume() {
         mPointerControl.reset();
         mDwellClick.reset();
@@ -116,10 +119,11 @@ public class AccessibilityServiceModeEngineImpl {
     } 
 
     /*
-     * process incoming camera frame 
+     * process incoming motion (from the camera)
      * 
      * this method is called from a secondary thread 
      */
+    @Override
     public void processMotion(PointF motion) {
         // update pointer location given face motion
         mPointerControl.updateMotion(motion);

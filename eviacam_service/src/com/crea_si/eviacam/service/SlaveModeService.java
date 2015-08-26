@@ -30,8 +30,9 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 /**
+ * EViacam slave mode service entry point
+ * 
  * TODO: improve security
- * TODO: allow one client only
  */
 
 public class SlaveModeService extends Service {
@@ -98,9 +99,20 @@ public class SlaveModeService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         EVIACAM.debug("SlaveModeService: onBind");
+        if (mSlaveModeEngine!= null) {
+            // Another client is connected. Don't allow.
+            return null;
+        }
         mSlaveModeEngine= 
                 EngineManager.getInstance().startInSlaveMode(this, SlaveModeEngine.ABSOLUTE_PAD);
-        
+
+        if (mSlaveModeEngine== null) {
+            /* The engine manager returned null, this means that has been
+             * already started as accessibility service. Deny binding.
+             */
+            return null;
+        }
+
         return mBinder;
     }
 

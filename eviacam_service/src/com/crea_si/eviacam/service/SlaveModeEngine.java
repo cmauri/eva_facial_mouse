@@ -30,5 +30,5 @@ interface SlaveModeEngine extends Engine {
     public static final int RELATIVE_PAD= 2;
     
     public boolean registerListener(IPadEventListener l);
-    public void unregisterListener(IPadEventListener l);
+    public void unregisterListener();
 }

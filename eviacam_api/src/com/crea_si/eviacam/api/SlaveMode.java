@@ -19,8 +19,6 @@ public class SlaveMode implements ServiceConnection {
     
     // binder (proxy) with the remote input method service
     private ISlaveMode mSlaveMode;
-    
-    IPadEventListenerWrapper mWrapper;
 
     public static void initConnection(Context c, SlaveModeConnection callback) {
         Log.d(TAG, "Attemp to bind to EViacam API");
@@ -63,23 +61,21 @@ public class SlaveMode implements ServiceConnection {
     
     public boolean registerListener(IPadEventListener listener) {
         if (mSlaveMode== null) return false;
-        mWrapper= new IPadEventListenerWrapper(listener);
         try {
-            return mSlaveMode.registerListener(mWrapper);
+            return mSlaveMode.registerListener(new IPadEventListenerWrapper(listener));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public void unregisterListener(IPadEventListener listener) {
-        if (mSlaveMode== null || mWrapper== null) return;
+    public void unregisterListener() {
+        if (mSlaveMode== null) return;
         try {
-            mSlaveMode.unregisterListener(mWrapper);
+            mSlaveMode.unregisterListener();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        mWrapper= null;
     }
     
     public void disconnect() {

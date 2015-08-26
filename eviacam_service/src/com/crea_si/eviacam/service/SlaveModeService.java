@@ -75,14 +75,13 @@ public class SlaveModeService extends Service {
         }
 
         @Override
-        public void unregisterListener(final IPadEventListener arg0)
-                throws RemoteException {
+        public void unregisterListener() throws RemoteException {
             EVIACAM.debug("SlaveModeService.unregisterListener");
             
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    mSlaveModeEngine.unregisterListener(arg0);
+                    mSlaveModeEngine.unregisterListener();
                 }
             };
             mMainThreadHandler.post(r);

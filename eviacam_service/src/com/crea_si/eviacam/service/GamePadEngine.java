@@ -87,10 +87,8 @@ public class GamePadEngine implements MotionProcessor {
         return false;
     }
 
-    public void unregisterListener(IPadEventListener l) {
-        if (mPadEventListener == l) {
-            mPadEventListener= null;
-        }
+    public void unregisterListener() {
+        mPadEventListener= null;
     }
 
     /*

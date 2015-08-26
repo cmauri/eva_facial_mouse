@@ -42,13 +42,7 @@ public class MainActivity extends Activity implements
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_test) {
-            MyCanvas cv= (MyCanvas) findViewById(R.id.the_canvas);
-            cv.setPosition(new PointF(0,0));
-            cv.postInvalidate();
-            return true;
-        }
-        else if (id == R.id.action_bind) {
+        if (id == R.id.action_bind) {
             SlaveMode.initConnection(this, this);
         }
         else if (id == R.id.action_unbind) {
@@ -59,7 +53,7 @@ public class MainActivity extends Activity implements
         }
         else if (id == R.id.action_unregister_events) {
             if (mSlaveMode!= null) {
-                mSlaveMode.unregisterListener(this);
+                mSlaveMode.unregisterListener();
             }
         }
         return super.onOptionsItemSelected(item);
@@ -116,7 +110,10 @@ public class MainActivity extends Activity implements
 
     @Override
     public void onConnected(SlaveMode connection) {
-        mSlaveMode= connection;        
+        mSlaveMode= connection;
+        
+        // Uncomment if you wish to start listening to events ASAP
+        //if (mSlaveMode!= null) mSlaveMode.registerListener(this);
     }
 
     @Override

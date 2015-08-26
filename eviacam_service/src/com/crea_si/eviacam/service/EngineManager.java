@@ -304,8 +304,8 @@ public class EngineManager implements
     }
 
     @Override
-    public void unregisterListener(IPadEventListener l) {
-        mGamePadEngine.unregisterListener(l);
+    public void unregisterListener() {
+        mGamePadEngine.unregisterListener();
     }
 
     /**

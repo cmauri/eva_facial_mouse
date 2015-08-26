@@ -23,6 +23,7 @@ import android.graphics.PointF;
 
 interface MotionProcessor {
     public void processMotion (PointF motion);
+    public void init (OverlayView ov);
     public void pause();
     public void resume();
     public void cleanup();

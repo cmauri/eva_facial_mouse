@@ -25,6 +25,9 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 public class MouseEmulationEngine implements MotionProcessor {
+    // reference to the accessibility service
+    private final AccessibilityService mAccessibilityService;
+    
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
     
@@ -46,32 +49,36 @@ public class MouseEmulationEngine implements MotionProcessor {
     // perform actions on the UI using the accessibility API
     private AccessibilityAction mAccessibilityAction;
     
-    public MouseEmulationEngine(AccessibilityService as, OverlayView ov) {
+    public MouseEmulationEngine(AccessibilityService as) {
+        mAccessibilityService= as;
+    }
+    
+    public void init (OverlayView ov) {
         /*
          * UI stuff 
          */
-        mDockPanelView= new DockPanelLayerView(as);
+        mDockPanelView= new DockPanelLayerView(mAccessibilityService);
         ov.addFullScreenLayer(mDockPanelView);
 
-        mScrollLayerView= new ScrollLayerView(as);
+        mScrollLayerView= new ScrollLayerView(mAccessibilityService);
         ov.addFullScreenLayer(mScrollLayerView);
         
-        mControlsLayer= new ControlsLayerView(as);
+        mControlsLayer= new ControlsLayerView(mAccessibilityService);
         ov.addFullScreenLayer(mControlsLayer);
         
         // pointer layer (should be the last one)
-        mPointerLayer= new PointerLayerView(as);
+        mPointerLayer= new PointerLayerView(mAccessibilityService);
         ov.addFullScreenLayer(mPointerLayer);
 
         /*
          * control stuff
          */
-        mPointerControl= new PointerControl(as, mPointerLayer);
+        mPointerControl= new PointerControl(mAccessibilityService, mPointerLayer);
         
-        mDwellClick= new DwellClick(as);
+        mDwellClick= new DwellClick(mAccessibilityService);
         
         mAccessibilityAction= new AccessibilityAction (
-                as, mControlsLayer, mDockPanelView, mScrollLayerView);
+                mAccessibilityService, mControlsLayer, mDockPanelView, mScrollLayerView);
     }
     
     @Override

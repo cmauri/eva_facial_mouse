@@ -30,6 +30,10 @@ import android.graphics.PointF;
 import android.preference.PreferenceManager;
 import android.view.accessibility.AccessibilityEvent;
 
+/*
+ * Provides the specific engine according to the intended
+ * kind of use (i.e. as accessibility service or slave mode)
+ */
 public class EngineManager implements
     FrameProcessor, AccessibilityServiceModeEngine, SlaveModeEngine {
     /*
@@ -47,19 +51,8 @@ public class EngineManager implements
     private static final int A11Y_SERVICE_MODE= 0;
     private static final int SLAVE_MODE= 1;
 
-    // static reference to the single common engine instance
+    // singleton instance
     private static EngineManager sEngineManager= null;
-
-    // reference to the service which started the engine
-    private Service mService;
-
-    // reference to the specific engine (motion processor)
-    private MotionProcessor mMotionProcessor;
-
-    // reference to the engine when running as mouse emulation
-    private MouseEmulationEngine mMouseEmulationEngine;
-    
-    private GamePadEngine mGamePadEngine;
 
     // current engine state
     private int mCurrentState= STATE_STOPPED;
@@ -69,6 +62,18 @@ public class EngineManager implements
 
     // slave mode submode
     private int mSlaveSubMode= -1;
+
+    // reference to the service which started the engine
+    private Service mService;
+
+    // reference to the specific engine (motion processor)
+    private MotionProcessor mMotionProcessor;
+
+    // reference to the engine when running as mouse emulation
+    private MouseEmulationEngine mMouseEmulationEngine;
+
+    // reference to the engine for gamepad emulation
+    private GamePadEngine mGamePadEngine;
 
     // root overlay view
     private OverlayView mOverlayView;
@@ -106,13 +111,20 @@ public class EngineManager implements
             return null;
         }
 
-        mService= as;
         mMode= A11Y_SERVICE_MODE;
         mSlaveSubMode= -1;
+        mService= as;
         initStage1();
         return this;
     }
 
+    /**
+     * Try to start the engine in slave mode
+     * 
+     * @param s service which instantiates the engine
+     * @param submode of operation, see {@link com.crea_si.eviacam.service.SlaveModeEngine} class
+     * @return a reference to the engine interface or null if cannot be started
+     */
     public SlaveModeEngine startInSlaveMode (Service s, int submode) {
         if (mCurrentState != STATE_STOPPED) {
             // Already started, if was in slave mode something went wrong
@@ -122,9 +134,9 @@ public class EngineManager implements
             return null;
         }
 
-        mService= s;
         mMode= SLAVE_MODE;
-        mSlaveSubMode= submode;        
+        mSlaveSubMode= submode;
+        mService= s;
         initStage1();
         return this;
     }    
@@ -140,6 +152,19 @@ public class EngineManager implements
     private void initStage1 () {
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(mService, R.xml.preference_fragment, true);
+        
+        /*
+         * Create specific engine
+         */
+        if (mMode == A11Y_SERVICE_MODE || mSlaveSubMode== SlaveModeEngine.MOUSE) {
+            // Start as accessibility service in mouse emulation mode
+            // TODO: implement different behavior when (mSlaveSubMode== SlaveModeEngine.MOUSE)
+            mMotionProcessor= mMouseEmulationEngine= new MouseEmulationEngine(
+                    (AccessibilityService) mService);
+        } 
+        else {
+            mMotionProcessor= mGamePadEngine= new GamePadEngine(mService);
+        }
         
         /*
          * Display splash and detect OpenCV installation. The service from now on waits 
@@ -161,19 +186,9 @@ public class EngineManager implements
         mOverlayView= new OverlayView(mService);
         CameraLayerView cameraLayer= new CameraLayerView(mService);
         mOverlayView.addFullScreenLayer(cameraLayer);
-
-        /*
-         * Create specific engine
-         */
-        if (mMode == A11Y_SERVICE_MODE || mSlaveSubMode== SlaveModeEngine.MOUSE) {
-            // Start as accessibility service in mouse emulation mode
-            // TODO: implement different behavior when (mSlaveSubMode== SlaveModeEngine.MOUSE)
-            mMotionProcessor= mMouseEmulationEngine= new MouseEmulationEngine(
-                    (AccessibilityService) mService, mOverlayView);
-        } 
-        else {
-            mMotionProcessor= mGamePadEngine= new GamePadEngine(mService, mOverlayView);
-        }
+     
+        // Init the specific engine
+        mMotionProcessor.init(mOverlayView);
 
         /*
          * camera and machine vision stuff
@@ -223,6 +238,7 @@ public class EngineManager implements
             mMotionProcessor.cleanup();
             mMotionProcessor= null;
             mMouseEmulationEngine= null;
+            mGamePadEngine= null;
             
             mOverlayView.cleanup();
             mOverlayView= null;
@@ -233,12 +249,17 @@ public class EngineManager implements
             /*
              *  stage 1 cleanup 
              */
+            mMotionProcessor= null;
+            mMouseEmulationEngine= null;
+            mGamePadEngine= null;
+
             sEngineManager= null;
         }
 
         mCurrentState= STATE_STOPPED;
     }
-   
+
+    /* Pauses (asynchronously) the engine */
     public void pause() {
         if (mCurrentState != STATE_RUNNING) return;
         mCurrentState= STATE_PAUSED;
@@ -248,7 +269,8 @@ public class EngineManager implements
             mMotionProcessor.pause();
         }
     }
-    
+
+    /* Resumes the engine */
     public void resume() {
         if (mCurrentState != STATE_PAUSED) return;
 
@@ -264,20 +286,32 @@ public class EngineManager implements
         mCurrentState= STATE_RUNNING;
     }    
 
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         if (mOrientationManager != null) mOrientationManager.onConfigurationChanged(newConfig);
     }
 
+    @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (mMouseEmulationEngine!= null && mMode == A11Y_SERVICE_MODE) {
             mMouseEmulationEngine.onAccessibilityEvent(event);
         }
     }
 
-    /*
-     * process incoming camera frame 
+    @Override
+    public boolean registerListener(IPadEventListener l) {
+        return mGamePadEngine.registerListener(l);
+    }
+
+    @Override
+    public void unregisterListener(IPadEventListener l) {
+        mGamePadEngine.unregisterListener(l);
+    }
+
+    /**
+     * Process incoming camera frame 
      * 
-     * this method is called from a secondary thread 
+     * This method is called from a secondary thread 
      */
     @Override
     public void processFrame(Mat rgba) {
@@ -297,15 +331,5 @@ public class EngineManager implements
 
         // process motion on specific engine
         mMotionProcessor.processMotion(motion);
-    }
-
-    @Override
-    public boolean registerListener(IPadEventListener l) {
-        return mGamePadEngine.registerListener(l);
-    }
-
-    @Override
-    public void unregisterListener(IPadEventListener l) {
-        mGamePadEngine.unregisterListener(l);
     }
 }

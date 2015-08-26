@@ -27,6 +27,8 @@ import android.os.RemoteException;
 import android.view.View;
 
 public class GamePadEngine implements MotionProcessor {
+    private final Context mContext;
+    
     // Gamepad geometric logic
     private AbsolutePad mAbsolutePad= new AbsolutePad();
     
@@ -41,11 +43,15 @@ public class GamePadEngine implements MotionProcessor {
     // event listener
     private IPadEventListener mPadEventListener;    
 
-    public GamePadEngine(Context c, OverlayView ov) {
+    public GamePadEngine(Context c) {
+        mContext= c;
+    }
+    
+    public void init (OverlayView ov) {
         /*
          * UI stuff 
          */
-        mAbsolutePadView= new AbsolutePadView(c);
+        mAbsolutePadView= new AbsolutePadView(mContext);
         
         // TODO
         mAbsolutePadView.setInnerRadiusRatio(mAbsolutePad.getInnerRadiusRatio());
@@ -53,7 +59,7 @@ public class GamePadEngine implements MotionProcessor {
         ov.addFullScreenLayer(mAbsolutePadView);
 
         // pointer layer (should be the last one)
-        mPointerLayer= new PointerLayerView(c);
+        mPointerLayer= new PointerLayerView(mContext);
         ov.addFullScreenLayer(mPointerLayer);
     }
 

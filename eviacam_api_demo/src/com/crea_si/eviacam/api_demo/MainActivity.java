@@ -1,28 +1,28 @@
 package com.crea_si.eviacam.api_demo;
 
-import com.crea_si.eviacam.api.ISlaveMode;
+import com.crea_si.eviacam.api.IPadEventListener;
+import com.crea_si.eviacam.api.GamepadButtons;
+import com.crea_si.eviacam.api.SlaveMode;
+import com.crea_si.eviacam.api.SlaveModeConnection;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
+import android.os.RemoteException;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends Activity implements ServiceConnection {
-    private static String TAG = "EVIACAM_API_DEMO";
-
-    private static final String REMOTE_PACKAGE= "com.crea_si.eviacam.service";
-    private static final String REMOTE_ACTION= REMOTE_PACKAGE + ".SlaveModeService";
+public class MainActivity extends Activity implements 
+    SlaveModeConnection, IPadEventListener {
+    
+    private static float INC= 0.05f;
     
     // binder (proxy) with the remote input method service
-    private ISlaveMode mSlaveMode;
-    
+    private SlaveMode mSlaveMode;
+
+    private PointF mPoint= new PointF(0, 0);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,48 +49,84 @@ public class MainActivity extends Activity implements ServiceConnection {
             return true;
         }
         else if (id == R.id.action_bind) {
-            doBind();
+            SlaveMode.initConnection(this, this);
         }
         else if (id == R.id.action_unbind) {
-            doUnbind();
+            if (mSlaveMode!= null) mSlaveMode.disconnect();
+        }
+        else if (id == R.id.action_register_events) {
+            if (mSlaveMode!= null) mSlaveMode.registerListener(this);
+        }
+        else if (id == R.id.action_unregister_events) {
+            if (mSlaveMode!= null) {
+                mSlaveMode.unregisterListener(this);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
-    
-    private void doBind() {
-        Log.d(TAG, "Attemp to bind to EViacam API");
-        Intent intent= new Intent(REMOTE_ACTION);
-        intent.setPackage(REMOTE_PACKAGE);
-        try {
-            if (!bindService(intent, this, Context.BIND_AUTO_CREATE)) {
-                Log.d(TAG, "Cannot bind remote API");
-            }
+
+    /* This is called from a secondary thread */
+    @Override
+    public void buttonPressed(int arg0) throws RemoteException {
+        switch (arg0) {
+        case GamepadButtons.PAD_DOWN:
+            mPoint.y+= INC;
+            break;
+        case GamepadButtons.PAD_DOWN_LEFT:
+            mPoint.x-= INC;
+            mPoint.y+= INC;
+            break;
+        case GamepadButtons.PAD_LEFT:
+            mPoint.x-= INC;
+            break;
+        case GamepadButtons.PAD_UP_LEFT:
+            mPoint.x-= INC;
+            mPoint.y-= INC;
+            break;
+        case GamepadButtons.PAD_UP:
+            mPoint.y-= INC;
+            break;
+        case GamepadButtons.PAD_UP_RIGHT:
+            mPoint.x+= INC;
+            mPoint.y-= INC;
+            break;
+        case GamepadButtons.PAD_RIGHT:
+            mPoint.x+= INC;
+            break;
+        case GamepadButtons.PAD_DOWN_RIGHT:
+            mPoint.x+= INC;
+            mPoint.y+= INC;
+            break;
         }
-        catch(SecurityException e) {
-            Log.d(TAG, "Cannot bind remote API. Security exception.");
-        }
+        
+        if (mPoint.x< -1.0f) mPoint.x= -1.0f;
+        else if (mPoint.x> 1.0f) mPoint.x= 1.0f;
+        if (mPoint.y< -1.0f) mPoint.y= -1.0f;
+        else if (mPoint.y> 1.0f) mPoint.y= 1.0f;
+        
+        MyCanvas cv= (MyCanvas) findViewById(R.id.the_canvas);
+        cv.setPosition(mPoint);
+        cv.postInvalidate();
     }
-    
-    private void doUnbind() {
-        unbindService(this);
-        mSlaveMode = null;
+
+    /* This is called from a secondary thread */
+    @Override
+    public void buttonReleased(int arg0) throws RemoteException {
     }
 
     @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        // This is called when the connection with the service has been
-        // established, giving us the object we can use to
-        // interact with the service.
-        Log.d(TAG, "EViacam API:onServiceConnected: " + name.toString());
-        mSlaveMode = ISlaveMode.Stub.asInterface(service);        
+    public void onConnected(SlaveMode connection) {
+        mSlaveMode= connection;        
     }
 
     @Override
-    public void onServiceDisconnected(ComponentName name) {
-        // This is called when the connection with the service has been
-        // unexpectedly disconnected -- that is, its process crashed.
-        Log.d(TAG, "EViacam API:onServiceDisconnected");
-        unbindService(this);
+    public void onDisconnected() {
         mSlaveMode = null;
+    }
+
+    // TODO: remove
+    @Override
+    public IBinder asBinder() {
+        return null;
     }
 }

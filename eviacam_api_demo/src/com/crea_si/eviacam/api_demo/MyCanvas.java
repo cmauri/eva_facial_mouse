@@ -50,5 +50,11 @@ public class MyCanvas extends View {
     public void setPosition(PointF p) {
         mLocation.x= ((p.x / 2.0f) * getWidth()) + getWidth() / 2;
         mLocation.y= ((p.y / 2.0f) * getHeight()) + getHeight() / 2;
+        
+        if (mLocation.x< 0) mLocation.x= 0;
+        else if (mLocation.x>= getWidth()) mLocation.x= getWidth()-1;
+        
+        if (mLocation.y< 0) mLocation.y= 0;
+        else if (mLocation.y>= getHeight()) mLocation.y= getHeight()-1;
     }
 }

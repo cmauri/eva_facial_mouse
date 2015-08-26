@@ -19,6 +19,7 @@
 
 package com.crea_si.eviacam.service;
 
+import com.crea_si.eviacam.api.GamepadButtons;
 import android.graphics.PointF;
 
 /**
@@ -30,19 +31,6 @@ import android.graphics.PointF;
  */
 
 public class AbsolutePad {
-    /*
-     * Sector identifiers (up to 8 sectors)
-     */
-    public static final int PAD_NONE = -1;
-    public static final int PAD_DOWN = 0;
-    public static final int PAD_DOWN_LEFT = 1;
-    public static final int PAD_LEFT = 2;
-    public static final int PAD_UP_LEFT = 3;
-    public static final int PAD_UP = 4;
-    public static final int PAD_UP_RIGHT = 5;
-    public static final int PAD_RIGHT = 6;
-    public static final int PAD_DOWN_RIGHT = 7;
-    
     // Ratio of the internal radius
     private float mInnerRadiusRatio= 0.5f;
 
@@ -84,7 +72,7 @@ public class AbsolutePad {
         /*
          * Get sector 
          */
-        int newSector= PAD_NONE;
+        int newSector= GamepadButtons.PAD_NONE;
         if (dist_sq> mInnerRadiusRatio*mInnerRadiusRatio) {
             // angle 0 points down
             alpha+= Math.PI / 8.0 - Math.PI / 2.0;

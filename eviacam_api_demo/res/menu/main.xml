@@ -19,4 +19,16 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="Unbind"/>
+     
+     <item
+        android:id="@+id/action_register_events"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Register"/>
+     
+     <item
+        android:id="@+id/action_unregister_events"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Unregister"/>
 </menu>

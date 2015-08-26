@@ -18,17 +18,28 @@
  */
 package com.crea_si.eviacam.service;
 
+import com.crea_si.eviacam.api.GamepadButtons;
+import com.crea_si.eviacam.api.IPadEventListener;
+
 import android.content.Context;
 import android.graphics.PointF;
+import android.os.RemoteException;
 import android.view.View;
 
 public class GamePadEngine implements MotionProcessor {
+    // Gamepad geometric logic
     private AbsolutePad mAbsolutePad= new AbsolutePad();
+    
+    private int mLastPressed= GamepadButtons.PAD_NONE;
 
+    // Absolute gamepad view
     private AbsolutePadView mAbsolutePadView;
 
-    // layer for drawing the pointer and the dwell click feedback
+    // layer for drawing the pointer
     private PointerLayerView mPointerLayer;
+
+    // event listener
+    private IPadEventListener mPadEventListener;    
 
     public GamePadEngine(Context c, OverlayView ov) {
         /*
@@ -60,7 +71,21 @@ public class GamePadEngine implements MotionProcessor {
     @Override
     public void resume() {
         mPointerLayer.setVisibility(View.VISIBLE);
-    }    
+    }
+
+    public boolean registerListener(IPadEventListener l) {
+        if (mPadEventListener== null) {
+            mPadEventListener= l;
+            return true;
+        }
+        return false;
+    }
+
+    public void unregisterListener(IPadEventListener l) {
+        if (mPadEventListener == l) {
+            mPadEventListener= null;
+        }
+    }
 
     /*
      * process motion from the face
@@ -85,5 +110,27 @@ public class GamePadEngine implements MotionProcessor {
         // update pointer position and click progress
         mPointerLayer.updatePosition(ptrLocation);
         mPointerLayer.postInvalidate();
+        
+        // Check and generate events
+        if (sector != mLastPressed) {
+            IPadEventListener l= mPadEventListener;
+            if (l!= null) {
+                try {
+                    if (mLastPressed!= GamepadButtons.PAD_NONE) {
+                        // Release previous button
+                        l.buttonReleased(mLastPressed);
+                    }
+                    if (sector!= GamepadButtons.PAD_NONE) {
+                        // Press new one
+                        l.buttonPressed(sector);
+                    }
+                }
+                catch (RemoteException e) {
+                    // Just log it and go on
+                    EVIACAM.debug("RemoteException while sending gamepad event");
+                }
+            }
+            mLastPressed= sector;
+        }
     }
 }

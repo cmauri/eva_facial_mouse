@@ -16,6 +16,10 @@
 
 package com.crea_si.eviacam.service;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
 import com.crea_si.eviacam.api.IPadEventListener;
 import com.crea_si.eviacam.api.ISlaveMode;
 
@@ -26,31 +30,61 @@ import android.os.IBinder;
 import android.os.RemoteException;
 
 /**
- * 
- *
  * TODO: improve security
  * TODO: allow one client only
  */
 
 public class SlaveModeService extends Service {
-
     // handler used to forward calls to the main thread 
-    Handler mMainThreadHandler;
+    private final Handler mMainThreadHandler= new Handler();
+    
+    private SlaveModeEngine mSlaveModeEngine;
 
     // binder stub, receives remote requests on a secondary thread
     private final ISlaveMode.Stub mBinder= new ISlaveMode.Stub() {
         @Override
-        public boolean registerListener(IPadEventListener arg0)
+        public boolean registerListener(final IPadEventListener arg0)
                 throws RemoteException {
             EVIACAM.debug("SlaveModeService.registerListener");
+            
+            FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    // TODO: if an exception is thrown, calling code always receive
+                    // a RemoteException, it would be better to provide more information
+                    // on the caller. See here:
+                    // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
+                    return mSlaveModeEngine.registerListener(arg0);
+                }
+            });
+            
+            mMainThreadHandler.post(futureResult);
+
+            try {
+                // this block until the result is calculated
+                return futureResult.get();
+            } 
+            catch (ExecutionException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            } 
+            catch (InterruptedException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            }
             return false;
         }
 
         @Override
-        public void unregisterListener(IPadEventListener arg0)
+        public void unregisterListener(final IPadEventListener arg0)
                 throws RemoteException {
             EVIACAM.debug("SlaveModeService.unregisterListener");
             
+            Runnable r= new Runnable() {
+                @Override
+                public void run() {
+                    mSlaveModeEngine.unregisterListener(arg0);
+                }
+            };
+            mMainThreadHandler.post(r);
         }
     };
 
@@ -58,24 +92,31 @@ public class SlaveModeService extends Service {
     public void onCreate () {
         EVIACAM.debug("SlaveModeService: onCreate");
         EVIACAM.debugInit(this);
-        mMainThreadHandler= new Handler();
     }
 
     /** When binding to the service, we return an interface to the client */
     @Override
     public IBinder onBind(Intent intent) {
         EVIACAM.debug("SlaveModeService: onBind");
+        mSlaveModeEngine= 
+                EngineManager.getInstance().startInSlaveMode(this, SlaveModeEngine.ABSOLUTE_PAD);
+        
         return mBinder;
     }
 
     @Override
     public boolean onUnbind (Intent intent) {
         EVIACAM.debug("SlaveModeService: onUnbind");
+        if (mSlaveModeEngine != null) {
+            mSlaveModeEngine.cleanup();
+            mSlaveModeEngine= null;
+        }
         return false;
     }
 
     @Override
     public void onDestroy () {
         EVIACAM.debug("SlaveModeService: onDestroy");
+        EVIACAM.debugCleanup();
     }
  }

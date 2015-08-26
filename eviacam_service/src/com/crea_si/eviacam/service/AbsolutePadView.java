@@ -19,6 +19,8 @@
 
 package com.crea_si.eviacam.service;
 
+import com.crea_si.eviacam.api.GamepadButtons;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -59,7 +61,7 @@ public class AbsolutePadView extends View {
     private final Paint mPaintBox;
     
     // Currently highlighted sector
-    private int mHighlightedSector= AbsolutePad.PAD_NONE;
+    private int mHighlightedSector= GamepadButtons.PAD_NONE;
 
     public AbsolutePadView(Context c) {
         super(c);

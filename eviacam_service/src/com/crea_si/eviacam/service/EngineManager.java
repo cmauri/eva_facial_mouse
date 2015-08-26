@@ -20,6 +20,8 @@ package com.crea_si.eviacam.service;
 
 import org.opencv.core.Mat;
 
+import com.crea_si.eviacam.api.IPadEventListener;
+
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
 import android.content.Intent;
@@ -56,6 +58,8 @@ public class EngineManager implements
 
     // reference to the engine when running as mouse emulation
     private MouseEmulationEngine mMouseEmulationEngine;
+    
+    private GamePadEngine mGamePadEngine;
 
     // current engine state
     private int mCurrentState= STATE_STOPPED;
@@ -168,7 +172,7 @@ public class EngineManager implements
                     (AccessibilityService) mService, mOverlayView);
         } 
         else {
-            mMotionProcessor= new GamePadEngine(mService, mOverlayView);
+            mMotionProcessor= mGamePadEngine= new GamePadEngine(mService, mOverlayView);
         }
 
         /*
@@ -293,5 +297,15 @@ public class EngineManager implements
 
         // process motion on specific engine
         mMotionProcessor.processMotion(motion);
+    }
+
+    @Override
+    public boolean registerListener(IPadEventListener l) {
+        return mGamePadEngine.registerListener(l);
+    }
+
+    @Override
+    public void unregisterListener(IPadEventListener l) {
+        mGamePadEngine.unregisterListener(l);
     }
 }

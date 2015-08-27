@@ -25,9 +25,6 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 public class MouseEmulationEngine implements MotionProcessor {
-    // reference to the accessibility service
-    private final AccessibilityService mAccessibilityService;
-    
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
     
@@ -49,37 +46,53 @@ public class MouseEmulationEngine implements MotionProcessor {
     // perform actions on the UI using the accessibility API
     private AccessibilityAction mAccessibilityAction;
     
-    public MouseEmulationEngine(AccessibilityService as) {
-        mAccessibilityService= as;
-    }
-    
-    public void init (OverlayView ov) {
+    public MouseEmulationEngine(AccessibilityService as, OverlayView ov) {
         /*
          * UI stuff 
          */
-        mDockPanelView= new DockPanelLayerView(mAccessibilityService);
+        mDockPanelView= new DockPanelLayerView(as);
         ov.addFullScreenLayer(mDockPanelView);
 
-        mScrollLayerView= new ScrollLayerView(mAccessibilityService);
+        mScrollLayerView= new ScrollLayerView(as);
         ov.addFullScreenLayer(mScrollLayerView);
         
-        mControlsLayer= new ControlsLayerView(mAccessibilityService);
+        mControlsLayer= new ControlsLayerView(as);
         ov.addFullScreenLayer(mControlsLayer);
         
         // pointer layer (should be the last one)
-        mPointerLayer= new PointerLayerView(mAccessibilityService);
+        mPointerLayer= new PointerLayerView(as);
         ov.addFullScreenLayer(mPointerLayer);
 
         /*
          * control stuff
          */
-        mPointerControl= new PointerControl(mAccessibilityService, mPointerLayer);
+        mPointerControl= new PointerControl(as, mPointerLayer);
         
-        mDwellClick= new DwellClick(mAccessibilityService);
+        mDwellClick= new DwellClick(as);
         
         mAccessibilityAction= new AccessibilityAction (
-                mAccessibilityService, mControlsLayer, mDockPanelView, mScrollLayerView);
+                as, mControlsLayer, mDockPanelView, mScrollLayerView);
     }
+    
+    @Override
+    public void pause() {
+        mPointerLayer.setVisibility(View.INVISIBLE);
+        mScrollLayerView.setVisibility(View.INVISIBLE);
+        mControlsLayer.setVisibility(View.INVISIBLE);
+        mDockPanelView.setVisibility(View.INVISIBLE);
+    }
+    
+    @Override
+    public void resume() {
+        mPointerControl.reset();
+        mDwellClick.reset();
+        mAccessibilityAction.reset();
+
+        mDockPanelView.setVisibility(View.VISIBLE);
+        mControlsLayer.setVisibility(View.VISIBLE);
+        mScrollLayerView.setVisibility(View.VISIBLE);
+        mPointerLayer.setVisibility(View.VISIBLE);
+    }    
     
     @Override
     public void cleanup() {
@@ -100,26 +113,6 @@ public class MouseEmulationEngine implements MotionProcessor {
         mPointerLayer.cleanup();
         mPointerLayer= null;
     }
-   
-    @Override
-    public void pause() {
-        mPointerLayer.setVisibility(View.INVISIBLE);
-        mScrollLayerView.setVisibility(View.INVISIBLE);
-        mControlsLayer.setVisibility(View.INVISIBLE);
-        mDockPanelView.setVisibility(View.INVISIBLE);
-    }
-    
-    @Override
-    public void resume() {
-        mPointerControl.reset();
-        mDwellClick.reset();
-        mAccessibilityAction.reset();
-
-        mDockPanelView.setVisibility(View.VISIBLE);
-        mControlsLayer.setVisibility(View.VISIBLE);
-        mScrollLayerView.setVisibility(View.VISIBLE);
-        mPointerLayer.setVisibility(View.VISIBLE);
-    }    
 
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (mAccessibilityAction != null) mAccessibilityAction.onAccessibilityEvent(event);

@@ -22,13 +22,7 @@ package com.crea_si.eviacam.service;
 import com.crea_si.eviacam.api.IPadEventListener;
 
 interface SlaveModeEngine extends Engine {
-    /*
-     * In slave mode there several possibilities when started
-     */
-    public static final int MOUSE= 0;
-    public static final int ABSOLUTE_PAD= 1;
-    public static final int RELATIVE_PAD= 2;
-    
+    public void setOperationMode(int mode);
     public boolean registerListener(IPadEventListener l);
     public void unregisterListener();
 }

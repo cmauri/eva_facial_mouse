@@ -20,6 +20,7 @@ package com.crea_si.eviacam.service;
 
 import org.opencv.core.Mat;
 
+import com.crea_si.eviacam.api.SlaveMode;
 import com.crea_si.eviacam.api.IPadEventListener;
 
 import android.accessibilityservice.AccessibilityService;
@@ -28,6 +29,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.preference.PreferenceManager;
+import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 /*
@@ -39,10 +41,11 @@ public class EngineManager implements
     /*
      * states of the engine
      */
-    private static final int STATE_STOPPED= 0;
-    private static final int STATE_CHECKING_OPENCV= 1;
-    private static final int STATE_RUNNING= 2;
-    private static final int STATE_PAUSED= 3;
+    private static final int STATE_DISABLED= 0;
+    private static final int STATE_STOPPED= 1;
+    private static final int STATE_CHECKING_OPENCV= 2;
+    private static final int STATE_RUNNING= 3;
+    private static final int STATE_PAUSED= 4;
 
     /*
      * modes of operation from the point of view of the service
@@ -53,15 +56,18 @@ public class EngineManager implements
 
     // singleton instance
     private static EngineManager sEngineManager= null;
+    
+    // openvc has been checked?
+    private static boolean sOpenCVReady= false;
 
     // current engine state
-    private int mCurrentState= STATE_STOPPED;
+    private int mCurrentState= STATE_DISABLED;
 
     // current engine mode
     private int mMode= -1;
 
     // slave mode submode
-    private int mSlaveSubMode= -1;
+    private int mSlaveSubMode= SlaveMode.ABSOLUTE_PAD;
 
     // reference to the service which started the engine
     private Service mService;
@@ -102,8 +108,9 @@ public class EngineManager implements
      * @param as the reference to the accessibility service
      * @return a reference to the engine interface or null if cannot be started
      */
-    public AccessibilityServiceModeEngine startAsAccessibilityService (AccessibilityService as) {
-        if (mCurrentState != STATE_STOPPED) {
+    public AccessibilityServiceModeEngine getAccessibilityServiceModeEngine 
+                                                        (AccessibilityService as) {
+        if (mCurrentState != STATE_DISABLED) {
             // Already started, if was as accessibility service something went wrong
             if (mMode == A11Y_SERVICE_MODE) throw new IllegalStateException();
             
@@ -112,83 +119,63 @@ public class EngineManager implements
         }
 
         mMode= A11Y_SERVICE_MODE;
-        mSlaveSubMode= -1;
         mService= as;
-        initStage1();
+        
+        init();
+                
         return this;
     }
 
     /**
-     * Try to start the engine in slave mode
+     * Return the slave mode engine
      * 
      * @param s service which instantiates the engine
      * @param submode of operation, see {@link com.crea_si.eviacam.service.SlaveModeEngine} class
-     * @return a reference to the engine interface or null if cannot be started
+     * @return a reference to the engine interface or null if cannot be created (i.e. accessibility
+     *           service engine already instantiated).
      */
-    public SlaveModeEngine startInSlaveMode (Service s, int submode) {
-        if (mCurrentState != STATE_STOPPED) {
-            // Already started, if was in slave mode something went wrong
+    public SlaveModeEngine getSlaveModeEngine (Service s) {
+        if (mCurrentState != STATE_DISABLED) {
+            // Already instantiated, if was in slave mode something went wrong
             if (mMode == SLAVE_MODE) throw new IllegalStateException();
          
             // Otherwise assume that has been started in accessibility service mode
             return null;
         }
-
+        
         mMode= SLAVE_MODE;
-        mSlaveSubMode= submode;
         mService= s;
-        initStage1();
+        
+        init();
+        
         return this;
     }    
 
-    /** Called from splash activity to notify the openCV is properly installed */
-    public static void initCVReady() {
-        EngineManager ce= EngineManager.sEngineManager;
-        if (ce == null) return;
-        
-        ce.initStage2();
-    }
-    
-    private void initStage1 () {
+    private void init() {
         // set default configuration values if the service is run for the first time
         PreferenceManager.setDefaultValues(mService, R.xml.preference_fragment, true);
-        
-        /*
-         * Create specific engine
-         */
-        if (mMode == A11Y_SERVICE_MODE || mSlaveSubMode== SlaveModeEngine.MOUSE) {
-            // Start as accessibility service in mouse emulation mode
-            // TODO: implement different behavior when (mSlaveSubMode== SlaveModeEngine.MOUSE)
-            mMotionProcessor= mMouseEmulationEngine= new MouseEmulationEngine(
-                    (AccessibilityService) mService);
-        } 
-        else {
-            mMotionProcessor= mGamePadEngine= new GamePadEngine(mService);
-        }
-        
-        /*
-         * Display splash and detect OpenCV installation. The service from now on waits 
-         * until the detection process finishes and a notification is received.
-         */
-        Intent dialogIntent = new Intent(mService, SplashActivity.class);
-        dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mService.startActivity(dialogIntent);
-        
-        mCurrentState = STATE_CHECKING_OPENCV;
-    }
-    
-    private void initStage2 () {
-        if (mCurrentState!= STATE_CHECKING_OPENCV) return;
 
         /*
          * Create UI stuff: root overlay and camera view
          */
         mOverlayView= new OverlayView(mService);
+        mOverlayView.setVisibility(View.INVISIBLE);
+        
         CameraLayerView cameraLayer= new CameraLayerView(mService);
         mOverlayView.addFullScreenLayer(cameraLayer);
      
-        // Init the specific engine
-        mMotionProcessor.init(mOverlayView);
+        /*
+         * Create specific engine
+         */
+        if (mMode == A11Y_SERVICE_MODE || mSlaveSubMode== SlaveMode.MOUSE) {
+            // Start as accessibility service in mouse emulation mode
+            // TODO: implement different behavior when (mSlaveSubMode== SlaveModeEngine.MOUSE)
+            mMotionProcessor= mMouseEmulationEngine= new MouseEmulationEngine(
+                    (AccessibilityService) mService, mOverlayView);
+        }
+        else {
+            mMotionProcessor= mGamePadEngine= new GamePadEngine(mService, mOverlayView);
+        }
 
         /*
          * camera and machine vision stuff
@@ -199,64 +186,62 @@ public class EngineManager implements
         // orientation manager
         mOrientationManager= new OrientationManager(mService,
                                                     mCameraListener.getCameraOrientation());
+
+        // Service notification listener
+        mServiceNotification= new ServiceNotification(mService, this);
+        
+        mCurrentState= STATE_STOPPED;
+    }
+    
+    @Override
+    public boolean start() {
+        if (mCurrentState== STATE_CHECKING_OPENCV || mCurrentState==STATE_RUNNING) {
+            return true;
+        }
+        if (mCurrentState!= STATE_STOPPED) return false;
+        
+        mCurrentState = STATE_CHECKING_OPENCV;
+        
+        if (sOpenCVReady) startStage2 ();
+        else {
+            /*
+             * Display splash and detect OpenCV installation. The service from now on waits 
+             * until the detection process finishes and initCVReady() is called.
+             */
+            Intent dialogIntent = new Intent(mService, SplashActivity.class);
+            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mService.startActivity(dialogIntent);
+            
+            mCurrentState = STATE_CHECKING_OPENCV;
+        }
+        
+        return true;
+    }
+    
+    /** Called from splash activity to notify the openCV is properly installed */
+    public static void initCVReady() {
+        EngineManager ce= EngineManager.sEngineManager;
+        if (ce == null) return;
+        sOpenCVReady= true;
+                
+        ce.startStage2();
+    }
+
+    private void startStage2 () {
+        if (mCurrentState!= STATE_CHECKING_OPENCV) return;
+
+        // show GUI elements
+        mOverlayView.requestLayout();
+        mOverlayView.setVisibility(View.VISIBLE);
+        
         // start processing frames
         mCameraListener.startCamera();
 
-        /*
-         * add notification and set as foreground service
-         */
-        mServiceNotification= new ServiceNotification(mService, this);
+        // add notification and set as foreground service
         mService.startForeground(mServiceNotification.getNotificationId(), 
                 mServiceNotification.getNotification(mService));
 
-        
         mCurrentState= STATE_RUNNING;
-    }
-
-    public void cleanup() {
-        if (mCurrentState == STATE_STOPPED) return;
-        
-        if (mCurrentState == STATE_RUNNING) {
-            /*
-             *  stage 2 cleanup 
-             */
-
-            // stop being foreground service and remove notification
-            mService.stopForeground(true);
-
-            mServiceNotification.cleanup();
-            mServiceNotification= null;
-            
-            EVIACAM.debug("before stopCamera");
-            mCameraListener.stopCamera();
-            EVIACAM.debug("after stopCamera");
-            mCameraListener= null;
-
-            mOrientationManager.cleanup();
-            mOrientationManager= null;
-
-            mMotionProcessor.cleanup();
-            mMotionProcessor= null;
-            mMouseEmulationEngine= null;
-            mGamePadEngine= null;
-            
-            mOverlayView.cleanup();
-            mOverlayView= null;
-        }
-        
-        if (mCurrentState == STATE_RUNNING ||
-            mCurrentState == STATE_CHECKING_OPENCV) {
-            /*
-             *  stage 1 cleanup 
-             */
-            mMotionProcessor= null;
-            mMouseEmulationEngine= null;
-            mGamePadEngine= null;
-
-            sEngineManager= null;
-        }
-
-        mCurrentState= STATE_STOPPED;
     }
 
     /* Pauses (asynchronously) the engine */
@@ -287,8 +272,56 @@ public class EngineManager implements
     }    
 
     @Override
+    public void stop() {
+        if (mCurrentState == STATE_DISABLED || mCurrentState == STATE_STOPPED) return;
+
+        if (mCurrentState == STATE_RUNNING || mCurrentState == STATE_PAUSED) {
+            mService.stopForeground(true);
+
+            mCameraListener.stopCamera();
+            
+            mOverlayView.setVisibility(View.INVISIBLE);
+        }
+        mCurrentState= STATE_STOPPED;
+    }
+    
+    @Override
+    public void cleanup() {
+        if (mCurrentState == STATE_DISABLED) return;
+        
+        stop();
+        
+        mServiceNotification.cleanup();
+        mServiceNotification= null;
+        
+        //mCameraListener.stopCamera();
+        mCameraListener= null;
+
+        mOrientationManager.cleanup();
+        mOrientationManager= null;
+
+        mMotionProcessor.cleanup();
+        mMotionProcessor= null;
+        mMouseEmulationEngine= null;
+        mGamePadEngine= null;
+        
+        mOverlayView.cleanup();
+        mOverlayView= null;
+        
+        mCurrentState= STATE_DISABLED;
+        
+        sEngineManager= null;
+    }
+  
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         if (mOrientationManager != null) mOrientationManager.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void setOperationMode(int mode) {
+        // TODO Auto-generated method stub
+        
     }
 
     @Override

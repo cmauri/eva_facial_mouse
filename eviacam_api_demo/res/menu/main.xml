@@ -15,6 +15,18 @@
         android:title="Unbind"/>
      
      <item
+        android:id="@+id/action_start"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Start"/>
+
+     <item
+        android:id="@+id/action_stop"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="Stop"/>
+     
+     <item
         android:id="@+id/action_register_events"
         android:orderInCategory="100"
         android:showAsAction="never"

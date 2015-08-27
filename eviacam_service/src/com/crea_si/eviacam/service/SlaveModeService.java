@@ -1,17 +1,20 @@
 /*
+ * Enable Viacam for Android, a camera based mouse emulator
+ *
  * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.crea_si.eviacam.service;
@@ -44,6 +47,82 @@ public class SlaveModeService extends Service {
     // binder stub, receives remote requests on a secondary thread
     private final ISlaveMode.Stub mBinder= new ISlaveMode.Stub() {
         @Override
+        public boolean start() throws RemoteException {
+            FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    if (mSlaveModeEngine == null) return false;
+                    return mSlaveModeEngine.start();
+                }
+            });
+           
+            mMainThreadHandler.post(futureResult);
+
+            try {
+                // this block until the result is calculated
+                return futureResult.get();
+            } 
+            catch (ExecutionException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            } 
+            catch (InterruptedException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            }
+            return false;
+        }
+
+        @Override
+        public void stop() throws RemoteException {
+            FutureTask<Void> futureResult = new FutureTask<Void>(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    if (mSlaveModeEngine == null) return null;
+                    mSlaveModeEngine.stop();
+                    return null;
+                }
+            });
+           
+            mMainThreadHandler.post(futureResult);
+
+            try {
+                // this block until the result is calculated
+                futureResult.get();
+            } 
+            catch (ExecutionException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            } 
+            catch (InterruptedException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            }
+        }
+
+        @Override
+        public void setOperationMode(final int mode) throws RemoteException {
+            FutureTask<Void> futureResult = new FutureTask<Void>(new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    if (mSlaveModeEngine == null) return null;
+                    mSlaveModeEngine.setOperationMode(mode);
+                    return null;
+                }
+            });
+           
+            mMainThreadHandler.post(futureResult);
+
+            try {
+                // this block until the result is calculated
+                futureResult.get();
+            } 
+            catch (ExecutionException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            } 
+            catch (InterruptedException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            }
+            
+        }
+        
+        @Override
         public boolean registerListener(final IPadEventListener arg0)
                 throws RemoteException {
             EVIACAM.debug("SlaveModeService.registerListener");
@@ -55,6 +134,7 @@ public class SlaveModeService extends Service {
                     // a RemoteException, it would be better to provide more information
                     // on the caller. See here:
                     // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
+                    if (mSlaveModeEngine== null) return false;
                     return mSlaveModeEngine.registerListener(arg0);
                 }
             });
@@ -77,11 +157,14 @@ public class SlaveModeService extends Service {
         @Override
         public void unregisterListener() throws RemoteException {
             EVIACAM.debug("SlaveModeService.unregisterListener");
-            
+            if (mSlaveModeEngine == null) return;
+
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
                     mSlaveModeEngine.unregisterListener();
+                    mSlaveModeEngine.cleanup();
+                    mSlaveModeEngine= null;
                 }
             };
             mMainThreadHandler.post(r);
@@ -99,19 +182,21 @@ public class SlaveModeService extends Service {
     public IBinder onBind(Intent intent) {
         EVIACAM.debug("SlaveModeService: onBind");
         if (mSlaveModeEngine!= null) {
-            // Another client is connected. Don't allow.
+            // Another client is connected. Do not allow.
             return null;
         }
+
         mSlaveModeEngine= 
-                EngineManager.getInstance().startInSlaveMode(this, SlaveModeEngine.ABSOLUTE_PAD);
+            EngineManager.getInstance().getSlaveModeEngine(this);
 
         if (mSlaveModeEngine== null) {
-            /* The engine manager returned null, this means that has been
+            /* 
+             * The engine manager returned null, this means that has been
              * already started as accessibility service. Deny binding.
              */
             return null;
         }
-
+        
         return mBinder;
     }
 
@@ -119,6 +204,7 @@ public class SlaveModeService extends Service {
     public boolean onUnbind (Intent intent) {
         EVIACAM.debug("SlaveModeService: onUnbind");
         if (mSlaveModeEngine != null) {
+            //mSlaveModeEngine.unregisterListener();
             mSlaveModeEngine.cleanup();
             mSlaveModeEngine= null;
         }

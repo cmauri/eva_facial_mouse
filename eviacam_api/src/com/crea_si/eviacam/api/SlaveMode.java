@@ -9,6 +9,13 @@ import android.os.RemoteException;
 import android.util.Log;
 
 public class SlaveMode implements ServiceConnection {
+    /*
+     * In slave mode there several possibilities when started
+     */
+    public static final int MOUSE= 0;
+    public static final int ABSOLUTE_PAD= 1;
+    public static final int RELATIVE_PAD= 2;
+
     private static final String TAG= "eviacam_api";
     
     private static final String REMOTE_PACKAGE= "com.crea_si.eviacam.service";
@@ -57,6 +64,44 @@ public class SlaveMode implements ServiceConnection {
         mContext.unbindService(this);
         mSlaveModeConnection.onDisconnected();
         mSlaveMode = null;
+    }
+    
+    /**
+     * Starts eviacam in slave mode
+     */
+    public boolean start() {
+        if (mSlaveMode== null) return false;
+        try {
+            return mSlaveMode.start();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    /**
+     * Stop eviacam
+     */
+    public void stop() {
+        try {
+            mSlaveMode.stop();
+        } catch (RemoteException e) {
+        }
+    }
+    
+    /**
+     * Set operation mode
+     * 
+     * @param mode
+     *  MOUSE
+     *  ABSOLUTE_PAD
+     *  RELATIVE_PAD
+     */
+    void setOperationMode(int mode) {
+        try {
+            mSlaveMode.setOperationMode(mode);
+        } catch (RemoteException e) {
+        }
     }
     
     public boolean registerListener(IPadEventListener listener) {

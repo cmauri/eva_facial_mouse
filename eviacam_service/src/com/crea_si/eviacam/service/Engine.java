@@ -23,5 +23,7 @@ import android.content.res.Configuration;
 
 interface Engine {
     public void onConfigurationChanged(Configuration newConfig);
+    public boolean start();
+    public void stop();
     public void cleanup();
 }

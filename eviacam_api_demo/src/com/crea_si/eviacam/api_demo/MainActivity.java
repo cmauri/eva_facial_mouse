@@ -48,6 +48,12 @@ public class MainActivity extends Activity implements
         else if (id == R.id.action_unbind) {
             if (mSlaveMode!= null) mSlaveMode.disconnect();
         }
+        else if (id == R.id.action_start) {
+            if (mSlaveMode!= null) mSlaveMode.start();
+        }
+        else if (id == R.id.action_stop) {
+            if (mSlaveMode!= null) mSlaveMode.stop();
+        }
         else if (id == R.id.action_register_events) {
             if (mSlaveMode!= null) mSlaveMode.registerListener(this);
         }

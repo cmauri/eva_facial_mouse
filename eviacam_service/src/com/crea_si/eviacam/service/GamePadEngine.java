@@ -59,12 +59,14 @@ public class GamePadEngine implements MotionProcessor {
 
     @Override
     public void pause() {
+        mAbsolutePadView.setVisibility(View.INVISIBLE);
         mPointerLayer.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void resume() {
         mPointerLayer.setVisibility(View.VISIBLE);
+        mAbsolutePadView.setVisibility(View.VISIBLE);
     }
     
     @Override

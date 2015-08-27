@@ -13,8 +13,8 @@ public class SlaveMode implements ServiceConnection {
      * In slave mode there several possibilities when started
      */
     public static final int MOUSE= 0;
-    public static final int ABSOLUTE_PAD= 1;
-    public static final int RELATIVE_PAD= 2;
+    public static final int GAMEPAD_ABSOLUTE= 1;
+    public static final int GAMEPAD_RELATIVE= 2;
 
     private static final String TAG= "eviacam_api";
     
@@ -97,7 +97,7 @@ public class SlaveMode implements ServiceConnection {
      *  ABSOLUTE_PAD
      *  RELATIVE_PAD
      */
-    void setOperationMode(int mode) {
+    public void setOperationMode(int mode) {
         try {
             mSlaveMode.setOperationMode(mode);
         } catch (RemoteException e) {

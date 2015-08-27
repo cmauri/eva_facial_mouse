@@ -19,6 +19,7 @@
 package com.crea_si.eviacam.service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.Service;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.View;
@@ -46,32 +47,34 @@ public class MouseEmulationEngine implements MotionProcessor {
     // perform actions on the UI using the accessibility API
     private AccessibilityAction mAccessibilityAction;
     
-    public MouseEmulationEngine(AccessibilityService as, OverlayView ov) {
+    public MouseEmulationEngine(Service s, OverlayView ov) {
         /*
          * UI stuff 
          */
-        mDockPanelView= new DockPanelLayerView(as);
+        mDockPanelView= new DockPanelLayerView(s);
         ov.addFullScreenLayer(mDockPanelView);
 
-        mScrollLayerView= new ScrollLayerView(as);
+        mScrollLayerView= new ScrollLayerView(s);
         ov.addFullScreenLayer(mScrollLayerView);
         
-        mControlsLayer= new ControlsLayerView(as);
+        mControlsLayer= new ControlsLayerView(s);
         ov.addFullScreenLayer(mControlsLayer);
         
         // pointer layer (should be the last one)
-        mPointerLayer= new PointerLayerView(as);
+        mPointerLayer= new PointerLayerView(s);
         ov.addFullScreenLayer(mPointerLayer);
 
         /*
          * control stuff
          */
-        mPointerControl= new PointerControl(as, mPointerLayer);
+        mPointerControl= new PointerControl(s, mPointerLayer);
         
-        mDwellClick= new DwellClick(as);
+        mDwellClick= new DwellClick(s);
         
-        mAccessibilityAction= new AccessibilityAction (
-                as, mControlsLayer, mDockPanelView, mScrollLayerView);
+        if (s instanceof AccessibilityService) {
+            mAccessibilityAction= new AccessibilityAction ((AccessibilityService) s, 
+                    mControlsLayer, mDockPanelView, mScrollLayerView);
+        }
     }
     
     @Override
@@ -86,7 +89,7 @@ public class MouseEmulationEngine implements MotionProcessor {
     public void resume() {
         mPointerControl.reset();
         mDwellClick.reset();
-        mAccessibilityAction.reset();
+        if (mAccessibilityAction!= null) mAccessibilityAction.reset();
 
         mDockPanelView.setVisibility(View.VISIBLE);
         mControlsLayer.setVisibility(View.VISIBLE);
@@ -96,8 +99,10 @@ public class MouseEmulationEngine implements MotionProcessor {
     
     @Override
     public void cleanup() {
-        mAccessibilityAction.cleanup();
-        mAccessibilityAction= null;
+        if (mAccessibilityAction!= null) {
+            mAccessibilityAction.cleanup();
+            mAccessibilityAction= null;
+        }
 
         mDwellClick.cleanup();
         mDwellClick= null;
@@ -136,7 +141,7 @@ public class MouseEmulationEngine implements MotionProcessor {
         pInt.y= (int) pointerLocation.y;
         
         boolean clickGenerated= false;
-        if (mAccessibilityAction.isActionable(pInt)) {
+        if (mAccessibilityAction== null || mAccessibilityAction.isActionable(pInt)) {
             // dwell clicking update
             clickGenerated= mDwellClick.updatePointerLocation(pointerLocation);
         }
@@ -146,16 +151,20 @@ public class MouseEmulationEngine implements MotionProcessor {
         
         // update pointer position and click progress
         mPointerLayer.updatePosition(pointerLocation);
-        mPointerLayer.setClickDisabledAppearance(mAccessibilityAction.getClickDisabled());
+        if (mAccessibilityAction!= null) {
+            mPointerLayer.setClickDisabledAppearance(mAccessibilityAction.getClickDisabled());
+        }
         mPointerLayer.updateClickProgress(mDwellClick.getClickProgressPercent());
         mPointerLayer.postInvalidate();
         
         // this needs to be called regularly
-        mAccessibilityAction.refresh();
-        
-        // perform action when needed
-        if (clickGenerated) {
-            mAccessibilityAction.performAction(pInt);
+        if (mAccessibilityAction!= null) {
+            mAccessibilityAction.refresh();
+                
+            // perform action when needed
+            if (clickGenerated) {
+                mAccessibilityAction.performAction(pInt);
+            }
         }
     }
 }

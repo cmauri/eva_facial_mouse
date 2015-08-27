@@ -62,6 +62,21 @@ public class MainActivity extends Activity implements
                 mSlaveMode.unregisterListener();
             }
         }
+        else if (id == R.id.action_gamepad_abs_mode) {
+            if (mSlaveMode!= null) {
+                mSlaveMode.setOperationMode(SlaveMode.GAMEPAD_ABSOLUTE);
+            }
+        }
+        else if (id == R.id.action_gamepad_rel_mode) {
+            if (mSlaveMode!= null) {
+                mSlaveMode.setOperationMode(SlaveMode.GAMEPAD_RELATIVE);
+            }
+        }
+        else if (id == R.id.action_mouse_mode) {
+            if (mSlaveMode!= null) {
+                mSlaveMode.setOperationMode(SlaveMode.MOUSE);
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 

@@ -67,7 +67,7 @@ public class EngineManager implements
     private int mMode= -1;
 
     // slave mode submode
-    private int mSlaveSubMode= SlaveMode.ABSOLUTE_PAD;
+    private int mSlaveSubMode= SlaveMode.GAMEPAD_ABSOLUTE;
 
     // reference to the service which started the engine
     private Service mService;
@@ -167,7 +167,7 @@ public class EngineManager implements
         /*
          * Create specific engine
          */
-        if (mMode == A11Y_SERVICE_MODE || mSlaveSubMode== SlaveMode.MOUSE) {
+        if (mMode == A11Y_SERVICE_MODE) {
             // Start as accessibility service in mouse emulation mode
             // TODO: implement different behavior when (mSlaveSubMode== SlaveModeEngine.MOUSE)
             mMotionProcessor= mMouseEmulationEngine= new MouseEmulationEngine(
@@ -175,6 +175,8 @@ public class EngineManager implements
         }
         else {
             mMotionProcessor= mGamePadEngine= new GamePadEngine(mService, mOverlayView);
+            mMouseEmulationEngine= new MouseEmulationEngine(mService, mOverlayView);
+            mMouseEmulationEngine.pause();
         }
 
         /*
@@ -320,8 +322,27 @@ public class EngineManager implements
 
     @Override
     public void setOperationMode(int mode) {
-        // TODO Auto-generated method stub
-        
+        if (mSlaveSubMode== mode) return;
+
+        // Pause old engine & switch new
+        if (mSlaveSubMode== SlaveMode.MOUSE) {
+            mMouseEmulationEngine.pause();
+            mMotionProcessor= mGamePadEngine;
+        }
+        else if (mode== SlaveMode.MOUSE){
+            mGamePadEngine.pause();
+            mMotionProcessor= mMouseEmulationEngine;
+        }
+
+        mSlaveSubMode= mode;
+
+        if (mode!= SlaveMode.MOUSE) {
+            // TODO: switch between abs and relative mode
+            //mGamePadEngine.setOperationMode(mode);
+        }
+
+        // Resume engine if needed
+        if (mCurrentState != STATE_PAUSED) mMotionProcessor.resume(); 
     }
 
     @Override

@@ -32,7 +32,7 @@ import android.graphics.PointF;
 
 public class GamepadAbs {
     // Ratio of the internal radius
-    private float mInnerRadiusRatio= 0.5f;
+    private float mInnerRadiusRatio= 0.4f;
 
     // Current pointer position
     private PointF mPointerLocation= new PointF(0, 0);
@@ -47,7 +47,7 @@ public class GamepadAbs {
      * never goes outside the circumference 
      * 
      * @param motion motion vector
-     * @return the sector in which the pointer is
+     * @return the sector (i.e. button) in which the pointer is
      */
     public int updateMotion (PointF motion) {
         mPointerLocation.x+= motion.x * mPointerSpeed;
@@ -70,18 +70,18 @@ public class GamepadAbs {
         }
 
         /*
-         * Get sector 
+         * Get button 
          */
-        int newSector= GamepadButtons.PAD_NONE;
+        int newButton= GamepadButtons.PAD_NONE;
         if (dist_sq> mInnerRadiusRatio*mInnerRadiusRatio) {
             // angle 0 points down
             alpha+= Math.PI / 8.0 - Math.PI / 2.0;
             if (alpha< 0.0) alpha+= Math.PI * 2.0;
 
-            newSector= (int) (4 * alpha / Math.PI);
-            if (newSector> 7) newSector= 7; // just in case
+            newButton= (int) (4 * alpha / Math.PI);
+            if (newButton> 7) newButton= 7; // just in case
         }
-        return newSector;
+        return newButton;
     }
 
     /**

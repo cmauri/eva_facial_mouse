@@ -41,7 +41,7 @@ public class GamepadView extends View {
      * side of the canvas)
      */
     private PointF mPadCenterNorm= new PointF(0.5f, 0.65f);
-    private float mOuterRadiusNorm= 0.2f;
+    private float mOuterRadiusNorm= 0.15f;
     private float mInnerRadiusRatio= 0.8f;
     private float mBitmapRelativeSize= 0.4f;
     
@@ -61,8 +61,8 @@ public class GamepadView extends View {
     // Cached paint box
     private final Paint mPaintBox;
     
-    // Currently highlighted sector
-    private int mHighlightedSector= GamepadButtons.PAD_NONE;
+    // Currently highlighted button
+    private int mHighlightedButton= GamepadButtons.PAD_NONE;
 
     // Current operation mode
     private int mOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
@@ -160,7 +160,7 @@ public class GamepadView extends View {
         }
 
         /*
-         * Draw sectors
+         * Draw buttons (i.e. circle sectors)
          */
         mPaintBox.setStyle(Paint.Style.STROKE);
         canvas.drawCircle(mPadCenterX, mPadCenterY, mOuterRadius, mPaintBox);
@@ -196,12 +196,13 @@ public class GamepadView extends View {
          * Draw arrows
          */
         for (int i= 0; i< 8; i++) {
-            if (mHighlightedSector== i) {
+            if (mHighlightedButton== i) {
                 canvas.drawBitmap(mPadArrowsPressed[i], mPadArrowsLocation[i].x, mPadArrowsLocation[i].y, mPaintBox);
             }
             else {
                 canvas.drawBitmap(mPadArrows[i], mPadArrowsLocation[i].x, mPadArrowsLocation[i].y, mPaintBox);
             }
+            if (mOperationMode== SlaveMode.GAMEPAD_RELATIVE) i++; // 4 directions only
         }
     }
 
@@ -223,11 +224,11 @@ public class GamepadView extends View {
     }
     
     /**
-     * Set the sector which will drawn as highlighted (i.e. pressed)
+     * Set the button which will drawn as highlighted (i.e. pressed)
      * 
-     * @param sector the value of the sector (see GamepadAbs class)
+     * @param button the id of the button (see GamepadAbs class)
      */
-    void setHighlightedSector (int sector) {
-        mHighlightedSector= sector;
+    void setHighlightedButton (int button) {
+        mHighlightedButton= button;
     }
 }

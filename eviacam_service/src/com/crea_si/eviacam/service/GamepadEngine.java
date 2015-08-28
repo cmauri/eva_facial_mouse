@@ -20,37 +20,44 @@ package com.crea_si.eviacam.service;
 
 import com.crea_si.eviacam.api.GamepadButtons;
 import com.crea_si.eviacam.api.IPadEventListener;
+import com.crea_si.eviacam.api.SlaveMode;
 
 import android.content.Context;
 import android.graphics.PointF;
 import android.os.RemoteException;
 import android.view.View;
 
-public class GamePadEngine implements MotionProcessor {
-    // Gamepad geometric logic
-    private AbsolutePad mAbsolutePad= new AbsolutePad();
+public class GamepadEngine implements MotionProcessor {
+    // Absolute gamepad geometric logic
+    private GamepadAbs mGamepadAbs= new GamepadAbs();
     
     private int mLastPressed= GamepadButtons.PAD_NONE;
 
-    // Absolute gamepad view
-    private AbsolutePadView mAbsolutePadView;
+    // Gamepad view
+    private GamepadView mGamepadView;
 
     // layer for drawing the pointer
     private PointerLayerView mPointerLayer;
 
     // event listener
-    private IPadEventListener mPadEventListener;    
+    private IPadEventListener mPadEventListener;
 
-    public GamePadEngine(Context c, OverlayView ov) {
+    // operation mode
+    private int mOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
+    
+    // is paused?
+    private boolean isPaused= false;
+
+    public GamepadEngine(Context c, OverlayView ov) {
         /*
          * UI stuff 
          */
-        mAbsolutePadView= new AbsolutePadView(c);
+        mGamepadView= new GamepadView(c);
         
         // TODO
-        mAbsolutePadView.setInnerRadiusRatio(mAbsolutePad.getInnerRadiusRatio());
+        mGamepadView.setInnerRadiusRatio(mGamepadAbs.getInnerRadiusRatio());
         
-        ov.addFullScreenLayer(mAbsolutePadView);
+        ov.addFullScreenLayer(mGamepadView);
 
         // pointer layer (should be the last one)
         mPointerLayer= new PointerLayerView(c);
@@ -59,14 +66,18 @@ public class GamePadEngine implements MotionProcessor {
 
     @Override
     public void pause() {
-        mAbsolutePadView.setVisibility(View.INVISIBLE);
+        mGamepadView.setVisibility(View.INVISIBLE);
         mPointerLayer.setVisibility(View.INVISIBLE);
+        isPaused= true;
     }
 
     @Override
     public void resume() {
-        mPointerLayer.setVisibility(View.VISIBLE);
-        mAbsolutePadView.setVisibility(View.VISIBLE);
+        if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {
+            mPointerLayer.setVisibility(View.VISIBLE);
+        }
+        mGamepadView.setVisibility(View.VISIBLE);
+        isPaused= false;
     }
     
     @Override
@@ -86,26 +97,53 @@ public class GamePadEngine implements MotionProcessor {
     public void unregisterListener() {
         mPadEventListener= null;
     }
+    
+    public void setOperationMode(int mode) {
+        if (mOperationMode== mode) return;
+
+        if (mode== SlaveMode.GAMEPAD_ABSOLUTE && !isPaused) {
+            mPointerLayer.setVisibility(View.VISIBLE);
+        }
+        else {
+            mPointerLayer.setVisibility(View.INVISIBLE);
+        }
+        mGamepadView.setOperationMode(mode);
+
+        mOperationMode= mode;
+    }
 
     /*
      * process motion from the face
      * 
      * this method is called from a secondary thread 
      */
-    private PointF ptrLocation= new PointF();
+    
     @Override
     public void processMotion(PointF motion) {
+        if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {
+            processMotionAbsoluteGamepad(motion);
+        }
+        else {
+            processMotionRelativeGamepad(motion);
+        }
+    }
+    
+    /**
+     * Absolute gamepad motion processing
+     */
+    private PointF ptrLocation= new PointF();
+    private void processMotionAbsoluteGamepad(PointF motion) {
         // update pointer location given face motion
-        int sector= mAbsolutePad.updateMotion(motion);
+        int sector= mGamepadAbs.updateMotion(motion);
 
         // TODO: 
-        mAbsolutePadView.setInnerRadiusRatio(mAbsolutePad.getInnerRadiusRatio());
+        mGamepadView.setInnerRadiusRatio(mGamepadAbs.getInnerRadiusRatio());
 
         // get new pointer location
-        mAbsolutePadView.toCanvasCoords(mAbsolutePad.getPointerLocationNorm(), ptrLocation);
+        mGamepadView.toCanvasCoords(mGamepadAbs.getPointerLocationNorm(), ptrLocation);
 
-        mAbsolutePadView.setHighlightedSector(sector);
-        mAbsolutePadView.postInvalidate();
+        mGamepadView.setHighlightedSector(sector);
+        mGamepadView.postInvalidate();
 
         // update pointer position and click progress
         mPointerLayer.updatePosition(ptrLocation);
@@ -132,5 +170,12 @@ public class GamePadEngine implements MotionProcessor {
             }
             mLastPressed= sector;
         }
+    }
+ 
+    /**
+     * Relative gamepad motion processing
+     */
+    private void processMotionRelativeGamepad(PointF motion) {
+        
     }
 }

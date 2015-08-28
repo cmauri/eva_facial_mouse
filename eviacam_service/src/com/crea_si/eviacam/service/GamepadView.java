@@ -20,6 +20,7 @@
 package com.crea_si.eviacam.service;
 
 import com.crea_si.eviacam.api.GamepadButtons;
+import com.crea_si.eviacam.api.SlaveMode;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -34,7 +35,7 @@ import android.view.View;
  * Layout for the absolute pad game controller
  */
 
-public class AbsolutePadView extends View {
+public class GamepadView extends View {
     /*
      * Main values for drawing game pad (normalized to the shortest 
      * side of the canvas)
@@ -63,14 +64,17 @@ public class AbsolutePadView extends View {
     // Currently highlighted sector
     private int mHighlightedSector= GamepadButtons.PAD_NONE;
 
-    public AbsolutePadView(Context c) {
+    // Current operation mode
+    private int mOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
+
+    public GamepadView(Context c) {
         super(c);
 
         mPaintBox = new Paint();
         setWillNotDraw(false);
     }
     
-    // TODO: this value is shared with AbsolutePad class. 
+    // TODO: this value is shared with GamepadAbs class. 
     // Make both classes listen from the same source
     void setInnerRadiusRatio(float v) {
         mInnerRadiusRatio= v;
@@ -160,24 +164,32 @@ public class AbsolutePadView extends View {
          */
         mPaintBox.setStyle(Paint.Style.STROKE);
         canvas.drawCircle(mPadCenterX, mPadCenterY, mOuterRadius, mPaintBox);
-        canvas.drawCircle(mPadCenterX, mPadCenterY, mInnerRadius, mPaintBox);
+        if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {
+            canvas.drawCircle(mPadCenterX, mPadCenterY, mInnerRadius, mPaintBox);
+        }
 
-        double alpha = Math.PI / 8.0;
-        for (int i= 0; i< 2; i++) {
-            final float cosAlpha = (float) Math.cos(alpha);
-            final float sinAlpha = (float) Math.sin(alpha);
-
-            final float startX= mInnerRadius * cosAlpha;
-            final float stopX= mOuterRadius * cosAlpha;
-            final float startY= mInnerRadius * sinAlpha;
-            final float stopY= mOuterRadius * sinAlpha;
-
-            canvas.drawLine(mPadCenterX + startX, mPadCenterY + startY, mPadCenterX + stopX, mPadCenterY + stopY, mPaintBox);
-            canvas.drawLine(mPadCenterX - startX, mPadCenterY + startY, mPadCenterX - stopX, mPadCenterY + stopY, mPaintBox);
-            canvas.drawLine(mPadCenterX + startX, mPadCenterY - startY, mPadCenterX + stopX, mPadCenterY - stopY, mPaintBox);
-            canvas.drawLine(mPadCenterX - startX, mPadCenterY - startY, mPadCenterX - stopX, mPadCenterY - stopY, mPaintBox);
-
-            alpha+= Math.PI / 4.0;
+        if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {
+            double alpha = Math.PI / 8.0;
+            for (int i= 0; i< 2; i++) {
+                final float cosAlpha = (float) Math.cos(alpha);
+                final float sinAlpha = (float) Math.sin(alpha);
+    
+                final float startX= mInnerRadius * cosAlpha;
+                final float stopX= mOuterRadius * cosAlpha;
+                final float startY= mInnerRadius * sinAlpha;
+                final float stopY= mOuterRadius * sinAlpha;
+    
+                canvas.drawLine(mPadCenterX + startX, mPadCenterY + startY,
+                                mPadCenterX + stopX, mPadCenterY + stopY, mPaintBox);
+                canvas.drawLine(mPadCenterX - startX, mPadCenterY + startY,
+                                mPadCenterX - stopX, mPadCenterY + stopY, mPaintBox);
+                canvas.drawLine(mPadCenterX + startX, mPadCenterY - startY,
+                                mPadCenterX + stopX, mPadCenterY - stopY, mPaintBox);
+                canvas.drawLine(mPadCenterX - startX, mPadCenterY - startY,
+                                mPadCenterX - stopX, mPadCenterY - stopY, mPaintBox);
+    
+                alpha+= Math.PI / 4.0;
+            }
         }
 
         /*
@@ -205,10 +217,15 @@ public class AbsolutePadView extends View {
         dst.y= mOuterRadius * src.y + mPadCenterY;
     }
     
+    public void setOperationMode(int mode) {
+        mOperationMode= mode;
+        postInvalidate();
+    }
+    
     /**
      * Set the sector which will drawn as highlighted (i.e. pressed)
      * 
-     * @param sector the value of the sector (see AbsolutePad class)
+     * @param sector the value of the sector (see GamepadAbs class)
      */
     void setHighlightedSector (int sector) {
         mHighlightedSector= sector;

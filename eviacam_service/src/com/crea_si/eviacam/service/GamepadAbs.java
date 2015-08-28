@@ -30,7 +30,7 @@ import android.graphics.PointF;
  * circumference. 
  */
 
-public class AbsolutePad {
+public class GamepadAbs {
     // Ratio of the internal radius
     private float mInnerRadiusRatio= 0.5f;
 
@@ -40,7 +40,7 @@ public class AbsolutePad {
     // Speed multiplier for the pointer control
     private float mPointerSpeed= 0.05f;
 
-    public AbsolutePad() { }
+    public GamepadAbs() { }
 
     /**
      * Updates internal pointer location ensuring that

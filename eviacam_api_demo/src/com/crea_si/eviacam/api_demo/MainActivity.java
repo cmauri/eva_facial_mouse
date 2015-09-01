@@ -1,6 +1,6 @@
 package com.crea_si.eviacam.api_demo;
 
-import com.crea_si.eviacam.api.IPadEventListener;
+import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.GamepadButtons;
 import com.crea_si.eviacam.api.SlaveMode;
 import com.crea_si.eviacam.api.SlaveModeConnection;
@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends Activity implements 
-    SlaveModeConnection, IPadEventListener {
+    SlaveModeConnection, IGamepadEventListener {
     
     private static float INC= 0.05f;
     
@@ -55,11 +55,11 @@ public class MainActivity extends Activity implements
             if (mSlaveMode!= null) mSlaveMode.stop();
         }
         else if (id == R.id.action_register_events) {
-            if (mSlaveMode!= null) mSlaveMode.registerListener(this);
+            if (mSlaveMode!= null) mSlaveMode.registerGamepadListener(this);
         }
         else if (id == R.id.action_unregister_events) {
             if (mSlaveMode!= null) {
-                mSlaveMode.unregisterListener();
+                mSlaveMode.unregisterGamepadListener();
             }
         }
         else if (id == R.id.action_gamepad_abs_mode) {

@@ -21,7 +21,7 @@ package com.crea_si.eviacam.service;
 import org.opencv.core.Mat;
 
 import com.crea_si.eviacam.api.SlaveMode;
-import com.crea_si.eviacam.api.IPadEventListener;
+import com.crea_si.eviacam.api.IGamepadEventListener;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
@@ -352,7 +352,7 @@ public class EngineManager implements
     }
 
     @Override
-    public boolean registerListener(IPadEventListener l) {
+    public boolean registerListener(IGamepadEventListener l) {
         return mGamepadEngine.registerListener(l);
     }
 

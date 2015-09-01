@@ -104,20 +104,20 @@ public class SlaveMode implements ServiceConnection {
         }
     }
     
-    public boolean registerListener(IPadEventListener listener) {
+    public boolean registerGamepadListener(IGamepadEventListener listener) {
         if (mSlaveMode== null) return false;
         try {
-            return mSlaveMode.registerListener(new IPadEventListenerWrapper(listener));
+            return mSlaveMode.registerGamepadListener(new IGamepadEventListenerWrapper(listener));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public void unregisterListener() {
+    public void unregisterGamepadListener() {
         if (mSlaveMode== null) return;
         try {
-            mSlaveMode.unregisterListener();
+            mSlaveMode.unregisterGamepadListener();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -128,9 +128,9 @@ public class SlaveMode implements ServiceConnection {
         mSlaveMode = null;
     }
 
-    private class IPadEventListenerWrapper extends IPadEventListener.Stub {
-        private final IPadEventListener mListener;
-        public IPadEventListenerWrapper(IPadEventListener l) {
+    private class IGamepadEventListenerWrapper extends IGamepadEventListener.Stub {
+        private final IGamepadEventListener mListener;
+        public IGamepadEventListenerWrapper(IGamepadEventListener l) {
             mListener= l;
         }
         

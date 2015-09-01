@@ -23,7 +23,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-import com.crea_si.eviacam.api.IPadEventListener;
+import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.ISlaveMode;
 
 import android.app.Service;
@@ -123,7 +123,7 @@ public class SlaveModeService extends Service {
         }
         
         @Override
-        public boolean registerListener(final IPadEventListener arg0)
+        public boolean registerGamepadListener(final IGamepadEventListener arg0)
                 throws RemoteException {
             EVIACAM.debug("SlaveModeService.registerListener");
             
@@ -155,7 +155,7 @@ public class SlaveModeService extends Service {
         }
 
         @Override
-        public void unregisterListener() throws RemoteException {
+        public void unregisterGamepadListener() throws RemoteException {
             EVIACAM.debug("SlaveModeService.unregisterListener");
             if (mSlaveModeEngine == null) return;
 

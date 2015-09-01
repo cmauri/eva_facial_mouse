@@ -1,11 +1,11 @@
 package com.crea_si.eviacam.api;
 
-import com.crea_si.eviacam.api.IPadEventListener;
+import com.crea_si.eviacam.api.IGamepadEventListener;
 
 interface ISlaveMode {
     boolean start();
     void stop();
     void setOperationMode(int mode);
-    boolean registerListener (IPadEventListener listener);
-	void unregisterListener ();
+    boolean registerGamepadListener (IGamepadEventListener listener);
+	void unregisterGamepadListener ();
 }

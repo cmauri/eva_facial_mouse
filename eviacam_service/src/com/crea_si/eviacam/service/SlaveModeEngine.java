@@ -19,10 +19,10 @@
 
 package com.crea_si.eviacam.service;
 
-import com.crea_si.eviacam.api.IPadEventListener;
+import com.crea_si.eviacam.api.IGamepadEventListener;
 
 interface SlaveModeEngine extends Engine {
     public void setOperationMode(int mode);
-    public boolean registerListener(IPadEventListener l);
+    public boolean registerListener(IGamepadEventListener l);
     public void unregisterListener();
 }

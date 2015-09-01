@@ -19,7 +19,7 @@
 package com.crea_si.eviacam.service;
 
 import com.crea_si.eviacam.api.GamepadButtons;
-import com.crea_si.eviacam.api.IPadEventListener;
+import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
 
 import android.content.Context;
@@ -46,7 +46,7 @@ public class GamepadEngine implements MotionProcessor {
     private PointerLayerView mPointerLayer;
 
     // event listener
-    private IPadEventListener mPadEventListener;
+    private IGamepadEventListener mPadEventListener;
 
     // operation mode
     private int mOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
@@ -92,7 +92,7 @@ public class GamepadEngine implements MotionProcessor {
         mPointerLayer= null;
     }
 
-    public boolean registerListener(IPadEventListener l) {
+    public boolean registerListener(IGamepadEventListener l) {
         if (mPadEventListener== null) {
             mPadEventListener= l;
             return true;
@@ -137,7 +137,7 @@ public class GamepadEngine implements MotionProcessor {
     private void checkAndSendEvents(int button) {
         // Check and generate events
         if (button != mLastPressedButton) {
-            IPadEventListener l= mPadEventListener;
+            IGamepadEventListener l= mPadEventListener;
             if (l!= null) {
                 try {
                     if (mLastPressedButton!= GamepadButtons.PAD_NONE) {

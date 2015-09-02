@@ -67,6 +67,14 @@ public class SlaveMode implements ServiceConnection {
             Log.d(TAG, "Cannot bind remote API. Security exception.");
         }
     }
+    
+    /**
+     * Disconnect from eviacam slave mode service
+     */
+    public void disconnect() {
+        mContext.unbindService(this);
+        mSlaveMode = null;
+    }
 
     private SlaveMode (Context c, SlaveModeConnection callback) {
         mContext= c;
@@ -188,13 +196,30 @@ public class SlaveMode implements ServiceConnection {
             Log.d(TAG, "SlaveMode.unregisterMouseListener: exception: " + e.getMessage());
         }
     }
-    
+
     /**
-     * Disconnect from eviacam slave mode service
+     * Get configuration parameters for gamepad
      */
-    public void disconnect() {
-        mContext.unbindService(this);
-        mSlaveMode = null;
+    public GamepadParams getGamepadParams() {
+        if (mSlaveMode== null) return null;
+        try {
+            return mSlaveMode.getGamepadParams();
+        } catch (RemoteException e) {
+            Log.d(TAG, "SlaveMode.getGamepadParams: exception: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Set configuration parameters for gamepad
+     */
+    public void setGamepadParams(GamepadParams p) {
+        if (mSlaveMode== null) return;
+        try {
+            mSlaveMode.setGamepadParams(p);
+        } catch (RemoteException e) {
+            Log.d(TAG, "SlaveMode.getGamepadParams: exception: " + e.getMessage());
+        }
     }
 
     /*

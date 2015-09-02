@@ -1,5 +1,6 @@
 package com.crea_si.eviacam.api_demo;
 
+import com.crea_si.eviacam.api.GamepadParams;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.GamepadButtons;
 import com.crea_si.eviacam.api.IMouseEventListener;
@@ -84,6 +85,21 @@ public class MainActivity extends Activity implements
         else if (id == R.id.action_mouse_mode) {
             if (mSlaveMode!= null) {
                 mSlaveMode.setOperationMode(SlaveMode.MOUSE);
+            }
+        }
+        else if (id == R.id.action_test) {
+            if (mSlaveMode!= null) {
+                GamepadParams params= mSlaveMode.getGamepadParams();
+                Log.d(TAG, "params.mData:" + params.mData);
+                
+                params.mData= 50;
+                mSlaveMode.setGamepadParams(params);
+                
+                params= mSlaveMode.getGamepadParams();
+                Log.d(TAG, "(2) params.mData:" + params.mData);
+                
+                params.mData= 10;
+                mSlaveMode.setGamepadParams(params);
             }
         }
         return super.onOptionsItemSelected(item);

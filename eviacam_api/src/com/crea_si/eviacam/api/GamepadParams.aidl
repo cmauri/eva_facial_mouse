@@ -15,25 +15,4 @@
  */
 package com.crea_si.eviacam.api;
 
-import com.crea_si.eviacam.api.IGamepadEventListener;
-import com.crea_si.eviacam.api.IMouseEventListener;
-import com.crea_si.eviacam.api.GamepadParams;
-
-/**
- * AIDL main interface for the eviacam slave mode
- */
-interface ISlaveMode {
-    boolean start();
-    void stop();
-
-    void setOperationMode(in int mode);
-
-    boolean registerGamepadListener (in IGamepadEventListener listener);
-    void unregisterGamepadListener ();
-
-    boolean registerMouseListener (in IMouseEventListener listener);
-    void unregisterMouseListener ();
-
-    GamepadParams getGamepadParams();
-    void setGamepadParams(in GamepadParams p);
-}
+parcelable GamepadParams;

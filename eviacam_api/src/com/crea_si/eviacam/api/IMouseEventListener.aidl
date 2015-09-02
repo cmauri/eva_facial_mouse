@@ -18,7 +18,7 @@ package com.crea_si.eviacam.api;
 import android.view.MotionEvent;
 
 /**
- * AIDL main interface for the mouse listener
+ * AIDL interface for the mouse listener
  */
 oneway interface IMouseEventListener {
 	void onMouseEvent (in MotionEvent e);

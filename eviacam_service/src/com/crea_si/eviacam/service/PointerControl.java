@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
-import android.preference.PreferenceManager;
 
 import java.lang.Math;
 
@@ -69,7 +68,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         MOTION_THRESHOLD_MIN = r.getInteger(R.integer.motion_threshold_min);
 
         // shared preferences
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(c);
+        mSharedPref = Settings.getSharedPreferences(c);
         
         // register preference change listener
         mSharedPref.registerOnSharedPreferenceChangeListener(this);

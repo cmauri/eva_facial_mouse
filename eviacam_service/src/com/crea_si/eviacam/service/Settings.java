@@ -19,6 +19,7 @@
 
 package com.crea_si.eviacam.service;
 
+import android.content.Context;
 import android.content.SharedPreferences;
  
 public class Settings {
@@ -37,6 +38,10 @@ public class Settings {
      
      public static float getUIElementsSize(SharedPreferences sp) {
          return Float.parseFloat(sp.getString(Settings.KEY_UI_ELEMENTS_SIZE, null));
+     }
+     
+     public static SharedPreferences getSharedPreferences(Context c) {
+         return ((EViacamApplication) c.getApplicationContext()).getSharedPreferences();
      }
  }
  

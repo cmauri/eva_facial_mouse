@@ -28,7 +28,6 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -80,13 +79,13 @@ public class DockPanelLayerView extends RelativeLayout
         DISABLED_ALPHA= (float) (r.getColor(R.color.disabled_alpha) >> 24) / 255.0f;
         
         // shared preferences
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sp= Settings.getSharedPreferences(context);
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
     
     public void cleanup() {
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sp= Settings.getSharedPreferences(getContext());
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
     

@@ -26,6 +26,7 @@ import com.crea_si.eviacam.api.IGamepadEventListener;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PointF;
@@ -153,8 +154,28 @@ public class EngineManager implements
     }    
 
     private void init() {
+        /*
+         * Preference related stuff
+         */
+        EViacamApplication app= (EViacamApplication) mService.getApplicationContext();
+
         // set default configuration values if the service is run for the first time
-        PreferenceManager.setDefaultValues(mService, R.xml.preference_fragment, true);
+        if (mMode == A11Y_SERVICE_MODE) {
+            // If accessibility service use the default preferences
+            PreferenceManager.setDefaultValues(mService, R.xml.preference_fragment, true);
+            // Set the default shared preferences
+            app.setSharedPreferences(PreferenceManager.getDefaultSharedPreferences(mService));
+        }
+        else {
+            // Otherwise use slave mode preferences. We first load default default
+            // preferences and then update with slave mode ones
+            PreferenceManager.setDefaultValues(mService, "slave_mode", Context.MODE_PRIVATE,
+                                                R.xml.preference_fragment, true);
+            PreferenceManager.setDefaultValues(mService, "slave_mode", Context.MODE_PRIVATE,
+                                                R.xml.slave_mode_preference_fragment, true);
+            // Set the slave mode shared preferences
+            app.setSharedPreferences(mService.getSharedPreferences("slave_mode", Context.MODE_PRIVATE));
+        }
 
         /*
          * Create UI stuff: root overlay and camera view
@@ -314,7 +335,10 @@ public class EngineManager implements
         mOverlayView= null;
         
         mCurrentState= STATE_DISABLED;
-        
+
+        EViacamApplication app= (EViacamApplication) mService.getApplicationContext();
+        app.setSharedPreferences(null);
+
         sEngineManager= null;
     }
   

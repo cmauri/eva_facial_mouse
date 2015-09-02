@@ -27,7 +27,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
-import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -75,13 +74,13 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
         DISABLED_ALPHA= c.getResources().getColor(R.color.disabled_alpha) >> 24;
         
         // preferences
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences sp= Settings.getSharedPreferences(c);
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
     
     public void cleanup() {
-        PreferenceManager.getDefaultSharedPreferences(this.getContext()).
+        Settings.getSharedPreferences(this.getContext()).
             unregisterOnSharedPreferenceChangeListener(this);
     }
     

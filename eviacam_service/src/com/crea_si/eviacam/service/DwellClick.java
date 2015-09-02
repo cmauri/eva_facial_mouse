@@ -25,7 +25,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.media.AudioManager;
-import android.preference.PreferenceManager;
 
 class DwellClick implements OnSharedPreferenceChangeListener {
     /**
@@ -78,8 +77,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         mAudioManager= (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
         
         // shared preferences
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(c);
-        
+        mSharedPref = Settings.getSharedPreferences(c);
+
         // register preference change listener
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
         

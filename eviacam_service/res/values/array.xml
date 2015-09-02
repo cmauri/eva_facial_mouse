@@ -62,5 +62,17 @@
     <item>2</item>
 </string-array>
 
+<string-array name="gamepad_size_entries">
+    <item>@string/small</item>
+    <item>@string/normal</item>
+    <item>@string/large</item>
+    <item>@string/xlarge</item>
+</string-array>
+<string-array name="gamepad_size_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+</string-array>
 
 </resources>

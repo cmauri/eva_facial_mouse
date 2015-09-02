@@ -58,5 +58,7 @@
     <integer name="docking_panel_edge_default">1</integer>
     
     <string name="ui_elements_size_default">1</string>
+    
+    <integer name="gamepad_size_default">1</integer>
 
 </resources>

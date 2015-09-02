@@ -28,7 +28,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -76,7 +75,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         super(c);
         
         // Preferences
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences sp= Settings.getSharedPreferences(c);
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
@@ -90,7 +89,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     }
     
     public void cleanup() {
-        PreferenceManager.getDefaultSharedPreferences(this.getContext()).
+        Settings.getSharedPreferences(this.getContext()).
             unregisterOnSharedPreferenceChangeListener(this);
     }
     

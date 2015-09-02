@@ -20,6 +20,7 @@ package com.crea_si.eviacam.service;
 
 import org.opencv.core.Mat;
 
+import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 
@@ -169,11 +170,14 @@ public class EngineManager implements
          */
         if (mMode == A11Y_SERVICE_MODE) {
             // Start as accessibility service in mouse emulation mode
-            // TODO: implement different behavior when (mSlaveOperationMode== SlaveModeEngine.MOUSE)
             mMotionProcessor= mMouseEmulationEngine= new MouseEmulationEngine(
                     (AccessibilityService) mService, mOverlayView);
         }
         else {
+            /*
+             * Start in slave mode. Instantiate both gamepad and mouse emulation.
+             * Initially mouse emulation is disabled
+             */
             mMotionProcessor= mGamepadEngine= new GamepadEngine(mService, mOverlayView);
             mMouseEmulationEngine= new MouseEmulationEngine(mService, mOverlayView);
             mMouseEmulationEngine.pause();
@@ -207,7 +211,7 @@ public class EngineManager implements
         if (sOpenCVReady) startStage2 ();
         else {
             /*
-             * Display splash and detect OpenCV installation. The service from now on waits 
+             * Display splash and detect OpenCV installation. The engine from now on waits 
              * until the detection process finishes and initCVReady() is called.
              */
             Intent dialogIntent = new Intent(mService, SplashActivity.class);
@@ -268,7 +272,7 @@ public class EngineManager implements
             mMotionProcessor.resume();
         }
 
-        // make sure that changes during pause (e.g. docking panel edge) are applied
+        // make sure that UI changes during pause (e.g. docking panel edge) are applied
         mOverlayView.requestLayout();
         mCurrentState= STATE_RUNNING;
     }    
@@ -296,7 +300,6 @@ public class EngineManager implements
         mServiceNotification.cleanup();
         mServiceNotification= null;
         
-        //mCameraListener.stopCamera();
         mCameraListener= null;
 
         mOrientationManager.cleanup();
@@ -324,7 +327,7 @@ public class EngineManager implements
     public void setOperationMode(int mode) {
         if (mSlaveOperationMode== mode) return;
 
-        // Pause old engine & switch new
+        // Pause old engine & switch to new
         if (mSlaveOperationMode== SlaveMode.MOUSE) {
             mMouseEmulationEngine.pause();
             mMotionProcessor= mGamepadEngine;
@@ -352,13 +355,23 @@ public class EngineManager implements
     }
 
     @Override
-    public boolean registerListener(IGamepadEventListener l) {
+    public boolean registerGamepadListener(IGamepadEventListener l) {
         return mGamepadEngine.registerListener(l);
     }
 
     @Override
-    public void unregisterListener() {
+    public void unregisterGamepadListener() {
         mGamepadEngine.unregisterListener();
+    }
+
+    @Override
+    public boolean registerMouseListener(IMouseEventListener l) {
+        return mMouseEmulationEngine.registerListener(l);
+    }
+
+    @Override
+    public void unregisterMouseListener() {
+        mMouseEmulationEngine.unregisterListener();
     }
 
     /**
@@ -366,6 +379,8 @@ public class EngineManager implements
      * 
      * This method is called from a secondary thread 
      */
+    // avoid creating a new PointF for each frame
+    PointF mMotion= new PointF(0, 0);
     @Override
     public void processFrame(Mat rgba) {
         if (mCurrentState != STATE_RUNNING) return;
@@ -373,16 +388,16 @@ public class EngineManager implements
         int phyRotation = mOrientationManager.getPictureRotation();
 
         // call jni part to track face
-        PointF motion = new PointF(0, 0);
-        VisionPipeline.processFrame(rgba.getNativeObjAddr(), phyRotation, motion);
+        mMotion.x= mMotion.y= 0.0f;
+        VisionPipeline.processFrame(rgba.getNativeObjAddr(), phyRotation, mMotion);
 
         // compensate mirror effect
-        motion.x= -motion.x;
+        mMotion.x= -mMotion.x;
 
         // fix motion orientation according to device rotation and screen orientation
-        mOrientationManager.fixVectorOrientation(motion);
+        mOrientationManager.fixVectorOrientation(mMotion);
 
         // process motion on specific engine
-        mMotionProcessor.processMotion(motion);
+        mMotionProcessor.processMotion(mMotion);
     }
 }

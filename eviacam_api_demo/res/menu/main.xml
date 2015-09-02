@@ -3,16 +3,16 @@
     tools:context="com.crea_si.eviacam.api_demo.MainActivity" >
     
     <item
-        android:id="@+id/action_bind"
+        android:id="@+id/action_connect"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Bind"/>
+        android:title="Connect"/>
 
     <item
-        android:id="@+id/action_unbind"
+        android:id="@+id/action_disconnect"
         android:orderInCategory="100"
         android:showAsAction="never"
-        android:title="Unbind"/>
+        android:title="Disconnect"/>
      
     <item
         android:id="@+id/action_start"

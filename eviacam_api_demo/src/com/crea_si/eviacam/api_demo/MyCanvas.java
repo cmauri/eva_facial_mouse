@@ -47,7 +47,7 @@ public class MyCanvas extends View {
         canvas.drawCircle(mLocation.x, mLocation.y, CURSOR_RADIUS, mPaintBox);
     }
 
-    public void setPosition(PointF p) {
+    public void setPositionNorm(PointF p) {
         mLocation.x= ((p.x / 2.0f) * getWidth()) + getWidth() / 2;
         mLocation.y= ((p.y / 2.0f) * getHeight()) + getHeight() / 2;
         
@@ -56,5 +56,9 @@ public class MyCanvas extends View {
         
         if (mLocation.y< 0) mLocation.y= 0;
         else if (mLocation.y>= getHeight()) mLocation.y= getHeight()-1;
+    }
+
+    public void setPosition(PointF p) {
+        mLocation.set(p);
     }
 }

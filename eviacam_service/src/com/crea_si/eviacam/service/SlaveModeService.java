@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import com.crea_si.eviacam.api.IGamepadEventListener;
+import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.ISlaveMode;
 
 import android.app.Service;
@@ -41,7 +42,8 @@ import android.os.RemoteException;
 public class SlaveModeService extends Service {
     // handler used to forward calls to the main thread 
     private final Handler mMainThreadHandler= new Handler();
-    
+
+    // reference to the engine to which incoming calls will be delegated
     private SlaveModeEngine mSlaveModeEngine;
 
     // binder stub, receives remote requests on a secondary thread
@@ -55,7 +57,7 @@ public class SlaveModeService extends Service {
                     return mSlaveModeEngine.start();
                 }
             });
-           
+
             mMainThreadHandler.post(futureResult);
 
             try {
@@ -81,7 +83,7 @@ public class SlaveModeService extends Service {
                     return null;
                 }
             });
-           
+
             mMainThreadHandler.post(futureResult);
 
             try {
@@ -106,7 +108,7 @@ public class SlaveModeService extends Service {
                     return null;
                 }
             });
-           
+
             mMainThreadHandler.post(futureResult);
 
             try {
@@ -119,13 +121,12 @@ public class SlaveModeService extends Service {
             catch (InterruptedException e) {
                 EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
             }
-            
         }
         
         @Override
         public boolean registerGamepadListener(final IGamepadEventListener arg0)
                 throws RemoteException {
-            EVIACAM.debug("SlaveModeService.registerListener");
+            EVIACAM.debug("SlaveModeService.registerGamepadListener");
             
             FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
                 @Override
@@ -135,10 +136,10 @@ public class SlaveModeService extends Service {
                     // on the caller. See here:
                     // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
                     if (mSlaveModeEngine== null) return false;
-                    return mSlaveModeEngine.registerListener(arg0);
+                    return mSlaveModeEngine.registerGamepadListener(arg0);
                 }
             });
-            
+
             mMainThreadHandler.post(futureResult);
 
             try {
@@ -156,13 +157,61 @@ public class SlaveModeService extends Service {
 
         @Override
         public void unregisterGamepadListener() throws RemoteException {
-            EVIACAM.debug("SlaveModeService.unregisterListener");
+            EVIACAM.debug("SlaveModeService.unregisterGamepadListener");
             if (mSlaveModeEngine == null) return;
 
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    mSlaveModeEngine.unregisterListener();
+                    mSlaveModeEngine.unregisterGamepadListener();
+                    mSlaveModeEngine.cleanup();
+                    mSlaveModeEngine= null;
+                }
+            };
+            mMainThreadHandler.post(r);
+        }
+
+        @Override
+        public boolean registerMouseListener(final IMouseEventListener arg0)
+                throws RemoteException {
+            EVIACAM.debug("SlaveModeService.registerMouseListener");
+            
+            FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    // TODO: if an exception is thrown, calling code always receive
+                    // a RemoteException, it would be better to provide more information
+                    // on the caller. See here:
+                    // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
+                    if (mSlaveModeEngine== null) return false;
+                    return mSlaveModeEngine.registerMouseListener(arg0);
+                }
+            });
+
+            mMainThreadHandler.post(futureResult);
+
+            try {
+                // this block until the result is calculated
+                return futureResult.get();
+            } 
+            catch (ExecutionException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            } 
+            catch (InterruptedException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+            }
+            return false;
+        }
+
+        @Override
+        public void unregisterMouseListener() throws RemoteException {
+            EVIACAM.debug("SlaveModeService.unregisterGamepadListener");
+            if (mSlaveModeEngine == null) return;
+
+            Runnable r= new Runnable() {
+                @Override
+                public void run() {
+                    mSlaveModeEngine.unregisterMouseListener();
                     mSlaveModeEngine.cleanup();
                     mSlaveModeEngine= null;
                 }
@@ -196,7 +245,7 @@ public class SlaveModeService extends Service {
              */
             return null;
         }
-        
+
         return mBinder;
     }
 
@@ -204,7 +253,6 @@ public class SlaveModeService extends Service {
     public boolean onUnbind (Intent intent) {
         EVIACAM.debug("SlaveModeService: onUnbind");
         if (mSlaveModeEngine != null) {
-            //mSlaveModeEngine.unregisterListener();
             mSlaveModeEngine.cleanup();
             mSlaveModeEngine= null;
         }

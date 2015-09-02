@@ -18,10 +18,16 @@
  */
 package com.crea_si.eviacam.service;
 
+import com.crea_si.eviacam.api.IMouseEventListener;
+
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.os.RemoteException;
+import android.os.SystemClock;
+import android.view.InputDevice;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -47,12 +53,17 @@ public class MouseEmulationEngine implements MotionProcessor {
     // perform actions on the UI using the accessibility API
     private AccessibilityAction mAccessibilityAction;
     
+    // event listener
+    IMouseEventListener mMouseEventListener;
+    
     public MouseEmulationEngine(Service s, OverlayView ov) {
         /*
          * UI stuff 
          */
-        mDockPanelView= new DockPanelLayerView(s);
-        ov.addFullScreenLayer(mDockPanelView);
+        if (s instanceof AccessibilityService) {
+            mDockPanelView= new DockPanelLayerView(s);
+            ov.addFullScreenLayer(mDockPanelView);
+        }
 
         mScrollLayerView= new ScrollLayerView(s);
         ov.addFullScreenLayer(mScrollLayerView);
@@ -82,7 +93,7 @@ public class MouseEmulationEngine implements MotionProcessor {
         mPointerLayer.setVisibility(View.INVISIBLE);
         mScrollLayerView.setVisibility(View.INVISIBLE);
         mControlsLayer.setVisibility(View.INVISIBLE);
-        mDockPanelView.setVisibility(View.INVISIBLE);
+        if (mDockPanelView!= null) mDockPanelView.setVisibility(View.INVISIBLE);
     }
     
     @Override
@@ -91,7 +102,7 @@ public class MouseEmulationEngine implements MotionProcessor {
         mDwellClick.reset();
         if (mAccessibilityAction!= null) mAccessibilityAction.reset();
 
-        mDockPanelView.setVisibility(View.VISIBLE);
+        if (mDockPanelView!= null) mDockPanelView.setVisibility(View.VISIBLE);
         mControlsLayer.setVisibility(View.VISIBLE);
         mScrollLayerView.setVisibility(View.VISIBLE);
         mPointerLayer.setVisibility(View.VISIBLE);
@@ -111,20 +122,91 @@ public class MouseEmulationEngine implements MotionProcessor {
         mPointerControl= null;
 
         // nothing to be done for mScrollLayerView and mControlsLayer
-        
-        mDockPanelView.cleanup();
-        mDockPanelView= null;
-        
+
+        if (mDockPanelView!= null) {
+            mDockPanelView.cleanup();
+            mDockPanelView= null;
+        }
+
         mPointerLayer.cleanup();
         mPointerLayer= null;
     }
 
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (mAccessibilityAction != null) mAccessibilityAction.onAccessibilityEvent(event);
-    } 
+    }
+
+    public boolean registerListener(IMouseEventListener l) {
+        if (mMouseEventListener== null) {
+            mMouseEventListener= l;
+            return true;
+        }
+        return false;
+    }
+
+    public void unregisterListener() {
+        mMouseEventListener= null;
+    }
 
     /*
-     * process incoming motion (from the camera)
+     * Last values for checkAndSendEvents
+     */
+    private Point mLastPos= new Point();
+    private boolean mLastClicked= false;
+
+    /*
+     * Sent mouse events when needed
+     */
+    private void checkAndSendEvents(Point pos, boolean clicked) {
+        final float DEFAULT_SIZE = 1.0f;
+        final int DEFAULT_META_STATE = 0;
+        final float DEFAULT_PRECISION_X = 1.0f;
+        final float DEFAULT_PRECISION_Y = 1.0f;
+        final int DEFAULT_DEVICE_ID = 0;
+        final int DEFAULT_EDGE_FLAGS = 0;
+
+        // Check and generate events
+        IMouseEventListener l= mMouseEventListener;
+        if (l== null) return;
+
+        try {
+            long now = SystemClock.uptimeMillis();
+
+            if (!pos.equals(mLastPos)) {
+                MotionEvent event = MotionEvent.obtain(now, now, MotionEvent.ACTION_MOVE,
+                    pos.x, pos.y, 0.0f, DEFAULT_SIZE, DEFAULT_META_STATE,
+                    DEFAULT_PRECISION_X, DEFAULT_PRECISION_Y, DEFAULT_DEVICE_ID,
+                    DEFAULT_EDGE_FLAGS);
+                event.setSource(InputDevice.SOURCE_CLASS_POINTER);
+                l.onMouseEvent(event);
+            }
+            if (mLastClicked && !clicked) {
+                MotionEvent event = MotionEvent.obtain(now, now, MotionEvent.ACTION_UP,
+                        pos.x, pos.y, 0.0f, DEFAULT_SIZE, DEFAULT_META_STATE,
+                        DEFAULT_PRECISION_X, DEFAULT_PRECISION_Y, DEFAULT_DEVICE_ID,
+                        DEFAULT_EDGE_FLAGS);
+                event.setSource(InputDevice.SOURCE_CLASS_POINTER);
+                l.onMouseEvent(event);
+            }
+            else if (!mLastClicked && clicked) {
+                MotionEvent event = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN,
+                        pos.x, pos.y, 0.0f, DEFAULT_SIZE, DEFAULT_META_STATE,
+                        DEFAULT_PRECISION_X, DEFAULT_PRECISION_Y, DEFAULT_DEVICE_ID,
+                        DEFAULT_EDGE_FLAGS);
+                event.setSource(InputDevice.SOURCE_CLASS_POINTER);
+                l.onMouseEvent(event);
+            }
+        }
+        catch (RemoteException e) {
+            // Just log it and go on
+            EVIACAM.debug("RemoteException while sending mouse event");
+        }
+        mLastPos.set(pos.x, pos.y);
+        mLastClicked= clicked;
+    }
+
+    /*
+     * Process incoming motion
      * 
      * this method is called from a secondary thread 
      */
@@ -166,5 +248,7 @@ public class MouseEmulationEngine implements MotionProcessor {
                 mAccessibilityAction.performAction(pInt);
             }
         }
+
+        checkAndSendEvents(pInt, clickGenerated);
     }
 }

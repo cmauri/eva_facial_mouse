@@ -15,18 +15,11 @@
  */
 package com.crea_si.eviacam.api;
 
-import com.crea_si.eviacam.api.IGamepadEventListener;
-import com.crea_si.eviacam.api.IMouseEventListener;
+import android.view.MotionEvent;
 
 /**
- * AIDL main interface for the eviacam slave mode
+ * AIDL main interface for the mouse listener
  */
-interface ISlaveMode {
-    boolean start();
-    void stop();
-    void setOperationMode(int mode);
-    boolean registerGamepadListener (IGamepadEventListener listener);
-    void unregisterGamepadListener ();
-    boolean registerMouseListener (IMouseEventListener listener);
-    void unregisterMouseListener ();
+oneway interface IMouseEventListener {
+	void onMouseEvent (in MotionEvent e);
 }

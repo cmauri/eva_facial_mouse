@@ -2,6 +2,7 @@ package com.crea_si.eviacam.api_demo;
 
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.GamepadButtons;
+import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
 import com.crea_si.eviacam.api.SlaveModeConnection;
 
@@ -10,13 +11,17 @@ import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 public class MainActivity extends Activity implements 
-    SlaveModeConnection, IGamepadEventListener {
+    SlaveModeConnection, IGamepadEventListener, IMouseEventListener {
     
-    private static float INC= 0.05f;
+    private static final String TAG= "EVIACAM_API_DEMO";
+    
+    private static final float INC= 0.05f;
     
     // binder (proxy) with the remote input method service
     private SlaveMode mSlaveMode;
@@ -42,10 +47,10 @@ public class MainActivity extends Activity implements
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_bind) {
-            SlaveMode.initConnection(this, this);
+        if (id == R.id.action_connect) {
+            SlaveMode.connect(this, this);
         }
-        else if (id == R.id.action_unbind) {
+        else if (id == R.id.action_disconnect) {
             if (mSlaveMode!= null) mSlaveMode.disconnect();
         }
         else if (id == R.id.action_start) {
@@ -55,11 +60,15 @@ public class MainActivity extends Activity implements
             if (mSlaveMode!= null) mSlaveMode.stop();
         }
         else if (id == R.id.action_register_events) {
-            if (mSlaveMode!= null) mSlaveMode.registerGamepadListener(this);
+            if (mSlaveMode!= null) {
+                mSlaveMode.registerGamepadListener(this);
+                mSlaveMode.registerMouseListener(this);
+            }
         }
         else if (id == R.id.action_unregister_events) {
             if (mSlaveMode!= null) {
                 mSlaveMode.unregisterGamepadListener();
+                mSlaveMode.unregisterMouseListener();
             }
         }
         else if (id == R.id.action_gamepad_abs_mode) {
@@ -120,13 +129,33 @@ public class MainActivity extends Activity implements
         else if (mPoint.y> 1.0f) mPoint.y= 1.0f;
         
         MyCanvas cv= (MyCanvas) findViewById(R.id.the_canvas);
-        cv.setPosition(mPoint);
+        cv.setPositionNorm(mPoint);
         cv.postInvalidate();
     }
 
     /* This is called from a secondary thread */
     @Override
     public void buttonReleased(int arg0) throws RemoteException {
+        // Currently does nothing
+    }
+
+    /* This is called from a secondary thread */
+    @Override
+    public void onMouseEvent(MotionEvent event) throws RemoteException {
+        if (event.getAction()== MotionEvent.ACTION_MOVE) {
+            MyCanvas cv= (MyCanvas) findViewById(R.id.the_canvas);
+            mPoint.x= event.getRawX();
+            mPoint.y= event.getRawY();
+            cv.setPosition(mPoint);
+            cv.postInvalidate();
+        }
+        else if (event.getAction()== MotionEvent.ACTION_DOWN) {
+            Log.d(TAG, "Click!");
+        }
+        else if (event.getAction()== MotionEvent.ACTION_UP) {
+            Log.d(TAG, "Clack!");
+        }
+        event.recycle();
     }
 
     @Override

@@ -88,6 +88,22 @@
     <string name="crash_dialog_text">An unexpected error occurred forcing Enable Viacam Mobile to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you!</string>
-    <string name="gamepad_size">Gamepad size</string>
+    
+    <string name="gamepad_settings">Gamepad settings</string>
+    <string name="gamepad_location">Gamepad location</string>
+    <string name="top_left">Top left</string>
+    <string name="bottom_left">Bottom left</string>
+    <string name="top_center">Top center</string>
+    <string name="bottom_center">Bottom center</string>
+    <string name="top_right">Top right</string>
+    <string name="bottom_right">Bottom right</string>
+    
+    <string name="eviacam_slave_mode_preferences_title">Enable Viacam slave mode settings</string>
+    <string name="gamepad_interface_settings">Gamepad interface</string>
+    <string name="gamepad_transparency">Transparency</string>
+    <string name="gamepad_abs_speed">Abs. mode speed</string>
+    <string name="gamepad_abs_speed_summary">Speed when using absolute mode</string>
+    <string name="gamepad_rel_sensitivity">Rel. mode sensitivity</string>
+    <string name="gamepad_rel_sensitivity_summary">Sensitivity when using relative mode (low values set high sensitivity)</string>
 
 </resources>

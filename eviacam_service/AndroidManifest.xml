@@ -87,6 +87,18 @@
             </intent-filter>
         </service>
         
+        <!-- Slave mode preferences -->
+        <activity
+            android:name=".SlaveModePreferencesActivity"
+            android:label="@string/eviacam_slave_mode_preferences_title"
+            android:launchMode="singleTop"
+            android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
+            android:theme="@android:style/Theme.DeviceDefault" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        
         <!-- ACRA activity -->
         <activity android:name="org.acra.CrashReportDialog"
         android:theme="@android:style/Theme.Dialog"

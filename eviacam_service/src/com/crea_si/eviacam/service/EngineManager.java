@@ -172,7 +172,7 @@ public class EngineManager implements
             PreferenceManager.setDefaultValues(mService, "slave_mode", Context.MODE_PRIVATE,
                                                 R.xml.preference_fragment, true);
             PreferenceManager.setDefaultValues(mService, "slave_mode", Context.MODE_PRIVATE,
-                                                R.xml.slave_mode_preference_fragment, true);
+                                                R.xml.gamepad_preference_fragment, true);
             // Set the slave mode shared preferences
             app.setSharedPreferences(mService.getSharedPreferences("slave_mode", Context.MODE_PRIVATE));
         }

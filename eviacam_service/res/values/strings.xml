@@ -23,7 +23,7 @@
 
     <string name="app_name">Enable Viacam Mobile</string>
     <string name="service_name">Enable Viacam Mobile</string>
-    <string name="eviacam_service_description">Enable Viacam Mobile is a mouse replacement software that moves the pointer as you move your head.</string>
+    <string name="eviacam_service_description">Enable Viacam Mobile is a mouse emulator that moves the pointer as you move your head. It tracks your face using the frontal camera of your device.</string>
     <string name="eviacam_preferences_title">Enable Viacam Mobile settings</string>
     <string name="motion_settings">Motion settings</string>
     <string name="x_axis_speed">X axis speed</string>
@@ -88,7 +88,6 @@
     <string name="crash_dialog_text">An unexpected error occurred forcing Enable Viacam Mobile to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you!</string>
-    
     <string name="gamepad_settings">Gamepad settings</string>
     <string name="gamepad_location">Gamepad location</string>
     <string name="top_left">Top left</string>
@@ -97,13 +96,15 @@
     <string name="bottom_center">Bottom center</string>
     <string name="top_right">Top right</string>
     <string name="bottom_right">Bottom right</string>
-    
-    <string name="eviacam_slave_mode_preferences_title">Enable Viacam slave mode settings</string>
+    <string name="eviacam_slave_mode_preferences_title">Enable Viacam slave mode preferences</string>
+    <string name="slave_mode_preferences">Slave mode preferences</string>
     <string name="gamepad_interface_settings">Gamepad interface</string>
     <string name="gamepad_transparency">Transparency</string>
     <string name="gamepad_abs_speed">Abs. mode speed</string>
     <string name="gamepad_abs_speed_summary">Speed when using absolute mode</string>
     <string name="gamepad_rel_sensitivity">Rel. mode sensitivity</string>
     <string name="gamepad_rel_sensitivity_summary">Sensitivity when using relative mode (low values set high sensitivity)</string>
+    <string name="gamepad_preferences">Gamepad preferences</string>
+    <string name="mouse_preferences">Mouse preferences</string>
 
 </resources>

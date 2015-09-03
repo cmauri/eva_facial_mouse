@@ -110,7 +110,9 @@
         
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="@string/interface_settings">
+    <PreferenceCategory 
+        android:key="interface_settings"
+        android:title="@string/interface_settings">
         
         <ListPreference
             android:key="docking_panel_edge"

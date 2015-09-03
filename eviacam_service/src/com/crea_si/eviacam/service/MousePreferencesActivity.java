@@ -70,7 +70,7 @@ public class MousePreferencesActivity extends Activity {
 
             if (mSlaveMode) {
                 // In slave mode use different preference file
-                getPreferenceManager().setSharedPreferencesName(Settings.FILE_SLAVE_MODE);
+                getPreferenceManager().setSharedPreferencesName(Preferences.FILE_SLAVE_MODE);
             }
 
             // Load the preferences from an XML resource
@@ -83,7 +83,7 @@ public class MousePreferencesActivity extends Activity {
                 PreferenceGroup cat= (PreferenceGroup) getPreferenceScreen().
                         findPreference("interface_settings");
                 Preference p= getPreferenceScreen().
-                        findPreference(Settings.KEY_DOCKING_PANEL_EDGE);
+                        findPreference(Preferences.KEY_DOCKING_PANEL_EDGE);
                 cat.removePreference(p);
             }
 
@@ -92,14 +92,14 @@ public class MousePreferencesActivity extends Activity {
              */
             ListPreference lp;
             if (!mSlaveMode) {
-                lp = (ListPreference) findPreference(Settings.KEY_DOCKING_PANEL_EDGE);
+                lp = (ListPreference) findPreference(Preferences.KEY_DOCKING_PANEL_EDGE);
                 lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
             }
 
-            lp = (ListPreference) findPreference(Settings.KEY_TIME_WITHOUT_DETECTION);
+            lp = (ListPreference) findPreference(Preferences.KEY_TIME_WITHOUT_DETECTION);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
 
-            lp = (ListPreference) findPreference(Settings.KEY_UI_ELEMENTS_SIZE);
+            lp = (ListPreference) findPreference(Preferences.KEY_UI_ELEMENTS_SIZE);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
         }
     }

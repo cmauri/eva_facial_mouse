@@ -68,7 +68,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         MOTION_THRESHOLD_MIN = r.getInteger(R.integer.motion_threshold_min);
 
         // shared preferences
-        mSharedPref = Settings.getSharedPreferences(c);
+        mSharedPref = Preferences.getSharedPreferences(c);
         
         // register preference change listener
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
@@ -80,15 +80,15 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     
     private void updateSettings() {
         // get values from shared resources
-        int xAxisSpeed= mSharedPref.getInt(Settings.KEY_X_AXIS_SPEED, AXIS_SPEED_MIN);
+        int xAxisSpeed= mSharedPref.getInt(Preferences.KEY_X_AXIS_SPEED, AXIS_SPEED_MIN);
         setXSpeed(xAxisSpeed);
-        int yAxisSpeed= mSharedPref.getInt(Settings.KEY_Y_AXIS_SPEED, AXIS_SPEED_MIN);
+        int yAxisSpeed= mSharedPref.getInt(Preferences.KEY_Y_AXIS_SPEED, AXIS_SPEED_MIN);
         setYSpeed(yAxisSpeed);
-        int acceleration= mSharedPref.getInt(Settings.KEY_ACCELERATION, ACCELERATION_MIN);
+        int acceleration= mSharedPref.getInt(Preferences.KEY_ACCELERATION, ACCELERATION_MIN);
         setAcceleration(acceleration);
-        int motionSmoothing= mSharedPref.getInt(Settings.KEY_MOTION_SMOOTHING, MOTION_SMOOTHING_MIN);
+        int motionSmoothing= mSharedPref.getInt(Preferences.KEY_MOTION_SMOOTHING, MOTION_SMOOTHING_MIN);
         setMotionSmoothning (motionSmoothing);
-        mMotionThreshold= mSharedPref.getInt(Settings.KEY_MOTION_THRESHOLD, MOTION_THRESHOLD_MIN);
+        mMotionThreshold= mSharedPref.getInt(Preferences.KEY_MOTION_THRESHOLD, MOTION_THRESHOLD_MIN);
     }
     
     // clean-up object
@@ -99,9 +99,9 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(Settings.KEY_X_AXIS_SPEED) || key.equals(Settings.KEY_Y_AXIS_SPEED) ||
-            key.equals(Settings.KEY_ACCELERATION) || key.equals(Settings.KEY_MOTION_SMOOTHING) ||
-            key.equals(Settings.KEY_MOTION_THRESHOLD)) {
+        if (key.equals(Preferences.KEY_X_AXIS_SPEED) || key.equals(Preferences.KEY_Y_AXIS_SPEED) ||
+            key.equals(Preferences.KEY_ACCELERATION) || key.equals(Preferences.KEY_MOTION_SMOOTHING) ||
+            key.equals(Preferences.KEY_MOTION_THRESHOLD)) {
             updateSettings();
         }
     }

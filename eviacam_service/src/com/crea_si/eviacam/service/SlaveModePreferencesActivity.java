@@ -34,7 +34,7 @@ public class SlaveModePreferencesActivity extends Activity {
             super.onCreate(savedInstanceState);
 
             // Set preference file
-            getPreferenceManager().setSharedPreferencesName(Settings.FILE_SLAVE_MODE);
+            getPreferenceManager().setSharedPreferencesName(Preferences.FILE_SLAVE_MODE);
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.slave_mode_preference_fragment);

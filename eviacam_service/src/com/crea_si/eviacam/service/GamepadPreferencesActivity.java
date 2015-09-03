@@ -55,7 +55,7 @@ public class GamepadPreferencesActivity extends Activity {
             super.onCreate(savedInstanceState);
 
             // Set preference file
-            getPreferenceManager().setSharedPreferencesName(Settings.FILE_SLAVE_MODE);
+            getPreferenceManager().setSharedPreferencesName(Preferences.FILE_SLAVE_MODE);
             
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.gamepad_preference_fragment);
@@ -63,10 +63,10 @@ public class GamepadPreferencesActivity extends Activity {
             /**
              * Listeners for list preference entries
              */
-            ListPreference lp = (ListPreference) findPreference(Settings.KEY_GAMEPAD_LOCATION);
+            ListPreference lp = (ListPreference) findPreference(Preferences.KEY_GAMEPAD_LOCATION);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
             
-            lp = (ListPreference) findPreference(Settings.KEY_GAMEPAD_TRANSPARENCY);
+            lp = (ListPreference) findPreference(Preferences.KEY_GAMEPAD_TRANSPARENCY);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
         }
     }

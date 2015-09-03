@@ -22,12 +22,12 @@ package com.crea_si.eviacam.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class Settings {
+public class Preferences {
     /**
      * Preference file names
      */
     public static final String FILE_SLAVE_MODE= 
-            Settings.class.getPackage().getName() + ".slave_mode";
+            Preferences.class.getPackage().getName() + ".slave_mode";
 
     /**
      * Preference keys
@@ -50,7 +50,7 @@ public class Settings {
     public static final String KEY_GAMEPAD_REL_SENSITIVITY= "gamepad_rel_sensitivity";
 
     public static float getUIElementsSize(SharedPreferences sp) {
-        return Float.parseFloat(sp.getString(Settings.KEY_UI_ELEMENTS_SIZE, null));
+        return Float.parseFloat(sp.getString(Preferences.KEY_UI_ELEMENTS_SIZE, null));
     }
 
     public static SharedPreferences getSharedPreferences(Context c) {

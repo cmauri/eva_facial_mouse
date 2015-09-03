@@ -77,7 +77,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         mAudioManager= (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
         
         // shared preferences
-        mSharedPref = Settings.getSharedPreferences(c);
+        mSharedPref = Preferences.getSharedPreferences(c);
 
         // register preference change listener
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
@@ -87,13 +87,13 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     
     private void updateSettings() {
         // get values from shared resources
-        int dwellTime= mSharedPref.getInt(Settings.KEY_DWELL_TIME, DWELL_TIME_DEFAULT) * 100;
+        int dwellTime= mSharedPref.getInt(Preferences.KEY_DWELL_TIME, DWELL_TIME_DEFAULT) * 100;
         mCountdown.setTimeToWait(dwellTime);
-        int dwellArea= mSharedPref.getInt(Settings.KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
+        int dwellArea= mSharedPref.getInt(Preferences.KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
         mDwellAreaSquared= dwellArea * dwellArea;
-        mSoundOnClick= mSharedPref.getBoolean(Settings.KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
+        mSoundOnClick= mSharedPref.getBoolean(Preferences.KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
         mConsecutiveCliks= mSharedPref.getBoolean(
-                Settings.KEY_CONSECUTIVE_CLIKCS, CONSECUTIVE_CLICKS);
+                Preferences.KEY_CONSECUTIVE_CLIKCS, CONSECUTIVE_CLICKS);
     }
     
     public void cleanup() {
@@ -103,8 +103,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(Settings.KEY_DWELL_TIME) || key.equals(Settings.KEY_DWELL_AREA) ||
-            key.equals(Settings.KEY_SOUND_ON_CLICK) || key.equals(Settings.KEY_CONSECUTIVE_CLIKCS)) {
+        if (key.equals(Preferences.KEY_DWELL_TIME) || key.equals(Preferences.KEY_DWELL_AREA) ||
+            key.equals(Preferences.KEY_SOUND_ON_CLICK) || key.equals(Preferences.KEY_CONSECUTIVE_CLIKCS)) {
                 updateSettings();
         }
     }

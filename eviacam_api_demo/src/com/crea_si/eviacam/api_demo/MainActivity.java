@@ -24,7 +24,7 @@ public class MainActivity extends Activity implements
     
     private static final float INC= 0.05f;
     
-    // binder (proxy) with the remote input method service
+    // slave mode remote facade
     private SlaveMode mSlaveMode;
 
     private PointF mPoint= new PointF(0, 0);
@@ -87,22 +87,19 @@ public class MainActivity extends Activity implements
                 mSlaveMode.setOperationMode(SlaveMode.MOUSE);
             }
         }
-        else if (id == R.id.action_test) {
-            /*
-            if (mSlaveMode!= null) {
-                GamepadParams params= mSlaveMode.getGamepadParams();
-                Log.d(TAG, "params.mData:" + params.mData);
-                
-                params.mData= 50;
-                mSlaveMode.setGamepadParams(params);
-                
-                params= mSlaveMode.getGamepadParams();
-                Log.d(TAG, "(2) params.mData:" + params.mData);
-                
-                params.mData= 10;
-                mSlaveMode.setGamepadParams(params);
-            }*/
+        /*
+         * These don't need an active connection
+         */
+        else if (id == R.id.action_preferences) {
+            SlaveMode.openSettingsActivity(this);
         }
+        else if (id == R.id.action_gamepad_preferences) {
+            SlaveMode.openGamepadSettingsActivity(this);
+        }
+        else if (id == R.id.action_mouse_preferences) {
+            SlaveMode.openMouseSettingsActivity(this);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

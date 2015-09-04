@@ -103,6 +103,7 @@
         <activity
             android:name=".GamepadPreferencesActivity"
             android:label="@string/gamepad_preferences"
+            android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
             android:theme="@android:style/Theme.DeviceDefault" >

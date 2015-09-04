@@ -108,9 +108,15 @@ public class MousePreferencesActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Check is started for slave mode
+        /*
+         * Check is started for slave mode
+         */
         String value= getIntent().getDataString();
         boolean slaveMode= value!= null && value.compareTo("slave_mode")== 0;
+        Bundle extras= getIntent().getExtras();
+        if (extras!= null) {
+            slaveMode= slaveMode || extras.getBoolean("slave_mode", false);
+        }
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()

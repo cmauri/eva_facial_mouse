@@ -40,7 +40,13 @@ public class SlaveMode implements ServiceConnection {
     private static final String TAG= "eviacam_api";
     
     private static final String REMOTE_PACKAGE= "com.crea_si.eviacam.service";
-    private static final String REMOTE_ACTION= REMOTE_PACKAGE + ".SlaveModeService";
+    private static final String REMOTE_SERVICE= REMOTE_PACKAGE + ".SlaveModeService";
+    private static final String REMOTE_PREFERENCE_ACTIVITY= 
+            REMOTE_PACKAGE + ".SlaveModePreferencesActivity";
+    private static final String REMOTE_GAMEPAD_PREFERENCE_ACTIVITY= 
+            REMOTE_PACKAGE + ".GamepadPreferencesActivity";
+    private static final String REMOTE_MOUSE_PREFERENCE_ACTIVITY= 
+            REMOTE_PACKAGE + ".MousePreferencesActivity";
     
     private final Context mContext;
     private final SlaveModeConnection mSlaveModeConnection;
@@ -56,7 +62,7 @@ public class SlaveMode implements ServiceConnection {
      */
     public static void connect(Context c, SlaveModeConnection callback) {
         Log.d(TAG, "Attemp to bind to EViacam API");
-        Intent intent= new Intent(REMOTE_ACTION);
+        Intent intent= new Intent(REMOTE_SERVICE);
         intent.setPackage(REMOTE_PACKAGE);
         try {
             if (!c.bindService(intent, new SlaveMode(c, callback), Context.BIND_AUTO_CREATE)) {
@@ -195,6 +201,34 @@ public class SlaveMode implements ServiceConnection {
         } catch (RemoteException e) {
             Log.d(TAG, "SlaveMode.unregisterMouseListener: exception: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Open the root preferences activity for the slave mode
+     */
+    public static void openSettingsActivity(Context c) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_PREFERENCE_ACTIVITY));
+        c.startActivity(intent);
+    }
+    
+    /**
+     * Open gamepad preferences activity
+     */
+    public static void openGamepadSettingsActivity(Context c) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_GAMEPAD_PREFERENCE_ACTIVITY));
+        c.startActivity(intent);
+    }
+
+    /**
+     * Open mouse preferences activity
+     */
+    public static void openMouseSettingsActivity(Context c) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_MOUSE_PREFERENCE_ACTIVITY));
+        intent.putExtra("slave_mode", true);
+        c.startActivity(intent);
     }
 
     /*

@@ -197,9 +197,10 @@ public class SlaveMode implements ServiceConnection {
         }
     }
 
-    /**
+    /*
      * Get configuration parameters for gamepad
      */
+    /*
     public GamepadParams getGamepadParams() {
         if (mSlaveMode== null) return null;
         try {
@@ -208,11 +209,12 @@ public class SlaveMode implements ServiceConnection {
             Log.d(TAG, "SlaveMode.getGamepadParams: exception: " + e.getMessage());
         }
         return null;
-    }
+    }*/
 
-    /**
+    /*
      * Set configuration parameters for gamepad
      */
+    /*
     public void setGamepadParams(GamepadParams p) {
         if (mSlaveMode== null) return;
         try {
@@ -220,7 +222,7 @@ public class SlaveMode implements ServiceConnection {
         } catch (RemoteException e) {
             Log.d(TAG, "SlaveMode.getGamepadParams: exception: " + e.getMessage());
         }
-    }
+    }*/
 
     /*
      * Stub implementation for gamepad event listener

@@ -88,6 +88,7 @@ public class MainActivity extends Activity implements
             }
         }
         else if (id == R.id.action_test) {
+            /*
             if (mSlaveMode!= null) {
                 GamepadParams params= mSlaveMode.getGamepadParams();
                 Log.d(TAG, "params.mData:" + params.mData);
@@ -100,7 +101,7 @@ public class MainActivity extends Activity implements
                 
                 params.mData= 10;
                 mSlaveMode.setGamepadParams(params);
-            }
+            }*/
         }
         return super.onOptionsItemSelected(item);
     }

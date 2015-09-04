@@ -32,10 +32,10 @@ public class GamepadEngine implements MotionProcessor {
     private static final int TIME_OFF_MS= 100;
     
     // Absolute gamepad geometric logic
-    private GamepadAbs mGamepadAbs= new GamepadAbs();
+    private GamepadAbs mGamepadAbs;
     
-    private ShakeDetector mShakeDetectorX= new ShakeDetector();
-    private ShakeDetector mShakeDetectorY= new ShakeDetector();
+    private ShakeDetector mShakeDetectorX;
+    private ShakeDetector mShakeDetectorY;
     
     private int mLastPressedButton= GamepadButtons.PAD_NONE;
 
@@ -55,13 +55,15 @@ public class GamepadEngine implements MotionProcessor {
     private boolean isPaused= false;
 
     public GamepadEngine(Context c, OverlayView ov) {
+        mGamepadAbs= new GamepadAbs(c);
+        
+        mShakeDetectorX= new ShakeDetector(c);
+        mShakeDetectorY= new ShakeDetector(c);
+        
         /*
          * UI stuff 
          */
         mGamepadView= new GamepadView(c);
-        
-        // TODO
-        mGamepadView.setInnerRadiusRatio(mGamepadAbs.getInnerRadiusRatio());
         
         ov.addFullScreenLayer(mGamepadView);
 
@@ -90,6 +92,18 @@ public class GamepadEngine implements MotionProcessor {
     public void cleanup() {
         mPointerLayer.cleanup();
         mPointerLayer= null;
+        
+        mGamepadView.cleanup();
+        mGamepadView= null;
+
+        mShakeDetectorX.cleanup();
+        mShakeDetectorX= null;
+
+        mShakeDetectorY.cleanup();
+        mShakeDetectorY= null;
+
+        mGamepadAbs.cleanup();
+        mGamepadAbs= null;
     }
 
     public boolean registerListener(IGamepadEventListener l) {
@@ -165,9 +179,6 @@ public class GamepadEngine implements MotionProcessor {
     private void processMotionAbsoluteGamepad(PointF motion) {
         // update pointer location given face motion
         int button= mGamepadAbs.updateMotion(motion);
-
-        // TODO: 
-        mGamepadView.setInnerRadiusRatio(mGamepadAbs.getInnerRadiusRatio());
 
         // get new pointer location
         mGamepadView.toCanvasCoords(mGamepadAbs.getPointerLocationNorm(), ptrLocation);

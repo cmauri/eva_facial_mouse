@@ -20,6 +20,10 @@
 package com.crea_si.eviacam.service;
 
 import com.crea_si.eviacam.api.GamepadButtons;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.PointF;
 
 /**
@@ -30,9 +34,8 @@ import android.graphics.PointF;
  * circumference. 
  */
 
-public class GamepadAbs {
-    // Ratio of the internal radius
-    private float mInnerRadiusRatio= 0.4f;
+public class GamepadAbs implements OnSharedPreferenceChangeListener {
+    private final Context mContext;
 
     // Current pointer position
     private PointF mPointerLocation= new PointF(0, 0);
@@ -40,7 +43,31 @@ public class GamepadAbs {
     // Speed multiplier for the pointer control
     private float mPointerSpeed= 0.05f;
 
-    public GamepadAbs() { }
+    public GamepadAbs(Context c) {
+        mContext= c;
+
+        // shared preferences
+        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateSettings(sp);
+    }
+    
+    public void cleanup() {
+        SharedPreferences sp= Preferences.getSharedPreferences(mContext);
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+    }
+    
+    private void updateSettings(SharedPreferences sp) {
+        // get values from shared resources
+        mPointerSpeed= (float) Preferences.getGamepadAbsSpeed(sp) / 100.0f;
+    }
+    
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
+        if (key.equals(Preferences.KEY_GAMEPAD_ABS_SPEED)) {
+            updateSettings(sp);
+        }
+    }
 
     /**
      * Updates internal pointer location ensuring that
@@ -73,7 +100,7 @@ public class GamepadAbs {
          * Get button 
          */
         int newButton= GamepadButtons.PAD_NONE;
-        if (dist_sq> mInnerRadiusRatio*mInnerRadiusRatio) {
+        if (dist_sq> GamepadView.INNER_RADIUS_RATIO * GamepadView.INNER_RADIUS_RATIO) {
             // angle 0 points down
             alpha+= Math.PI / 8.0 - Math.PI / 2.0;
             if (alpha< 0.0) alpha+= Math.PI * 2.0;
@@ -91,9 +118,5 @@ public class GamepadAbs {
      */
     public PointF getPointerLocationNorm() {
         return mPointerLocation;
-    }
-
-    public float getInnerRadiusRatio () {
-        return mInnerRadiusRatio;
     }
 }

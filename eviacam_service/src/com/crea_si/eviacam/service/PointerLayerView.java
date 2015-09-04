@@ -43,6 +43,7 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
     // Radius of the visual progress feedback (in DIP)
     private static final float PROGRESS_INDICATOR_RADIUS_DIP = 30;
     
+    // default alpha value
     private static final int DEFAULT_ALPHA= 255;
     private final int DISABLED_ALPHA;
     
@@ -86,7 +87,8 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
     
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
-        if (key.equals(Preferences.KEY_UI_ELEMENTS_SIZE)) {
+        if (key.equals(Preferences.KEY_UI_ELEMENTS_SIZE) ||
+            key.equals(Preferences.KEY_GAMEPAD_TRANSPARENCY)) {
             updateSettings(sp);
         }
     }
@@ -94,6 +96,8 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
     private void updateSettings(SharedPreferences sp) {
         float size= Preferences.getUIElementsSize(sp);
 
+        mAlphaPointer= (255 * Preferences.getGamepadTransparency(sp)) / 100; 
+        
         // re-scale pointer accordingly
         BitmapDrawable bd = (BitmapDrawable) 
                 getContext().getResources().getDrawable(R.drawable.pointer);

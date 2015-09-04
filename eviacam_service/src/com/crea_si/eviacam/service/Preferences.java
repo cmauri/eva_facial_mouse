@@ -49,12 +49,38 @@ public class Preferences {
     public static final String KEY_GAMEPAD_ABS_SPEED= "gamepad_abs_speed";
     public static final String KEY_GAMEPAD_REL_SENSITIVITY= "gamepad_rel_sensitivity";
 
-    public static float getUIElementsSize(SharedPreferences sp) {
-        return Float.parseFloat(sp.getString(Preferences.KEY_UI_ELEMENTS_SIZE, null));
-    }
-
     public static SharedPreferences getSharedPreferences(Context c) {
         return ((EViacamApplication) c.getApplicationContext()).getSharedPreferences();
+    }
+
+    public static float getUIElementsSize(SharedPreferences sp) {
+        return Float.parseFloat(sp.getString(KEY_UI_ELEMENTS_SIZE, null));
+    }
+
+    /**
+     * Gamepad locations
+     */
+    public static final int LOCATION_GAMEPAD_TOP_LEFT= 0;
+    public static final int LOCATION_GAMEPAD_BOTTOM_LEFT= 1;
+    public static final int LOCATION_GAMEPAD_TOP_CENTER= 2;
+    public static final int LOCATION_GAMEPAD_BOTTOM_CENTER= 3;
+    public static final int LOCATION_GAMEPAD_TOP_RIGHT= 4;
+    public static final int LOCATION_GAMEPAD_BOTTOM_RIGHT= 5;
+    
+    public static int getGamepadLocation(SharedPreferences sp) {
+        return Integer.parseInt(sp.getString(KEY_GAMEPAD_LOCATION, null));
+    }
+    
+    public static int getGamepadTransparency(SharedPreferences sp) {
+        return Integer.parseInt(sp.getString(KEY_GAMEPAD_TRANSPARENCY, "100"));
+    }
+    
+    public static int getGamepadAbsSpeed(SharedPreferences sp) {
+        return sp.getInt(KEY_GAMEPAD_ABS_SPEED, 0);
+    }
+    
+    public static int getGamepadRelSensitivity(SharedPreferences sp) {
+        return sp.getInt(KEY_GAMEPAD_REL_SENSITIVITY, 0);
     }
  }
  

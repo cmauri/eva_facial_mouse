@@ -69,8 +69,8 @@
     <integer name="gamepad_abs_speed_min">1</integer>
     <integer name="gamepad_abs_speed_max">20</integer>
     
-    <integer name="gamepad_rel_sensitivity_default">5</integer>
+    <integer name="gamepad_rel_sensitivity_default">10</integer>
     <integer name="gamepad_rel_sensitivity_min">1</integer>
-    <integer name="gamepad_rel_sensitivity_max">15</integer>
+    <integer name="gamepad_rel_sensitivity_max">20</integer>
 
 </resources>

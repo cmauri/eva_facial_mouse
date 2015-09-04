@@ -169,12 +169,15 @@ public class EngineManager implements
         else {
             // Otherwise use slave mode preferences. We first load default default
             // preferences and then update with slave mode ones
-            PreferenceManager.setDefaultValues(mService, "slave_mode", Context.MODE_PRIVATE,
-                                                R.xml.preference_fragment, true);
-            PreferenceManager.setDefaultValues(mService, "slave_mode", Context.MODE_PRIVATE,
-                                                R.xml.gamepad_preference_fragment, true);
+            PreferenceManager.setDefaultValues(mService, Preferences.FILE_SLAVE_MODE,
+                                               Context.MODE_PRIVATE, 
+                                               R.xml.preference_fragment, true);
+            PreferenceManager.setDefaultValues(mService, Preferences.FILE_SLAVE_MODE,
+                                               Context.MODE_PRIVATE,
+                                               R.xml.gamepad_preference_fragment, true);
             // Set the slave mode shared preferences
-            app.setSharedPreferences(mService.getSharedPreferences("slave_mode", Context.MODE_PRIVATE));
+            app.setSharedPreferences(mService.getSharedPreferences(Preferences.FILE_SLAVE_MODE,
+                                                                   Context.MODE_PRIVATE));
         }
 
         /*

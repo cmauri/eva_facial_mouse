@@ -23,6 +23,8 @@ import com.crea_si.eviacam.api.GamepadButtons;
 import com.crea_si.eviacam.api.SlaveMode;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -35,18 +37,25 @@ import android.view.View;
  * Layout for the absolute pad game controller
  */
 
-public class GamepadView extends View {
-    /*
-     * Main values for drawing game pad (normalized to the shortest 
-     * side of the canvas)
-     */
-    private PointF mPadCenterNorm= new PointF(0.5f, 0.65f);
-    private float mOuterRadiusNorm= 0.15f;
-    private float mInnerRadiusRatio= 0.8f;
-    private float mBitmapRelativeSize= 0.4f;
+public class GamepadView extends View implements OnSharedPreferenceChangeListener {
+    // Ratio of the internal radius
+    public static final float INNER_RADIUS_RATIO= 0.4f;
+    
+    private static final float OUTER_RADIUS_NORM_DEFAULT= 0.15f;
     
     /*
-     * Cached values that depend on canvas size
+     * Main values for drawing gamepad (normalized to the shortest 
+     * side of the canvas)
+     */
+    private PointF mPadCenterNorm= new PointF();
+    private float mOuterRadiusNorm= OUTER_RADIUS_NORM_DEFAULT;
+    private float mBitmapRelativeSize= 0.4f;
+    
+    // Transparency for painting
+    private int mTransparency= 255;
+    
+    /*
+     * Cached values
      */
     private float mCanvasWidth= 0;
     private float mCanvasHeight= 0;
@@ -58,6 +67,9 @@ public class GamepadView extends View {
     private Bitmap[] mPadArrowsPressed= new Bitmap[8];
     private PointF[] mPadArrowsLocation= new PointF[8];
 
+    // When cache needs refresh
+    private boolean mCacheNeedRefresh= true;
+    
     // Cached paint box
     private final Paint mPaintBox;
     
@@ -72,12 +84,65 @@ public class GamepadView extends View {
 
         mPaintBox = new Paint();
         setWillNotDraw(false);
+
+        // shared preferences
+        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateSettings(sp);
     }
-    
-    // TODO: this value is shared with GamepadAbs class. 
-    // Make both classes listen from the same source
-    void setInnerRadiusRatio(float v) {
-        mInnerRadiusRatio= v;
+
+    public void cleanup() {
+        SharedPreferences sp= Preferences.getSharedPreferences(getContext());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    private void updateSettings(SharedPreferences sp) {
+        /*
+         * Gamepad location
+         */
+        int l= Preferences.getGamepadLocation(sp);
+
+        if (l== Preferences.LOCATION_GAMEPAD_TOP_LEFT ||
+            l== Preferences.LOCATION_GAMEPAD_TOP_CENTER ||
+            l== Preferences.LOCATION_GAMEPAD_TOP_RIGHT) {
+            mPadCenterNorm.y= 1.0f * (1.0f / 3.0f);
+        }
+        else {
+            mPadCenterNorm.y= 2.0f * (1.0f / 3.0f);
+        }
+        
+        if (l== Preferences.LOCATION_GAMEPAD_BOTTOM_LEFT ||
+            l== Preferences.LOCATION_GAMEPAD_TOP_LEFT) {
+            mPadCenterNorm.x= 1.0f * (1.0f / 4.0f);
+        }
+        else if (l== Preferences.LOCATION_GAMEPAD_BOTTOM_CENTER ||
+                 l== Preferences.LOCATION_GAMEPAD_TOP_CENTER) {
+            mPadCenterNorm.x= 2.0f * (1.0f / 4.0f);
+        }
+        else {
+            mPadCenterNorm.x= 3.0f * (1.0f / 4.0f);
+        }
+        
+        /*
+         * Gamepad size
+         */
+        mOuterRadiusNorm= Preferences.getUIElementsSize(sp) * OUTER_RADIUS_NORM_DEFAULT;
+                
+        /*
+         * Gamepad alpha
+         */
+        mTransparency= (255 * Preferences.getGamepadTransparency(sp)) / 100;
+        
+        mCacheNeedRefresh= true;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
+        if (key.equals(Preferences.KEY_GAMEPAD_LOCATION) ||
+            key.equals(Preferences.KEY_GAMEPAD_TRANSPARENCY) ||
+            key.equals(Preferences.KEY_UI_ELEMENTS_SIZE)) {
+            updateSettings(sp);
+        }
     }
 
     @Override
@@ -87,25 +152,25 @@ public class GamepadView extends View {
         /*
          * Check whether the canvas has been resized and update cached values if so 
          */
-        if (mCanvasWidth!= canvas.getWidth() || mCanvasHeight!= canvas.getHeight()) {
+        if (mCacheNeedRefresh || mCanvasWidth!= canvas.getWidth() || mCanvasHeight!= canvas.getHeight()) {
             mCanvasWidth= canvas.getWidth();
             mCanvasHeight= canvas.getHeight();
             mPadCenterX= mCanvasWidth * mPadCenterNorm.x;
             mPadCenterY= mCanvasHeight * mPadCenterNorm.y;
             final float canvasShortSize= (mCanvasWidth< mCanvasHeight? mCanvasWidth : mCanvasHeight);
             mOuterRadius= canvasShortSize * mOuterRadiusNorm;
-            mInnerRadius= canvasShortSize * mOuterRadiusNorm * mInnerRadiusRatio;
+            mInnerRadius= canvasShortSize * mOuterRadiusNorm * INNER_RADIUS_RATIO;
 
             /*
              * Read original bitmaps from resources
              */
             BitmapDrawable bd = (BitmapDrawable) getContext().getResources().
-                                    getDrawable(R.drawable.ic_pad_arrow_down, null);
+                                    getDrawable(R.drawable.ic_pad_arrow_down);
             Bitmap downArrowOrig= bd.getBitmap();
             downArrowOrig.setDensity(Bitmap.DENSITY_NONE);
 
             bd = (BitmapDrawable) getContext().getResources().
-                    getDrawable(R.drawable.ic_pad_arrow_down_pressed, null);
+                    getDrawable(R.drawable.ic_pad_arrow_down_pressed);
             Bitmap downArrowPressedOrig= bd.getBitmap();
             downArrowPressedOrig.setDensity(Bitmap.DENSITY_NONE);
 
@@ -157,11 +222,14 @@ public class GamepadView extends View {
                 rotate+= 45;
                 alpha+= Math.PI / 4.0;
             }
+
+            mCacheNeedRefresh= false;
         }
 
         /*
          * Draw buttons (i.e. circle sectors)
          */
+        mPaintBox.setAlpha(mTransparency);
         mPaintBox.setStyle(Paint.Style.STROKE);
         canvas.drawCircle(mPadCenterX, mPadCenterY, mOuterRadius, mPaintBox);
         if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {

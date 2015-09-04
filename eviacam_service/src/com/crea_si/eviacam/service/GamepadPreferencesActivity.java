@@ -68,6 +68,9 @@ public class GamepadPreferencesActivity extends Activity {
             
             lp = (ListPreference) findPreference(Preferences.KEY_GAMEPAD_TRANSPARENCY);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
+            
+            lp = (ListPreference) findPreference(Preferences.KEY_UI_ELEMENTS_SIZE);
+            lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
         }
     }
 

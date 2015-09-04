@@ -165,8 +165,6 @@ public class SlaveModeService extends Service {
                 @Override
                 public void run() {
                     mSlaveModeEngine.unregisterGamepadListener();
-                    mSlaveModeEngine.cleanup();
-                    mSlaveModeEngine= null;
                 }
             };
             mMainThreadHandler.post(r);
@@ -213,8 +211,6 @@ public class SlaveModeService extends Service {
                 @Override
                 public void run() {
                     mSlaveModeEngine.unregisterMouseListener();
-                    mSlaveModeEngine.cleanup();
-                    mSlaveModeEngine= null;
                 }
             };
             mMainThreadHandler.post(r);

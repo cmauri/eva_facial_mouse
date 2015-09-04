@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,31 +28,29 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 public class DockPanelLayerView extends RelativeLayout 
     implements OnSharedPreferenceChangeListener {
     
-    private static final String KEY_DOCKING_PANEL_EDGE= "docking_panel_edge";
-    
-    private static final int TOGGLE_BUTTON_SHORT_SIDE_DP= 15;
-    private static final int TOGGLE_BUTTON_LONG_SIDE_DP= 24;
+    private static final int TOGGLE_BUTTON_SHORT_SIDE_DP= 18;
+    private static final int TOGGLE_BUTTON_LONG_SIDE_DP= 30;
+    private static final int TOGGLE_BUTTON_PADDING_DP= 2;
     
     private final int DOCKING_PANEL_EDGE_DEFAULT;
     private final int EDGE_RIGHT;
     private final int EDGE_TOP;
     private final int EDGE_BOTTOM;
-    
-    // reference to shared preferences pool
-    private SharedPreferences mSharedPref;
+    private static final float DEFAULT_ALPHA= 1.0f;
+    private final float DISABLED_ALPHA;
     
     // the docking panel
     private LinearLayout mDockPanelView;
@@ -66,6 +64,9 @@ public class DockPanelLayerView extends RelativeLayout
     // arrow icon when the panel is collapsed
     private Bitmap mToggleCollapsed;
     
+    // buttons have disabled appearance?
+    private boolean mClickDisabledAppearance= false;
+    
     public DockPanelLayerView(Context context) {
         super(context);
        
@@ -75,42 +76,44 @@ public class DockPanelLayerView extends RelativeLayout
         EDGE_RIGHT= Integer.parseInt(r.getString(R.string.docking_panel_edge_right_value));
         EDGE_TOP= Integer.parseInt(r.getString(R.string.docking_panel_edge_top_value));
         EDGE_BOTTOM=  Integer.parseInt(r.getString(R.string.docking_panel_edge_bottom_value));
+        DISABLED_ALPHA= (float) (r.getColor(R.color.disabled_alpha) >> 24) / 255.0f;
         
         // shared preferences
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        
-        // register preference change listener
-        mSharedPref.registerOnSharedPreferenceChangeListener(this);
-        
-        readSettings();
+        SharedPreferences sp= Preferences.getSharedPreferences(context);
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateSettings(sp);
     }
     
     public void cleanup() {
-        mSharedPref.unregisterOnSharedPreferenceChangeListener(this);        
+        SharedPreferences sp= Preferences.getSharedPreferences(getContext());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
     }
     
-    private void readSettings() {
+    private void updateSettings(SharedPreferences sp) {
         // get values from shared resources
-        int dockingEdge= Integer.parseInt(mSharedPref.getString(
-                KEY_DOCKING_PANEL_EDGE, Integer.toString(DOCKING_PANEL_EDGE_DEFAULT)));
-                
-        if (mDockPanelView != null) {
-            removeView(mDockPanelView);
-        }
+        int dockingEdge= Integer.parseInt(sp.getString(
+                Preferences.KEY_DOCKING_PANEL_EDGE, Integer.toString(DOCKING_PANEL_EDGE_DEFAULT)));
         
         int gravity= Gravity.START;
         if (dockingEdge == EDGE_RIGHT)  gravity= Gravity.END;
         else if (dockingEdge == EDGE_TOP)    gravity= Gravity.TOP;
         else if (dockingEdge == EDGE_BOTTOM) gravity= Gravity.BOTTOM;
         
-        createAndAddDockPanel (gravity);
+        float size = Preferences.getUIElementsSize(sp);
+        
+        if (mDockPanelView != null) {
+            removeView(mDockPanelView);
+        }
+        
+        createAndAddDockPanel (gravity, size);
     }
     
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(KEY_DOCKING_PANEL_EDGE)) {
-            readSettings();
+        if (key.equals(Preferences.KEY_DOCKING_PANEL_EDGE) ||
+            key.equals(Preferences.KEY_UI_ELEMENTS_SIZE)) {
+            updateSettings(sharedPreferences);
         }
     }
     
@@ -149,12 +152,25 @@ public class DockPanelLayerView extends RelativeLayout
     }
     
     /**
-     * inflate contents view
+     * Inflate contents view and apply size
      */
-    private static View createPanelButtonsView (Context c, ViewGroup container, int gravity) {
+    private static View createPanelButtonsView (
+            Context c, ViewGroup container, int gravity, float size) {
         LayoutInflater inflater = LayoutInflater.from(c);
         LinearLayout contents= (LinearLayout) 
                 inflater.inflate(R.layout.dock_panel_layout, container, false);
+        
+        // Resize buttons as needed
+        for (int i= 0; i< contents.getChildCount(); i++) {
+            View v= contents.getChildAt(i);
+            if (v instanceof ImageButton) {
+                ImageButton ib = (ImageButton) v;
+                ViewGroup.LayoutParams lp = ib.getLayoutParams();
+                lp.width *= size;
+                lp.height *= size;
+                ib.setLayoutParams(lp);
+            }
+        }
         
         // set layout direction
         if (gravity == Gravity.END || gravity == Gravity.START) {
@@ -174,7 +190,7 @@ public class DockPanelLayerView extends RelativeLayout
     /**
      * create toggle button
      */
-    private View createToggleButtonView (int gravity) {
+    private View createToggleButtonView (int gravity, float size) {
         // first we need a relative layout for centering toggle
         RelativeLayout buttonLayout= new RelativeLayout(this.getContext());
         if (isVertical(gravity)) {
@@ -191,16 +207,20 @@ public class DockPanelLayerView extends RelativeLayout
         }
         
         // size of the button
-        int longSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-                TOGGLE_BUTTON_LONG_SIDE_DP, getResources().getDisplayMetrics());
-        int shortSide= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-                TOGGLE_BUTTON_SHORT_SIDE_DP, getResources().getDisplayMetrics());
+        int longSide= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                TOGGLE_BUTTON_LONG_SIDE_DP, getResources().getDisplayMetrics()) * size);
+        int shortSide= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                TOGGLE_BUTTON_SHORT_SIDE_DP, getResources().getDisplayMetrics()) *size);
         
         // create the button
         ImageButton ib= new ImageButton(this.getContext());
         ib.setId(R.id.expand_collapse_dock_button);
         ib.setBackgroundColor(getResources().getColor(R.color.half_alpha));
         ib.setContentDescription(this.getContext().getText(R.string.dock_panel_button));
+        ib.setScaleType(ScaleType.FIT_CENTER);
+        int padding_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                TOGGLE_BUTTON_PADDING_DP, getResources().getDisplayMetrics());
+        ib.setPadding(padding_px, padding_px, padding_px, padding_px);
         
         // set layout params
         if (isVertical(gravity)) {
@@ -264,14 +284,14 @@ public class DockPanelLayerView extends RelativeLayout
         return buttonLayout;
     }
     
-    private void createAndAddDockPanel (int gravity) {
+    private void createAndAddDockPanel (int gravity, float size) {
     
         // create elements
-        LinearLayout container= createContainerView (this.getContext(), gravity);
+        LinearLayout container= createContainerView (getContext(), gravity);
         
-        View panelButtons= createPanelButtonsView (this.getContext(), container, gravity);
+        View panelButtons= createPanelButtonsView (getContext(), container, gravity, size);
         
-        View toggleButton= createToggleButtonView(gravity);
+        View toggleButton= createToggleButtonView(gravity, size);
    
         // assemble
         if (gravity == Gravity.START || gravity == Gravity.TOP) {
@@ -285,6 +305,9 @@ public class DockPanelLayerView extends RelativeLayout
         
         mDockPanelView= container;
         addView(mDockPanelView);
+        
+        // update click disabled appearance
+        setClickDisabledAppearance (mClickDisabledAppearance);
     }
     
     /**
@@ -345,5 +368,34 @@ public class DockPanelLayerView extends RelativeLayout
         if (ib != null) ib.setImageBitmap(mToggleCollapsed);
 
         mIsExpanded= false;
+    }
+    
+    /**
+     * Enable or disable faded appearance of the buttons 
+     * 
+     * @param value
+     */
+    public void setClickDisabledAppearance (boolean value) {
+        mClickDisabledAppearance= value;
+        float alpha= (value? DISABLED_ALPHA : DEFAULT_ALPHA);
+
+        setChildrenClickDisabledAppearance (mDockPanelView, alpha);
+    }
+    
+    /*
+     * Recursive function change alpha to all buttons except the click disable one
+     */
+    private static void setChildrenClickDisabledAppearance (View v, float alpha) {
+        if (v == null) return;
+
+        if (v instanceof ImageButton) {
+            if (v.getId() != R.id.disable_click_button) v.setAlpha(alpha);
+        }
+        else if (v instanceof ViewGroup) {
+            ViewGroup vg= (ViewGroup) v;
+            for (int i= 0; i< vg.getChildCount(); i++) {
+                setChildrenClickDisabledAppearance (vg.getChildAt(i), alpha);
+            }
+        }
     }
 }

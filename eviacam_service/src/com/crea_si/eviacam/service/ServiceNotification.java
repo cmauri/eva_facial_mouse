@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -40,9 +40,9 @@ public class ServiceNotification {
     
     private final Context mContext;
     
-    private final EViacamEngine mEngine;
+    private final EngineManager mEngine;
     
-    public ServiceNotification (Context c, EViacamEngine e) {
+    public ServiceNotification (Context c, EngineManager e) {
         mContext= c;
         mEngine= e;
         
@@ -96,17 +96,20 @@ public class ServiceNotification {
                 (c, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         
         CharSequence text;
+        int iconId;
         if (action == NOTIFICATION_ACTION_PAUSE) {
             text= c.getText(R.string.running_click_to_pause);
+            iconId = R.drawable.ic_notification_enabled;
         }
         else {
             text= c.getText(R.string.stopped_click_to_resume);
+            iconId = R.drawable.ic_notification_disabled;
         }
 
         Notification noti= new Notification.Builder(c)
             .setContentTitle(c.getText(R.string.app_name))
             .setContentText(text)
-            .setSmallIcon(R.drawable.ic_launcher)
+            .setSmallIcon(iconId)
             .setContentIntent(pIntent)
             .build();
         

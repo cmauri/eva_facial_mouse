@@ -10,7 +10,12 @@ interface IClickableIME {
     boolean click (int x, int y);
     
     /**
-     * Open the IME
+     * Opens the IME
      */
     void openIME();
+    
+    /**
+     * Closes the IME
+     */
+    void closeIME();
 }

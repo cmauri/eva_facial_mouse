@@ -17,8 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
+import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 class AccessibilityNodeDebug {
@@ -65,7 +66,10 @@ class AccessibilityNodeDebug {
         int actions= node.getActions();
         
         result+= "; [";
-        
+
+        if ((actions & AccessibilityNodeInfo.ACTION_CLICK) != 0) {
+            result+= "ACTION_CLICK, ";
+        }
         if ((actions & AccessibilityNodeInfo.ACTION_FOCUS) != 0) {
             result+= "ACTION_FOCUS, ";
         }
@@ -113,10 +117,11 @@ class AccessibilityNodeDebug {
         /*
         Rect boundsInParent = new Rect();
         node.getBoundsInParent(boundsInParent);
-        
+        */
         Rect boundsInScreen = new Rect();
         node.getBoundsInScreen(boundsInScreen);
-        */
+
+        result+= boundsInScreen.toString();
  
         return result;
     }
@@ -128,7 +133,9 @@ class AccessibilityNodeDebug {
         displayFullTree0(node, "1");
     }
     
-    static private void displayFullTree0 (AccessibilityNodeInfo node, String prefix) {
+    static void displayFullTree0 (AccessibilityNodeInfo node, String prefix) {
+        if (node == null) return;
+
         EVIACAM.debug(prefix + " " + getNodeInfo(node));
         
         // propagate calls to children

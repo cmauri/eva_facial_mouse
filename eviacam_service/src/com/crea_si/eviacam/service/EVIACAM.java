@@ -29,9 +29,9 @@ import android.widget.Toast;
 public class EVIACAM {
     public static final String TAG = EVIACAM.class.getSimpleName();
     
-    private static final boolean DEBUG = BuildConfig.DEBUG;
+    private static final boolean DEBUG = false;
     
-    private static final boolean ATTACH_DEBUGGER = false;
+    private static final boolean ATTACH_DEBUGGER = DEBUG;
     
     private static final boolean DEBUG_MESSAGES = DEBUG;
     

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
-import android.preference.PreferenceManager;
 
 import java.lang.Math;
 
@@ -40,13 +39,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private final int MOTION_SMOOTHING_MAX;
     private final int MOTION_THRESHOLD_MIN;
     private final int ACCEL_ARRAY_SIZE= 30;
-    
-    private static final String KEY_X_AXIS_SPEED= "x_axis_speed";
-    private static final String KEY_Y_AXIS_SPEED= "y_axis_speed";
-    private static final String KEY_ACCELERATION= "acceleration";
-    private static final String KEY_MOTION_SMOOTHING= "motion_smoothing";
-    private static final String KEY_MOTION_THRESHOLD= "motion_threshold";
-    
+
     // internal status attributes
     private float mXMultiplier, mYMultiplier;   // derived from axis_speed
     private float mAccelArray[]= new float[ACCEL_ARRAY_SIZE]; // derived from acceleration
@@ -75,25 +68,27 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         MOTION_THRESHOLD_MIN = r.getInteger(R.integer.motion_threshold_min);
 
         // shared preferences
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(c);
+        mSharedPref = Preferences.getSharedPreferences(c);
         
         // register preference change listener
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
         
-        readSettings();
+        updateSettings();
+        
+        reset();
     }
     
-    private void readSettings() {
+    private void updateSettings() {
         // get values from shared resources
-        int xAxisSpeed= mSharedPref.getInt(KEY_X_AXIS_SPEED, AXIS_SPEED_MIN);
+        int xAxisSpeed= mSharedPref.getInt(Preferences.KEY_X_AXIS_SPEED, AXIS_SPEED_MIN);
         setXSpeed(xAxisSpeed);
-        int yAxisSpeed= mSharedPref.getInt(KEY_Y_AXIS_SPEED, AXIS_SPEED_MIN);
+        int yAxisSpeed= mSharedPref.getInt(Preferences.KEY_Y_AXIS_SPEED, AXIS_SPEED_MIN);
         setYSpeed(yAxisSpeed);
-        int acceleration= mSharedPref.getInt(KEY_ACCELERATION, ACCELERATION_MIN);
+        int acceleration= mSharedPref.getInt(Preferences.KEY_ACCELERATION, ACCELERATION_MIN);
         setAcceleration(acceleration);
-        int motionSmoothing= mSharedPref.getInt(KEY_MOTION_SMOOTHING, MOTION_SMOOTHING_MIN);
+        int motionSmoothing= mSharedPref.getInt(Preferences.KEY_MOTION_SMOOTHING, MOTION_SMOOTHING_MIN);
         setMotionSmoothning (motionSmoothing);
-        mMotionThreshold= mSharedPref.getInt(KEY_MOTION_THRESHOLD, MOTION_THRESHOLD_MIN);
+        mMotionThreshold= mSharedPref.getInt(Preferences.KEY_MOTION_THRESHOLD, MOTION_THRESHOLD_MIN);
     }
     
     // clean-up object
@@ -104,10 +99,10 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(KEY_X_AXIS_SPEED) || key.equals(KEY_Y_AXIS_SPEED) ||
-            key.equals(KEY_ACCELERATION) || key.equals(KEY_MOTION_SMOOTHING) ||
-            key.equals(KEY_MOTION_THRESHOLD)) {
-            readSettings();
+        if (key.equals(Preferences.KEY_X_AXIS_SPEED) || key.equals(Preferences.KEY_Y_AXIS_SPEED) ||
+            key.equals(Preferences.KEY_ACCELERATION) || key.equals(Preferences.KEY_MOTION_SMOOTHING) ||
+            key.equals(Preferences.KEY_MOTION_THRESHOLD)) {
+            updateSettings();
         }
     }
     
@@ -173,6 +168,14 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         if (smoothness< MOTION_SMOOTHING_MIN) smoothness= MOTION_SMOOTHING_MIN;
         else if (smoothness> MOTION_SMOOTHING_MAX) smoothness= MOTION_SMOOTHING_MAX;
         mLowPassFilterWeight= (float) Math.log10((double) smoothness + 1);
+    }
+    
+    /**
+     * Reset pointer location by centering it
+     */
+    public void reset () {
+        mPointerLocation.x = mPointerLayerView.getWidth() / 2;
+        mPointerLocation.y = mPointerLayerView.getHeight() / 2;
     }
     
     public void updateMotion(PointF vel) {

@@ -22,11 +22,11 @@
 <resources>
 
 <string-array name="time_without_detection_entries">
-    <item>@string/disable</item>
-    <item>@string/five_seconds</item>
-    <item>@string/ten_seconds</item>
-    <item>@string/thirty_seconds</item>
-    <item>@string/one_minute</item>
+    <item>@string/never</item>
+    <item>@string/after_five_seconds</item>
+    <item>@string/after_ten_seconds</item>
+    <item>@string/after_thirty_seconds</item>
+    <item>@string/after_one_minute</item>
 </string-array>
 <string-array name="time_without_detection_values">
     <item>0</item>
@@ -47,6 +47,51 @@
     <item>@string/docking_panel_edge_right_value</item>
     <item>@string/docking_panel_edge_top_value</item>
     <item>@string/docking_panel_edge_bottom_value</item>    
+</string-array>
+
+<string-array name="ui_elements_size_entries">
+    <item>@string/small</item>
+    <item>@string/normal</item>
+    <item>@string/large</item>
+    <item>@string/xlarge</item>
+</string-array>
+<string-array name="ui_elements_size_values">
+    <item>0.8</item>
+    <item>1</item>
+    <item>1.5</item>
+    <item>2</item>
+</string-array>
+
+<string-array name="gamepad_location_entries">
+    <item>@string/top_left</item>
+    <item>@string/bottom_left</item>
+    <item>@string/top_center</item>
+    <item>@string/bottom_center</item>
+    <item>@string/top_right</item>
+    <item>@string/bottom_right</item>
+</string-array>
+<string-array name="gamepad_location_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+</string-array>
+
+<string-array name="gamepad_transparency_entries">
+    <item>20 &#65285;</item>
+    <item>40 &#65285;</item>
+    <item>60 &#65285;</item>
+    <item>80 &#65285;</item>
+    <item>100 &#65285;</item>
+</string-array>
+<string-array name="gamepad_transparency_values">
+    <item>20</item>
+    <item>40</item>
+    <item>60</item>
+    <item>80</item>
+    <item>100</item>
 </string-array>
 
 </resources>

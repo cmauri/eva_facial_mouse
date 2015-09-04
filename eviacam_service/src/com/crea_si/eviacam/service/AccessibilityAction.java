@@ -17,20 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.accessibilityservice.AccessibilityService;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.graphics.Point;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityWindowInfo;
 
 /**
  * Manages actions relative to the Android accessibility API 
@@ -68,38 +69,44 @@ class AccessibilityAction {
         new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.scroll_forward)
     };
 
-    // accessibility actions we are interested on when searching nodes
-    private final int FULL_ACTION_MASK;
-
+    private final AccessibilityService mAccessibilityService;
+    
     // layer view for context menu
-    private ControlsLayerView mControlsLayerView;
+    private final ControlsLayerView mControlsLayerView;
     
     // layer view for docking panel
-    private DockPanelLayerView mDockPanelLayerView;
+    private final DockPanelLayerView mDockPanelLayerView;
 
     // layer view for the scrolling controls
-    private ScrollLayerView mScrollLayerView;
+    private final ScrollLayerView mScrollLayerView;
+
+    // handler to execute in the main thread
+    private final Handler mHandler;
 
     // delegate to manage input method interaction
     private final InputMethodAction mInputMethodAction;
-    
+
+    // accessibility actions we are interested on when searching nodes
+    private final int FULL_ACTION_MASK;
+
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
 
     // node on which the action should be performed when context menu open
     private AccessibilityNodeInfo mNode;
-    
-    // handler to execute in the main thread
-    private final Handler mHandler;
-    
+
     // time stamp at which scrolling scan need to execute
     private long mRunScrollingScanTStamp = 0;
     
     // is set to true when scrolling scan needs to be run
     private boolean mNeedToRunScrollingScan = false;
+
+    // is click generation temporarily disabled?
+    private boolean mClickDisabled = false;
     
-    public AccessibilityAction (
-            ControlsLayerView cv, DockPanelLayerView dplv, ScrollLayerView slv) {
+    public AccessibilityAction (AccessibilityService as, ControlsLayerView cv, 
+                                DockPanelLayerView dplv, ScrollLayerView slv) {
+        mAccessibilityService= as;
         mControlsLayerView= cv;
         mDockPanelLayerView= dplv;
         mScrollLayerView= slv;
@@ -114,8 +121,14 @@ class AccessibilityAction {
             mControlsLayerView.populateContextMenu(al.action, al.labelId);
             full_action_mask|= al.action;
         }
-        
+
         FULL_ACTION_MASK= full_action_mask;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AccessibilityServiceInfo asi= mAccessibilityService.getServiceInfo();
+            asi.flags|= AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
+            mAccessibilityService.setServiceInfo(asi);
+        }
     }
     
     public void cleanup () {
@@ -129,17 +142,40 @@ class AccessibilityAction {
         
         if (mDockPanelLayerView.performClick(idDockPanelAction)) return true;
         
-        AccessibilityService s= EViacamService.getInstance();
+        AccessibilityService s= mAccessibilityService;
         
         switch (idDockPanelAction) {
         case R.id.back_button:
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
             break;
         case R.id.home_button:
+            mInputMethodAction.closeIME();
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
             break;
         case R.id.recents_button:
+            mInputMethodAction.closeIME();
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+            break;
+        case R.id.notifications_button:
+            mInputMethodAction.closeIME();
+            s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
+            break;
+        case R.id.softkeyboard_button:
+            mInputMethodAction.openIME();
+            break;
+        case R.id.scroll_refresh_button:
+            refreshScrollingButtons();
+            break;
+        case R.id.disable_click_button:
+            mClickDisabled= !mClickDisabled;
+            if (mClickDisabled) refreshScrollingButtons();
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    mDockPanelLayerView.setClickDisabledAppearance(mClickDisabled);
+                }
+            };
+            mHandler.post(r);
             break;
         default:
             return false;
@@ -153,6 +189,15 @@ class AccessibilityAction {
         ScrollLayerView.NodeAction na= mScrollLayerView.getContaining(p);
         if (na == null) return false;
         
+        /*
+         * Workaround: give focus to the node to scroll. 
+         * 
+         * We had to do so because when scrolling some listview control
+         * focus seems to be on the first element (but actually is on the
+         * listview itself) and scrolling gets stuck.
+         * 
+         */
+        na.node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
         na.node.performAction(na.actions);
         
         return true;
@@ -161,25 +206,73 @@ class AccessibilityAction {
     /** Perform an action to a node focusing it when necessary */
     private void performActionOnNode(AccessibilityNodeInfo node, int action) {
         if (action == 0) return;
+        
+        /**
+         * Focus the node.
+         * 
+         * REMARKS: tried to see whether it solved the problem with the icon panel of WhatsApp.
+         * but it did not work (see comments in AccessibilityAction.performAction method). We 
+         * leave here because it seems reasonable to focus the node on which the action is performed.
+         */
+        node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+        
         // TODO: currently only checks for EditText instances, check with EditText subclasses
         if ((action & AccessibilityNodeInfo.ACTION_CLICK) != 0 &&
                 node.getClassName().toString().equalsIgnoreCase("android.widget.EditText")) {
             mInputMethodAction.openIME();
-            node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
         }
+        
+        /**
+         * Here we tried to check whether for Kitkat and higher versions canOpenPopup() allows
+         * to know if the node will actually open a popup and thus IME could be hidden. However
+         * after some test with menu options with popups it seems that this function always
+         *  return false.
+         */
         node.performAction(action);
+    }
+
+    /**
+     * Reset internal state
+     */
+    public void reset () {
+        if (mContextMenuOpen) {
+            mControlsLayerView.hideContextMenu();
+            mContextMenuOpen= false;
+        }
     }
     
     /**
+     * Check if the point is over an element which is actionable
+     * 
+     * @param p point in screen coordinates
+     * @return true if the element below is actionable
+     * 
+     * Remarks: it is used to implement a button to disable/enable
+     * clicking function. It does not check if the node below the pointer
+     * is actually actionable.
+     */
+    public boolean isActionable (Point p) {
+        if (!mClickDisabled) return true;
+
+        // Click disabled mode, only specific button in the dock panel works
+        return (mDockPanelLayerView.getViewIdBelowPoint(p) == R.id.disable_click_button);
+    }
+    
+    /**
+     * Return the status of the click feature 
+     * 
+     * @return true if disabled
+     */
+    public boolean getClickDisabled() {
+        return mClickDisabled;
+    }
+
+    /**
      * Performs action (click) on a specific location of the screen
      * 
-     * @param p - point in screen coordinates
+     * @param pInt - point in screen coordinates
      */
-    public void performAction (PointF p) {
-        Point pInt= new Point();
-        pInt.x= (int) p.x;
-        pInt.y= (int) p.y;
-        
+    public void performAction (Point pInt) {
         if (mContextMenuOpen) {
             /** When context menu open only check it */
             int action= mControlsLayerView.testClick(pInt);
@@ -194,16 +287,82 @@ class AccessibilityAction {
             // Manages clicks for scrolling buttons
             if (manageScrollActions(pInt)) return;
             
-            // Manages actions for the IME
-            if (mInputMethodAction.click(pInt.x, pInt.y)) return;
+            AccessibilityNodeInfo root= null;
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                /**
+                 * According to the documentation [1]: "This method returns only the windows
+                 * that a sighted user can interact with, as opposed to all windows.".
+                 * Unfortunately this does not seem to be the actual behavior. On Lollypop 
+                 * API 21 (Nexus 7) the windows of the IME is not returned. With API 22
+                 * the window of the IME is only returned for the google keyboard (and allows
+                 * to interact with it). For other keyboards (e.g. AnySoftKeyboard or 
+                 * Go Keyboard 2015) does not work.
+                 * 
+                 * UPDATE: this does not always happens, sometimes an IME window is reported,
+                 * needs more work (tested under API 22 and bundled eviacam IME and 
+                 * Go Keyboard 2015).
+                 * 
+                 * logcat excerpt
+                 * W3 AccessibilityWindowInfo[id=1544, type=TYPE_INPUT_METHOD, layer=21040, bounds=Rect(0, 33 - 1280, 800), focused=false, active=false, hasParent=false, hasChildren=false]
+                 * W3.1 [...............VI]; android.widget.FrameLayout; null; null; ; [ACTION_SELECT, ACTION_CLEAR_SELECTION, ACTION_ACCESSIBILITY_FOCUS, ]Rect(0, 808 - 800, 1280)
+                 * W4 AccessibilityWindowInfo[id=1516, type=TYPE_APPLICATION, layer=21035, bounds=Rect(0, 0 - 1280, 800), focused=true, active=true, hasParent=false, hasChildren=false]
+                 * W4.1 [...............VI]; android.widget.FrameLayout; null; null; ; [ACTION_SELECT, ACTION_CLEAR_SELECTION, ACTION_ACCESSIBILITY_FOCUS, ]Rect(0, 0 - 800, 1280)
+                 * 
+                 * Further tests with WhatsApp client show that if the input text of a chat
+                 * is not focused the window containing the emoticons is not reported (although
+                 * is visible and the user can interact with it).
+                 * 
+                 * [1] http://developer.android.com/reference/android/accessibilityservice/AccessibilityService.html#getWindows()
+                 */
+                List<AccessibilityWindowInfo> l= mAccessibilityService.getWindows();
+                
+                Rect bounds = new Rect();
+                for (AccessibilityWindowInfo awi : l) {
+                    awi.getBoundsInScreen(bounds);
+                    if (bounds.contains(pInt.x, pInt.y)) {
+                        AccessibilityNodeInfo rootCandidate= awi.getRoot();
+                        if (rootCandidate == null) continue;
+                        /**
+                         * Check bounds for the candidate root node. Sometimes windows bounds
+                         *  are larger than root bounds
+                         */
+                        rootCandidate.getBoundsInScreen(bounds);
+                        if (bounds.contains(pInt.x, pInt.y)) {
+                            root = rootCandidate;
+                            break;
+                        }
+                    }
+                }
+                
+                /**
+                 * Give an opportunity to the bundled eviacam keyboard
+                 * 
+                 * TODO: check whether this is really needed (e.g. checking which IME is 
+                 * currently active, if the node is already an IME)
+                 */
+                if (mInputMethodAction.click(pInt.x, pInt.y)) return;
+            }
+            else {
+                /**
+                 * Manages actions for the IME.
+                 * 
+                 * LIMITATIONS: when a pop up or dialog is covering the IME there is no way to
+                 * know (at least for API < 21) such circumstance. Therefore, we give preference
+                 * to the IME. This may lead to situations where the pop up is not accessible.
+                 * 
+                 * TODO: add an option to open/close IME
+                 */
+                if (mInputMethodAction.click(pInt.x, pInt.y)) return;
+            }
             
             /** Manages actions on an arbitrary position of the screen  */
             
             // Finds node under (x, y) and its available actions
-            AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK);
+            AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK, root);
             
             if (node == null) return;
-            
+
             EVIACAM.debug("Actionable node found: (" + pInt.x + ", " + pInt.y + ")." + 
                     AccessibilityNodeDebug.getNodeInfo(node));
             
@@ -228,28 +387,33 @@ class AccessibilityAction {
      * Remarks: checks whether needs to start a scrolling nodes exploration
      */
     public void refresh() {
+        if (mClickDisabled) return;
         if (!mNeedToRunScrollingScan) return;
         if (System.currentTimeMillis()< mRunScrollingScanTStamp) return;
         mNeedToRunScrollingScan = false;
-        
-        /** Need to run scrolling scan */
-        EVIACAM.debug("Scanning for scrollables");
-        final List<AccessibilityNodeInfo> nodes= findNodes (
-                AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
-                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-       
-        /** Interaction with the UI needs to be done in the main thread */
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                mScrollLayerView.clearScrollAreas();
+        refreshScrollingButtons();
+    }
 
+    Runnable mRefreshScrollingRunnable = new Runnable() {
+        @Override
+        public void run() {
+            EVIACAM.debug("Scanning for scrollables");
+            mScrollLayerView.clearScrollAreas();
+
+            if (!mClickDisabled) {
+                final List<AccessibilityNodeInfo> nodes= findNodes (
+                    AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
+                    AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
                 for (AccessibilityNodeInfo n : nodes) {
                     mScrollLayerView.addScrollArea(n);
                 }
             }
-        };
-        mHandler.post(r);
+        }
+    };
+
+    private void refreshScrollingButtons() {
+        /** Interaction with the UI needs to be done in the main thread */
+        mHandler.post(mRefreshScrollingRunnable);
     }
 
     
@@ -321,15 +485,18 @@ class AccessibilityAction {
      * Find recursively the node under (x, y) that accepts some or all
      * actions encoded on the mask
      */
-    private static AccessibilityNodeInfo findActionable (Point p, int actions) {
+    private AccessibilityNodeInfo findActionable (Point p, int actions, AccessibilityNodeInfo root) {
         // get root node
-        final AccessibilityNodeInfo rootNode = 
-                EViacamService.getInstance().getRootInActiveWindow();
-        if (rootNode == null) return null;
+        if (root == null) { 
+            root = mAccessibilityService.getRootInActiveWindow();
+            if (root == null) return null;
+        }
         
         RecursionInfo ri= new RecursionInfo (p, actions);
+
+        //AccessibilityNodeDebug.displayFullTree(rootNode);
         
-        return findActionable0(rootNode, ri);
+        return findActionable0(root, ri);
     }
     
     /** Actual recursive call for findActionable */
@@ -342,9 +509,22 @@ class AccessibilityAction {
         
         node.getBoundsInScreen(ri.tmp);
         if (!ri.tmp.contains(ri.p.x, ri.p.y)) {
-            // if window does not contain (x, y) stop recursion
+            /**
+             * If node does not contain (x, y) stop recursion. It seems that, when part
+             * of the view is covered by another window (e.g. IME), reported bounds 
+             * EXCLUDE the area covered by such a window. Unfortunately, this does not
+             * always works, for instance, when a extracted view is shown (e.g. usually
+             * in landscape mode). This behavior can be changed (see [1]) in the IME
+             * but perhaps this is not the best approach.
+             * 
+             * [1] http://stackoverflow.com/questions/14252184/how-can-i-make-my-custom-keyboard-to-show-in-fullscreen-mode-always
+             */
             return null;
         }
+
+        // Although it seems that is not needed, we check and give out if the
+        // node is not visible. Just in case.
+        if (!node.isVisibleToUser()) return null;
 
         AccessibilityNodeInfo result = null;
 
@@ -356,7 +536,8 @@ class AccessibilityAction {
         }
 
         // propagate calls to children
-        for (int i = 0; i < node.getChildCount(); i++) {
+        final int child_count = node.getChildCount();
+        for (int i = 0; i < child_count; i++) {
             AccessibilityNodeInfo child = findActionable0(node.getChild(i), ri);
 
             if (child != null) result = child;
@@ -371,11 +552,10 @@ class AccessibilityAction {
      * @param actions - bitmask of actions
      * @return - list with the node, may be void
      */
-    public static List<AccessibilityNodeInfo> findNodes (int actions) {
+    private List<AccessibilityNodeInfo> findNodes (int actions) {
         final List<AccessibilityNodeInfo> result= new ArrayList<AccessibilityNodeInfo>();
         // get root node
-        final AccessibilityNodeInfo rootNode =
-                EViacamService.getInstance().getRootInActiveWindow();
+        final AccessibilityNodeInfo rootNode = mAccessibilityService.getRootInActiveWindow();
 
         findNodes0 (actions, rootNode, result);
 
@@ -387,13 +567,15 @@ class AccessibilityAction {
             final List<AccessibilityNodeInfo> result) {
 
         if (node == null) return;
+        if (!node.isVisibleToUser()) return;
 
         if ((node.getActions() & actions) != 0) {
             result.add(node);
         }
 
         // propagate calls to children
-        for (int i = 0; i < node.getChildCount(); i++) {
+        final int child_count = node.getChildCount();
+        for (int i = 0; i < child_count; i++) {
             findNodes0 (actions, node.getChild(i), result);
         }
     }

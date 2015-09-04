@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -27,6 +27,9 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 class OrientationManager {
+
+    private final Context mContext;
+
     // orientation sensors listener. keeps updated the actual orientation of the
     // device (independently of the screen orientation)
     private PhysicalOrientation mPhysicalOrientation;
@@ -38,13 +41,15 @@ class OrientationManager {
     final int mCameraOrientation;
     
     OrientationManager(Context c, int cameraOrientation) {
+        mContext= c; 
+
         // create physical orientation manager
-        mPhysicalOrientation= new PhysicalOrientation(c);
+        mPhysicalOrientation= new PhysicalOrientation(mContext);
         
         // enable sensor listener
         mPhysicalOrientation.enable();
         
-        mScreenOrientation= getScreenOrientation();
+        mScreenOrientation= getScreenOrientation(mContext);
         
         mCameraOrientation= cameraOrientation;
     }
@@ -68,9 +73,7 @@ class OrientationManager {
      * 90 degrees clockwise and thus the returned value here will be Surface.ROTATION_90.
      * 
      */
-    static
-    private int getScreenOrientation() {
-        Context c= EViacamService.getInstance().getApplicationContext();
+    static private int getScreenOrientation(Context c) {
         WindowManager wm= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
         Display d= wm.getDefaultDisplay();
         switch (d.getRotation()) {
@@ -84,7 +87,7 @@ class OrientationManager {
     }
     
     public void onConfigurationChanged(Configuration newConfig) {
-        mScreenOrientation= getScreenOrientation();
+        mScreenOrientation= getScreenOrientation(mContext);
         EVIACAM.debug("Screen rotation changed: " + mScreenOrientation);
     }
     

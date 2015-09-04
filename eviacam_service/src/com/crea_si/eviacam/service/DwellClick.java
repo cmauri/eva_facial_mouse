@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -25,25 +25,20 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.media.AudioManager;
-import android.media.ToneGenerator;
-import android.preference.PreferenceManager;
 
 class DwellClick implements OnSharedPreferenceChangeListener {
     /**
      * Enums and constants
      */
     private enum State {
-        DISABLED, POINTER_MOVING, COUNTDOWN_STARTED, CLICK_DONE
+        RESET, POINTER_MOVING, COUNTDOWN_STARTED, CLICK_DONE
     }
     
     private final int DWELL_TIME_DEFAULT;
     private final int DWELL_AREA_DEFAULT;
     private final boolean SOUND_ON_CLICK_DEFAULT;
-    
-    private static final String KEY_DWELL_TIME= "dwell_time";
-    private static final String KEY_DWELL_AREA= "dwell_area";
-    private static final String KEY_SOUND_ON_CLICK= "sound_on_click";
-  
+    private final boolean CONSECUTIVE_CLICKS;
+
     // delegate to measure elapsed time
     private Countdown mCountdown;
     
@@ -51,12 +46,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private SharedPreferences mSharedPref;
     
     // current dwell click state
-    private State mState= State.POINTER_MOVING;
+    private State mState= State.RESET;
 
-    // modified from the main thread (enable/disable methods)
-    // used to modify state without using synchronization
-    private boolean mRequestEnabled= true;
-    
     // dwell area tolerance. stored squared to avoid sqrt 
     // for each updatePointerLocation call
     private float mDwellAreaSquared;    
@@ -64,12 +55,14 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     // whether to play a sound when action performed
     private boolean mSoundOnClick;
     
+    // if true it keeps generating clicks whilst the pointer is stopped
+    private boolean mConsecutiveCliks;
+    
     // audio manager for FX notifications
     AudioManager mAudioManager;
     
-    // to remember previous pointer location and measure travelled distance
-    private PointF mPrevPointerLocation= null;
-
+    // to remember previous pointer location and measure traveled distance
+    private PointF mPrevPointerLocation= new PointF();
     
     public DwellClick(Context c) {
         // get constants from resources
@@ -77,27 +70,30 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         DWELL_TIME_DEFAULT= r.getInteger(R.integer.dwell_time_default) * 100;
         DWELL_AREA_DEFAULT= r.getInteger(R.integer.dwell_area_default);
         SOUND_ON_CLICK_DEFAULT= r.getBoolean(R.bool.sound_on_click_default);
+        CONSECUTIVE_CLICKS= r.getBoolean(R.bool.consecutive_clicks_default);
         
         mCountdown= new Countdown(DWELL_TIME_DEFAULT);
         
         mAudioManager= (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
         
         // shared preferences
-        mSharedPref = PreferenceManager.getDefaultSharedPreferences(c);
-        
+        mSharedPref = Preferences.getSharedPreferences(c);
+
         // register preference change listener
         mSharedPref.registerOnSharedPreferenceChangeListener(this);
         
-        readSettings();
+        updateSettings();
     }
     
-    private void readSettings() {
+    private void updateSettings() {
         // get values from shared resources
-        int dwellTime= mSharedPref.getInt(KEY_DWELL_TIME, DWELL_TIME_DEFAULT) * 100;
+        int dwellTime= mSharedPref.getInt(Preferences.KEY_DWELL_TIME, DWELL_TIME_DEFAULT) * 100;
         mCountdown.setTimeToWait(dwellTime);
-        int dwellArea= mSharedPref.getInt(KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
+        int dwellArea= mSharedPref.getInt(Preferences.KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
         mDwellAreaSquared= dwellArea * dwellArea;
-        mSoundOnClick= mSharedPref.getBoolean(KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
+        mSoundOnClick= mSharedPref.getBoolean(Preferences.KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
+        mConsecutiveCliks= mSharedPref.getBoolean(
+                Preferences.KEY_CONSECUTIVE_CLIKCS, CONSECUTIVE_CLICKS);
     }
     
     public void cleanup() {
@@ -107,18 +103,10 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(KEY_DWELL_TIME) || key.equals(KEY_DWELL_AREA) ||
-            key.equals(KEY_SOUND_ON_CLICK)) {
-                readSettings();
+        if (key.equals(Preferences.KEY_DWELL_TIME) || key.equals(Preferences.KEY_DWELL_AREA) ||
+            key.equals(Preferences.KEY_SOUND_ON_CLICK) || key.equals(Preferences.KEY_CONSECUTIVE_CLIKCS)) {
+                updateSettings();
         }
-    }
-       
-    public void enable () {
-        mRequestEnabled= true;
-    }
-    
-    public void disable () {
-        mRequestEnabled= false;
     }
     
     private void playSound () {
@@ -135,6 +123,13 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     }
 
     /**
+     * Reset dwell click internal state 
+     */
+    public void reset () {
+        mState= State.RESET;
+    }
+    
+    /**
      * Given the current position of the pointer calculates if needs to generate a click
      * 
      * @param pl - position of the pointer
@@ -144,27 +139,15 @@ class DwellClick implements OnSharedPreferenceChangeListener {
      */
     public boolean updatePointerLocation (PointF pl) {
         boolean retval= false;
-        
-        if (mPrevPointerLocation== null) {
-            mPrevPointerLocation= new PointF();
-            mPrevPointerLocation.set(pl);
-            return retval;
-        }
-       
-        // check if need to enable/disable 
-        if (mState == State.DISABLED) {
-            if (mRequestEnabled) {
-                mState = State.POINTER_MOVING;
-            }
-        }
-        else {
-            if (!mRequestEnabled) {
-                mState = State.DISABLED;
-            }
-        }
        
         // state machine
-        if (mState == State.POINTER_MOVING) {
+        if (mState == State.RESET) {
+            /* Means previous pointer position is not valid. Change to
+             * POINTER_MOVING state and allow pointer position update.
+             */
+            mState= State.POINTER_MOVING;
+        }
+        else if (mState == State.POINTER_MOVING) {
             if (!movedAboveThreshold (mPrevPointerLocation, pl)) {
                 mState= State.COUNTDOWN_STARTED;
                 mCountdown.reset();
@@ -178,7 +161,12 @@ class DwellClick implements OnSharedPreferenceChangeListener {
                 if (mCountdown.hasFinished()) {
                     playSound ();
                     retval= true;
-                    mState= State.CLICK_DONE;
+                    if (mConsecutiveCliks) {
+                        mState= State.POINTER_MOVING;
+                    }
+                    else {
+                        mState= State.CLICK_DONE;
+                    }
                 }
             }
         }

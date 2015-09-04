@@ -17,15 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.TypedValue;
 import android.view.View;
 
 /**
@@ -33,7 +35,17 @@ import android.view.View;
  * 
  */
 
-public class PointerLayerView extends View {
+public class PointerLayerView extends View implements OnSharedPreferenceChangeListener {
+
+    // Size of the long side of the pointer for normal size (in DIP)
+    private static final float CURSOR_LONG_SIDE_DIP = 30;
+    
+    // Radius of the visual progress feedback (in DIP)
+    private static final float PROGRESS_INDICATOR_RADIUS_DIP = 30;
+    
+    // default alpha value
+    private static final int DEFAULT_ALPHA= 255;
+    private final int DISABLED_ALPHA;
     
     // cached paint box
     private final Paint mPaintBox;
@@ -41,20 +53,69 @@ public class PointerLayerView extends View {
     // the location where the pointer needs to be painted
     private PointF mPointerLocation;
     
+    // alpha value for drawing pointer
+    private int mAlphaPointer= DEFAULT_ALPHA;
+    
     // bitmap of the (mouse) pointer
     private Bitmap mPointerBitmap;
+    
+    // progress indicator radius in px
+    private float mProgressIndicatorRadius;
     
     // click progress percent so far (0 disables)
     private int mClickProgressPercent= 0;
     
-    public PointerLayerView(Context context) {
-        super(context);
+    public PointerLayerView(Context c) {
+        super(c);
         
         mPaintBox = new Paint();
         setWillNotDraw(false);
         mPointerLocation= new PointF();
-        Drawable d = context.getResources().getDrawable(R.drawable.pointer);
-        mPointerBitmap =((BitmapDrawable) d).getBitmap();
+        
+        DISABLED_ALPHA= c.getResources().getColor(R.color.disabled_alpha) >> 24;
+        
+        // preferences
+        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateSettings(sp);
+    }
+    
+    public void cleanup() {
+        Preferences.getSharedPreferences(this.getContext()).
+            unregisterOnSharedPreferenceChangeListener(this);
+    }
+    
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
+        if (key.equals(Preferences.KEY_UI_ELEMENTS_SIZE) ||
+            key.equals(Preferences.KEY_GAMEPAD_TRANSPARENCY)) {
+            updateSettings(sp);
+        }
+    }
+    
+    private void updateSettings(SharedPreferences sp) {
+        float size= Preferences.getUIElementsSize(sp);
+
+        mAlphaPointer= (255 * Preferences.getGamepadTransparency(sp)) / 100; 
+        
+        // re-scale pointer accordingly
+        BitmapDrawable bd = (BitmapDrawable) 
+                getContext().getResources().getDrawable(R.drawable.pointer);
+        Bitmap origBitmap= bd.getBitmap();
+        origBitmap.setDensity(Bitmap.DENSITY_NONE);
+        
+        // desired long side in pixels of the pointer for this screen density
+        float longSide= TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                CURSOR_LONG_SIDE_DIP, getResources().getDisplayMetrics()) * size;
+        float scaling = longSide / (float) bd.getIntrinsicHeight();
+        float shortSide= scaling * bd.getIntrinsicWidth();
+
+        mPointerBitmap= Bitmap.createScaledBitmap(origBitmap, (int) shortSide, (int) longSide, true);
+        mPointerBitmap.setDensity(Bitmap.DENSITY_NONE);
+        
+        // compute radius of progress indicator in px
+        mProgressIndicatorRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+                PROGRESS_INDICATOR_RADIUS_DIP, getResources().getDisplayMetrics()) * size;
     }
     
     @Override
@@ -63,14 +124,20 @@ public class PointerLayerView extends View {
         
         // draw progress indicator
         if (mClickProgressPercent> 0) {
-            // TODO: use device independent pixels and improve esthetics
-            float radius= ((float) (100 - mClickProgressPercent) / 100.0f) * 30;
-            mPaintBox.setAlpha(127);
+            float radius= ((float)
+                    (100 - mClickProgressPercent) * mProgressIndicatorRadius) / 100.0f;
+
+            mPaintBox.setStyle(Paint.Style.FILL_AND_STROKE);
+            mPaintBox.setColor(0x80000000);
             canvas.drawCircle(mPointerLocation.x, mPointerLocation.y, radius, mPaintBox);
-            mPaintBox.setAlpha(255);
+
+            mPaintBox.setStyle(Paint.Style.STROKE);
+            mPaintBox.setColor(0x80FFFFFF);
+            canvas.drawCircle(mPointerLocation.x, mPointerLocation.y, radius, mPaintBox);
         }
         
         // draw pointer
+        mPaintBox.setAlpha(mAlphaPointer);
         canvas.drawBitmap(mPointerBitmap, mPointerLocation.x, mPointerLocation.y, mPaintBox);
     }
 
@@ -81,5 +148,14 @@ public class PointerLayerView extends View {
 
     public void updateClickProgress(int percent) {
         mClickProgressPercent= percent;
-    }	
+    }
+    
+    /**
+     * Enable or disable faded appearance of the pointer 
+     * 
+     * @param value
+     */
+    public void setClickDisabledAppearance (boolean value) {
+        mAlphaPointer= (value? DISABLED_ALPHA : DEFAULT_ALPHA);
+    }
 }

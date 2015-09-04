@@ -102,17 +102,34 @@
             android:defaultValue="@bool/sound_on_click_default"
         />
         
+        <CheckBoxPreference 
+            android:key="consecutive_clicks"
+            android:title="@string/consecutive_clicks"
+            android:defaultValue="@bool/consecutive_clicks_default"
+        />
+        
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="@string/interface_settings">
+    <PreferenceCategory 
+        android:key="interface_settings"
+        android:title="@string/interface_settings">
         
         <ListPreference
             android:key="docking_panel_edge"
             android:title="@string/docking_panel_edge"
-            android:summary="@string/docking_panel_edge_summary"
+            android:summary="%s"
             android:entries="@array/docking_panel_edge_entries"
             android:entryValues="@array/docking_panel_edge_values"
             android:defaultValue="@integer/docking_panel_edge_default"
+        />
+        
+        <ListPreference
+            android:key="ui_elements_size"
+            android:title="@string/ui_elements_size"
+            android:summary="%s"
+            android:entries="@array/ui_elements_size_entries"
+            android:entryValues="@array/ui_elements_size_values"
+            android:defaultValue="@string/ui_elements_size_default"
         />
 
     </PreferenceCategory>
@@ -122,7 +139,7 @@
         <ListPreference
             android:key="time_without_detection"
             android:title="@string/time_without_detection"
-            android:summary="@string/time_without_detection_summary"
+            android:summary="%s"
             android:entries="@array/time_without_detection_entries"
             android:entryValues="@array/time_without_detection_values"
             android:defaultValue="@string/time_without_detection_default"

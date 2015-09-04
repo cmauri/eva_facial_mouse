@@ -36,6 +36,7 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
     private int mChainIdx = 0;
     private Thread mThread;
     private boolean mStopThread;
+    private boolean mWhiteBalanceLockTried= false;
 
     protected Camera mCamera;
     protected JavaCameraFrame[] mCameraFrame;
@@ -137,6 +138,8 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
             /* Now set camera parameters */
             try {
                 Camera.Parameters params = mCamera.getParameters();
+                Log.d(TAG, params.flatten());
+
                 Log.d(TAG, "getSupportedPreviewSizes()");
                 List<android.hardware.Camera.Size> sizes = params.getSupportedPreviewSizes();
 
@@ -156,6 +159,38 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
                     {
                         params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
                     }
+
+                    /*
+                     * Disable stabilization to save some CPU cycles
+                     */
+                    if (params.isVideoStabilizationSupported()) {
+                        params.setVideoStabilization(false);
+                    }
+
+                    /*
+                     * Tries to set a frame rate higher or equal than 15 fps.
+                     *
+                     * getSupportedPreviewFpsRange always returns a list of supported preview fps ranges with
+                     * at least one element. Every element is an int array of two values - minimum fps and 
+                     * maximum fps. The list is sorted from small to large (first by maximum fps and then 
+                     * minimum fps).
+                     *
+                     * Nexus 7: the list has only one element (4000,60000)
+                     * Samsung Galaxy Nexus: (15000,15000),(15000,30000),(24000,30000)
+                     */
+                    List<int[]> ranges= params.getSupportedPreviewFpsRange ();
+                    Log.d(TAG, ranges.toString());
+
+                    int winner= ranges.size()-1;
+                    int maxLimit= ranges.get(ranges.size()-1)[1];
+
+                    for (int i= ranges.size()-2; i>= 0; i--) {
+                        if (ranges.get(i)[1]!= maxLimit || ranges.get(i)[0]< 15000) {
+                            break;
+                        }
+                        winner= i;
+                    }
+                    params.setPreviewFpsRange(ranges.get(winner)[0], ranges.get(winner)[1]);
 
                     mCamera.setParameters(params);
                     params = mCamera.getParameters();
@@ -289,6 +324,17 @@ public class MyJavaCameraView extends CameraBridgeViewBase implements PreviewCal
             mFrameChain[mChainIdx].put(0, 0, frame);
             mCameraFrameReady = true;
             this.notify();
+            /*
+             * Disable auto white balance to save some CPU cycles
+             * Do here to allow to run the white balance algorithm once
+             */
+            if (!mWhiteBalanceLockTried && mCamera != null) {
+                Camera.Parameters params = mCamera.getParameters();
+                if (params.isAutoWhiteBalanceLockSupported()) {
+                    params.setAutoWhiteBalanceLock(true);
+                }
+                mWhiteBalanceLockTried= true;
+            }
         }
         if (mCamera != null)
             mCamera.addCallbackBuffer(mBuffer);

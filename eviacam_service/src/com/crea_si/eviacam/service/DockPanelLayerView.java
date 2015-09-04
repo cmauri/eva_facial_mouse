@@ -28,7 +28,6 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -80,27 +79,27 @@ public class DockPanelLayerView extends RelativeLayout
         DISABLED_ALPHA= (float) (r.getColor(R.color.disabled_alpha) >> 24) / 255.0f;
         
         // shared preferences
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences sp= Preferences.getSharedPreferences(context);
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
     
     public void cleanup() {
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences sp= Preferences.getSharedPreferences(getContext());
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
     
     private void updateSettings(SharedPreferences sp) {
         // get values from shared resources
         int dockingEdge= Integer.parseInt(sp.getString(
-                Settings.KEY_DOCKING_PANEL_EDGE, Integer.toString(DOCKING_PANEL_EDGE_DEFAULT)));
+                Preferences.KEY_DOCKING_PANEL_EDGE, Integer.toString(DOCKING_PANEL_EDGE_DEFAULT)));
         
         int gravity= Gravity.START;
         if (dockingEdge == EDGE_RIGHT)  gravity= Gravity.END;
         else if (dockingEdge == EDGE_TOP)    gravity= Gravity.TOP;
         else if (dockingEdge == EDGE_BOTTOM) gravity= Gravity.BOTTOM;
         
-        float size = Settings.getUIElementsSize(sp);
+        float size = Preferences.getUIElementsSize(sp);
         
         if (mDockPanelView != null) {
             removeView(mDockPanelView);
@@ -112,8 +111,8 @@ public class DockPanelLayerView extends RelativeLayout
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(Settings.KEY_DOCKING_PANEL_EDGE) ||
-            key.equals(Settings.KEY_UI_ELEMENTS_SIZE)) {
+        if (key.equals(Preferences.KEY_DOCKING_PANEL_EDGE) ||
+            key.equals(Preferences.KEY_UI_ELEMENTS_SIZE)) {
             updateSettings(sharedPreferences);
         }
     }

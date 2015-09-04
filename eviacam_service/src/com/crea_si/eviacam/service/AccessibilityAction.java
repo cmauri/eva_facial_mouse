@@ -69,9 +69,8 @@ class AccessibilityAction {
         new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.scroll_forward)
     };
 
-    // accessibility actions we are interested on when searching nodes
-    private final int FULL_ACTION_MASK;
-
+    private final AccessibilityService mAccessibilityService;
+    
     // layer view for context menu
     private final ControlsLayerView mControlsLayerView;
     
@@ -81,11 +80,14 @@ class AccessibilityAction {
     // layer view for the scrolling controls
     private final ScrollLayerView mScrollLayerView;
 
+    // handler to execute in the main thread
+    private final Handler mHandler;
+
     // delegate to manage input method interaction
     private final InputMethodAction mInputMethodAction;
 
-    // handler to execute in the main thread
-    private final Handler mHandler;
+    // accessibility actions we are interested on when searching nodes
+    private final int FULL_ACTION_MASK;
 
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
@@ -102,8 +104,9 @@ class AccessibilityAction {
     // is click generation temporarily disabled?
     private boolean mClickDisabled = false;
     
-    public AccessibilityAction (
-            ControlsLayerView cv, DockPanelLayerView dplv, ScrollLayerView slv) {
+    public AccessibilityAction (AccessibilityService as, ControlsLayerView cv, 
+                                DockPanelLayerView dplv, ScrollLayerView slv) {
+        mAccessibilityService= as;
         mControlsLayerView= cv;
         mDockPanelLayerView= dplv;
         mScrollLayerView= slv;
@@ -118,15 +121,13 @@ class AccessibilityAction {
             mControlsLayerView.populateContextMenu(al.action, al.labelId);
             full_action_mask|= al.action;
         }
-        
+
         FULL_ACTION_MASK= full_action_mask;
-        
-        
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AccessibilityService s= EViacamService.getInstance();
-            AccessibilityServiceInfo asi= s.getServiceInfo();
+            AccessibilityServiceInfo asi= mAccessibilityService.getServiceInfo();
             asi.flags|= AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
-            s.setServiceInfo(asi);
+            mAccessibilityService.setServiceInfo(asi);
         }
     }
     
@@ -141,7 +142,7 @@ class AccessibilityAction {
         
         if (mDockPanelLayerView.performClick(idDockPanelAction)) return true;
         
-        AccessibilityService s= EViacamService.getInstance();
+        AccessibilityService s= mAccessibilityService;
         
         switch (idDockPanelAction) {
         case R.id.back_button:
@@ -314,8 +315,7 @@ class AccessibilityAction {
                  * 
                  * [1] http://developer.android.com/reference/android/accessibilityservice/AccessibilityService.html#getWindows()
                  */
-                AccessibilityService s= EViacamService.getInstance();
-                List<AccessibilityWindowInfo> l= s.getWindows();
+                List<AccessibilityWindowInfo> l= mAccessibilityService.getWindows();
                 
                 Rect bounds = new Rect();
                 for (AccessibilityWindowInfo awi : l) {
@@ -485,12 +485,12 @@ class AccessibilityAction {
      * Find recursively the node under (x, y) that accepts some or all
      * actions encoded on the mask
      */
-    private static AccessibilityNodeInfo findActionable (Point p, int actions, AccessibilityNodeInfo root) {
+    private AccessibilityNodeInfo findActionable (Point p, int actions, AccessibilityNodeInfo root) {
         // get root node
-        if (root == null) {
-            root = EViacamService.getInstance().getRootInActiveWindow();
+        if (root == null) { 
+            root = mAccessibilityService.getRootInActiveWindow();
+            if (root == null) return null;
         }
-        if (root == null) return null;
         
         RecursionInfo ri= new RecursionInfo (p, actions);
 
@@ -552,11 +552,10 @@ class AccessibilityAction {
      * @param actions - bitmask of actions
      * @return - list with the node, may be void
      */
-    private static List<AccessibilityNodeInfo> findNodes (int actions) {
+    private List<AccessibilityNodeInfo> findNodes (int actions) {
         final List<AccessibilityNodeInfo> result= new ArrayList<AccessibilityNodeInfo>();
         // get root node
-        final AccessibilityNodeInfo rootNode =
-                EViacamService.getInstance().getRootInActiveWindow();
+        final AccessibilityNodeInfo rootNode = mAccessibilityService.getRootInActiveWindow();
 
         findNodes0 (actions, rootNode, result);
 

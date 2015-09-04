@@ -28,7 +28,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -76,13 +75,13 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         super(c);
         
         // Preferences
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences sp= Preferences.getSharedPreferences(c);
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
     
     private synchronized void updateSettings(SharedPreferences sp) {
-        mSizeMultiplier= Settings.getUIElementsSize(sp);
+        mSizeMultiplier= Preferences.getUIElementsSize(sp);
 
         // Force buttons full refresh
         clearScrollAreas();
@@ -90,13 +89,13 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     }
     
     public void cleanup() {
-        PreferenceManager.getDefaultSharedPreferences(this.getContext()).
+        Preferences.getSharedPreferences(this.getContext()).
             unregisterOnSharedPreferenceChangeListener(this);
     }
     
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
-        if (key.equals(Settings.KEY_UI_ELEMENTS_SIZE)) {
+        if (key.equals(Preferences.KEY_UI_ELEMENTS_SIZE)) {
             updateSettings(sp);
         }
     }

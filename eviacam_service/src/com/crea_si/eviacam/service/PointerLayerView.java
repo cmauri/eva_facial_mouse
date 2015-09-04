@@ -27,7 +27,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
-import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -44,6 +43,7 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
     // Radius of the visual progress feedback (in DIP)
     private static final float PROGRESS_INDICATOR_RADIUS_DIP = 30;
     
+    // default alpha value
     private static final int DEFAULT_ALPHA= 255;
     private final int DISABLED_ALPHA;
     
@@ -75,26 +75,29 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
         DISABLED_ALPHA= c.getResources().getColor(R.color.disabled_alpha) >> 24;
         
         // preferences
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences sp= Preferences.getSharedPreferences(c);
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
     
     public void cleanup() {
-        PreferenceManager.getDefaultSharedPreferences(this.getContext()).
+        Preferences.getSharedPreferences(this.getContext()).
             unregisterOnSharedPreferenceChangeListener(this);
     }
     
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
-        if (key.equals(Settings.KEY_UI_ELEMENTS_SIZE)) {
+        if (key.equals(Preferences.KEY_UI_ELEMENTS_SIZE) ||
+            key.equals(Preferences.KEY_GAMEPAD_TRANSPARENCY)) {
             updateSettings(sp);
         }
     }
     
     private void updateSettings(SharedPreferences sp) {
-        float size= Settings.getUIElementsSize(sp);
+        float size= Preferences.getUIElementsSize(sp);
 
+        mAlphaPointer= (255 * Preferences.getGamepadTransparency(sp)) / 100; 
+        
         // re-scale pointer accordingly
         BitmapDrawable bd = (BitmapDrawable) 
                 getContext().getResources().getDrawable(R.drawable.pointer);

@@ -58,5 +58,19 @@
     <integer name="docking_panel_edge_default">1</integer>
     
     <string name="ui_elements_size_default">1</string>
+    
+    <integer name="gamepad_size_default">1</integer>
+    
+    <integer name="gamepad_location_default">3</integer>
+
+    <string name="gamepad_transparency_default">60</string>
+    
+    <integer name="gamepad_abs_speed_default">10</integer>
+    <integer name="gamepad_abs_speed_min">1</integer>
+    <integer name="gamepad_abs_speed_max">20</integer>
+    
+    <integer name="gamepad_rel_sensitivity_default">10</integer>
+    <integer name="gamepad_rel_sensitivity_min">1</integer>
+    <integer name="gamepad_rel_sensitivity_max">20</integer>
 
 </resources>

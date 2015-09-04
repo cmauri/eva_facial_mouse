@@ -24,7 +24,9 @@ package com.crea_si.eviacam.service;
 
 import org.acra.*; 
 import org.acra.annotation.*; 
+
 import android.app.Application;
+import android.content.SharedPreferences;
 
 @ReportsCrashes( 
     mailTo = "cesar@crea-si.com",
@@ -36,8 +38,18 @@ import android.app.Application;
 )
 
 public class EViacamApplication extends Application {
+    private SharedPreferences mSharedPreferences;
+    
     public void onCreate() {
-        super.onCreate(); 
+        super.onCreate();
         ACRA.init(this);
+    }
+
+    public SharedPreferences getSharedPreferences() {
+        return mSharedPreferences;
+    }
+
+    public void setSharedPreferences(SharedPreferences sp) {
+        mSharedPreferences= sp;
     }
 }

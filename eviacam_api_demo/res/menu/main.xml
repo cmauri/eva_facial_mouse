@@ -1,0 +1,83 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.crea_si.eviacam.api_demo.MainActivity" >
+  
+    <!-- 
+    <item android:id="@+id/action_actions"
+          android:title="Actions" >
+          <menu>
+     -->
+	    
+		    <item
+		        android:id="@+id/action_connect"
+		        android:orderInCategory="100"
+		        android:showAsAction="never"
+		        android:title="Connect"/>
+		
+		    <item
+		        android:id="@+id/action_disconnect"
+		        android:orderInCategory="100"
+		        android:showAsAction="never"
+		        android:title="Disconnect"/>
+		     
+		    <item
+		        android:id="@+id/action_start"
+		        android:orderInCategory="100"
+		        android:showAsAction="never"
+		        android:title="Start"/>
+		
+		    <item
+		        android:id="@+id/action_stop"
+		        android:orderInCategory="100"
+		        android:showAsAction="never"
+		        android:title="Stop"/>
+		     
+		    <item
+		        android:id="@+id/action_register_events"
+		        android:orderInCategory="100"
+		        android:showAsAction="never"
+		        android:title="Register"/>
+		     
+		    <item
+		        android:id="@+id/action_unregister_events"
+		        android:orderInCategory="100"
+		        android:showAsAction="never"
+		        android:title="Unregister"/>
+		     
+		    <item
+		        android:id="@+id/action_gamepad_abs_mode"
+		        android:orderInCategory="100"
+		        android:showAsAction="never"
+		        android:title="Gamepad abs. mode"/>
+		     
+		    <item
+		        android:id="@+id/action_gamepad_rel_mode"
+		        android:orderInCategory="100"
+		        android:showAsAction="never"
+		        android:title="Gamepad rel. mode"/>
+		     
+		    <item
+		        android:id="@+id/action_mouse_mode"
+		        android:orderInCategory="100"
+		        android:showAsAction="never"
+		        android:title="Mouse mode"/>
+		    
+		    <item
+                android:id="@+id/action_preferences"
+                android:orderInCategory="100"
+                android:showAsAction="never"
+                android:title="Preferences"/>
+		    
+		    <item
+                android:id="@+id/action_gamepad_preferences"
+                android:orderInCategory="100"
+                android:showAsAction="never"
+                android:title="Preferences (gamepad only)"/>
+		    
+		    <item
+                android:id="@+id/action_mouse_preferences"
+                android:orderInCategory="100"
+                android:showAsAction="never"
+                android:title="Preferences (mouse only)"/>
+
+</menu>

@@ -62,5 +62,36 @@
     <item>2</item>
 </string-array>
 
+<string-array name="gamepad_location_entries">
+    <item>@string/top_left</item>
+    <item>@string/bottom_left</item>
+    <item>@string/top_center</item>
+    <item>@string/bottom_center</item>
+    <item>@string/top_right</item>
+    <item>@string/bottom_right</item>
+</string-array>
+<string-array name="gamepad_location_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+</string-array>
+
+<string-array name="gamepad_transparency_entries">
+    <item>20 &#65285;</item>
+    <item>40 &#65285;</item>
+    <item>60 &#65285;</item>
+    <item>80 &#65285;</item>
+    <item>100 &#65285;</item>
+</string-array>
+<string-array name="gamepad_transparency_values">
+    <item>20</item>
+    <item>40</item>
+    <item>60</item>
+    <item>80</item>
+    <item>100</item>
+</string-array>
 
 </resources>

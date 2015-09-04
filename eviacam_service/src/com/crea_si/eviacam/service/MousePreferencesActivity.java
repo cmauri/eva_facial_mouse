@@ -25,16 +25,20 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceGroup;
 
 /**
- * The settings activity
+ * The main preferences activity. It is also used for the mouse specific
+ * settings when working in slave mode.
  */
-public class SettingsActivity extends Activity {
-    
+public class MousePreferencesActivity extends Activity {
+    /*
+     * Listener for list preferences
+     */
     private static class ListPreferenceUpdate implements OnPreferenceChangeListener {
 
         private final ListPreference mListPreference;
-        
+
         public ListPreferenceUpdate(ListPreference lp) {
             mListPreference = lp;
         }
@@ -49,35 +53,78 @@ public class SettingsActivity extends Activity {
         }
     }
     
+    /*
+     * The settings fragment
+     */
     public static class SettingsFragment extends PreferenceFragment {
+        // stored whether the activity has been started in slave mode
+        private final boolean mSlaveMode;
+        
+        SettingsFragment (boolean slaveMode) {
+            mSlaveMode= slaveMode;
+        }
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
+            if (mSlaveMode) {
+                // In slave mode use different preference file
+                getPreferenceManager().setSharedPreferencesName(Preferences.FILE_SLAVE_MODE);
+            }
+
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preference_fragment);
-            
+
+            if (mSlaveMode) {
+                /*
+                 * Remove preferences not applicable in slave mode
+                 */
+                PreferenceGroup cat= (PreferenceGroup) getPreferenceScreen().
+                        findPreference("interface_settings");
+                Preference p= getPreferenceScreen().
+                        findPreference(Preferences.KEY_DOCKING_PANEL_EDGE);
+                cat.removePreference(p);
+            }
+
             /**
              * Listeners for list preference entries
              */
-            ListPreference lp = (ListPreference) findPreference(Settings.KEY_DOCKING_PANEL_EDGE);
+            ListPreference lp;
+            if (!mSlaveMode) {
+                lp = (ListPreference) findPreference(Preferences.KEY_DOCKING_PANEL_EDGE);
+                lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
+            }
+
+            lp = (ListPreference) findPreference(Preferences.KEY_TIME_WITHOUT_DETECTION);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
-            
-            lp = (ListPreference) findPreference(Settings.KEY_TIME_WITHOUT_DETECTION);
-            lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
-            
-            lp = (ListPreference) findPreference(Settings.KEY_UI_ELEMENTS_SIZE);
+
+            lp = (ListPreference) findPreference(Preferences.KEY_UI_ELEMENTS_SIZE);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
         }
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*
+         * Check is started for slave mode
+         */
+        String value= getIntent().getDataString();
+        boolean slaveMode= value!= null && value.compareTo("slave_mode")== 0;
+        Bundle extras= getIntent().getExtras();
+        if (extras!= null) {
+            slaveMode= slaveMode || extras.getBoolean("slave_mode", false);
+        }
+
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment())
+                .replace(android.R.id.content, new SettingsFragment(slaveMode))
                 .commit();
+
+        if (slaveMode) {
+            setTitle(getResources().getText(R.string.mouse_preferences));
+        }
     }
 }

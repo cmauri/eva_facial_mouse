@@ -1,0 +1,52 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "23.0.1"
+
+    defaultConfig {
+        applicationId "com.crea_si.eviacam.service"
+        minSdkVersion 16
+        targetSdkVersion 22
+
+       // ndk {
+       //     moduleName "visionpipeline"
+       // }
+    }
+
+    task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
+        ndkDir = project.plugins.findPlugin('com.android.application').getNdkFolder()
+        //on Windows, you need to add ".cmd" after "ndk-build" below
+        commandLine "$ndkDir/ndk-build.cmd",
+                'NDK_PROJECT_PATH=build',
+                'APP_BUILD_SCRIPT=src/main/jni/Android.mk',
+                'NDK_APPLICATION_MK=src/main/jni/Application.mk'
+    }
+
+    task ndkLibsToJar(type: Zip, dependsOn: 'ndkBuild', description: 'Create a JAR of the native libs') {
+        destinationDir new File(buildDir, 'libs')
+        baseName 'ndk-libs'
+        extension 'jar'
+        from(new File(buildDir, 'libs')) { include '**/*.so' }
+        into 'lib/'
+    }
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn ndkLibsToJar
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile project(':openCVLibrary2410')
+    compile project(':input_method_aidl')
+    compile project(':eviacam_api')
+    compile 'com.android.support:support-v4:22.2.1'
+    compile files('libs/acra-4.6.2.jar')
+}

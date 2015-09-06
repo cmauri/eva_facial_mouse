@@ -1,0 +1,4 @@
+include ':openCVLibrary2410'
+include ':eviacam_api'
+include ':input_method_aidl'
+include ':eviacam_service'

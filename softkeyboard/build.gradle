@@ -10,6 +10,13 @@ android {
         targetSdkVersion 22
     }
 
+    // TODO
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false

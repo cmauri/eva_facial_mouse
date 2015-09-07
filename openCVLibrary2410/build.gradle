@@ -9,6 +9,13 @@ android {
         targetSdkVersion 15
     }
 
+    // TODO
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false

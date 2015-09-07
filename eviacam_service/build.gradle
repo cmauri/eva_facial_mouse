@@ -10,8 +10,11 @@ android {
         jni.srcDirs = [] //disable automatic ndk-build call
     }
 
-    lintOptions {
-        abortOnError false
+    // TODO
+    android {
+        lintOptions {
+            abortOnError false
+        }
     }
 
     defaultConfig {

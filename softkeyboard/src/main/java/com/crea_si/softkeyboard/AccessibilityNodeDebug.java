@@ -102,7 +102,7 @@ class AccessibilityNodeDebug {
     
     static
     public void displayFullTree (AccessibilityNodeInfo node) {
-        EVIACAMSOFTKBD.debug("Accesibility tree dump:");
+        EVIACAMSOFTKBD.debug("Accessibility tree dump:");
         
         displayFullTree0(node, "1");
     }

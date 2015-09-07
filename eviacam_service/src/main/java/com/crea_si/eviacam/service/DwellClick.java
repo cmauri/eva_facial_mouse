@@ -56,7 +56,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     private boolean mSoundOnClick;
     
     // if true it keeps generating clicks whilst the pointer is stopped
-    private boolean mConsecutiveCliks;
+    private boolean mConsecutiveClicks;
     
     // audio manager for FX notifications
     AudioManager mAudioManager;
@@ -92,8 +92,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         int dwellArea= mSharedPref.getInt(Preferences.KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
         mDwellAreaSquared= dwellArea * dwellArea;
         mSoundOnClick= mSharedPref.getBoolean(Preferences.KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
-        mConsecutiveCliks= mSharedPref.getBoolean(
-                Preferences.KEY_CONSECUTIVE_CLIKCS, CONSECUTIVE_CLICKS);
+        mConsecutiveClicks = mSharedPref.getBoolean(
+                Preferences.KEY_CONSECUTIVE_CLICKS, CONSECUTIVE_CLICKS);
     }
     
     public void cleanup() {
@@ -104,7 +104,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals(Preferences.KEY_DWELL_TIME) || key.equals(Preferences.KEY_DWELL_AREA) ||
-            key.equals(Preferences.KEY_SOUND_ON_CLICK) || key.equals(Preferences.KEY_CONSECUTIVE_CLIKCS)) {
+            key.equals(Preferences.KEY_SOUND_ON_CLICK) || key.equals(Preferences.KEY_CONSECUTIVE_CLICKS)) {
                 updateSettings();
         }
     }
@@ -161,7 +161,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
                 if (mCountdown.hasFinished()) {
                     playSound ();
                     retval= true;
-                    if (mConsecutiveCliks) {
+                    if (mConsecutiveClicks) {
                         mState= State.POINTER_MOVING;
                     }
                     else {

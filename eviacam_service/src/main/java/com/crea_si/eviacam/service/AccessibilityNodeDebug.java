@@ -128,7 +128,7 @@ class AccessibilityNodeDebug {
     
     static
     public void displayFullTree (AccessibilityNodeInfo node) {
-        EVIACAM.debug("Accesibility tree dump:");
+        EVIACAM.debug("Accessibility tree dump:");
         
         displayFullTree0(node, "1");
     }

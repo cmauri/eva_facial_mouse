@@ -35,7 +35,7 @@ public class ShakeDetector implements OnSharedPreferenceChangeListener {
      * States of the detector
      */
     private static final int NO_SHAKE= 0;
-    private static final int ABOVE_THESHOLD= 1;
+    private static final int ABOVE_THRESHOLD = 1;
     private static final int BOUNCE= 2;
     private static final int BOUNCE_2= 3;
 
@@ -121,13 +121,13 @@ public class ShakeDetector implements OnSharedPreferenceChangeListener {
 
         if (mCurrentState== NO_SHAKE) {
             if (Math.abs(v)>= mThreshold) {
-                mCurrentState= ABOVE_THESHOLD;
+                mCurrentState= ABOVE_THRESHOLD;
                 // signal a shake
                 if (v> 0) result= 1;
                 else result= -1;
             }
         }
-        else if (mCurrentState== ABOVE_THESHOLD) {
+        else if (mCurrentState== ABOVE_THRESHOLD) {
             // Continue following until there is direction change
             if (mLastValue> 0) {
                 if (mLastValue> v) mCurrentState= BOUNCE;

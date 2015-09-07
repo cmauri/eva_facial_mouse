@@ -58,7 +58,7 @@ public class SplashActivity extends Activity {
         public void onManagerConnected(int status) {
             switch (status) {
             case LoaderCallbackInterface.SUCCESS:
-                manageOpenCVInstallSucess();
+                manageOpenCVInstallSuccess();
                 break;
             case LoaderCallbackInterface.INSTALL_CANCELED:
                 manageOpenCVInstallCancel();
@@ -70,7 +70,7 @@ public class SplashActivity extends Activity {
     };
     
     /** Handles the case when openCV has been properly installed */
-    private void manageOpenCVInstallSucess() {
+    private void manageOpenCVInstallSuccess() {
         EVIACAM.debug("SplashActivity: openCV loaded successfully");
 
         sOpenCVReady= true;

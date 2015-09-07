@@ -69,7 +69,7 @@ public class InputViewManager {
      * Select the layout that will be enabled when required calling 
      * enableSelectedLayout
      * 
-     * @param type 
+     * @param type type of layout
      */
     public void selectLayout(int type) {
         if (type == mCurrentLayout) return;
@@ -139,7 +139,7 @@ public class InputViewManager {
     /**
      * Create the KeyboardView
      * 
-     * @param listener 
+     * @param listener the listener
      * @return the view
      */
     public View createView(KeyboardView.OnKeyboardActionListener listener) {

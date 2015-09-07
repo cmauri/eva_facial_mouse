@@ -373,7 +373,7 @@ public class DockPanelLayerView extends RelativeLayout
     /**
      * Enable or disable faded appearance of the buttons 
      * 
-     * @param value
+     * @param value true for faded appearance
      */
     public void setClickDisabledAppearance (boolean value) {
         mClickDisabledAppearance= value;

@@ -38,7 +38,7 @@ class InputMethodAction implements ServiceConnection {
     private static final String REMOTE_PACKAGE= "com.crea_si.softkeyboard";
     private static final String REMOTE_ACTION= REMOTE_PACKAGE + ".RemoteBinderService";
     
-    // period (in milliseconds) to try to rebing again to the IME
+    // period (in milliseconds) to try to rebind again to the IME
     private static final int BIND_RETRY_PERIOD = 2000;
     
     private final Context mContext;
@@ -49,7 +49,7 @@ class InputMethodAction implements ServiceConnection {
     private IClickableIME mRemoteService;
     
     // time stamp of the last time the thread ran
-    private long mLastBindAttempTimeStamp= 0;
+    private long mLastBindAttemptTimeStamp = 0;
     
     public InputMethodAction(Context c) {
         mContext= c;
@@ -71,8 +71,6 @@ class InputMethodAction implements ServiceConnection {
     /**
      * Bind to the remote IME when needed
      * 
-     * @return true if the bind is alive, false otherwise
-     * 
      * TODO: support multiple compatible IMEs
      * TODO: provide feedback to the user 
      */
@@ -85,13 +83,13 @@ class InputMethodAction implements ServiceConnection {
          */
         long tstamp= System.currentTimeMillis();
         
-        if (tstamp - mLastBindAttempTimeStamp < BIND_RETRY_PERIOD) {
+        if (tstamp - mLastBindAttemptTimeStamp < BIND_RETRY_PERIOD) {
             return;
         }
 
-        mLastBindAttempTimeStamp= tstamp;
+        mLastBindAttemptTimeStamp = tstamp;
         
-        EVIACAM.debug("Attemp to bind to remote IME");
+        EVIACAM.debug("Attempt to bind to remote IME");
         Intent intent= new Intent(REMOTE_ACTION);
         intent.setPackage(REMOTE_PACKAGE);
         try {

@@ -30,7 +30,7 @@ class ViewUtils {
     /**
      * Given a view, finds recursively a view with the point inside and which have ID
      * @param p - coordinates of point 
-     * @param view - view object to start search
+     * @param v - view object to start search
      * @return the view which meets these conditions, null otherwise
      */
     public static View findViewWithIdBelowPoint(Point p, View v) {

@@ -132,7 +132,6 @@ public class EngineManager implements
      * Return the slave mode engine
      * 
      * @param s service which instantiates the engine
-     * @param submode of operation, see {@link com.crea_si.eviacam.service.SlaveModeEngine} class
      * @return a reference to the engine interface or null if cannot be created (i.e. accessibility
      *           service engine already instantiated).
      */

@@ -61,7 +61,7 @@ public class SlaveMode implements ServiceConnection {
      * @param callback which will receive the instance of a SlaveMode class
      */
     public static void connect(Context c, SlaveModeConnection callback) {
-        Log.d(TAG, "Attemp to bind to EViacam API");
+        Log.d(TAG, "Attempt to bind to EViacam API");
         Intent intent= new Intent(REMOTE_SERVICE);
         intent.setPackage(REMOTE_PACKAGE);
         try {
@@ -150,7 +150,7 @@ public class SlaveMode implements ServiceConnection {
     /**
      * Register the listener for gamepad events
      * 
-     * @param listener
+     * @param listener the listener
      * @return true if registration succeeded, false otherwise
      */
     public boolean registerGamepadListener(IGamepadEventListener listener) {
@@ -178,7 +178,7 @@ public class SlaveMode implements ServiceConnection {
     /**
      * Register the listener for mouse events
      * 
-     * @param listener
+     * @param listener the listener
      * @return true if registration succeeded, false otherwise
      */
     public boolean registerMouseListener(IMouseEventListener listener) {

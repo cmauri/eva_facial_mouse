@@ -87,7 +87,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         int acceleration= mSharedPref.getInt(Preferences.KEY_ACCELERATION, ACCELERATION_MIN);
         setAcceleration(acceleration);
         int motionSmoothing= mSharedPref.getInt(Preferences.KEY_MOTION_SMOOTHING, MOTION_SMOOTHING_MIN);
-        setMotionSmoothning (motionSmoothing);
+        setMotionSmoothing(motionSmoothing);
         mMotionThreshold= mSharedPref.getInt(Preferences.KEY_MOTION_THRESHOLD, MOTION_THRESHOLD_MIN);
     }
     
@@ -164,7 +164,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         }
     }
 
-    private void setMotionSmoothning (int smoothness) {
+    private void setMotionSmoothing(int smoothness) {
         if (smoothness< MOTION_SMOOTHING_MIN) smoothness= MOTION_SMOOTHING_MIN;
         else if (smoothness> MOTION_SMOOTHING_MAX) smoothness= MOTION_SMOOTHING_MAX;
         mLowPassFilterWeight= (float) Math.log10((double) smoothness + 1);

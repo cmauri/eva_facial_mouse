@@ -27,7 +27,7 @@ import android.view.accessibility.AccessibilityWindowInfo;
 class AccessibilityWindowDebug {
     static
     public void displayFullWindowTree (List<AccessibilityWindowInfo> l) {
-        EVIACAM.debug("Accesibility window tree dump:");
+        EVIACAM.debug("Accessibility window tree dump:");
         int i= 1;
                 
         for (AccessibilityWindowInfo w : l) {

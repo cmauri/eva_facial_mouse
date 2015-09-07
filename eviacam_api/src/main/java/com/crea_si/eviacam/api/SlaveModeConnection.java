@@ -20,6 +20,6 @@ package com.crea_si.eviacam.api;
  * eviacam service in slave mode
  */
 public interface SlaveModeConnection {
-    public void onConnected(SlaveMode connection);
-    public void onDisconnected();
+    void onConnected(SlaveMode connection);
+    void onDisconnected();
 }

@@ -22,5 +22,5 @@ package com.crea_si.eviacam.service;
 import android.view.accessibility.AccessibilityEvent;
 
 interface AccessibilityServiceModeEngine extends Engine {
-    public void onAccessibilityEvent(AccessibilityEvent event);
+    void onAccessibilityEvent(AccessibilityEvent event);
 }

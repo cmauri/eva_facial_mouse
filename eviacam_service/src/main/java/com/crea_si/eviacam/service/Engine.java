@@ -22,8 +22,8 @@ package com.crea_si.eviacam.service;
 import android.content.res.Configuration;
 
 interface Engine {
-    public void onConfigurationChanged(Configuration newConfig);
-    public boolean start();
-    public void stop();
-    public void cleanup();
+    void onConfigurationChanged(Configuration newConfig);
+    boolean start();
+    void stop();
+    void cleanup();
 }

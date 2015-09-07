@@ -22,5 +22,5 @@
 import org.opencv.core.Mat;
 
 interface FrameProcessor {
-    public void processFrame (Mat rgba);
+    void processFrame(Mat rgba);
 }

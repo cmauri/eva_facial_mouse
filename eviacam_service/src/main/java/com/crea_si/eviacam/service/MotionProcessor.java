@@ -22,8 +22,8 @@ package com.crea_si.eviacam.service;
 import android.graphics.PointF;
 
 interface MotionProcessor {
-    public void processMotion (PointF motion);
-    public void pause();
-    public void resume();
-    public void cleanup();
+    void processMotion(PointF motion);
+    void pause();
+    void resume();
+    void cleanup();
 }

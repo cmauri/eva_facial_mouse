@@ -2,11 +2,7 @@
     package="com.crea_si.softkeyboard"
     android:versionCode="7"
     android:versionName="0.9">
-    
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="22" />
-    
+
     <application
         android:name=".SoftKeyboardApplication"
         android:allowBackup="true"

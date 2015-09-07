@@ -2,8 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-#include $(OPENCV_ANDROID_SDK)/native/jni/OpenCV.mk
-include G:/Projectes/lib/OpenCV-2.4.10-android-sdk/native/jni/OpenCV.mk
+include $(OPENCV_ANDROID_SDK)/native/jni/OpenCV.mk
 
 LOCAL_MODULE    := visionpipeline
 LOCAL_SRC_FILES := crvimage.cpp \

@@ -1,10 +1,11 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
     buildToolsVersion "23.0.1"
 
-    //useDeprecatedNdk=true
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs' //set .so files location to libs instead of jniLibs
         jni.srcDirs = [] //disable automatic ndk-build call
@@ -27,15 +28,25 @@ android {
         // }
     }
 
+    def ndkProjectPath="src/main"
+
+    // file: local.properties should have something like this:
+    // ndk.dir=C\:\\Program_Files\\Android\\android-ndk-r10e
+    // sdk.dir=C\:\\Program Files (x86)\\Android\\android-sdk
     task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
-        //ndkDir = project.plugins.findPlugin('com.android.application').getNdkFolder()
-        //ndkDir = 'C:/Program_Files/Android/android-ndk-r10e'
-        //on Windows, you need to add ".cmd" after "ndk-build" below
-        //commandLine "$ndkDir/ndk-build.cmd",
-        commandLine "C:/Program_Files/Android/android-ndk-r10e/ndk-build.cmd",
-                'NDK_PROJECT_PATH=src/main',
-                'APP_BUILD_SCRIPT=src/main/jni/Android.mk',
-                'NDK_APPLICATION_MK=src/main/jni/Application.mk'
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        def ndkDir = properties.getProperty('ndk.dir')
+        def ndkCmd = ''
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            ndkCmd = 'ndk-build.cmd'
+        } else {
+            ndkCmd = 'ndk-build'
+        }
+        commandLine "${ndkDir}/${ndkCmd}",
+                "NDK_PROJECT_PATH=${ndkProjectPath}",
+                "APP_BUILD_SCRIPT=${ndkProjectPath}/jni/Android.mk",
+                "NDK_APPLICATION_MK=${ndkProjectPath}/jni/Application.mk"
     }
 
     task ndkLibsToJar(type: Zip, dependsOn: 'ndkBuild', description: 'Create a JAR of the native libs') {
@@ -48,6 +59,11 @@ android {
 
     tasks.withType(JavaCompile) {
         compileTask -> compileTask.dependsOn ndkLibsToJar
+    }
+
+    clean.doFirst {
+        delete "${ndkProjectPath}/libs"
+        delete "${ndkProjectPath}/obj"
     }
 
     buildTypes {

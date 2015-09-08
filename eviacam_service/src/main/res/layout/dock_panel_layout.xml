@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ /*
+ ** Enable Viacam for Android, a camera based mouse emulator
+ **
+ ** Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/collapsible_view"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="start"
+    android:background="@color/half_alpha"
+    android:orientation="vertical" >
+
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_back"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/back_button" />
+
+    <ImageButton
+        android:id="@+id/home_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_home"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/home_button" />
+    
+    <ImageButton
+        android:id="@+id/recents_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_recents"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/recents_button" />
+    
+    <ImageButton
+        android:id="@+id/notifications_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_notifications"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/notifications_button" />
+    
+    <ImageButton
+        android:id="@+id/softkeyboard_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_keyboard"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/softkeyboard_button" />
+
+     <ImageButton
+        android:id="@+id/scroll_refresh_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_scroll_refresh"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/scroll_refresh_button" />
+
+     <ImageButton
+        android:id="@+id/disable_click_button"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:src="@drawable/ic_disable_click"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/disable_click_button" />
+
+</LinearLayout>

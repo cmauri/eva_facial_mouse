@@ -415,7 +415,12 @@ public class EngineManager implements
 
         // call jni part to track face
         mMotion.x= mMotion.y= 0.0f;
-        VisionPipeline.processFrame(rgba.getNativeObjAddr(), phyRotation, mMotion);
+        boolean faceDetected=
+                VisionPipeline.processFrame(rgba.getNativeObjAddr(), phyRotation, mMotion);
+
+        if (faceDetected) {
+            EVIACAM.debug("Face detected");
+        }
 
         // compensate mirror effect
         mMotion.x= -mMotion.x;

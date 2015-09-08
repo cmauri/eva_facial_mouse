@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- #include <jni.h>
+#include <jni.h>
 #include <opencv2/core/core.hpp>
 
 #include "eviacam.h"
@@ -54,7 +54,7 @@ JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_cleanup
 	g_visionPipeline= NULL;
 }
 
-JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_processFrame
+JNIEXPORT jboolean JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_processFrame
 	(JNIEnv* env, jobject, jlong addrFrame, jint rotation, jobject jPoint)
 {
 	assert (g_visionPipeline);
@@ -63,13 +63,15 @@ JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_processF
 
 	IplImage iplimg = *(cv::Mat*) addrFrame;
 	CIplImage frame(&iplimg);
-	g_visionPipeline->processImage(frame, rotation, xVel, yVel);
+	jboolean result= g_visionPipeline->processImage(frame, rotation, xVel, yVel);
 
 	jclass pointClass = env->GetObjectClass(jPoint);
 	jfieldID jXVelId = env->GetFieldID(pointClass, "x", "F");
 	jfieldID jYVelId = env->GetFieldID(pointClass, "y", "F");
 	env->SetFloatField(jPoint, jXVelId, xVel);
 	env->SetFloatField(jPoint, jYVelId, yVel);
+
+	return result;
 }
 
-}
+} // extern "C"

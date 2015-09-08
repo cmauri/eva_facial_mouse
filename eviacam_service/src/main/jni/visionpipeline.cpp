@@ -109,13 +109,13 @@ void drawCorners(CIplImage &image, CvPoint2D32f corners[], int num_corners, CvSc
 	}
 }
 
-void VisionPipeline::newTracker(CIplImage &image, int rotation, float &xVel, float &yVel)
+bool VisionPipeline::motionTracker(CIplImage &image, int rotation, float &xVel, float &yVel)
 {
 	bool updateFeatures = false;
+	bool faceDetected= false;
 
 	// Check if face detected and update floatTrackArea as needed
 	{
-	bool faceDetected= false;
 	CvSize frameSize;
 	CvRect faceRegion;
 	if (m_faceDetection.retrieveDetectionInfo(faceDetected, frameSize, faceRegion) && faceDetected) {
@@ -277,11 +277,15 @@ void VisionPipeline::newTracker(CIplImage &image, int rotation, float &xVel, flo
 
 	// draw corners
 	drawCorners(image, m_corners, m_corner_count, cvScalar(0, 255, 0), rotation);
+
+	return faceDetected;
 }
 
 
 bool VisionPipeline::processImage (CIplImage& image, int rotation, float& xVel, float& yVel)
 {
+	bool faceDetected= false;
+
 	try {
 		bool bufferReallocation= false;
 
@@ -318,15 +322,10 @@ bool VisionPipeline::processImage (CIplImage& image, int rotation, float& xVel, 
 			break;
 		}
 
-		/*
-		static char count= 0;
-		if (count++== 10) {
-			cvSaveImage ("/mnt/sdcard/Download/frame.png", m_imgCurr.ptr());
-		}
-		*/
-
 		// process frame. skip if buffer reallocated
-		if (!bufferReallocation) newTracker(image, rotation, xVel, yVel);
+		if (!bufferReallocation) {
+			faceDetected= motionTracker(image, rotation, xVel, yVel);
+		}
 		else LOGV("Skip frame");
 
 		// Store current image as previous
@@ -337,7 +336,7 @@ bool VisionPipeline::processImage (CIplImage& image, int rotation, float& xVel, 
 		exit(1);
 	}
 
-	return false;
+	return faceDetected;
 }
 
 }

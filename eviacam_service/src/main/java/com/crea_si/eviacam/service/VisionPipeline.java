@@ -22,21 +22,27 @@
 import android.graphics.PointF;
 
 public class VisionPipeline {
-    // initialize JNI part. must be called after initializing OpenCV and 
-    // before processing frames 
+    /**
+     * Initialize JNI part.
+     * Must be called after initializing OpenCV and before start processing frames
+     * @param cascadeName file path where the haar-cascade file resides
+     */
     public static native void init (String cascadeName);
-    
-    // clean-up JNI part
+
+    /**
+     * Clean-up JNI part
+     */
     public static native void cleanup ();
-    
-    /*
-     * entry point to process camera frames
+
+    /**
+     * Entry point to process camera frames
      *
-     * rotation: rotation (clockwise) in degrees that needs to be applied to the image
+     * @param matAddrGr OpenCV image pointer (mat.getNativeObjAddr())
+     * @param rotation rotation (clockwise) in degrees that needs to be applied to the image
      *     before processing it so that the subject appears right.
      *     Valid values: 0, 90, 180, 270.
-     *
-     * vel is updated with the extracted motion for each axis 
+     * @param vel is updated with the extracted motion for each axis
+     * @return true if face detected in the last frame (or few frames ago)
      */
-    public static native void processFrame (long matAddrGr, int rotation, PointF vel);
+    public static native boolean processFrame (long matAddrGr, int rotation, PointF vel);
 }

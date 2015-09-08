@@ -32,16 +32,17 @@ public:
 	VisionPipeline (const char* cascadePath);
 	virtual ~VisionPipeline();
 
-	/*
-	 * entry point to process camera frames
-	 *
-	 * rotation: rotation (clockwise) in degrees that needs to be applied to the image
-	 *     before processing it so that the subject appears right.
-	 *     Valid values: 0, 90, 180, 270.
-	 *
-	 * xVel, yVel: output parameters where extracted motion is detected
-	 */
-
+	/**
+	* Entry point to process camera frames
+	*
+	* @param image reference to an OpenCV image
+	* @param rotation rotation (clockwise) in degrees that needs to be applied to the image
+	*     before processing it so that the subject appears right.
+	*     Valid values: 0, 90, 180, 270.
+	* @param xVel updated with motion extracted in the X axis
+	* @param yVel updated with motion extracted in the X axis
+	* @return true if face detected in the last frame (or few frames ago)
+	*/
 	bool processImage (CIplImage& image, int rotation, float& xVel, float& yVel);
 
 	bool getTrackFace () const { return m_trackFace; }
@@ -71,7 +72,7 @@ private:
 
 	// return true if buffers reallocated
 	bool allocWorkingSpace (int width, int height);
-	void newTracker(CIplImage &image, int rotation, float &xVel, float &yVel);
+	bool motionTracker(CIplImage &image, int rotation, float &xVel, float &yVel);
 };
 
 }

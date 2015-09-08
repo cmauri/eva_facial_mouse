@@ -8,7 +8,7 @@ import android.util.Log;
 public class EVIACAMSOFTKBD {
     public static final String TAG = EVIACAMSOFTKBD.class.getSimpleName();
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = BuildConfig.DEBUG;
 
     private static final boolean ATTACH_DEBUGGER = DEBUG;
 

@@ -189,8 +189,7 @@ public class InputViewManager {
      * Handle backspace key
      */
     public boolean handleBack() {
-        if (mInputView== null) return false;
-        return mInputView.handleBack();
+        return mInputView != null && mInputView.handleBack();
     }
     
     /*
@@ -279,8 +278,7 @@ public class InputViewManager {
      */
     public boolean isShifted() {
         if (mCurrentLayout != QWERTY_LAYOUT) return false;
-        if (mInputView == null) return false;
-        return mInputView.isShifted();
+        return mInputView != null && mInputView.isShifted();
     }
     
     /*

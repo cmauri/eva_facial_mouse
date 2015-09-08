@@ -89,12 +89,8 @@ public class CameraListener implements CvCameraViewListener2 {
             throw e;
         }
         finally {
-            try {
-                if (is != null) is.close();
-                if (os != null) os.close();
-            } catch (IOException e) {
-                throw e;
-            }
+            if (is != null) is.close();
+            if (os != null) os.close();
         }
 
         return outFile;

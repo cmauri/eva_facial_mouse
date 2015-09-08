@@ -57,6 +57,10 @@ public class Preferences {
         return Float.parseFloat(sp.getString(KEY_UI_ELEMENTS_SIZE, null));
     }
 
+    public static int getTimeWithoutDetection(SharedPreferences sp) {
+        return Integer.parseInt(sp.getString(KEY_TIME_WITHOUT_DETECTION, null));
+    }
+
     /**
      * Gamepad locations
      */

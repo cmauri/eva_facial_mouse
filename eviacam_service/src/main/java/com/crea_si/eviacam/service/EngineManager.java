@@ -86,6 +86,9 @@ public class EngineManager implements
     // root overlay view
     private OverlayView mOverlayView;
 
+    // the camera viewer
+    private CameraLayerView mCameraLayerView;
+
     // object in charge of capturing & processing frames
     private CameraListener mCameraListener;
 
@@ -94,6 +97,9 @@ public class EngineManager implements
 
     // reference to the notification management stuff
     private ServiceNotification mServiceNotification;
+
+    // stores when the last detection of a face occurred
+    private FaceDetectionCountdown mFaceDetectionCountdown;
 
     public static EngineManager getInstance() {
         if (sEngineManager== null) {
@@ -185,16 +191,16 @@ public class EngineManager implements
         mOverlayView= new OverlayView(mService);
         mOverlayView.setVisibility(View.INVISIBLE);
         
-        CameraLayerView cameraLayer= new CameraLayerView(mService);
-        mOverlayView.addFullScreenLayer(cameraLayer);
+        mCameraLayerView= new CameraLayerView(mService);
+        mOverlayView.addFullScreenLayer(mCameraLayerView);
      
         /*
          * Create specific engine
          */
         if (mMode == A11Y_SERVICE_MODE) {
             // Start as accessibility service in mouse emulation mode
-            mMotionProcessor= mMouseEmulationEngine= new MouseEmulationEngine(
-                    (AccessibilityService) mService, mOverlayView);
+            mMotionProcessor= mMouseEmulationEngine=
+                    new MouseEmulationEngine(mService, mOverlayView);
         }
         else {
             /*
@@ -210,7 +216,7 @@ public class EngineManager implements
          * camera and machine vision stuff
          */
         mCameraListener= new CameraListener(mService, this);
-        cameraLayer.addCameraSurface(mCameraListener.getCameraSurface());
+        mCameraLayerView.addCameraSurface(mCameraListener.getCameraSurface());
 
         // orientation manager
         mOrientationManager= new OrientationManager(mService,
@@ -218,6 +224,9 @@ public class EngineManager implements
 
         // Service notification listener
         mServiceNotification= new ServiceNotification(mService, this);
+
+        // Face detection countdown
+        mFaceDetectionCountdown= new FaceDetectionCountdown(mService);
         
         mCurrentState= STATE_STOPPED;
     }
@@ -270,6 +279,8 @@ public class EngineManager implements
         mService.startForeground(mServiceNotification.getNotificationId(), 
                 mServiceNotification.getNotification(mService));
 
+        mFaceDetectionCountdown.reset();
+
         mCurrentState= STATE_RUNNING;
     }
 
@@ -298,6 +309,8 @@ public class EngineManager implements
         // make sure that UI changes during pause (e.g. docking panel edge) are applied
         mOverlayView.requestLayout();
         mCurrentState= STATE_RUNNING;
+
+        mFaceDetectionCountdown.reset();
     }    
 
     @Override
@@ -319,7 +332,10 @@ public class EngineManager implements
         if (mCurrentState == STATE_DISABLED) return;
         
         stop();
-        
+
+        mFaceDetectionCountdown.cleanup();
+        mFaceDetectionCountdown= null;
+
         mServiceNotification.cleanup();
         mServiceNotification= null;
         
@@ -332,7 +348,9 @@ public class EngineManager implements
         mMotionProcessor= null;
         mMouseEmulationEngine= null;
         mGamepadEngine= null;
-        
+
+        mCameraLayerView= null;
+
         mOverlayView.cleanup();
         mOverlayView= null;
         
@@ -420,7 +438,10 @@ public class EngineManager implements
 
         if (faceDetected) {
             EVIACAM.debug("Face detected");
+            mFaceDetectionCountdown.reset();
         }
+
+        mCameraLayerView.updateFaceDetectorStatus(mFaceDetectionCountdown.getElapsedPercent());
 
         // compensate mirror effect
         mMotion.x= -mMotion.x;

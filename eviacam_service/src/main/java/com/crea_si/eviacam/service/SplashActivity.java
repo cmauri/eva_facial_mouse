@@ -20,7 +20,7 @@
 package com.crea_si.eviacam.service;
 
 import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.MyCameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.MyJavaCameraView;
 import org.opencv.android.MyOpenCVLoader;
@@ -44,7 +44,7 @@ public class SplashActivity extends Activity {
     private static final int SPLASH_DISPLAY_LENGTH = 4000;
     
     /** openCV capture & view facility */ 
-    private CameraBridgeViewBase mCameraView;
+    private MyCameraBridgeViewBase mCameraView;
     
     /** 
      * Stores whether openCV has been initialized. 
@@ -139,7 +139,7 @@ public class SplashActivity extends Activity {
         else {
 
             /** Tries to initialize openCV */ 
-            mCameraView= new MyJavaCameraView(this, CameraBridgeViewBase.CAMERA_ID_FRONT);
+            mCameraView= new MyJavaCameraView(this, MyCameraBridgeViewBase.CAMERA_ID_FRONT);
             MyOpenCVLoader.initAsync(MyOpenCVLoader.OPENCV_VERSION_2_4_9, this, mLoaderCallback);
         }
     }

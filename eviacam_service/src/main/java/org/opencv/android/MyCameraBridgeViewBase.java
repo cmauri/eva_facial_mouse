@@ -28,7 +28,7 @@ import android.view.SurfaceView;
  * frame to the screen.
  * The clients shall implement CvCameraViewListener.
  */
-public abstract class CameraBridgeViewBase extends SurfaceView implements SurfaceHolder.Callback {
+public abstract class MyCameraBridgeViewBase extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "CameraBridge";
     private static final int MAX_UNSPECIFIED = -1;
@@ -55,7 +55,7 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
     public static final int CAMERA_ID_BACK  = 99;
     public static final int CAMERA_ID_FRONT = 98;
 
-    public CameraBridgeViewBase(Context context, int cameraId) {
+    public MyCameraBridgeViewBase(Context context, int cameraId) {
         super(context);
         mCameraIndex = cameraId;
         getHolder().addCallback(this);
@@ -63,7 +63,7 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
         mMaxHeight = MAX_UNSPECIFIED;
     }
 
-    public CameraBridgeViewBase(Context context, AttributeSet attrs) {
+    public MyCameraBridgeViewBase(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         int count = attrs.getAttributeCount();

@@ -26,11 +26,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
+import org.opencv.android.MyCameraBridgeViewBase;
+import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.MyJavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
-import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
+import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.MyOpenCVLoader;
 import org.opencv.core.Mat;
 
@@ -49,7 +49,7 @@ public class CameraListener implements CvCameraViewListener2 {
     private final FrameProcessor mFrameProcessor;
     
     // opencv capture&view facility 
-    private final CameraBridgeViewBase mCameraView;
+    private final MyCameraBridgeViewBase mCameraView;
     
     // physical orientation of the camera (0, 90, 180, 270)
     private final int mCameraOrientation;
@@ -156,7 +156,7 @@ public class CameraListener implements CvCameraViewListener2 {
         mCameraOrientation= cameraOrientation;
     
         // create capture view
-        mCameraView= new MyJavaCameraView(mContext, CameraBridgeViewBase.CAMERA_ID_FRONT);
+        mCameraView= new MyJavaCameraView(mContext, MyCameraBridgeViewBase.CAMERA_ID_FRONT);
         
         // set CameraBridgeViewBase parameters        
         // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)

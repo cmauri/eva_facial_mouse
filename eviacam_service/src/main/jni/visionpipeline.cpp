@@ -109,6 +109,31 @@ void drawCorners(CIplImage &image, CvPoint2D32f corners[], int num_corners, CvSc
 	}
 }
 
+static
+void drawCross(CIplImage &image, const cv::Point& p,
+			   CvScalar color, int thickness= 1, int radius= 2)
+{
+	CvPoint p1, p2;
+
+	/*
+	 * Horizontal line
+	 */
+	p1.x= p.x - radius;
+	p1.y= p.y;
+	p2.x= p.x + radius;
+	p2.y= p.y;
+	cvLine(image.ptr(), p1, p2, color, thickness);
+
+	/*
+ 	 * Vertical line
+	 */
+	p1.x= p.x;
+	p1.y= p.y - radius;
+	p2.x= p.x;
+	p2.y= p.y + radius;
+	cvLine(image.ptr(), p1, p2, color, thickness);
+}
+
 bool VisionPipeline::motionTracker(CIplImage &image, int rotation, float &xVel, float &yVel)
 {
 	bool updateFeatures = false;
@@ -261,6 +286,8 @@ bool VisionPipeline::motionTracker(CIplImage &image, int rotation, float &xVel, 
 	// Provide feedback
 	//
 
+	// TODO: enable this block only in debug mode
+	/*
 	// draw tracking area
 	cv::Mat tmp(image.ptr());
 	cv::rectangle(tmp,
@@ -277,6 +304,13 @@ bool VisionPipeline::motionTracker(CIplImage &image, int rotation, float &xVel, 
 
 	// draw corners
 	drawCorners(image, m_corners, m_corner_count, cvScalar(0, 255, 0), rotation);
+	 */
+
+	// draw a cross in the center of the tracking area
+	drawCross(image,
+			  cvPoint(trackAreaLocation.x + trackAreaSize.width/2,
+					  trackAreaLocation.y + trackAreaSize.height/2),
+			  cvScalar(255, 255, 255), 10, 25);
 
 	return faceDetected;
 }

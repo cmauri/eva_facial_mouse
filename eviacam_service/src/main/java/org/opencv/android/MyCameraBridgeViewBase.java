@@ -3,7 +3,6 @@ package org.opencv.android;
 import java.util.List;
 
 import org.opencv.R;
-import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
@@ -15,6 +14,7 @@ import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -40,6 +40,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     private CvCameraViewListener2 mListener;
     private boolean mSurfaceExist;
     private Object mSyncObject = new Object();
+    private int mPreviewRotation= 0;
 
     protected int mFrameWidth;
     protected int mFrameHeight;
@@ -87,6 +88,10 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
      */
     public void setCameraIndex(int cameraIndex) {
         this.mCameraIndex = cameraIndex;
+    }
+
+    public void setPreviewRotation(int rotation) {
+        mPreviewRotation= rotation;
     }
 
     public interface CvCameraViewListener {
@@ -374,6 +379,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         }
     }
 
+    private Matrix mMatrix = new Matrix();
     /**
      * This method shall be called by the subclasses when they have valid
      * object and want it to be delivered to external client (via callback) and
@@ -404,6 +410,13 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         if (bmpValid && mCacheBitmap != null) {
             Canvas canvas = getHolder().lockCanvas();
             if (canvas != null) {
+                /*
+                 * Set rotation matrix
+                 */
+                mMatrix.reset();
+                mMatrix.postRotate((float) mPreviewRotation, getWidth() / 2, getHeight() / 2);
+                canvas.setMatrix(mMatrix);
+
                 canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
                 //Log.d(TAG, "mStretch value: " + mScale);
 

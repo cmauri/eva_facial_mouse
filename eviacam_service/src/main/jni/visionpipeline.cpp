@@ -308,8 +308,11 @@ bool VisionPipeline::motionTracker(CIplImage &image, int rotation, float &xVel, 
 
 	// draw a cross in the center of the tracking area
 	drawCross(image,
-			  cvPoint(trackAreaLocation.x + trackAreaSize.width/2,
-					  trackAreaLocation.y + trackAreaSize.height/2),
+			  rotatePoint(
+					  rotation,
+					  cvPoint(trackAreaLocation.x + trackAreaSize.width/2,
+							  trackAreaLocation.y + trackAreaSize.height/2),
+					  image.Width(), image.Height()),
 			  cvScalar(255, 255, 255), 10, 25);
 
 	return faceDetected;

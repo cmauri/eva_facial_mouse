@@ -53,7 +53,7 @@ public class CameraListener implements CvCameraViewListener2 {
     
     // physical orientation of the camera (0, 90, 180, 270)
     private final int mCameraOrientation;
-   
+
     // callback for camera initialization
     private final BaseLoaderCallback mLoaderCallback;
     
@@ -96,6 +96,7 @@ public class CameraListener implements CvCameraViewListener2 {
         return outFile;
     }
 
+    // Constructor
     public CameraListener(Context c, FrameProcessor fp) {
         mContext= c;
         mFrameProcessor= fp;
@@ -131,7 +132,7 @@ public class CameraListener implements CvCameraViewListener2 {
                 }
             }};
 
-        /**
+        /*
          * The orientation of the camera image. The value is the angle that the camera image needs 
          * to be rotated clockwise so it shows correctly on the display in its natural orientation. 
          * It should be 0, 90, 180, or 270.
@@ -141,7 +142,6 @@ public class CameraListener implements CvCameraViewListener2 {
          * sensor is aligned with the right edge of the screen in natural orientation, the value 
          * should be 90. If the top side of a front-facing camera sensor is aligned with the right 
          * of the screen, the value should be 270.
-         * 
          */
         // TODO: display error when no front camera detected
         int cameraOrientation= 0;
@@ -187,6 +187,17 @@ public class CameraListener implements CvCameraViewListener2 {
         return mCameraOrientation;
     }
 
+    /**
+     * Sets the rotation to perfom to the camera image before is displayed
+     * in the preview surface
+     *
+     * @param rotation rotation to perform (clockwise) in degrees
+     *                 legal values: 0, 90, 180, or 270
+     */
+    public void setPreviewRotation (int rotation) {
+        mCameraView.setPreviewRotation(rotation);
+    }
+
     @Override
     public void onCameraViewStarted(int width, int height) {
         EVIACAM.debug("onCameraViewStarted");
@@ -202,8 +213,6 @@ public class CameraListener implements CvCameraViewListener2 {
      
     /*
      * called each time new frame is grabbed 
-     * 
-     * @see org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2#onCameraFrame(org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame)
      */
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {

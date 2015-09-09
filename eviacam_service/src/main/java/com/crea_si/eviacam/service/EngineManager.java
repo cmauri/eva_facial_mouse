@@ -436,6 +436,9 @@ public class EngineManager implements
         boolean faceDetected=
                 VisionPipeline.processFrame(rgba.getNativeObjAddr(), phyRotation, mMotion);
 
+        // set preview rotation
+        mCameraListener.setPreviewRotation(phyRotation);
+
         if (faceDetected) {
             EVIACAM.debug("Face detected");
             mFaceDetectionCountdown.reset();

@@ -17,29 +17,86 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.annotation.SuppressLint;
 
+/**
+ * Time based countdown.
+ *
+ * Precision of milliseconds.
+ */
 @SuppressLint("Assert")
 class Countdown {
+    // last stored value of the millis counter
     private long mLastTimeStamp;
+
+    // time to wait in milliseconds
     private long mTimeToWait;
-    
+
+    /**
+     * Constructor
+     * @param timeToWait time of the countdown in milliseconds
+     */
     Countdown (long timeToWait) {
         setTimeToWait (timeToWait);
         reset();
-    }    
-    
+    }
+
+    /**
+     * Restart the countdown
+     */
     public void reset () {
         mLastTimeStamp= System.currentTimeMillis();
     }
-    
+
+    /**
+     * Set the time the countdown will last
+     *
+     * This call does not restart the countdown
+     *
+     * @param timeToWait time of the countdown in milliseconds
+     */
     public void setTimeToWait (long timeToWait) {
         assert(timeToWait>= 0);
         mTimeToWait= timeToWait;
     }
-    
+
+    /**
+     * Get the time the countdown will last
+     *
+     * @return time in milliseconds
+     */
+    public long getmTimeToWait() {
+        return mTimeToWait;
+    }
+
+    /**
+     * Get the elapsed time since the countdown was restarted
+     *
+     * @return elapsed time in milliseconds
+     */
+    public long getElapsedTime() {
+        return System.currentTimeMillis() - mLastTimeStamp;
+    }
+
+    /**
+     * Get the remaining for the countdown to expire
+     *
+     * @return remaining time in milliseconds, 0 if countdown expired
+     */
+    public long getRemainingTime() {
+        long remaining= mTimeToWait - getElapsedTime();
+        if (remaining< 0) remaining= 0;
+        return remaining;
+    }
+
+    /**
+     * Get the percent of the countdown completed
+     *
+     * @return a value between 0 and 100. 0 meaning that the countdown has just
+     *         been restarted and 100 that has finished
+     */
     public int getElapsedPercent() {
         if (mTimeToWait== 0) return 100;
 
@@ -50,6 +107,11 @@ class Countdown {
         return (int) ((100 * elapsed) / mTimeToWait);        
     }
 
+    /**
+     * Check if the countdown has finished
+     *
+     * @return true is the countdown has finished
+     */
     public boolean hasFinished () {
         return (System.currentTimeMillis() - mLastTimeStamp> mTimeToWait);
     }

@@ -28,6 +28,15 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 public class CameraLayerView extends RelativeLayout {
+    // remaining time below which need to start blinking (in milliseconds)
+    private static final int BLINK_TIMEOUT= 3200;
+
+    // (half) period of the blinking
+    private static final int BLINK_INTERVAL = 400;
+
+    // blinking management
+    private final Blink mBlink= new Blink(BLINK_INTERVAL);
+
     /*
      * Class to draw the border. Done this way so that
      * only this view needs to be invalidated
@@ -54,12 +63,16 @@ public class CameraLayerView extends RelativeLayout {
                 float x= mCameraSurfaceView.getX();
                 float y= mCameraSurfaceView.getY();
 
-                mPaint.setColor(mPaintColor);
+                if (mBlink.getState())
+                    mPaint.setColor(mPaintColor);
+                else
+                    mPaint.setColor(Color.BLACK);
+
                 canvas.drawRect(
-                        x-BORDER_SIZE/2,
+                        x - BORDER_SIZE / 2,
                         y,
-                        x+CAM_SURFACE_WIDTH+BORDER_SIZE/2,
-                        y+CAM_SURFACE_HEIGHT+BORDER_SIZE/2, mPaint);
+                        x + CAM_SURFACE_WIDTH + BORDER_SIZE / 2,
+                        y + CAM_SURFACE_HEIGHT + BORDER_SIZE / 2, mPaint);
             }
         }
     }
@@ -110,16 +123,30 @@ public class CameraLayerView extends RelativeLayout {
     /**
      * Set the value since last detection of the face to provide feedback to the user
      *
-     * @param v a value between 0 and 100
-     *                0: a face has just been detected
-     *              100: detection time has expired
+     * @param countdown a Countdown object
      */
-    public void updateFaceDetectorStatus(int v) {
-        int r= (Color.red(BEGIN_COLOR) * (100 - v) + Color.red(END_COLOR) * v) / 100;
-        int g= (Color.green(BEGIN_COLOR) * (100 - v) + Color.green(END_COLOR) * v) / 100;
-        int b= (Color.blue(BEGIN_COLOR) * (100 - v) + Color.blue(END_COLOR) * v) / 100;
+    public void updateFaceDetectorStatus(Countdown countdown) {
+        int p= countdown.getElapsedPercent();
 
-        mPaintColor= Color.argb(0xff, r, g ,b);
-        mBorderDrawer.postInvalidate();     // called from a secondary thread
+        /*
+         * Color of the border
+         */
+        int r = (Color.red(BEGIN_COLOR) * (100 - p) + Color.red(END_COLOR) * p) / 100;
+        int g = (Color.green(BEGIN_COLOR) * (100 - p) + Color.green(END_COLOR) * p) / 100;
+        int b = (Color.blue(BEGIN_COLOR) * (100 - p) + Color.blue(END_COLOR) * p) / 100;
+        mPaintColor = Color.argb(0xff, r, g, b);
+
+        /*
+         * Blinking control
+         */
+        if (p== 100 || countdown.getRemainingTime()> BLINK_TIMEOUT) {
+            mBlink.stop();
+        }
+        else {
+            mBlink.start();
+        }
+
+        // redraw. called from a secondary thread
+        mBorderDrawer.postInvalidate();
     }
 }

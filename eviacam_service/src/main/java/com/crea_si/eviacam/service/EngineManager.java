@@ -441,7 +441,7 @@ public class EngineManager implements
             mFaceDetectionCountdown.reset();
         }
 
-        mCameraLayerView.updateFaceDetectorStatus(mFaceDetectionCountdown.getElapsedPercent());
+        mCameraLayerView.updateFaceDetectorStatus(mFaceDetectionCountdown);
 
         // compensate mirror effect
         mMotion.x= -mMotion.x;

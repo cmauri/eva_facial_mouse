@@ -22,7 +22,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 /**
- * Manages the time elapsed since last face detection
+ * Manages the time elapsed since last face detection.
+ *
+ * It is basically a countdown with a preference listener.
  */
 class FaceDetectionCountdown extends Countdown
         implements SharedPreferences.OnSharedPreferenceChangeListener {

@@ -68,6 +68,8 @@ public class MousePreferencesActivity extends Activity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
+            setRetainInstance(true);
+
             if (mSlaveMode) {
                 // In slave mode use different preference file
                 getPreferenceManager().setSharedPreferencesName(Preferences.FILE_SLAVE_MODE);

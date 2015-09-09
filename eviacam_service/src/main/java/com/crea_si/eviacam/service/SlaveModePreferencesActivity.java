@@ -33,6 +33,8 @@ public class SlaveModePreferencesActivity extends Activity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
+            setRetainInstance(true);
+
             // Set preference file
             getPreferenceManager().setSharedPreferencesName(Preferences.FILE_SLAVE_MODE);
 

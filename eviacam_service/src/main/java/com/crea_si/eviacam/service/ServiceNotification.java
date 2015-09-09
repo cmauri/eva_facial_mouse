@@ -27,100 +27,110 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+/**
+ * Manage pause/resume notifications
+ */
 public class ServiceNotification {
+    /**
+     * Type of notification to display
+     */
+    public static final int NOTIFICATION_ACTION_PAUSE = 0;
+    public static final int NOTIFICATION_ACTION_RESUME = 1;
 
     /*
      * constants for notifications
      */
-    private static final int NOTIFICATION_ID= 1;
-    private static final String NOTIFICATION_FILTER_ACTION= "ENABLE_DISABLE_EVIACAM";
-    private static final int NOTIFICATION_ACTION_PAUSE= 0;
-    private static final int NOTIFICATION_ACTION_RESUME= 1;
-    private static final String NOTIFICATION_ACTION_NAME= "action";
-    
+    private static final int NOTIFICATION_ID = 1;
+    private static final String NOTIFICATION_FILTER_ACTION = "ENABLE_DISABLE_EVIACAM";
+    private static final String NOTIFICATION_ACTION_NAME = "action";
+
     private final Context mContext;
-    
+
+    // Engine which will be paused/resumed
     private final EngineManager mEngine;
-    
-    public ServiceNotification (Context c, EngineManager e) {
-        mContext= c;
-        mEngine= e;
+
+    // Constructor
+    public ServiceNotification(Context c, EngineManager e) {
+        mContext = c;
+        mEngine = e;
         
         /*
          * register notification receiver
          */
-        IntentFilter iFilter= new IntentFilter(NOTIFICATION_FILTER_ACTION);
+        IntentFilter iFilter = new IntentFilter(NOTIFICATION_FILTER_ACTION);
         c.registerReceiver(mMessageReceiver, iFilter);
     }
-    
+
     public void cleanup() {
         mContext.unregisterReceiver(mMessageReceiver);
     }
-    
-    // receiver for notifications
-    private BroadcastReceiver mMessageReceiver= new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // update notification
-            int action= intent.getIntExtra(NOTIFICATION_ACTION_NAME, -1);
-            Notification noti;
-            
-            if (action == NOTIFICATION_ACTION_PAUSE) {
-                mEngine.pause();
-                noti= getNotification(context, NOTIFICATION_ACTION_RESUME);
-                EVIACAM.debug("Got intent: PAUSE");
-            }
-            else if (action == NOTIFICATION_ACTION_RESUME) {
-                mEngine.resume();
-                noti= getNotification(context, NOTIFICATION_ACTION_PAUSE);
-                EVIACAM.debug("Got intent: RESUME");
-            }
-            else {
-                // ignore intent
-                EVIACAM.debug("Got unknown intent");
-                return;
-            }
-                    
-            NotificationManager notificationManager = 
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.notify(NOTIFICATION_ID, noti);
-        }
-    };
 
-    private Notification getNotification(Context c, int action) {
-        // notification initialization 
-        Intent intent = new Intent(NOTIFICATION_FILTER_ACTION);
-        intent.putExtra(NOTIFICATION_ACTION_NAME, action);
-        
-        PendingIntent pIntent= PendingIntent.getBroadcast
-                (c, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        
-        CharSequence text;
-        int iconId;
-        if (action == NOTIFICATION_ACTION_PAUSE) {
-            text= c.getText(R.string.running_click_to_pause);
-            iconId = R.drawable.ic_notification_enabled;
-        }
-        else {
-            text= c.getText(R.string.stopped_click_to_resume);
-            iconId = R.drawable.ic_notification_disabled;
-        }
-
-        Notification noti= new Notification.Builder(c)
-            .setContentTitle(c.getText(R.string.app_name))
-            .setContentText(text)
-            .setSmallIcon(iconId)
-            .setContentIntent(pIntent)
-            .build();
-        
-        return noti;
-    }
-    
-    public Notification getNotification(Context c) {
-        return getNotification(c, NOTIFICATION_ACTION_PAUSE);
-    }
-    
+    /**
+     * Get the ID of the notification
+     *
+     * @return ID of the notification
+     */
     public int getNotificationId() {
         return NOTIFICATION_ID;
     }
+
+    /**
+     * Set the notification to display
+     *
+     * @param type either NOTIFICATION_ACTION_PAUSE or NOTIFICATION_ACTION_RESUME
+     * @return the notification
+     */
+    public Notification setNotification(int type) {
+        Notification noti = createNotification(mContext, type);
+        NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, noti);
+        return noti;
+    }
+
+    private static Notification createNotification(Context c, int action) {
+        // notification initialization
+        Intent intent = new Intent(NOTIFICATION_FILTER_ACTION);
+        intent.putExtra(NOTIFICATION_ACTION_NAME, action);
+
+        PendingIntent pIntent = PendingIntent.getBroadcast
+                (c, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        CharSequence text;
+        int iconId;
+        if (action == NOTIFICATION_ACTION_PAUSE) {
+            text = c.getText(R.string.running_click_to_pause);
+            iconId = R.drawable.ic_notification_enabled;
+        } else {
+            text = c.getText(R.string.stopped_click_to_resume);
+            iconId = R.drawable.ic_notification_disabled;
+        }
+
+        return new Notification.Builder(c)
+                .setContentTitle(c.getText(R.string.app_name))
+                .setContentText(text)
+                .setSmallIcon(iconId)
+                .setContentIntent(pIntent)
+                .build();
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int action = intent.getIntExtra(NOTIFICATION_ACTION_NAME, -1);
+
+            if (action == NOTIFICATION_ACTION_PAUSE) {
+                mEngine.pause();
+                //setNotification(NOTIFICATION_ACTION_RESUME);
+                EVIACAM.debug("Got intent: PAUSE");
+            } else if (action == NOTIFICATION_ACTION_RESUME) {
+                mEngine.resume();
+                //setNotification(NOTIFICATION_ACTION_PAUSE);
+                EVIACAM.debug("Got intent: RESUME");
+            } else {
+                // ignore intent
+                EVIACAM.debug("Got unknown intent");
+            }
+        }
+    };
 }

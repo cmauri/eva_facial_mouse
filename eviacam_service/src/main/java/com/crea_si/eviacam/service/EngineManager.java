@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PointF;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -47,7 +48,8 @@ public class EngineManager implements
     private static final int STATE_STOPPED= 1;
     private static final int STATE_CHECKING_OPENCV= 2;
     private static final int STATE_RUNNING= 3;
-    private static final int STATE_PAUSED= 4;
+    private static final int STATE_NO_FACE_PAUSED= 4;
+    private static final int STATE_PAUSED= 5;
 
     /*
      * modes of operation from the point of view of the service
@@ -61,6 +63,9 @@ public class EngineManager implements
     
     // openvc has been checked?
     private static boolean sOpenCVReady= false;
+
+    // handler to run things on the main thread
+    private final Handler mHandler= new Handler();
 
     // current engine state
     private int mCurrentState= STATE_DISABLED;
@@ -277,14 +282,18 @@ public class EngineManager implements
 
         // add notification and set as foreground service
         mService.startForeground(mServiceNotification.getNotificationId(), 
-                mServiceNotification.getNotification(mService));
+                mServiceNotification.setNotification(
+                        ServiceNotification.NOTIFICATION_ACTION_PAUSE));
 
         mFaceDetectionCountdown.reset();
 
         mCurrentState= STATE_RUNNING;
     }
 
-    /* Pauses (asynchronously) the engine */
+    /**
+     * Pauses (asynchronously) the engine
+     *
+     */
     public void pause() {
         if (mCurrentState != STATE_RUNNING) return;
         mCurrentState= STATE_PAUSED;
@@ -293,13 +302,25 @@ public class EngineManager implements
         if (mMotionProcessor!= null) {
             mMotionProcessor.pause();
         }
+
+        mServiceNotification.setNotification(ServiceNotification.NOTIFICATION_ACTION_RESUME);
+    }
+
+    private void noFacePause() {
+        if (mCurrentState != STATE_RUNNING) return;
+        mCurrentState= STATE_NO_FACE_PAUSED;
+
+        // pause specific engine
+        if (mMotionProcessor!= null) {
+            mMotionProcessor.pause();
+        }
+
+        mServiceNotification.setNotification(ServiceNotification.NOTIFICATION_ACTION_RESUME);
     }
 
     /* Resumes the engine */
     public void resume() {
-        if (mCurrentState != STATE_PAUSED) return;
-
-        // TODO: reset tracker internal state?
+        if (mCurrentState != STATE_PAUSED && mCurrentState!= STATE_NO_FACE_PAUSED) return;
 
         // resume specific engine
         if (mMotionProcessor!= null) {
@@ -308,9 +329,12 @@ public class EngineManager implements
 
         // make sure that UI changes during pause (e.g. docking panel edge) are applied
         mOverlayView.requestLayout();
-        mCurrentState= STATE_RUNNING;
 
         mFaceDetectionCountdown.reset();
+
+        mServiceNotification.setNotification(ServiceNotification.NOTIFICATION_ACTION_PAUSE);
+
+        mCurrentState= STATE_RUNNING;
     }    
 
     @Override
@@ -418,32 +442,59 @@ public class EngineManager implements
         mMouseEmulationEngine.unregisterListener();
     }
 
+    PointF mMotion= new PointF(0, 0); // avoid creating a new PointF for each frame
+
     /**
-     * Process incoming camera frame 
-     * 
-     * This method is called from a secondary thread 
+     * Process incoming camera frames
+     *
+     * Remarks: this method is called from a secondary thread
+     *
+     * @param rgba opencv matrix with the captured image
      */
-    // avoid creating a new PointF for each frame
-    PointF mMotion= new PointF(0, 0);
     @Override
     public void processFrame(Mat rgba) {
-        if (mCurrentState != STATE_RUNNING) return;
+        if (mCurrentState != STATE_RUNNING && mCurrentState != STATE_NO_FACE_PAUSED) return;
 
-        int phyRotation = mOrientationManager.getPictureRotation();
+        int pictRotation = mOrientationManager.getPictureRotation();
 
-        // call jni part to track face
+        /*
+         * call jni part to track face
+         */
         mMotion.x= mMotion.y= 0.0f;
         boolean faceDetected=
-                VisionPipeline.processFrame(rgba.getNativeObjAddr(), phyRotation, mMotion);
+                VisionPipeline.processFrame(rgba.getNativeObjAddr(), pictRotation, mMotion);
 
         // set preview rotation
-        mCameraListener.setPreviewRotation(phyRotation);
+        mCameraListener.setPreviewRotation(pictRotation);
 
+        /*
+         * Check whether need to pause/resume the engine according
+         * to the face detection status
+         *
+         * TODO: BUG: when disable the timeout for face detection
+         */
         if (faceDetected) {
-            EVIACAM.debug("Face detected");
             mFaceDetectionCountdown.reset();
+            if (mCurrentState== STATE_NO_FACE_PAUSED) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() { resume(); } }
+                );
+            }
+        }
+        else {
+            if (mFaceDetectionCountdown.hasFinished()) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() { noFacePause(); } }
+                );
+            }
         }
 
+        // No face paused? do not continue processing
+        if (mCurrentState == STATE_NO_FACE_PAUSED) return;
+
+        // Provide feedback through the camera viewer
         mCameraLayerView.updateFaceDetectorStatus(mFaceDetectionCountdown);
 
         // compensate mirror effect

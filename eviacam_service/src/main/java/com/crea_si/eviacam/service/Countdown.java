@@ -67,7 +67,7 @@ class Countdown {
      *
      * @return time in milliseconds
      */
-    public long getmTimeToWait() {
+    public long getTimeToWait() {
         return mTimeToWait;
     }
 

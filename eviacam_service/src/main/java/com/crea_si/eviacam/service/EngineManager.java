@@ -483,7 +483,7 @@ public class EngineManager implements
             }
         }
         else {
-            if (mFaceDetectionCountdown.hasFinished()) {
+            if (mFaceDetectionCountdown.hasFinished() && !mFaceDetectionCountdown.isDisabled()) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() { noFacePause(); } }

@@ -59,4 +59,8 @@ class FaceDetectionCountdown extends Countdown
     private void updateSettings(SharedPreferences sp) {
         setTimeToWait(Preferences.getTimeWithoutDetection(sp) * 1000);
     }
+
+    public boolean isDisabled() {
+        return getTimeToWait() == 0;
+    }
 }

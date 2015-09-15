@@ -39,7 +39,7 @@ import android.view.accessibility.AccessibilityEvent;
  * Provides the specific engine according to the intended
  * kind of use (i.e. as accessibility service or slave mode)
  */
-public class EngineManager implements
+public class MainEngine implements
     FrameProcessor, AccessibilityServiceModeEngine, SlaveModeEngine {
     /*
      * states of the engine
@@ -59,7 +59,7 @@ public class EngineManager implements
     private static final int SLAVE_MODE= 1;
 
     // singleton instance
-    private static EngineManager sEngineManager= null;
+    private static MainEngine sMainEngine = null;
     
     // openvc has been checked?
     private static boolean sOpenCVReady= false;
@@ -106,14 +106,14 @@ public class EngineManager implements
     // stores when the last detection of a face occurred
     private FaceDetectionCountdown mFaceDetectionCountdown;
 
-    public static EngineManager getInstance() {
-        if (sEngineManager== null) {
-            sEngineManager= new EngineManager();
+    public static MainEngine getInstance() {
+        if (sMainEngine == null) {
+            sMainEngine = new MainEngine();
         }
-        return sEngineManager;
+        return sMainEngine;
     }
     
-    private EngineManager() { }
+    private MainEngine() { }
 
     /**
      * Try to start the engine as a request from an accessibility service
@@ -263,7 +263,7 @@ public class EngineManager implements
     
     /** Called from splash activity to notify the openCV is properly installed */
     public static void initCVReady() {
-        EngineManager ce= EngineManager.sEngineManager;
+        MainEngine ce= MainEngine.sMainEngine;
         if (ce == null) return;
         sOpenCVReady= true;
                 
@@ -383,7 +383,7 @@ public class EngineManager implements
         EViacamApplication app= (EViacamApplication) mService.getApplicationContext();
         app.setSharedPreferences(null);
 
-        sEngineManager= null;
+        sMainEngine = null;
     }
   
     @Override

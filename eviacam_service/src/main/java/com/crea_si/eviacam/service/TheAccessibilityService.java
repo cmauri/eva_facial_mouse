@@ -52,7 +52,7 @@ public class TheAccessibilityService extends AccessibilityService implements Com
             return;
         }
 
-        mEngine= EngineManager.getInstance().getAccessibilityServiceModeEngine(this);
+        mEngine= MainEngine.getInstance().getAccessibilityServiceModeEngine(this);
         mEngine.start();
         
         // When the engine is not properly initialized (i.e. is in slave mode)

@@ -47,10 +47,10 @@ public class ServiceNotification {
     private final Context mContext;
 
     // Engine which will be paused/resumed
-    private final EngineManager mEngine;
+    private final MainEngine mEngine;
 
     // Constructor
-    public ServiceNotification(Context c, EngineManager e) {
+    public ServiceNotification(Context c, MainEngine e) {
         mContext = c;
         mEngine = e;
         

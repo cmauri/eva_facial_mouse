@@ -123,7 +123,7 @@ public class SplashActivity extends Activity {
         EVIACAM.debug("SplashActivity: onResume");
         
         if (sOpenCVReady) {
-            EngineManager.initCVReady();
+            MainEngine.initCVReady();
             
             /** 
              * New Handler to close this splash after some seconds. 

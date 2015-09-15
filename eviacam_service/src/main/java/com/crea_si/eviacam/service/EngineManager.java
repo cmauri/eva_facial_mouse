@@ -470,8 +470,6 @@ public class EngineManager implements
         /*
          * Check whether need to pause/resume the engine according
          * to the face detection status
-         *
-         * TODO: BUG: when disable the timeout for face detection
          */
         if (faceDetected) {
             mFaceDetectionCountdown.reset();

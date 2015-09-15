@@ -52,8 +52,6 @@ public class TheAccessibilityService extends AccessibilityService implements Com
             return;
         }
 
-        EVIACAM.debugInit(this);
-
         mEngine= EngineManager.getInstance().getAccessibilityServiceModeEngine(this);
         mEngine.start();
         
@@ -72,8 +70,6 @@ public class TheAccessibilityService extends AccessibilityService implements Com
             mEngine.cleanup();
             mEngine= null;
         }
-
-        EVIACAM.debugCleanup();
 
         mInitialized= false;
     }

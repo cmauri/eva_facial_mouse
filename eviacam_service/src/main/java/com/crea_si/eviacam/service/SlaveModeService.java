@@ -239,7 +239,6 @@ public class SlaveModeService extends Service {
     @Override
     public void onCreate () {
         EVIACAM.debug("SlaveModeService: onCreate");
-        EVIACAM.debugInit(this);
     }
 
     /** When binding to the service, we return an interface to the client */
@@ -278,6 +277,5 @@ public class SlaveModeService extends Service {
     @Override
     public void onDestroy () {
         EVIACAM.debug("SlaveModeService: onDestroy");
-        EVIACAM.debugCleanup();
     }
  }

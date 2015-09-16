@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -87,6 +88,9 @@ public class MainEngine implements
 
     // reference to the engine for gamepad emulation
     private GamepadEngine mGamepadEngine;
+
+    // power management lock
+    private PowerManager.WakeLock mWakeLook;
 
     // root overlay view
     private OverlayView mOverlayView;
@@ -238,17 +242,20 @@ public class MainEngine implements
     
     @Override
     public boolean start() {
+        /*
+         * Check and update current state
+         */
         if (mCurrentState== STATE_CHECKING_OPENCV || mCurrentState==STATE_RUNNING) {
             return true;
         }
         if (mCurrentState!= STATE_STOPPED) return false;
         
         mCurrentState = STATE_CHECKING_OPENCV;
-        
+
         if (sOpenCVReady) startStage2 ();
         else {
             /*
-             * Display splash and detect OpenCV installation. The engine from now on waits 
+             * Display splash and detect OpenCV installation. The engine from now on waits
              * until the detection process finishes and initCVReady() is called.
              */
             Intent dialogIntent = new Intent(mService, SplashActivity.class);
@@ -272,6 +279,15 @@ public class MainEngine implements
 
     private void startStage2 () {
         if (mCurrentState!= STATE_CHECKING_OPENCV) return;
+
+        /*
+         * Make sure the screen does not switch off
+         */
+        PowerManager pm = (PowerManager) mService.getSystemService(Context.POWER_SERVICE);
+        mWakeLook = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
+                PowerManager.ACQUIRE_CAUSES_WAKEUP |
+                PowerManager.ON_AFTER_RELEASE , EVIACAM.TAG);
+        mWakeLook.acquire();
 
         // show GUI elements
         mOverlayView.requestLayout();
@@ -298,29 +314,32 @@ public class MainEngine implements
         if (mCurrentState != STATE_RUNNING) return;
         mCurrentState= STATE_PAUSED;
 
-        // pause specific engine
-        if (mMotionProcessor!= null) {
-            mMotionProcessor.pause();
-        }
-
-        mServiceNotification.setNotification(ServiceNotification.NOTIFICATION_ACTION_RESUME);
+        doPause();
     }
 
     private void noFacePause() {
         if (mCurrentState != STATE_RUNNING) return;
         mCurrentState= STATE_NO_FACE_PAUSED;
 
+        doPause();
+    }
+
+    private void doPause() {
         // pause specific engine
         if (mMotionProcessor!= null) {
             mMotionProcessor.pause();
         }
 
         mServiceNotification.setNotification(ServiceNotification.NOTIFICATION_ACTION_RESUME);
+
+        if (mWakeLook!= null) mWakeLook.release();
     }
 
     /* Resumes the engine */
     public void resume() {
         if (mCurrentState != STATE_PAUSED && mCurrentState!= STATE_NO_FACE_PAUSED) return;
+
+        if (mWakeLook!= null) mWakeLook.acquire();
 
         // resume specific engine
         if (mMotionProcessor!= null) {

@@ -31,7 +31,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PointF;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -89,8 +88,8 @@ public class MainEngine implements
     // reference to the engine for gamepad emulation
     private GamepadEngine mGamepadEngine;
 
-    // power management lock
-    private PowerManager.WakeLock mWakeLook;
+    // power management stuff
+    private PowerManagement mPowerManagement;
 
     // root overlay view
     private OverlayView mOverlayView;
@@ -195,6 +194,11 @@ public class MainEngine implements
         }
 
         /*
+         * Power management
+         */
+        mPowerManagement = new PowerManagement(mService);
+
+        /*
          * Create UI stuff: root overlay and camera view
          */
         mOverlayView= new OverlayView(mService);
@@ -280,14 +284,8 @@ public class MainEngine implements
     private void startStage2 () {
         if (mCurrentState!= STATE_CHECKING_OPENCV) return;
 
-        /*
-         * Make sure the screen does not switch off
-         */
-        PowerManager pm = (PowerManager) mService.getSystemService(Context.POWER_SERVICE);
-        mWakeLook = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
-                PowerManager.ACQUIRE_CAUSES_WAKEUP |
-                PowerManager.ON_AFTER_RELEASE , EVIACAM.TAG);
-        mWakeLook.acquire();
+        // Power management. Screen always on
+        mPowerManagement.lockFullPower();
 
         // show GUI elements
         mOverlayView.requestLayout();
@@ -332,14 +330,16 @@ public class MainEngine implements
 
         mServiceNotification.setNotification(ServiceNotification.NOTIFICATION_ACTION_RESUME);
 
-        if (mWakeLook!= null) mWakeLook.release();
+        mCameraListener.setUpdateViewer(false);
+        mPowerManagement.unlockFullPower();
     }
 
     /* Resumes the engine */
     public void resume() {
         if (mCurrentState != STATE_PAUSED && mCurrentState!= STATE_NO_FACE_PAUSED) return;
 
-        if (mWakeLook!= null) mWakeLook.acquire();
+        mPowerManagement.lockFullPower();
+        mCameraListener.setUpdateViewer(true);
 
         // resume specific engine
         if (mMotionProcessor!= null) {
@@ -358,22 +358,32 @@ public class MainEngine implements
 
     @Override
     public void stop() {
-        if (mCurrentState == STATE_DISABLED || mCurrentState == STATE_STOPPED) return;
+        switch (mCurrentState) {
+            case STATE_DISABLED:
+            case STATE_STOPPED:
+                return;
+            case STATE_RUNNING:
+                mPowerManagement.unlockFullPower();
+                // no break
+            case STATE_NO_FACE_PAUSED:
+            case STATE_PAUSED:
+                mService.stopForeground(true);
 
-        if (mCurrentState == STATE_RUNNING || mCurrentState == STATE_PAUSED) {
-            mService.stopForeground(true);
+                mCameraListener.stopCamera();
 
-            mCameraListener.stopCamera();
-            
-            mOverlayView.setVisibility(View.INVISIBLE);
+                mOverlayView.setVisibility(View.INVISIBLE);
+                break;
+            case STATE_CHECKING_OPENCV:
+                // do nothing
         }
+
         mCurrentState= STATE_STOPPED;
     }
     
     @Override
     public void cleanup() {
         if (mCurrentState == STATE_DISABLED) return;
-        
+
         stop();
 
         mFaceDetectionCountdown.cleanup();
@@ -398,6 +408,8 @@ public class MainEngine implements
         mOverlayView= null;
         
         mCurrentState= STATE_DISABLED;
+
+        mPowerManagement = null;
 
         EViacamApplication app= (EViacamApplication) mService.getApplicationContext();
         app.setSharedPreferences(null);
@@ -472,7 +484,11 @@ public class MainEngine implements
      */
     @Override
     public void processFrame(Mat rgba) {
-        if (mCurrentState != STATE_RUNNING && mCurrentState != STATE_NO_FACE_PAUSED) return;
+        if (mCurrentState != STATE_RUNNING && mCurrentState != STATE_NO_FACE_PAUSED) {
+            // reduce CPU load when not running
+            mPowerManagement.sleep();
+            return;
+        }
 
         int pictRotation = mOrientationManager.getPictureRotation();
 
@@ -509,7 +525,11 @@ public class MainEngine implements
         }
 
         // No face paused? do not continue processing
-        if (mCurrentState == STATE_NO_FACE_PAUSED) return;
+        if (mCurrentState == STATE_NO_FACE_PAUSED) {
+            // reduce CPU load when not running
+            mPowerManagement.sleep();
+            return;
+        }
 
         // Provide feedback through the camera viewer
         mCameraLayerView.updateFaceDetectorStatus(mFaceDetectionCountdown);

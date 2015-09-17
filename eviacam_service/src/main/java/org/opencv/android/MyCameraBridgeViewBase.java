@@ -15,6 +15,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -41,6 +42,8 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     private boolean mSurfaceExist;
     private Object mSyncObject = new Object();
     private int mPreviewRotation= 0;
+    private boolean mUpdateViewer = true;
+    private Paint mPaint= new Paint();
 
     protected int mFrameWidth;
     protected int mFrameHeight;
@@ -385,6 +388,38 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     }
 
     private Matrix mMatrix = new Matrix();
+    private void doDrawFrame(Canvas canvas) {
+        /*
+         * Set rotation matrix
+         */
+        mMatrix.reset();
+        mMatrix.postRotate((float) mPreviewRotation, getWidth() / 2, getHeight() / 2);
+        canvas.setMatrix(mMatrix);
+
+        canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+        //Log.d(TAG, "mStretch value: " + mScale);
+
+        if (mScale != 0) {
+            canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
+                    new Rect((int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2),
+                            (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2),
+                            (int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2 + mScale*mCacheBitmap.getWidth()),
+                            (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2 + mScale*mCacheBitmap.getHeight())), null);
+        } else {
+            canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
+                    new Rect((canvas.getWidth() - mCacheBitmap.getWidth()) / 2,
+                            (canvas.getHeight() - mCacheBitmap.getHeight()) / 2,
+                            (canvas.getWidth() - mCacheBitmap.getWidth()) / 2 + mCacheBitmap.getWidth(),
+                            (canvas.getHeight() - mCacheBitmap.getHeight()) / 2 + mCacheBitmap.getHeight()), null);
+        }
+
+        if (mFpsMeter != null) {
+            mFpsMeter.measure();
+            mFpsMeter.draw(canvas, 20, 30);
+        }
+    }
+
+
     /**
      * This method shall be called by the subclasses when they have valid
      * object and want it to be delivered to external client (via callback) and
@@ -401,7 +436,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         }
 
         boolean bmpValid = true;
-        if (modified != null) {
+        if (modified != null && mUpdateViewer) {
             try {
                 Utils.matToBitmap(modified, mCacheBitmap);
             } catch(Exception e) {
@@ -415,33 +450,10 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         if (bmpValid && mCacheBitmap != null) {
             Canvas canvas = getHolder().lockCanvas();
             if (canvas != null) {
-                /*
-                 * Set rotation matrix
-                 */
-                mMatrix.reset();
-                mMatrix.postRotate((float) mPreviewRotation, getWidth() / 2, getHeight() / 2);
-                canvas.setMatrix(mMatrix);
-
-                canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
-                //Log.d(TAG, "mStretch value: " + mScale);
-
-                if (mScale != 0) {
-                    canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
-                         new Rect((int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2),
-                         (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2),
-                         (int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2 + mScale*mCacheBitmap.getWidth()),
-                         (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2 + mScale*mCacheBitmap.getHeight())), null);
-                } else {
-                     canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
-                         new Rect((canvas.getWidth() - mCacheBitmap.getWidth()) / 2,
-                         (canvas.getHeight() - mCacheBitmap.getHeight()) / 2,
-                         (canvas.getWidth() - mCacheBitmap.getWidth()) / 2 + mCacheBitmap.getWidth(),
-                         (canvas.getHeight() - mCacheBitmap.getHeight()) / 2 + mCacheBitmap.getHeight()), null);
-                }
-
-                if (mFpsMeter != null) {
-                    mFpsMeter.measure();
-                    mFpsMeter.draw(canvas, 20, 30);
+                if (mUpdateViewer) doDrawFrame(canvas);
+                else {
+                    // Just draw one pixel
+                    canvas.drawPoint(0, 0, mPaint);
                 }
                 getHolder().unlockCanvasAndPost(canvas);
             }
@@ -503,5 +515,13 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         }
 
         return new Size(calcWidth, calcHeight);
+    }
+
+    /**
+     * Enable or disable camera viewer refresh to save CPU cycles
+     * @param v true to enable update, false to disable
+     */
+    public void setUpdateViewer(boolean v) {
+        mUpdateViewer = v;
     }
 }

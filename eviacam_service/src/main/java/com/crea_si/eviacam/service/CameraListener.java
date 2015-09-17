@@ -222,4 +222,12 @@ public class CameraListener implements CvCameraViewListener2 {
         
         return rgba;
     }
+
+    /**
+     * Enable or disable camera viewer refresh to save CPU cycles
+     * @param v true to enable update, false to disable
+     */
+    public void setUpdateViewer(boolean v) {
+        if (mCameraView!= null) mCameraView.setUpdateViewer(v);
+    }
 }

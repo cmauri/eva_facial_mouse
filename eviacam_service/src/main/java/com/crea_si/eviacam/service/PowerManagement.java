@@ -25,8 +25,11 @@ import android.os.PowerManager;
  * Power management stuff
  */
 class PowerManagement {
-    private static final int SLEEP_DURATION = 500;
-    private int mSleepIterations= 2;
+
+    //private int mSleepIterations= SLEEP_ITERATIONS_MIN;
+
+    // time since full power in not locked (i.e. in low energy mode)
+    private long mWakeUnlockTStamp= 0;
 
     // power management lock
     private PowerManager.WakeLock mWakeLook;
@@ -57,15 +60,44 @@ class PowerManagement {
      */
     public void unlockFullPower() {
         if (mWakeLook.isHeld()) mWakeLook.release();
+        mWakeUnlockTStamp= System.currentTimeMillis();
     }
 
     /**
-     * Method used to slowdown the secondary thread
-     * To stop sleeping call setSleepEnabled with enabled= false
+     * Method used to slowdown a secondary thread
+     *
+     * To exit this call (in a reasonable time) call setSleepEnabled(false)
      */
     public void sleep() {
+        final int SLEEP_DURATION = 500;
+        final int SLEEP_ITERATIONS_MIN= 2;
+        final int SLEEP_ITERATIONS_MAX= 10;
+        final long RAMP_BEGIN_MS= 30000; // 30 seconds
+        final long RAMP_END_MS= 60000;   // 60 seconds
+
+        // no need to sleep if running at full power
+        if (mWakeLook.isHeld()) return;
+
+        /* After RAMP_BEGIN_MS ms start increasing the number of iterations
+         * until RAMP_END_MS ms when the number of iterations it is set to
+         * the maximum value.
+         */
+        long elapsed= System.currentTimeMillis() - mWakeUnlockTStamp;
+        int waitIterations;
+        if (elapsed< RAMP_BEGIN_MS) {
+            waitIterations= SLEEP_ITERATIONS_MIN;
+        }
+        else if (elapsed< RAMP_END_MS) {
+            waitIterations= (int) ((elapsed - RAMP_BEGIN_MS) *
+                                   (SLEEP_ITERATIONS_MAX - SLEEP_ITERATIONS_MIN) /
+                                   (RAMP_END_MS - RAMP_BEGIN_MS)) + SLEEP_ITERATIONS_MIN;
+        }
+        else {
+            waitIterations= SLEEP_ITERATIONS_MAX;
+        }
+
         try {
-            for (int i= 0; mSleepEnabled && i< mSleepIterations; i++) {
+            for (int i= 0; mSleepEnabled && i< waitIterations; i++) {
                 Thread.sleep(SLEEP_DURATION);
             }
         } catch (InterruptedException e) { /* do nothing */ }

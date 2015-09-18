@@ -163,9 +163,6 @@ class AccessibilityAction {
         case R.id.softkeyboard_button:
             mInputMethodAction.openIME();
             break;
-        case R.id.scroll_refresh_button:
-            refreshScrollingButtons();
-            break;
         case R.id.disable_click_button:
             mClickDisabled= !mClickDisabled;
             if (mClickDisabled) refreshScrollingButtons();

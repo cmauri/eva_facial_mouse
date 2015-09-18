@@ -284,8 +284,13 @@ public class MainEngine implements
     private void startStage2 () {
         if (mCurrentState!= STATE_CHECKING_OPENCV) return;
 
-        // Power management. Screen always on
+        /*
+         * Power management
+         */
+        // Screen always on
         mPowerManagement.lockFullPower();
+        // Enable sleep call
+        mPowerManagement.setSleepEnabled(true);
 
         // show GUI elements
         mOverlayView.requestLayout();
@@ -368,6 +373,9 @@ public class MainEngine implements
             case STATE_NO_FACE_PAUSED:
             case STATE_PAUSED:
                 mService.stopForeground(true);
+
+                // Disable sleep call
+                mPowerManagement.setSleepEnabled(false);
 
                 mCameraListener.stopCamera();
 
@@ -513,6 +521,15 @@ public class MainEngine implements
                     @Override
                     public void run() { resume(); } }
                 );
+
+                /* Yield CPU to the main thread so that it has the opportunity
+                 * to run and change the engine state before this thread continue
+                 * running.
+                 * Remarks: tried Thread.yield() without success
+                 */
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) { /* do nothing */ }
             }
         }
         else {
@@ -524,7 +541,7 @@ public class MainEngine implements
             }
         }
 
-        // No face paused? do not continue processing
+        // No face paused? Don't continue processing
         if (mCurrentState == STATE_NO_FACE_PAUSED) {
             // reduce CPU load when not running
             mPowerManagement.sleep();

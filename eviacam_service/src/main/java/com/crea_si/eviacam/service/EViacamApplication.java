@@ -22,11 +22,13 @@
  */
 package com.crea_si.eviacam.service;
 
-import org.acra.*; 
-import org.acra.annotation.*; 
-
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.os.Process;
+
+import org.acra.ACRA;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
 
 @ReportsCrashes( 
     mailTo = "cesar@crea-si.com",
@@ -42,6 +44,10 @@ public class EViacamApplication extends Application {
     
     public void onCreate() {
         super.onCreate();
+
+        // Raise priority to improve responsiveness
+        Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
+
         ACRA.init(this);
     }
 

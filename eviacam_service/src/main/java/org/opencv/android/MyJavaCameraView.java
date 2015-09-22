@@ -1,13 +1,12 @@
 package org.opencv.android;
 
-import java.util.List;
-
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.os.Build;
+import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
@@ -16,6 +15,8 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+
+import java.util.List;
 
 /**
  * This class is an implementation of the Bridge View between OpenCV and Java Camera.
@@ -374,6 +375,10 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
 
         @Override
         public void run() {
+
+            // Raise priority to improve responsiveness
+            Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
+
             do {
                 synchronized (MyJavaCameraView.this) {
                     try {

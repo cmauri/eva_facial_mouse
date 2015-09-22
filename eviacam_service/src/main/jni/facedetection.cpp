@@ -25,11 +25,38 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/video/tracking.hpp>
 #include <pthread.h>
+#include <unistd.h>
+#include <sys/resource.h>
+#include <linux/sched.h>
 
 namespace eviacam {
 
 void* thread_entry (void* t)
 {
+	/*
+	 * Set the priority of the thread (the nice value of the linux
+	 * kernel) a little below (a positive value) the normal priority
+	 * (which is 0) to improve responsiveness.
+	 *
+	 * For more info, check the setpriority man page
+	 *
+	 * This is how is done in by the Android framework see:
+	 * 	os_changeThreadPriority
+	 */
+	//LOGD("Face detection thread id (gettid): %d \n", gettid());
+	//LOGD("Face detection thread id (getpid): %d \n", getpid());
+	int tid= gettid();
+
+	struct sched_param param;
+	param.sched_priority = 0;
+	if (sched_setscheduler(tid, SCHED_BATCH, &param)) {
+		LOGW("sched_setscheduler failed");
+	}
+
+	if (setpriority(PRIO_PROCESS, tid, 1)!= 0) {
+		LOGW("setpriority failed");
+	}
+
 	FaceDetection* obj= static_cast<FaceDetection*>(t);
 	obj->threadEntry();
 	
@@ -76,7 +103,6 @@ FaceDetection::FaceDetection (const char* cascadePath)
 		// spawn thread		
 		pthread_attr_init(&m_attr);
 		pthread_attr_setdetachstate(&m_attr, PTHREAD_CREATE_JOINABLE);
-		// TODO: set low prio: pthread_setschedprio
 		pthread_create(&m_thread, &m_attr, thread_entry, this);
 	}
 }

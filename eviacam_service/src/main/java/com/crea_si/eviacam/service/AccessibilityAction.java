@@ -103,6 +103,9 @@ class AccessibilityAction {
 
     // is click generation temporarily disabled?
     private boolean mClickDisabled = false;
+
+    // the current node tree contains a web view?
+    private boolean mContainsWebView = false;
     
     public AccessibilityAction (AccessibilityService as, ControlsLayerView cv, 
                                 DockPanelLayerView dplv, ScrollLayerView slv) {
@@ -392,16 +395,20 @@ class AccessibilityAction {
     }
 
     Runnable mRefreshScrollingRunnable = new Runnable() {
+        List<AccessibilityNodeInfo> scrollableNodes = new ArrayList<>();
+
         @Override
         public void run() {
             EVIACAM.debug("Scanning for scrollables");
             mScrollLayerView.clearScrollAreas();
 
             if (!mClickDisabled) {
-                final List<AccessibilityNodeInfo> nodes= findNodes (
-                    AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
-                    AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-                for (AccessibilityNodeInfo n : nodes) {
+                scrollableNodes.clear();
+                mContainsWebView= findNodes (scrollableNodes,
+                        AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
+                                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD,
+                        "android.webkit.WebView");
+                for (AccessibilityNodeInfo n : scrollableNodes) {
                     mScrollLayerView.addScrollArea(n);
                 }
             }
@@ -413,7 +420,6 @@ class AccessibilityAction {
         mHandler.post(mRefreshScrollingRunnable);
     }
 
-    
     /**
      * Process events from accessibility service to refresh scrolling controls
      * 
@@ -433,7 +439,13 @@ class AccessibilityAction {
         case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
             EVIACAM.debug("WINDOW_STATE_CHANGED");
             break;
+
         case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
+            EVIACAM.debug("WINDOW_CONTENT_CHANGED");
+
+            // If contains a WebView stop processing
+            if (mContainsWebView) return;
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 switch (event.getContentChangeTypes ()) {
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_CONTENT_DESCRIPTION:
@@ -446,14 +458,17 @@ class AccessibilityAction {
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED:
                     EVIACAM.debug("WINDOW_CONTENT_CHANGED_UNDEFINED");
                 }
-                break;
             }
-            else {
-                EVIACAM.debug("WINDOW_CONTENT_CHANGED");
-            }
+            break;
+
         case AccessibilityEvent.TYPE_VIEW_SCROLLED:
             EVIACAM.debug("VIEW_SCROLLED");
+
+            // If contains a WebView stop processing
+            if (mContainsWebView) return;
+
             break;
+
         default:
             EVIACAM.debug("UNKNOWN EVENT: IGNORED");
             return;
@@ -546,34 +561,37 @@ class AccessibilityAction {
     /**
      * Finds recursively all nodes that support certain actions
      *
+     * @param result - list where results will be stored
      * @param actions - bitmask of actions
-     * @return - list with the node, may be void
+     * @param exclude - class name to exclude from the search, null to not exclude anything
+     * @return if some node has been excluded
      */
-    private List<AccessibilityNodeInfo> findNodes (int actions) {
-        final List<AccessibilityNodeInfo> result= new ArrayList<AccessibilityNodeInfo>();
+    private boolean findNodes(List<AccessibilityNodeInfo> result,
+                              int actions, String exclude) {
         // get root node
         final AccessibilityNodeInfo rootNode = mAccessibilityService.getRootInActiveWindow();
 
-        findNodes0 (actions, rootNode, result);
-
-        return result;
+        return findNodes0 (result, actions, exclude, rootNode);
     }
 
     /** Actual recursive call for findNode */
-    private static void findNodes0 (final int actions, final AccessibilityNodeInfo node,
-            final List<AccessibilityNodeInfo> result) {
+    private static boolean findNodes0 (
+            List<AccessibilityNodeInfo> result, int actions,
+            String exclude, final AccessibilityNodeInfo node) {
 
-        if (node == null) return;
-        if (!node.isVisibleToUser()) return;
-
+        if (node == null || !node.isVisibleToUser()) return false;
+        if (exclude!= null && node.getClassName().toString().equals(exclude)) return true;
         if ((node.getActions() & actions) != 0) {
             result.add(node);
         }
 
         // propagate calls to children
         final int child_count = node.getChildCount();
+        boolean excluded= false;
         for (int i = 0; i < child_count; i++) {
-            findNodes0 (actions, node.getChild(i), result);
+            excluded= findNodes0 (result, actions, exclude, node.getChild(i)) || excluded;
         }
+
+        return excluded;
     }
 }

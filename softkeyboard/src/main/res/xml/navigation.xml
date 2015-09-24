@@ -27,8 +27,8 @@
     <Row>
         <Key android:codes="61" android:keyLabel="TAB" 
              android:keyEdgeFlags="left" android:keyWidth="15%p" />
-        <Key android:codes="112" android:keyLabel="Del" />
-        <Key android:codes="122" android:keyLabel="Home"/>
+        <Key android:codes="-112" android:keyLabel="Del" />
+        <Key android:codes="-122" android:keyLabel="Home"/>
         <Key android:codes="19" android:keyLabel="^"/>
         <Key android:codes="92" android:keyLabel="PgUp"/>
         <Key android:codes="@integer/key_return" 
@@ -38,7 +38,7 @@
     <Row>
         <Key android:codes="@integer/key_switch_alpha_symbol" android:keyLabel="ABC" 
              android:keyEdgeFlags="left" android:keyWidth="15%p" />
-        <Key android:codes="123" android:keyLabel="End" />
+        <Key android:codes="-123" android:keyLabel="End" />
         <Key android:codes="21" android:keyLabel="&lt;"/>
         <Key android:codes="20" android:keyLabel="v"/>
         <Key android:codes="22" android:keyLabel="&gt;"/>

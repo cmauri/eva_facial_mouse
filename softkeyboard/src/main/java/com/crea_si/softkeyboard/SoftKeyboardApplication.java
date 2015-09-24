@@ -35,7 +35,7 @@ import android.app.Application;
 public class SoftKeyboardApplication extends Application {
     public void onCreate() {
         super.onCreate();
-        EVIACAMSOFTKBD.debugInit();
+        //EVIACAMSOFTKBD.debugInit();
         ACRA.init(this);
     }
 }

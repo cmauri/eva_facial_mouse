@@ -481,19 +481,22 @@ public class SoftKeyboard extends InputMethodService
     }
 
     // Implementation of KeyboardViewListener
-
+    @Override
     public void onKey(int primaryCode, int[] keyCodes) {
         if (primaryCode >= KeyEvent.KEYCODE_DPAD_UP &&
                 primaryCode <= KeyEvent.KEYCODE_DPAD_CENTER ||
                 primaryCode == KeyEvent.KEYCODE_PAGE_UP ||
                 primaryCode == KeyEvent.KEYCODE_PAGE_DOWN ||
-                primaryCode == KeyEvent.KEYCODE_MOVE_HOME ||
-                primaryCode == KeyEvent.KEYCODE_MOVE_END ||
-                primaryCode == KeyEvent.KEYCODE_TAB ||
-                primaryCode == KeyEvent.KEYCODE_FORWARD_DEL) {
-            InputConnection ic= getCurrentInputConnection();
+                primaryCode == KeyEvent.KEYCODE_TAB) {
+            InputConnection ic = getCurrentInputConnection();
             if (ic == null) return;
             keyDownUp(primaryCode, ic);
+        } else if (primaryCode == -KeyEvent.KEYCODE_MOVE_HOME ||
+                   primaryCode == -KeyEvent.KEYCODE_MOVE_END ||
+                   primaryCode == -KeyEvent.KEYCODE_FORWARD_DEL) {
+            InputConnection ic = getCurrentInputConnection();
+            if (ic == null) return;
+            keyDownUp(-primaryCode, ic);
         } else if (isWordSeparator(primaryCode)) {
             InputConnection ic= getCurrentInputConnection();
             if (ic == null) return;

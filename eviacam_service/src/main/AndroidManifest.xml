@@ -72,6 +72,16 @@
 	        </intent-filter>
         </activity>
 
+        <!-- Wizard activity -->
+        <activity
+            android:name="com.crea_si.eviacam.wizard.WizardActivity"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.DeviceDefault" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <!-- Slave mode service -->
         <service
             android:name=".SlaveModeService"

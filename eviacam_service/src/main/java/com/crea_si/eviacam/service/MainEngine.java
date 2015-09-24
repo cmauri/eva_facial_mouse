@@ -379,6 +379,11 @@ public class MainEngine implements
 
                 mCameraListener.stopCamera();
 
+                // TODO: add sleep to see if removes spurious crashes on exit
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) { /* do nothing */ }
+
                 mOverlayView.setVisibility(View.INVISIBLE);
                 break;
             case STATE_CHECKING_OPENCV:

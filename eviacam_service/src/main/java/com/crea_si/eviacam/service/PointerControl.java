@@ -155,11 +155,11 @@ class PointerControl implements OnSharedPreferenceChangeListener {
 
         switch (acceleration) {
             case 0: setRelAcceleration(); break;
-            case 1: setRelAcceleration (7, 1.5f); break;
-            case 2: setRelAcceleration (7, 2.0f); break;
+            case 1: setRelAcceleration (9, 1.5f); break;
+            case 2: setRelAcceleration (7, 1.5f); break;
             case 3: setRelAcceleration (7, 1.5f, 14, 2.0f); break;
-            case 4: setRelAcceleration (7, 2.0f, 14, 1.5f); break;
-            case 5: setRelAcceleration (7, 2.0f, 14, 2.0f); break;
+            case 4: setRelAcceleration (5, 1.5f, 10, 3.0f); break;
+            case 5: setRelAcceleration (3, 1.5f,  8, 3.0f); break;
             default: assert (false);
         }
     }
@@ -179,11 +179,14 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     }
     
     public void updateMotion(PointF vel) {
+        float dx= vel.x;
+        float dy= vel.y;
+
         // multipliers
-        float dx= vel.x * mXMultiplier;
-        float dy= vel.y * mYMultiplier;
-        
-        // low-pass filter  
+        dx*= mXMultiplier;
+        dy*= mYMultiplier;
+
+        // low-pass filter
         dx= dx * (1.0f - mLowPassFilterWeight) + mDXPrevious * mLowPassFilterWeight;
         dy= dy * (1.0f - mLowPassFilterWeight) + mDYPrevious * mLowPassFilterWeight;
         mDXPrevious= dx;
@@ -195,7 +198,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         if (iAccelArray>= ACCEL_ARRAY_SIZE) iAccelArray= ACCEL_ARRAY_SIZE - 1;
         dx*= mAccelArray[iAccelArray];
         dy*= mAccelArray[iAccelArray];
-        
+
         // stop margin
         if (-mMotionThreshold < dx && dx < mMotionThreshold) dx= 0.0f;
         if (-mMotionThreshold < dy && dy < mMotionThreshold) dy= 0.0f;

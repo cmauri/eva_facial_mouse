@@ -580,7 +580,10 @@ class AccessibilityAction {
             String exclude, final AccessibilityNodeInfo node) {
 
         if (node == null || !node.isVisibleToUser()) return false;
-        if (exclude!= null && node.getClassName().toString().equals(exclude)) return true;
+        if (exclude!= null) {
+            CharSequence className= node.getClassName();
+            if (className!= null && className.toString().equals(exclude)) return true;
+        }
         if ((node.getActions() & actions) != 0) {
             result.add(node);
         }

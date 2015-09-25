@@ -9,5 +9,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:name="com.crea_si.eviacam.wizard.SetupWizard"
-        tools:layout="@layout/wizard_step01"/>
+        tools:layout="@layout/wizard_step_whatis"/>
 </FrameLayout>

@@ -43,7 +43,7 @@ public class SetupWizard extends BasicWizardLayout {
 
         return new WizardFlow.Builder()
                 .addStep(WelcomeWizardStep.class)       //Add your steps in the order you want them
-                .addStep(TutorialStep2.class)           //to appear and eventually call create()
+                .addStep(WhatsIsWizardStep.class)           //to appear and eventually call create()
                 .create();                              //to create the wizard flow.
     }
 }

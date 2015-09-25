@@ -36,7 +36,9 @@ void* thread_entry (void* t)
 	/*
 	 * Set the priority of the thread (the nice value of the linux
 	 * kernel) a little below (a positive value) the normal priority
-	 * (which is 0) to improve responsiveness.
+	 * (which is 0) to improve responsiveness (i.e. scanning for a
+	 * face is costly and does not need to be run with hard read-time
+	 * constraints).
 	 *
 	 * For more info, check the setpriority man page
 	 *
@@ -47,9 +49,13 @@ void* thread_entry (void* t)
 	//LOGD("Face detection thread id (getpid): %d \n", getpid());
 	int tid= gettid();
 
+	/*
+	 * He we initially tried SCHED_BATCH but it seems that this
+	 * thread suffers form starvation under high CPU load.
+	 */
 	struct sched_param param;
 	param.sched_priority = 0;
-	if (sched_setscheduler(tid, SCHED_BATCH, &param)) {
+	if (sched_setscheduler(tid, SCHED_NORMAL, &param)) {
 		LOGW("sched_setscheduler failed");
 	}
 

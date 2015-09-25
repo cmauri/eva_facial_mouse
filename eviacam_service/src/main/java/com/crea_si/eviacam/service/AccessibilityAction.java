@@ -67,6 +67,7 @@ class AccessibilityAction {
         new ActionLabel(AccessibilityNodeInfo.ACTION_PASTE, R.string.paste),
         new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, R.string.scroll_backward),
         new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.scroll_forward)
+        //new ActionLabel(AccessibilityNodeInfo.ACTION_FOCUS, R.string.focus)
     };
 
     private final AccessibilityService mAccessibilityService;
@@ -212,13 +213,16 @@ class AccessibilityAction {
          * 
          * REMARKS: tried to see whether it solved the problem with the icon panel of WhatsApp.
          * but it did not work (see comments in AccessibilityAction.performAction method). We 
-         * leave here because it seems reasonable to focus the node on which the action is performed.
+         * leave here because it seems reasonable to focus the node on which the action is performed
+         *
+         * EDIT: focus only EditText elements, focusing arbitrary widgets cause scrolling issues
          */
-        node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-        
+        // node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+
         // TODO: currently only checks for EditText instances, check with EditText subclasses
         if ((action & AccessibilityNodeInfo.ACTION_CLICK) != 0 &&
                 node.getClassName().toString().equalsIgnoreCase("android.widget.EditText")) {
+            node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
             mInputMethodAction.openIME();
         }
         

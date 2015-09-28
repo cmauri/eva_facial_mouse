@@ -21,10 +21,17 @@
 -->
 <resources>
 
+    <!-- Do NOT translate -->
     <string name="app_name">Enable Viacam Mobile</string>
     <string name="service_name">Enable Viacam Mobile</string>
+
+    <!-- Description shown in the accessibility service screen -->
     <string name="eviacam_service_description">Enable Viacam Mobile is a mouse emulator that moves the pointer as you move your head. It tracks your face using the frontal camera of your device.</string>
+
+    <!-- Label for the preferences screen -->
     <string name="eviacam_preferences_title">Enable Viacam Mobile settings</string>
+
+    <!-- These are labels and summaries for settings -->
     <string name="motion_settings">Motion settings</string>
     <string name="x_axis_speed">X axis speed</string>
     <string name="x_axis_speed_summary">Sets response sensitivity for the X axis</string>
@@ -35,21 +42,34 @@
     <string name="clic_settings">Click settings</string>
     <string name="detection_settings">Detection settings</string>
     <string name="never">Never</string>
+    <string name="after_five_seconds">After 5 seconds</string>
+    <string name="after_ten_seconds">After 10 seconds</string>
+    <string name="after_thirty_seconds">After 30 seconds</string>
+    <string name="after_one_minute">After 1 minute</string>
     <string name="dwell_area">Dwell area</string>
     <string name="dwell_area_summary">Maximum allowed displacement before restarting the dwell time</string>
     <string name="dwell_time">Dwell time</string>
     <string name="dwell_time_summary">Time to wait (deciseconds) before making click</string>
-    <string name="after_five_seconds">After 5 seconds</string>
     <string name="motion_smoothing">Motion smoothing</string>
     <string name="motion_smoothing_summary">Tremor reduction filter. 0 disables</string> 
     <string name="motion_threshold">Motion threshold</string>
     <string name="motion_threshold_summary">Minimum displacement (in pixels) to start moving pointer</string>
-    <string name="after_one_minute">After 1 minute</string>
     <string name="sound_on_click">Play sound on click</string>
     <string name="consecutive_clicks">Enable consecutive clicks</string>
-    <string name="after_ten_seconds">After 10 seconds</string>
-    <string name="after_thirty_seconds">After 30 seconds</string>
     <string name="time_without_detection">Stop pointer when face not detected</string>
+    <string name="interface_settings">Interface settings</string>
+    <string name="docking_panel_edge">Dock menu position</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="top">Top</string>
+    <string name="bottom">Bottom</string>
+    <string name="ui_elements_size">Interface elements size</string>
+    <string name="xlarge">Extra large</string>
+    <string name="large">Large</string>
+    <string name="normal">Normal</string>
+    <string name="small">Small</string>
+
+    <!-- Actions available through the accessibility API -->
     <string name="click">Click</string>
     <string name="long_click">Long click</string>
     <string name="collapse">Collapse</string>
@@ -62,33 +82,34 @@
     <string name="scroll_forward">Scroll forward</string>
     <string name="select">Select</string>
     <string name="focus">Focus</string>
-    <string name="running_click_to_pause">Running (click to pause)</string>
-    <string name="stopped_click_to_resume">Stopped (click to resume)</string>
+
+    <!-- Actions available through the docking pannel -->
     <string name="back_button">Back button</string>
     <string name="home_button">Home button</string>
     <string name="recents_button">Recents button</string>
     <string name="notifications_button">Notifications button</string>
-    <string name="interface_settings">Interface settings</string>
     <string name="dock_panel_button">Expand/collapse dock menu</string>
-    <string name="softkeyboard_button">Open/close softkeyboard</string>
+    <string name="softkeyboard_button">Open keyboard</string>
     <string name="scroll_refresh_button">Refresh scrolling buttons</string>
     <string name="disable_click_button">Disable click</string>
-    <string name="docking_panel_edge">Dock menu position</string>
-    <string name="left">Left</string>
-    <string name="right">Right</string>
-    <string name="top">Top</string>
-    <string name="bottom">Bottom</string>
+
+    <!-- Messages for the notification -->
+    <string name="running_click_to_pause">Running (click to pause)</string>
+    <string name="stopped_click_to_resume">Stopped (click to resume)</string>
+
+    <!-- OpenCV installation stuff. These allow to compose a message like:
+        "Installation cancelled" "Enable Viacam Mobile"" needs OpenCV manager..."
+    -->
     <string name="installation_cancelled">Installation cancelled</string>
     <string name="needs_opencv_retry"> needs OpenCV manager to run. Retry installation?</string>
-    <string name="ui_elements_size">Interface elements size</string>
-    <string name="xlarge">Extra large</string>
-    <string name="large">Large</string>
-    <string name="normal">Normal</string>
-    <string name="small">Small</string>
+
+    <!-- Crash report messages (ACRA) -->
     <string name="crash_toast_text">Oops! Enable Viacam crashed</string>
     <string name="crash_dialog_text">An unexpected error occurred forcing Enable Viacam Mobile to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you!</string>
+
+    <!-- Slave mode gamepad settings -->
     <string name="gamepad_settings">Gamepad settings</string>
     <string name="gamepad_location">Gamepad location</string>
     <string name="top_left">Top left</string>

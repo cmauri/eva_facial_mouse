@@ -22,8 +22,8 @@
 <resources>
 
     <!-- Do NOT translate -->
-    <string name="app_name">Enable Viacam Mobile</string>
-    <string name="service_name">Enable Viacam Mobile</string>
+    <string name="app_name" translatable="false">Enable Viacam Mobile</string>
+    <string name="service_name" translatable="false">Enable Viacam Mobile</string>
 
     <!-- Description shown in the accessibility service screen -->
     <string name="eviacam_service_description">Enable Viacam Mobile is a mouse emulator that moves the pointer as you move your head. It tracks your face using the frontal camera of your device.</string>
@@ -34,11 +34,11 @@
     <!-- These are labels and summaries for settings -->
     <string name="motion_settings">Motion settings</string>
     <string name="x_axis_speed">X axis speed</string>
-    <string name="x_axis_speed_summary">Sets response sensitivity for the X axis</string>
+    <string name="x_axis_speed_summary">Sensitivity for the X axis</string>
     <string name="y_axis_speed">Y axis speed</string>
     <string name="y_axis_speed_summary">Sets response sensitivity for the Y axis</string>
     <string name="acceleration">Acceleration</string>
-    <string name="acceleration_summary">Set pointer acceleration. 0 disables</string>
+    <string name="acceleration_summary">Pointer acceleration. 0 disables</string>
     <string name="clic_settings">Click settings</string>
     <string name="detection_settings">Detection settings</string>
     <string name="never">Never</string>
@@ -55,7 +55,7 @@
     <string name="motion_threshold">Motion threshold</string>
     <string name="motion_threshold_summary">Minimum displacement (in pixels) to start moving pointer</string>
     <string name="sound_on_click">Play sound on click</string>
-    <string name="consecutive_clicks">Enable consecutive clicks</string>
+    <string name="consecutive_clicks">Consecutive clicks</string>
     <string name="time_without_detection">Stop pointer when face not detected</string>
     <string name="interface_settings">Interface settings</string>
     <string name="docking_panel_edge">Dock menu position</string>

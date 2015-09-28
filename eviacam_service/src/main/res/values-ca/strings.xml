@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ /*
+ ** Enable Viacam for Android, a camera based mouse emulator
+ **
+ ** Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+-->
+<resources>
+
+    <!-- Do NOT translate -->
+    <string name="app_name">Enable Viacam Mobile</string>
+    <string name="service_name">Enable Viacam Mobile</string>
+
+    <!-- Description shown in the accessibility service screen -->
+    <string name="eviacam_service_description">Enable Viacam Mobile és un emulador de ratolí que permet moure el punter amb el cap. Fa el seguiment del rostre emprant la càmera frontal del dispositiu.</string>
+
+    <!-- Label for the preferences screen -->
+    <string name="eviacam_preferences_title">Ajustos d\'Enable Viacam Mobile</string>
+
+    <!-- These are labels and summaries for settings -->
+    <string name="motion_settings">Ajustos de moviment</string>
+    <string name="x_axis_speed">Velocitat eix X</string>
+    <string name="x_axis_speed_summary">Sensibilitat de l\'eix X</string>
+    <string name="y_axis_speed">Velocitat eix Y</string>
+    <string name="y_axis_speed_summary">Sensibilitat de l\'eix Y</string>
+    <string name="acceleration">Acceleració</string>
+    <string name="acceleration_summary">Acceleració del punter. 0 desactiva</string>
+    <string name="clic_settings">Ajustos del clic</string>
+    <string name="detection_settings">Ajustos de detecció</string>
+    <string name="never">Mai</string>
+    <string name="after_five_seconds">Després de 5 segons</string>
+    <string name="after_ten_seconds">Després de 10 segons</string>
+    <string name="after_thirty_seconds">Després de 30 segons</string>
+    <string name="after_one_minute">Després d\'1 minut</string>
+    <string name="dwell_area">Àrea del clic per espera</string>
+    <string name="dwell_area_summary">Desplaçament màxim permès abans de reiniciar el temps del clic per espera</string>
+    <string name="dwell_time">Temps de clic per espera</string>
+    <string name="dwell_time_summary">Temps a esperar (dècimes de segon) abans de fer clic</string>
+    <string name="motion_smoothing">Suavitzat del moviment</string>
+    <string name="motion_smoothing_summary">Filtre de reducció de tremolor. 0 desactiva</string>
+    <string name="motion_threshold">Llindar de moviment</string>
+    <string name="motion_threshold_summary">Desplaçament mínim (en píxels) per començar a moure el punter</string>
+    <string name="sound_on_click">Reproduir so al fer clic</string>
+    <string name="consecutive_clicks">Clics consecutius</string>
+    <string name="time_without_detection">Aturar el punter quan no es detecti el rostre</string>
+    <string name="interface_settings">Ajustos de la interfície</string>
+    <string name="docking_panel_edge">Posició del menú encastat</string>
+    <string name="left">Esquerra</string>
+    <string name="right">Dreta</string>
+    <string name="top">Part superior</string>
+    <string name="bottom">Part inferior</string>
+    <string name="ui_elements_size">Mida dels elements de la interfície</string>
+    <string name="xlarge">Extra gran</string>
+    <string name="large">Gran</string>
+    <string name="normal">Normal</string>
+    <string name="small">Petit</string>
+
+    <!-- Actions available through the accessibility API -->
+    <string name="click">Clic</string>
+    <string name="long_click">Clic llarg</string>
+    <string name="collapse">Reduir</string>
+    <string name="copy">Copiar</string>
+    <string name="cut">Tallar</string>
+    <string name="dismiss">Descartar</string>
+    <string name="expand">Expandir</string>
+    <string name="paste">Enganxar</string>
+    <string name="scroll_backward">Desplaçament enrere</string>
+    <string name="scroll_forward">Desplaçament endavant</string>
+    <string name="select">Seleccionar</string>
+    <string name="focus">Focus</string>
+
+    <!-- Actions available through the docking pannel -->
+    <string name="back_button">Botó enrere</string>
+    <string name="home_button">Botó d\'inici</string>
+    <string name="recents_button">Botó recents</string>
+    <string name="notifications_button">Botó de notificació</string>
+    <string name="dock_panel_button">Expandir/replegar menú encastat</string>
+    <string name="softkeyboard_button">Obrir teclat</string>
+    <string name="scroll_refresh_button">Refrescar el botons de desplaçament</string>
+    <string name="disable_click_button">Desactivar clic</string>
+
+    <!-- Messages for the notification -->
+    <string name="running_click_to_pause">S\'està executant (clic per aturar)</string>
+    <string name="stopped_click_to_resume">Aturat (clic per reprendre)</string>
+
+    <!-- OpenCV installation stuff. These allow to compose a message like:
+        "Installation cancelled" "Enable Viacam Mobile"" needs OpenCV manager..."
+    -->
+    <string name="installation_cancelled">Instal·lació cancel·lada</string>
+    <string name="needs_opencv_retry">necessita l\'OpenCV manager per funcionar. Reintentar la instal·lació?</string>
+
+    <!-- Crash report messages (ACRA) -->
+    <string name="crash_toast_text">Oops! Enable Viacam s\'ha aturat</string>
+    <string name="crash_dialog_text">S\'ha produït un error inesperat que ha forçat l\'aturada d\'Enable Viacam Mobile. Si us plau, ajudi\'ns a solucionar-ho enviant dades sobre l\'error, tot el que cal fer és clicar a OK.</string>
+    <string name="crash_dialog_comment_prompt">Pot afegir comentaris sobre el problema a continuació:</string>
+    <string name="crash_dialog_ok_toast">Gràcies!</string>
+
+    <!-- Slave mode gamepad settings -->
+    <string name="gamepad_settings">Ajustos del gamepad</string>
+    <string name="gamepad_location">Ubicació del gamepad</string>
+    <string name="top_left">Part superior esquerra</string>
+    <string name="bottom_left">Part inferior esquerra</string>
+    <string name="top_center">Part superior central</string>
+    <string name="bottom_center">Part inferior central</string>
+    <string name="top_right">Part superior dreta</string>
+    <string name="bottom_right">Part inferior dreta</string>
+    <string name="eviacam_slave_mode_preferences_title">Ajustos del mode esclau d\'Enable Viacam</string>
+    <string name="slave_mode_preferences">Ajustos del mode esclau</string>
+    <string name="gamepad_interface_settings">Interfície del gamepad</string>
+    <string name="gamepad_transparency">Transparència</string>
+    <string name="gamepad_abs_speed">Velocitat mode abs.</string>
+    <string name="gamepad_abs_speed_summary">Velocitat quan s\'usa el mode absolut</string>
+    <string name="gamepad_rel_sensitivity">Sensibilitat del mode rel.</string>
+    <string name="gamepad_rel_sensitivity_summary">Sensibilitat del mode relatiu (valors baixos estableixen una sensibilitat alta)</string>
+    <string name="gamepad_preferences">Ajustos del gamepad</string>
+    <string name="mouse_preferences">Ajustos del ratolí</string>
+
+</resources>

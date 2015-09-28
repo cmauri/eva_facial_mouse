@@ -48,22 +48,22 @@
     <bool name="sound_on_click_default">true</bool>
     <bool name="consecutive_clicks_default">true</bool>
     
-    <string name="time_without_detection_default">30</string>
+    <string name="time_without_detection_default" translatable="false">30</string>
     
-    <string name="docking_panel_edge_left_value">1</string>
-    <string name="docking_panel_edge_right_value">2</string>
-    <string name="docking_panel_edge_top_value">3</string>
-    <string name="docking_panel_edge_bottom_value">4</string>
+    <string name="docking_panel_edge_left_value" translatable="false">1</string>
+    <string name="docking_panel_edge_right_value" translatable="false">2</string>
+    <string name="docking_panel_edge_top_value" translatable="false">3</string>
+    <string name="docking_panel_edge_bottom_value" translatable="false">4</string>
 
     <integer name="docking_panel_edge_default">1</integer>
     
-    <string name="ui_elements_size_default">1</string>
+    <string name="ui_elements_size_default" translatable="false">1</string>
     
     <integer name="gamepad_size_default">1</integer>
     
     <integer name="gamepad_location_default">3</integer>
 
-    <string name="gamepad_transparency_default">60</string>
+    <string name="gamepad_transparency_default" translatable="false">60</string>
     
     <integer name="gamepad_abs_speed_default">10</integer>
     <integer name="gamepad_abs_speed_min">1</integer>

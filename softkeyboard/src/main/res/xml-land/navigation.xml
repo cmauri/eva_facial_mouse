@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/* 
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License"); 
+** you may not use this file except in compliance with the License. 
+** You may obtain a copy of the License at 
+**
+**     http://www.apache.org/licenses/LICENSE-2.0 
+**
+** Unless required by applicable law or agreed to in writing, software 
+** distributed under the License is distributed on an "AS IS" BASIS, 
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+** See the License for the specific language governing permissions and 
+** limitations under the License.
+*/
+-->
+
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="8.5%p"
+    android:horizontalGap="0px"
+    android:verticalGap="0px"
+    android:keyHeight="@dimen/key_height">
+
+    <Row>
+        <Key android:codes="@integer/key_switch_alpha_symbol" android:keyLabel="ABC" 
+             android:keyEdgeFlags="left" android:keyWidth="7.5%p"/>
+        <Key android:codes="61" android:keyLabel="TAB" />
+        <Key android:codes="-122" android:keyLabel="Home"/>
+        <Key android:codes="-123" android:keyLabel="End" />
+        <Key android:codes="21" android:keyLabel="&lt;"/>
+        <Key android:codes="19" android:keyLabel="^"/>
+        <Key android:codes="20" android:keyLabel="v"/>
+        <Key android:codes="22" android:keyLabel="&gt;"/>
+        <Key android:codes="92" android:keyLabel="PgUp"/>
+        <Key android:codes="93" android:keyLabel="PgDn" />
+        <Key android:codes="-112" android:keyLabel="Del" />
+        <Key android:codes="@integer/key_return" 
+             android:keyIcon="@drawable/sym_keyboard_return" 
+             android:keyEdgeFlags="right" android:keyWidth="7.5%p" />
+    </Row>
+
+</Keyboard>

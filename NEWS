@@ -1,0 +1,72 @@
+v0.95beta 
+- Project migrated to Android Studio
+- Add power management: lock power on while interacting. After some time without detecting a face it disables the on-screen pointer, enters in low power mode and allows the device to suspend.
+- Fix camera viewer orientation and add face detection feedback
+- Fix some non workings keys ('p' and 'z')
+- Fix some scrolling issues (e.g. list views that get stuck)
+- Improve (hopefully) pointer acceleration curve
+- Adjust the priority of the thread to improve responsiveness
+- Add Spanish and Catalan translations
+
+v0.90beta (7e2074f8e8732e1e9016a42b2cd8187dbfb3d68d)
+-	Add navigation keyboard layout
+-	Add option to generate consecutive clicks
+-	Tweak some camera parameters to improve frame rate and lower CPU usage
+-	Add slave mode
+
+v0.83beta (be5279fa4f8e68c3b33fa922804fa4cf496456f1)
+-	Add service binaries for multiple architectures
+-	SoftKeyboard: workaround to fix (hopefully) compatibility with some Samsung devices
+
+v0.81beta (73625a6377157d365d7b52c7f2c2f657682121a1)
+-	catch exceptions in softkeyboard and send bug report with ACRA
+-	add button to manually open the keyboard (IME)
+
+v0.80beta (010b9e5fb5a64acc984de5ab2ca1c1b5c84a2f58)
+-	Improved keyboard (IME)
+-	Fix crash when new version installed and some settings were not recorded yet
+-	Improvements for API >= 21
+-	Google keyboard working
+-	WhatsApp emoticons working
+
+v0.73beta (2f75cf927835aa948aa5b5a0ecbc8bed724cac3c)
+-	Added resizeable pointer, dock panel and scroll buttons
+-	Improve progress feedback (more visible)
+-	Set front camera as required
+-	Improve some icons
+-	Added option to open notifications
+-	Add launcher activity which opens accessibility options
+
+v0.72beta
+-	Added splash screen including OpenCV detection and installation
+-	Added icons
+
+Tested with:
+-	ZOPO 980+ (worked after few attempts)
+
+v0.7beta
+Current features:
+- System camera facial tracking working
+- Camera viewer
+- Pointer and countdown
+- Context menu pointer
+- Scroll buttons
+- Panel of global options
+- Notification icon
+- Configuration options
+- Management of IME (custom IME)
+
+Known limitations:
+- Control elements are not visible through the Accessibility API, for example, web browsing (webview) is quite limited (not all elements are operable, it is not possible to scroll), non-standard controls (e.g. games.)
+- Handling Input Method (IME) Standard
+- Some issues with Play Store
+
+Tests performed:
+- This version has been successfully tested on the following devices
+-	Samsung Galaxy Nexus (Android 4.3 Jelly Bean)
+-	bq Edison 3G (Android 4.4.2 Kitkat)
+-	bq Edison 3 (Android 4.4 Kitkat)
+-	Nexus 7 (2012) (Android 5.1 Lollipop)
+-	Samsung sm-t535 (4.4.4 y 4.4.2)
+-	Huawei MediaPad 10 (4.4.2)
+	

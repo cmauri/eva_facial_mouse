@@ -1,0 +1,117 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.crea_si.eviacam.service" >
+
+    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.front" android:required="true"/>
+    <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
+
+    <application
+        android:name=".EViacamApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        
+        <!-- Accessibility service -->
+        <service
+            android:name=".TheAccessibilityService"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/service_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" 
+            android:settingsActivity="com.crea_si.eviacam.service.MousePreferencesActivity" 
+            android:configChanges="orientation|screenSize" >
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibilityservice" />
+        </service>
+
+        <!-- Enable Viacam main (mouse) preferences -->
+        <activity
+            android:name=".MousePreferencesActivity"
+            android:label="@string/eviacam_preferences_title"
+            android:launchMode="singleTop"
+            android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
+            android:theme="@android:style/Theme.DeviceDefault"
+            tools:ignore="ExportedActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.accessibilityservice.SERVICE_SETTINGS" />
+            </intent-filter>
+        </activity>
+        
+        <!-- Splash screen -->
+        <activity
+            android:name=".SplashActivity" 
+            android:exported="false"
+            android:noHistory="false"
+            android:excludeFromRecents="false"
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar" >
+        </activity>
+        
+        <!-- Launcher activity -->
+        <activity
+            android:name=".LauncherActivity"
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+	        <intent-filter>
+	            <action android:name="android.intent.action.MAIN" />
+	            <category android:name="android.intent.category.LAUNCHER" />
+	        </intent-filter>
+        </activity>
+
+        <!-- Slave mode service -->
+        <service
+            android:name=".SlaveModeService"
+            android:label="Slave mode service"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.crea_si.eviacam.service.SlaveModeService" />
+            </intent-filter>
+        </service>
+        
+        <!-- Slave mode preferences -->
+        <activity
+            android:name=".SlaveModePreferencesActivity"
+            android:label="@string/eviacam_slave_mode_preferences_title"
+            android:launchMode="singleTop"
+            android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
+            android:theme="@android:style/Theme.DeviceDefault" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+       
+        <!-- Gamepad preferences -->
+        <activity
+            android:name=".GamepadPreferencesActivity"
+            android:label="@string/gamepad_preferences"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
+            android:theme="@android:style/Theme.DeviceDefault" >
+        </activity>
+
+        <!-- ACRA activity -->
+        <activity android:name="org.acra.CrashReportDialog"
+        android:theme="@android:style/Theme.Dialog"
+        android:process=":error_report"
+        android:launchMode="singleInstance"
+        android:excludeFromRecents="true"
+        android:finishOnTaskLaunch="true" />
+
+    </application>
+
+</manifest>

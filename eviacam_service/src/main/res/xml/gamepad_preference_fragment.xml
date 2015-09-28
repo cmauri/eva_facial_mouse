@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ /*
+ ** Enable Viacam for Android, a camera based mouse emulator
+ **
+ ** Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="@string/gamepad_interface_settings">
+      
+        <com.crea_si.eviacam.service.NumberPickerPreference
+            android:key="gamepad_abs_speed"
+            android:title="@string/gamepad_abs_speed"
+            android:summary="@string/gamepad_abs_speed_summary"
+            android:defaultValue="@integer/gamepad_abs_speed_default"
+            app:minValue="@integer/gamepad_abs_speed_min"
+            app:maxValue="@integer/gamepad_abs_speed_max"
+        />
+         
+        <com.crea_si.eviacam.service.NumberPickerPreference
+            android:key="gamepad_rel_sensitivity"
+            android:title="@string/gamepad_rel_sensitivity"
+            android:summary="@string/gamepad_rel_sensitivity_summary"
+            android:defaultValue="@integer/gamepad_rel_sensitivity_default"
+            app:minValue="@integer/gamepad_rel_sensitivity_min"
+            app:maxValue="@integer/gamepad_rel_sensitivity_max"
+        />
+
+        <ListPreference
+            android:key="gamepad_location"
+            android:title="@string/gamepad_location"
+            android:summary="%s"
+            android:entries="@array/gamepad_location_entries"
+            android:entryValues="@array/gamepad_location_values"
+            android:defaultValue="@integer/gamepad_location_default"
+        />
+
+         <ListPreference
+            android:key="gamepad_transparency"
+            android:title="@string/gamepad_transparency"
+            android:summary="%s"
+            android:entries="@array/gamepad_transparency_entries"
+            android:entryValues="@array/gamepad_transparency_values"
+            android:defaultValue="@string/gamepad_transparency_default"
+        />
+
+        <ListPreference
+            android:key="ui_elements_size"
+            android:title="@string/ui_elements_size"
+            android:summary="%s"
+            android:entries="@array/ui_elements_size_entries"
+            android:entryValues="@array/ui_elements_size_values"
+            android:defaultValue="@string/ui_elements_size_default"
+        />             
+
+    </PreferenceCategory>
+        
+</PreferenceScreen>

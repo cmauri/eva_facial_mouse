@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+ /*
+ ** Enable Viacam for Android, a camera based mouse emulator
+ **
+ ** Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ **
+ ** This program is free software: you can redistribute it and/or modify
+ ** it under the terms of the GNU General Public License as published by
+ ** the Free Software Foundation, either version 3 of the License, or
+ ** (at your option) any later version.
+ **
+ ** This program is distributed in the hope that it will be useful,
+ ** but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ** GNU General Public License for more details.
+ **
+ ** You should have received a copy of the GNU General Public License
+ ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+-->
+<resources>
+
+    <!-- Do NOT translate -->
+    <string name="app_name">Enable Viacam Mobile</string>
+    <string name="service_name">Enable Viacam Mobile</string>
+
+    <!-- Description shown in the accessibility service screen -->
+    <string name="eviacam_service_description">Enable Viacam Mobile es un emulador de ratón que permite mover el puntero con la cabeza. Hace el seguimiento del rostro utilizando la cámara frontal del dispositivo.</string>
+
+    <!-- Label for the preferences screen -->
+    <string name="eviacam_preferences_title">Ajustes de Enable Viacam Mobile</string>
+
+    <!-- These are labels and summaries for settings -->
+    <string name="motion_settings">Ajustes de movimiento</string>
+    <string name="x_axis_speed">Velocidad eje X</string>
+    <string name="x_axis_speed_summary">Sensibilidad del eje X</string>
+    <string name="y_axis_speed">Velocidad eje Y</string>
+    <string name="y_axis_speed_summary">Sensibilidad del eje Y</string>
+    <string name="acceleration">Aceleración</string>
+    <string name="acceleration_summary">Aceleración del puntero. 0 desactiva</string>
+    <string name="clic_settings">Ajustes del clic</string>
+    <string name="detection_settings">Ajustes de detección</string>
+    <string name="never">Nunca</string>
+    <string name="after_five_seconds">Tras 5 segundos</string>
+    <string name="after_ten_seconds">Tras 10 segundos</string>
+    <string name="after_thirty_seconds">Tras 30 segundos</string>
+    <string name="after_one_minute">Tras 1 minuto</string>
+    <string name="dwell_area">Área del clic por espera</string>
+    <string name="dwell_area_summary">Desplazamiento máximo permitido antes de reiniciar el tiempo de clic por espera</string>
+    <string name="dwell_time">Tiempo de clic por espera</string>
+    <string name="dwell_time_summary">Tiempo a esperar (décimas de segundo) antes de hacer clic</string>
+    <string name="motion_smoothing">Suavizado del movimiento</string>
+    <string name="motion_smoothing_summary">Filtro de reducción de temblor. 0 desactiva</string>
+    <string name="motion_threshold">Umbral de movimiento</string>
+    <string name="motion_threshold_summary">Desplazamiento mínimo (en píxeles) para comenzar a mover el puntero</string>
+    <string name="sound_on_click">Reproducir sonido al hacer clic</string>
+    <string name="consecutive_clicks">Clics consecutivos</string>
+    <string name="time_without_detection">Detener el puntero cuando no se detecte el rostro</string>
+    <string name="interface_settings">Ajustes de la interfaz</string>
+    <string name="docking_panel_edge">Posición del menú acoplado</string>
+    <string name="left">Izquierda</string>
+    <string name="right">Derecha</string>
+    <string name="top">Parte superior</string>
+    <string name="bottom">Parte inferior</string>
+    <string name="ui_elements_size">Tamaño de los elementos de la interfaz</string>
+    <string name="xlarge">Extra grande</string>
+    <string name="large">Grande</string>
+    <string name="normal">Normal</string>
+    <string name="small">Pequeño</string>
+
+    <!-- Actions available through the accessibility API -->
+    <string name="click">Clic</string>
+    <string name="long_click">Clic largo</string>
+    <string name="collapse">Reducir</string>
+    <string name="copy">Copiar</string>
+    <string name="cut">Cortar</string>
+    <string name="dismiss">Descartar</string>
+    <string name="expand">Expandir</string>
+    <string name="paste">Pegar</string>
+    <string name="scroll_backward">Desplazamiento hacia atrás</string>
+    <string name="scroll_forward">Desplazamiento hacia delante</string>
+    <string name="select">Seleccionar</string>
+    <string name="focus">Foco</string>
+
+    <!-- Actions available through the docking pannel -->
+    <string name="back_button">Botón atrás</string>
+    <string name="home_button">Botón de inicio</string>
+    <string name="recents_button">Botón recientes</string>
+    <string name="notifications_button">Botón de notificación</string>
+    <string name="dock_panel_button">Expandir/replegar menú acoplado</string>
+    <string name="softkeyboard_button">Abrir teclado</string>
+    <string name="scroll_refresh_button">Refrescar los botones de desplazamiento</string>
+    <string name="disable_click_button">Desactivar clic</string>
+
+    <!-- Messages for the notification -->
+    <string name="running_click_to_pause">Se está ejecutando (clic para pausar)</string>
+    <string name="stopped_click_to_resume">Detenido (clic para reanudar)</string>
+
+    <!-- OpenCV installation stuff. These allow to compose a message like:
+        "Installation cancelled" "Enable Viacam Mobile"" needs OpenCV manager..."
+    -->
+    <string name="installation_cancelled">Instalación cancelada</string>
+    <string name="needs_opencv_retry">necesita OpenCV manager para funcionar. ¿Reintentar la instalación?</string>
+
+    <!-- Crash report messages (ACRA) -->
+    <string name="crash_toast_text">Oops! Enable Viacam se ha detenido</string>
+    <string name="crash_dialog_text">Se ha producido un error inesperado que ha forzado la parada de Enable Viacam Mobile. Por favor, ayúdenos a solucionarlo enviando datos sobre el error, todo lo que hay que hacer es hacer clic en OK.</string>
+    <string name="crash_dialog_comment_prompt">Puede añadir comentarios sobre el problema a continuación:</string>
+    <string name="crash_dialog_ok_toast">¡Gracias!</string>
+
+    <!-- Slave mode gamepad settings -->
+    <string name="gamepad_settings">Ajustes del gamepad</string>
+    <string name="gamepad_location">Ubicación del gamepad</string>
+    <string name="top_left">Parte superior izquierda</string>
+    <string name="bottom_left">Parte inferior izquierda</string>
+    <string name="top_center">Parte superior central</string>
+    <string name="bottom_center">Parte inferior central</string>
+    <string name="top_right">Parte superior derecha</string>
+    <string name="bottom_right">Parte inferior derecha</string>
+    <string name="eviacam_slave_mode_preferences_title">Ajustes del modo esclavo de Enable Viacam</string>
+    <string name="slave_mode_preferences">Ajustes del modo esclavo</string>
+    <string name="gamepad_interface_settings">Interfaz del gamepad</string>
+    <string name="gamepad_transparency">Transparencia</string>
+    <string name="gamepad_abs_speed">Velocidad modo abs.</string>
+    <string name="gamepad_abs_speed_summary">Velocidad cuando se usa el modo absoluto</string>
+    <string name="gamepad_rel_sensitivity">Sensibilidad del modo rel.</string>
+    <string name="gamepad_rel_sensitivity_summary">Sensibilidad del modo relativo (valores bajos establecen una sensibilidad alta)</string>
+    <string name="gamepad_preferences">Ajustes del gamepad</string>
+    <string name="mouse_preferences">Ajustes del ratón</string>
+
+</resources>

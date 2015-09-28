@@ -1,0 +1,50 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" 
+    package="com.crea_si.softkeyboard" >
+
+    <application
+        android:name=".SoftKeyboardApplication"
+        android:allowBackup="true"
+        android:label="@string/ime_name"
+        android:theme="@android:style/Theme.DeviceDefault" >
+
+        <service 
+            android:name=".SoftKeyboard"
+            android:label="@string/ime_name"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+
+            <meta-data 
+                android:name="android.view.im" 
+                android:resource="@xml/method" />
+        </service>
+
+        <activity 
+            android:name=".ImePreferences" 
+            android:label="@string/settings_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".RemoteBinderService"
+            android:label="IME messenger service"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.crea_si.softkeyboard.RemoteBinderService" />
+            </intent-filter>
+        </service>
+
+        <!-- ACRA activity -->
+        <activity android:name="org.acra.CrashReportDialog"
+        android:theme="@android:style/Theme.Dialog"
+        android:process=":error_report"
+        android:launchMode="singleInstance"
+        android:excludeFromRecents="true"
+        android:finishOnTaskLaunch="true" />
+
+    </application>
+</manifest>

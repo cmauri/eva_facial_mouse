@@ -83,7 +83,7 @@
     <string name="select">Select</string>
     <string name="focus">Focus</string>
 
-    <!-- Actions available through the docking pannel -->
+    <!-- Actions available through the docking panel -->
     <string name="back_button">Back button</string>
     <string name="home_button">Home button</string>
     <string name="recents_button">Recents button</string>
@@ -138,5 +138,13 @@
     <string name="wiz_set_keyboard3">3. Tap \'Default\' and select \'Enable Viacam Keyboard\'</string>
     <string name="configure">Configure</string>
     <string name="opencv_manager_required">OpenCV manager is required to run Enable Viacam Mobile</string>
+    <string name="camera_viewer">Camera viewer</string>
+    <string name="camera_viewer_wizard1">Displays the image of the frontal camera in real time</string>
+    <string name="camera_viewer_wizard2">
+        <![CDATA[
+        <b>Dark red border:</b> face detected.<br/>
+        <b>White border:</b> face NOT detected.<br/><br/>
+        ]]>
+    </string>
 
 </resources>

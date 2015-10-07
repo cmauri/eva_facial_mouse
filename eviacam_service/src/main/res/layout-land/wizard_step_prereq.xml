@@ -19,20 +19,29 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
               android:layout_height="match_parent"
     >
 
-    <include
+    <TableRow
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/wizard_step_prereq1"/>
+        android:layout_height="match_parent"
+        android:stretchColumns="*" >
 
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/wizard_step_prereq2"/>
+        <include
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            layout="@layout/wizard_step_prereq1"
+            android:layout_weight="1"
+            android:layout_column="0"/>
 
-</LinearLayout>
+        <include
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            layout="@layout/wizard_step_prereq2"
+            android:layout_weight="1"
+            android:layout_column="1"/>
+    </TableRow>
+
+</TableLayout>

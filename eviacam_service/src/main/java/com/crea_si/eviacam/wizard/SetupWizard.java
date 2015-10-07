@@ -49,6 +49,7 @@ public class SetupWizard extends BasicWizardLayout {
                 .addStep(WhatsIsWizardStep.class)
                 .addStep(PreReqWizardStep.class)
                 .addStep(CameraViewerWizardStep.class)
+                .addStep(DockMenuWizardStep.class)
                 .create();
     }
 }

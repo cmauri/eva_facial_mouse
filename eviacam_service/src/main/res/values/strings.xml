@@ -146,5 +146,12 @@
         <b>White border:</b> face NOT detected.<br/><br/>
         ]]>
     </string>
+    <string name="dock_menu">Dock menu</string>
+    <string name="back">Back</string>
+    <string name="home">Home</string>
+    <string name="recents">Recents</string>
+    <string name="open_notifications">Open notifications</string>
+    <string name="open_keyboard">Open keyboard</string>
+    <string name="toggle_click">Toggle click generation</string>
 
 </resources>

@@ -13,7 +13,7 @@ def getVersionName = { ->
 }
 
 def getVersionCode = { ->
-    def versionPropsFile = file('version.properties')
+    def versionPropsFile = file('../version.properties')
 
     if (versionPropsFile.canRead()) {
         def Properties versionProps = new Properties()

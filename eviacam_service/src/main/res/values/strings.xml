@@ -129,4 +129,14 @@
     <string name="gamepad_preferences">Gamepad preferences</string>
     <string name="mouse_preferences">Mouse preferences</string>
 
+    <!-- Wizard -->
+    <string name="prerequisites">Prerequisites</string>
+    <string name="install">Install</string>
+    <string name="keyboard">Keyboard</string>
+    <string name="wiz_set_keyboard1"><![CDATA[1. Open: Settings > Language & input]]></string>
+    <string name="wiz_set_keyboard2">2. Select \'Enable Viacam Keyboard\'</string>
+    <string name="wiz_set_keyboard3">3. Tap \'Default\' and select \'Enable Viacam Keyboard\'</string>
+    <string name="configure">Configure</string>
+    <string name="opencv_manager_required">OpenCV manager is required to run Enable Viacam Mobile</string>
+
 </resources>

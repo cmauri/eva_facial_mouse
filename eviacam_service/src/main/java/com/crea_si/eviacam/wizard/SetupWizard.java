@@ -41,9 +41,13 @@ public class SetupWizard extends BasicWizardLayout {
         setBackButtonLabel("Return");
         setFinishButtonLabel("Finalize"); */
 
+        /* Add your steps in the order you want them to appear and eventually
+         * call create() to create the wizard flow.
+         */
         return new WizardFlow.Builder()
-                .addStep(WelcomeWizardStep.class)       //Add your steps in the order you want them
-                .addStep(WhatsIsWizardStep.class)           //to appear and eventually call create()
-                .create();                              //to create the wizard flow.
+                .addStep(WelcomeWizardStep.class)
+                .addStep(WhatsIsWizardStep.class)
+                .addStep(PreReqWizardStep.class)
+                .create();
     }
 }

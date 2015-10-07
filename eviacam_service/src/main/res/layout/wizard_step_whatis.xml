@@ -28,6 +28,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView"
-        android:layout_marginTop="10dp"
-        android:textSize="20dp"/>
+        android:layout_marginTop="10sp"
+        android:textSize="20sp"/>
 </LinearLayout>

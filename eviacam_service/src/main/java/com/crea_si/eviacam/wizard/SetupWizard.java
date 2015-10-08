@@ -47,9 +47,11 @@ public class SetupWizard extends BasicWizardLayout {
         return new WizardFlow.Builder()
                 .addStep(WelcomeWizardStep.class)
                 .addStep(WhatsIsWizardStep.class)
-                .addStep(PreReqWizardStep.class)
+                .addStep(OpenCVWizardStep.class)
+                .addStep(KeyboardWizardStep.class)
                 .addStep(CameraViewerWizardStep.class)
                 .addStep(DockMenuWizardStep.class)
+                .addStep(ScrollButtonsWizardStep.class)
                 .create();
     }
 }

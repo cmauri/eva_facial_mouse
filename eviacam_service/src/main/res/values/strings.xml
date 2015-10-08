@@ -156,7 +156,12 @@
     <string name="scroll_buttons">Scroll buttons</string>
     <string name="scroll_buttons_description">Allow you to scroll the content of some windows and
         views by clicking them.</string>
-    <string name="scroll_buttons_remaks">If the scroll buttons do not appear you could try scrolling
-        using the navigation keyboard.</string>
+    <string name="scroll_buttons_remaks">Due to restrictions of the Android platform, the scroll
+        buttons might not always work (e.g. while using a web browser). In such circumstances
+        you could try scrolling by using the navigation keyboard.</string>
+    <string name="navigation_keyboard">Navigation keyboard</string>
+    <string name="keyboard">Keyboard</string>
+    <string name="keyboard_remarks">Most standard keyboards do not work with Enable Viacam.
+        We provide a basic keyboard that needs to be enabled manually.</string>
 
 </resources>

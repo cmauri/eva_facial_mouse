@@ -28,11 +28,11 @@
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/wizard_step_prereq1"/>
+        layout="@layout/wizard_step_opencv"/>
 
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/wizard_step_prereq2"/>
+        layout="@layout/wizard_step_keyboard"/>
 
 </LinearLayout>

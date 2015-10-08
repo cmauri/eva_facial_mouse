@@ -32,14 +32,14 @@
         <include
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            layout="@layout/wizard_step_prereq1"
+            layout="@layout/wizard_step_opencv"
             android:layout_weight="1"
             android:layout_column="0"/>
 
         <include
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            layout="@layout/wizard_step_prereq2"
+            layout="@layout/wizard_step_keyboard"
             android:layout_weight="1"
             android:layout_column="1"/>
     </TableRow>

@@ -27,16 +27,16 @@ import com.crea_si.eviacam.service.R;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class PreReqWizardStep extends WizardStep {
+public class OpenCVWizardStep extends WizardStep {
 
     // You must have an empty constructor for every step
-    public PreReqWizardStep() {
+    public OpenCVWizardStep() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.wizard_step_prereq, container, false);
+        View v = inflater.inflate(R.layout.wizard_step_opencv, container, false);
 
         //getActivity().setTitle(getResources().getString(R.string.prerequisites));
 

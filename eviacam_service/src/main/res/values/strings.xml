@@ -173,5 +173,8 @@
     <string name="limitation2">- Web browsers do not handle properly some actions (it is
         recommended to use Google Chrome).</string>
     <string name="limitation3">- Applications such as Maps, Earth and Gallery work with limitations.</string>
+    <string name="how_to_run"><![CDATA[To start Enable Viacam Mobile go to:
+        \n\nSettings > Accessibility > Enable Viacam Mobile]]></string>
+    <string name="run_this_wizard_at_startup">Run this wizard at startup</string>
 
 </resources>

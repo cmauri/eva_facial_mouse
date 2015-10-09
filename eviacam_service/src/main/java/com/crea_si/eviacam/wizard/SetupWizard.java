@@ -18,6 +18,8 @@
 */
 package com.crea_si.eviacam.wizard;
 
+import android.content.Intent;
+
 import org.codepond.wizardroid.WizardFlow;
 import org.codepond.wizardroid.layouts.BasicWizardLayout;
 
@@ -54,6 +56,15 @@ public class SetupWizard extends BasicWizardLayout {
                 .addStep(ScrollButtonsWizardStep.class)
                 .addStep(SettingsWizardStep.class)
                 .addStep(LimitationsWizardStep.class)
+                .addStep(RunWizardStep.class)
                 .create();
+    }
+
+    @Override
+    public void onWizardComplete() {
+        super.onWizardComplete();
+        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        startActivityForResult(intent, 0);
+        getActivity().finish();
     }
 }

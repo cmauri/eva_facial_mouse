@@ -132,6 +132,9 @@
     <string name="mouse_preferences">Mouse preferences</string>
 
     <!-- Wizard -->
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="finish">Finish</string>
     <string name="prerequisites">Prerequisites</string>
     <string name="install">Install</string>
     <string name="keyboard_setup">Keyboard set up</string>
@@ -149,7 +152,6 @@
         ]]>
     </string>
     <string name="dock_menu">Dock menu</string>
-    <string name="back">Back</string>
     <string name="home">Home</string>
     <string name="recents">Recents</string>
     <string name="open_notifications">Open notifications</string>

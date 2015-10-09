@@ -19,6 +19,9 @@
 package com.crea_si.eviacam.wizard;
 
 import android.content.Intent;
+import android.content.res.Resources;
+
+import com.crea_si.eviacam.service.R;
 
 import org.codepond.wizardroid.WizardFlow;
 import org.codepond.wizardroid.layouts.BasicWizardLayout;
@@ -38,10 +41,11 @@ public class SetupWizard extends BasicWizardLayout {
     //using WizardFlow.Builder as shown in this example
     @Override
     public WizardFlow onSetup() {
-        /* Optionally, you can set different labels for the control buttons
-        setNextButtonLabel("Advance");
-        setBackButtonLabel("Return");
-        setFinishButtonLabel("Finalize"); */
+        /* Labels of the buttons */
+        Resources r= getResources();
+        setNextButtonText(r.getString(R.string.next));
+        setBackButtonText(r.getString(R.string.back));
+        setFinishButtonText(r.getString(R.string.finish));
 
         /* Add your steps in the order you want them to appear and eventually
          * call create() to create the wizard flow.

@@ -146,5 +146,17 @@
         />
 
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/help">
+
+        <Preference
+            android:title="@string/configuration_wizard">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.crea_si.eviacam.service"
+                android:targetClass="com.crea_si.eviacam.wizard.WizardActivity"
+            />
+        </Preference>
+    </PreferenceCategory>
         
 </PreferenceScreen>

@@ -166,5 +166,12 @@
     <string name="configuration_settings">Configuration settings</string>
     <string name="configuration_settings_description">Some parameters can be adjusted to fit the user\'s needs.</string>
     <string name="settings">Settings</string>
+    <string name="known_limitations">Known limitations</string>
+    <string name="limitations_intro">Due to Android restrictions some features are not currently
+        available, yet.</string>
+    <string name="limitation1">- Does not work with many games.</string>
+    <string name="limitation2">- Web browsers do not handle properly some actions (it is
+        recommended to use Google Chrome).</string>
+    <string name="limitation3">- Applications such as Maps, Earth and Gallery work with limitations.</string>
 
 </resources>

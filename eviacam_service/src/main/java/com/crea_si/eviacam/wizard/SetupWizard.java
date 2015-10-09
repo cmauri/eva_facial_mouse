@@ -53,6 +53,7 @@ public class SetupWizard extends BasicWizardLayout {
                 .addStep(DockMenuWizardStep.class)
                 .addStep(ScrollButtonsWizardStep.class)
                 .addStep(SettingsWizardStep.class)
+                .addStep(LimitationsWizardStep.class)
                 .create();
     }
 }

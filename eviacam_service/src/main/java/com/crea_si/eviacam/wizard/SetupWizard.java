@@ -52,6 +52,7 @@ public class SetupWizard extends BasicWizardLayout {
                 .addStep(CameraViewerWizardStep.class)
                 .addStep(DockMenuWizardStep.class)
                 .addStep(ScrollButtonsWizardStep.class)
+                .addStep(SettingsWizardStep.class)
                 .create();
     }
 }

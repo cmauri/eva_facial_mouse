@@ -39,7 +39,7 @@
     <string name="y_axis_speed_summary">Sets response sensitivity for the Y axis</string>
     <string name="acceleration">Acceleration</string>
     <string name="acceleration_summary">Pointer acceleration. 0 disables</string>
-    <string name="clic_settings">Click settings</string>
+    <string name="click_settings">Click settings</string>
     <string name="detection_settings">Detection settings</string>
     <string name="never">Never</string>
     <string name="after_five_seconds">After 5 seconds</string>
@@ -163,5 +163,8 @@
     <string name="keyboard">Keyboard</string>
     <string name="keyboard_remarks">Most standard keyboards do not work with Enable Viacam.
         We provide a basic keyboard that needs to be enabled manually.</string>
+    <string name="configuration_settings">Configuration settings</string>
+    <string name="configuration_settings_description">Some parameters can be adjusted to fit the user\'s needs.</string>
+    <string name="settings">Settings</string>
 
 </resources>

@@ -39,7 +39,7 @@
     <string name="y_axis_speed_summary">Sensibilitat de l\'eix Y</string>
     <string name="acceleration">Acceleració</string>
     <string name="acceleration_summary">Acceleració del punter. 0 desactiva</string>
-    <string name="clic_settings">Ajustos del clic</string>
+    <string name="click_settings">Ajustos del clic</string>
     <string name="detection_settings">Ajustos de detecció</string>
     <string name="never">Mai</string>
     <string name="after_five_seconds">Després de 5 segons</string>

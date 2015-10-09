@@ -75,7 +75,7 @@
        
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="@string/clic_settings">
+    <PreferenceCategory android:title="@string/click_settings">
 
         <com.crea_si.eviacam.service.NumberPickerPreference           
             android:key="dwell_time"

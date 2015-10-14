@@ -38,8 +38,6 @@ public class OpenCVWizardStep extends WizardStep {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.wizard_step_opencv, container, false);
 
-        //getActivity().setTitle(getResources().getString(R.string.prerequisites));
-
         return v;
     }
 }

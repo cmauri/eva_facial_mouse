@@ -22,7 +22,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 
+import com.crea_si.eviacam.service.InputMethodAction;
 import com.crea_si.eviacam.service.R;
 
 import org.codepond.wizardroid.WizardStep;
@@ -33,13 +36,26 @@ public class KeyboardWizardStep extends WizardStep {
     public KeyboardWizardStep() {
     }
 
+    private void checkUpdate (View v) {
+        ImageView iv = (ImageView) v.findViewById(R.id.keyboardImage);
+        if (InputMethodAction.isEnabledCustomKeyboard(getActivity())) {
+            iv.setImageResource(R.drawable.ic_correct);
+        }
+        else {
+            iv.setImageResource(R.drawable.ic_wrong);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.wizard_step_keyboard, container, false);
+        final View v = inflater.inflate(R.layout.wizard_step_keyboard, container, false);
 
-        //getActivity().setTitle(getResources().getString(R.string.prerequisites));
-
+        Button b= (Button) v.findViewById(R.id.keyboardConfigureButton);
+        b.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) { checkUpdate(v); }
+        });
         return v;
     }
 }

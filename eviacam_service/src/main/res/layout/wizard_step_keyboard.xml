@@ -57,8 +57,7 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:id="@+id/keyboardImage"
-            android:background="@drawable/ic_wrong"/>
+            android:id="@+id/keyboardImage" />
 
         <Space
             android:layout_width="20dp"
@@ -95,7 +94,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/configure"
+                android:text="@string/check"
                 android:id="@+id/keyboardConfigureButton"/>
 
         </LinearLayout>

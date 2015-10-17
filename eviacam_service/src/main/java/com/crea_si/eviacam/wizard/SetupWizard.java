@@ -68,6 +68,7 @@ public class SetupWizard extends BasicWizardLayout {
     public void onWizardComplete() {
         super.onWizardComplete();
         Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(intent, 0);
         getActivity().finish();
     }

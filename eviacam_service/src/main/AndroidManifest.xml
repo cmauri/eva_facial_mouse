@@ -76,6 +76,8 @@
         <activity
             android:name="com.crea_si.eviacam.wizard.WizardActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.crea_si.eviacam.wizard.WizardActivity"
             android:theme="@android:style/Theme.DeviceDefault" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

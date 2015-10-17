@@ -59,10 +59,12 @@ public class MousePreferencesActivity extends Activity {
     public static class SettingsFragment extends PreferenceFragment {
         // stored whether the activity has been started in slave mode
         private final boolean mSlaveMode;
-        
-        SettingsFragment (boolean slaveMode) {
-            mSlaveMode= slaveMode;
+
+        public SettingsFragment () {
+            mSlaveMode= false;
         }
+
+        SettingsFragment (boolean slaveMode) { mSlaveMode= slaveMode; }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {

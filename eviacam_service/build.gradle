@@ -120,4 +120,5 @@ dependencies {
     compile project(':eviacam_api')
     compile 'com.android.support:support-v4:22.2.1'
     compile files('libs/acra-4.6.2.jar')
+    compile project(':WizarDroid:wizardroid')
 }

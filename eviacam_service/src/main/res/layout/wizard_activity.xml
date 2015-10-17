@@ -1,0 +1,13 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <fragment
+        android:id="@+id/tutorial_wizard_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.crea_si.eviacam.wizard.SetupWizard"
+        tools:layout="@layout/wizard_step_whatis"/>
+</FrameLayout>

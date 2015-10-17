@@ -39,7 +39,7 @@
     <string name="y_axis_speed_summary">Sets response sensitivity for the Y axis</string>
     <string name="acceleration">Acceleration</string>
     <string name="acceleration_summary">Pointer acceleration. 0 disables</string>
-    <string name="clic_settings">Click settings</string>
+    <string name="click_settings">Click settings</string>
     <string name="detection_settings">Detection settings</string>
     <string name="never">Never</string>
     <string name="after_five_seconds">After 5 seconds</string>
@@ -68,6 +68,8 @@
     <string name="large">Large</string>
     <string name="normal">Normal</string>
     <string name="small">Small</string>
+    <string name="help">Help</string>
+    <string name="configuration_wizard">Configuration wizard</string>
 
     <!-- Actions available through the accessibility API -->
     <string name="click">Click</string>
@@ -83,7 +85,7 @@
     <string name="select">Select</string>
     <string name="focus">Focus</string>
 
-    <!-- Actions available through the docking pannel -->
+    <!-- Actions available through the docking panel -->
     <string name="back_button">Back button</string>
     <string name="home_button">Home button</string>
     <string name="recents_button">Recents button</string>
@@ -128,5 +130,56 @@
     <string name="gamepad_rel_sensitivity_summary">Sensitivity when using relative mode (low values set high sensitivity)</string>
     <string name="gamepad_preferences">Gamepad preferences</string>
     <string name="mouse_preferences">Mouse preferences</string>
+
+    <!-- Wizard -->
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="finish">Finish</string>
+    <string name="prerequisites">Prerequisites</string>
+    <string name="install">Install</string>
+    <string name="keyboard_setup">Keyboard set up</string>
+    <string name="wiz_set_keyboard1"><![CDATA[1. Open: Settings > Language & input]]></string>
+    <string name="wiz_set_keyboard2">2. Select \'Enable Viacam Keyboard\'</string>
+    <string name="wiz_set_keyboard3">3. Tap \'Default\' and select \'Enable Viacam Keyboard\'</string>
+    <string name="check">Check</string>
+    <string name="done">Done</string>
+    <string name="opencv_manager_required">OpenCV manager is required to run Enable Viacam Mobile</string>
+    <string name="camera_viewer">Camera viewer</string>
+    <string name="camera_viewer_wizard1">Displays the image of the frontal camera in real time</string>
+    <string name="camera_viewer_wizard2">
+        <![CDATA[
+        <b>Dark red border:</b> face detected.<br/>
+        <b>White border:</b> face NOT detected.<br/><br/>
+        ]]>
+    </string>
+    <string name="dock_menu">Dock menu</string>
+    <string name="home">Home</string>
+    <string name="recents">Recents</string>
+    <string name="open_notifications">Open notifications</string>
+    <string name="open_keyboard">Open keyboard</string>
+    <string name="toggle_click">Toggle click generation</string>
+    <string name="scroll_buttons">Scroll buttons</string>
+    <string name="scroll_buttons_description">Allow you to scroll the content of some windows and
+        views by clicking them.</string>
+    <string name="scroll_buttons_remaks">Due to restrictions of the Android platform, the scroll
+        buttons might not always work (e.g. while using a web browser). In such circumstances
+        you could try scrolling by using the navigation keyboard.</string>
+    <string name="navigation_keyboard">Navigation keyboard</string>
+    <string name="keyboard">Keyboard</string>
+    <string name="keyboard_remarks">Most standard keyboards do not work with Enable Viacam.
+        We provide a basic keyboard that needs to be enabled manually.</string>
+    <string name="configuration_settings">Configuration settings</string>
+    <string name="configuration_settings_description">Some parameters can be adjusted to fit the user\'s needs.</string>
+    <string name="settings">Settings</string>
+    <string name="known_limitations">Known limitations</string>
+    <string name="limitations_intro">Due to Android restrictions some features are not currently
+        available, yet.</string>
+    <string name="limitation1">- Does not work with many games.</string>
+    <string name="limitation2">- Web browsers do not handle properly some actions (it is
+        recommended to use Google Chrome).</string>
+    <string name="limitation3">- Applications such as Maps, Earth and Gallery work with limitations.</string>
+    <string name="how_to_run"><![CDATA[To start Enable Viacam Mobile go to:
+        \n\nSettings > Accessibility > Enable Viacam Mobile]]></string>
+    <string name="run_this_wizard_at_startup">Run this wizard at startup</string>
 
 </resources>

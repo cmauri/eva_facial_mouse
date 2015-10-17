@@ -39,7 +39,7 @@
     <string name="y_axis_speed_summary">Sensibilidad del eje Y</string>
     <string name="acceleration">Aceleración</string>
     <string name="acceleration_summary">Aceleración del puntero. 0 desactiva</string>
-    <string name="clic_settings">Ajustes del clic</string>
+    <string name="click_settings">Ajustes del clic</string>
     <string name="detection_settings">Ajustes de detección</string>
     <string name="never">Nunca</string>
     <string name="after_five_seconds">Tras 5 segundos</string>
@@ -128,5 +128,44 @@
     <string name="gamepad_rel_sensitivity_summary">Sensibilidad del modo relativo (valores bajos establecen una sensibilidad alta)</string>
     <string name="gamepad_preferences">Ajustes del gamepad</string>
     <string name="mouse_preferences">Ajustes del ratón</string>
+    <string name="back">Atrás</string>
+    <string name="camera_viewer">Visor de cámara</string>
+    <string name="camera_viewer_wizard1">Muestra la imagen de la cámara frontal en tiempo real</string>
+    <string name="camera_viewer_wizard2"><![CDATA[         <b>Borde rojo oscuro:</b> rostro detectado.<br/>         <b>Borde blanco:</b> rostro NO detectado.<br/><br/>         ]]></string>
+    <string name="check">Comprobar</string>
+    <string name="configuration_settings">Opciones de configuración</string>
+    <string name="configuration_settings_description">Algunos parámetros se pueden ajustar para adaptarse a las necesidades del usuario.</string>
+    <string name="configuration_wizard">Asistente de configuración</string>
+    <string name="dock_menu">Menú flotante</string>
+    <string name="finish">Finalizar</string>
+    <string name="help">Ayuda</string>
+    <string name="home">Inicio</string>
+    <string name="how_to_run"><![CDATA[Para ejecutar Enable Viacam Mobile ir a:         \n\nAjustes > Accesibilidad > Enable Viacam Mobile]]></string>
+    <string name="install">Instalar</string>
+    <string name="keyboard">Teclado</string>
+    <string name="keyboard_remarks">La mayoría de teclados estándar no funcionan con Enable Viacam. Se proporciona un teclado básico que debe activar manualmente.</string>
+    <string name="keyboard_setup">Configuración del teclado</string>
+    <string name="known_limitations">Limitaciones conocidas</string>
+    <string name="limitation1">- No funciona con la mayoría de juegos</string>
+    <string name="limitation2">- Los navegadores no gestionan adecuadamente algunas acciones (se recomienda usar Google Chrome).</string>
+    <string name="limitation3">- Aplicaciones como Maps, Earth y Galería funcionan con limitaciones.</string>
+    <string name="limitations_intro">Debido a restricciones de Android algunas funciones no están todavía disponibles.</string>
+    <string name="navigation_keyboard">Teclado de navegación</string>
+    <string name="next">Siguiente</string>
+    <string name="open_keyboard">Abrir el teclado</string>
+    <string name="open_notifications">Abrir notificaciones</string>
+    <string name="opencv_manager_required">OpenCV manager se requiere para ejecutar Enable Viacam Mobile</string>
+    <string name="prerequisites">Pre-requisitos</string>
+    <string name="recents">Recientes</string>
+    <string name="run_this_wizard_at_startup">Ejecutar este asistente al inicio</string>
+    <string name="scroll_buttons">Botones de desplazamiento</string>
+    <string name="scroll_buttons_description">Permiten desplazar el contenido de algunas ventanas y vistas al hacer clic.</string>
+    <string name="scroll_buttons_remaks">Debido a restricciones de la plataforma Android, los botones de desplazamiento no siempre funcionan (ej. cuando se utiliza un navegador). En estas circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación.</string>
+    <string name="settings">Ajustes</string>
+    <string name="toggle_click">Conmutar la generación del clic</string>
+    <string name="wiz_set_keyboard1"><![CDATA[1. Abrir: Ajustes > Idioma e introducción de texto]]></string>
+    <string name="ui_elements_size_default" translatable="false"></string>
+    <string name="wiz_set_keyboard2">2. Seleccionar \'Enable Viacam Keyboard\'</string>
+    <string name="wiz_set_keyboard3">3. Hacer un toque a \'Predeterminado\' y seleccionar \'Enable Viacam Keyboard\'</string>
 
 </resources>

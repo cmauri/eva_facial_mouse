@@ -80,8 +80,8 @@ public class CameraLayerView extends RelativeLayout {
     /*
      * camera viewer size
      */
-    private static final int CAM_SURFACE_WIDTH= 64;
-    private static final int CAM_SURFACE_HEIGHT= 48;
+    private static final int CAM_SURFACE_WIDTH= 80;
+    private static final int CAM_SURFACE_HEIGHT= 60;
 
     /*
      * Constants for the detector status

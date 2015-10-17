@@ -51,6 +51,7 @@ public class KeyboardWizardStep extends WizardStep {
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.wizard_step_keyboard, container, false);
 
+        checkUpdate(v);
         Button b= (Button) v.findViewById(R.id.keyboardConfigureButton);
         b.setOnClickListener(new Button.OnClickListener() {
             @Override

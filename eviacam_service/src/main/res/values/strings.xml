@@ -46,6 +46,8 @@
     <string name="after_ten_seconds">After 10 seconds</string>
     <string name="after_thirty_seconds">After 30 seconds</string>
     <string name="after_one_minute">After 1 minute</string>
+    <string name="after_two_minutes">After 2 minutes</string>
+    <string name="after_five_minutes">After 5 minutes</string>
     <string name="dwell_area">Dwell area</string>
     <string name="dwell_area_summary">Maximum allowed displacement before restarting the dwell time</string>
     <string name="dwell_time">Dwell time</string>

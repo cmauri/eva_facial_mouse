@@ -23,17 +23,19 @@
 
 <string-array name="time_without_detection_entries">
     <item>@string/never</item>
-    <item>@string/after_five_seconds</item>
     <item>@string/after_ten_seconds</item>
     <item>@string/after_thirty_seconds</item>
     <item>@string/after_one_minute</item>
+    <item>@string/after_two_minutes</item>
+    <item>@string/after_five_minutes</item>
 </string-array>
 <string-array name="time_without_detection_values">
     <item>0</item>
-    <item>5</item>
     <item>10</item>
     <item>30</item>
     <item>60</item>
+    <item>120</item>
+    <item>300</item>
 </string-array>
 
 <string-array name="docking_panel_edge_entries">

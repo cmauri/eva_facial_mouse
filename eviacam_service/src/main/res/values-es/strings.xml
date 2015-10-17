@@ -46,6 +46,8 @@
     <string name="after_ten_seconds">Tras 10 segundos</string>
     <string name="after_thirty_seconds">Tras 30 segundos</string>
     <string name="after_one_minute">Tras 1 minuto</string>
+	<string name="after_two_minutes">Tras 2 minutos</string>
+	<string name="after_five_minutes">Tras 5 minutos</string>
     <string name="dwell_area">Área del clic por espera</string>
     <string name="dwell_area_summary">Desplazamiento máximo permitido antes de reiniciar el tiempo de clic por espera</string>
     <string name="dwell_time">Tiempo de clic por espera</string>

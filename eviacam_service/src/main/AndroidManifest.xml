@@ -75,12 +75,14 @@
         <!-- Wizard activity -->
         <activity
             android:name="com.crea_si.eviacam.wizard.WizardActivity"
-            android:label="@string/app_name"
+            android:label="@string/wizard_icon_name"
             android:launchMode="singleTask"
             android:taskAffinity="com.crea_si.eviacam.wizard.WizardActivity"
             android:theme="@android:style/Theme.DeviceDefault" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

@@ -48,7 +48,6 @@ public class Preferences {
     public static final String KEY_GAMEPAD_TRANSPARENCY= "gamepad_transparency";
     public static final String KEY_GAMEPAD_ABS_SPEED= "gamepad_abs_speed";
     public static final String KEY_GAMEPAD_REL_SENSITIVITY= "gamepad_rel_sensitivity";
-    public static final String KEY_RUN_WIZARD_AT_STARTUP= "run_wizard_at_startup";
 
     public static SharedPreferences getSharedPreferences(Context c) {
         return ((EViacamApplication) c.getApplicationContext()).getSharedPreferences();
@@ -86,14 +85,6 @@ public class Preferences {
 
     public static int getGamepadRelSensitivity(SharedPreferences sp) {
         return sp.getInt(KEY_GAMEPAD_REL_SENSITIVITY, 0);
-    }
-
-    public static boolean getRunWizardAtStartup(SharedPreferences sp) {
-        return sp.getBoolean(KEY_RUN_WIZARD_AT_STARTUP, true);
-    }
-
-    public static void getRunWizardAtStartup(SharedPreferences sp, boolean value) {
-        sp.edit().putBoolean(KEY_RUN_WIZARD_AT_STARTUP, value).apply();
     }
  }
  

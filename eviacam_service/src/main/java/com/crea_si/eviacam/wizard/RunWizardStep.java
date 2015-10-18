@@ -18,15 +18,11 @@
 */
 package com.crea_si.eviacam.wizard;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 
-import com.crea_si.eviacam.service.Preferences;
 import com.crea_si.eviacam.service.R;
 
 import org.codepond.wizardroid.WizardStep;
@@ -41,19 +37,6 @@ public class RunWizardStep extends WizardStep {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v=  inflater.inflate(R.layout.wizard_step_run, container, false);
-
-        /*
-         * Check box
-         */
-        final CheckBox checkBox= (CheckBox) v.findViewById(R.id.runAtStartupCheckBox);
-        final SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(getActivity());
-        checkBox.setChecked(Preferences.getRunWizardAtStartup(sp));
-        checkBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Preferences.getRunWizardAtStartup(sp, checkBox.isChecked());
-            }
-        });
 
         return v;
     }

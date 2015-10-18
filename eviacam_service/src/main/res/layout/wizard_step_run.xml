@@ -34,16 +34,4 @@
         android:text="@string/how_to_run"
         android:id="@+id/textView17"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView16"/>
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/run_this_wizard_at_startup"
-        android:id="@+id/runAtStartupCheckBox"
-        android:layout_marginTop="20dp"/>
-
 </LinearLayout>

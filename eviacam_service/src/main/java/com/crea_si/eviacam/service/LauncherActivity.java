@@ -36,14 +36,7 @@ public class LauncherActivity extends Activity {
         super.onCreate(bundle);
 
         SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(this);
-        Intent intent;
-        if (Preferences.getRunWizardAtStartup(sp)) {
-             intent= new Intent(this, com.crea_si.eviacam.wizard.WizardActivity.class);
-        }
-        else {
-            intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        }
-
+        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivityForResult(intent, 0);
         
         finish();

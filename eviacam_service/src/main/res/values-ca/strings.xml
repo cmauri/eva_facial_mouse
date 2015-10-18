@@ -22,14 +22,14 @@
 <resources>
 
     <!-- Do NOT translate -->
-    <string name="app_name">Enable Viacam Mobile</string>
-    <string name="service_name">Enable Viacam Mobile</string>
+    <string name="app_name">EVA Mobile</string>
+    <string name="service_name">EVA Mobile</string>
 
     <!-- Description shown in the accessibility service screen -->
-    <string name="eviacam_service_description">Enable Viacam Mobile és un emulador de ratolí que permet moure el punter amb el cap. Fa el seguiment del rostre emprant la càmera frontal del dispositiu.</string>
+    <string name="eviacam_service_description">EVA Mobile és un emulador de ratolí que permet moure el punter amb el cap. Fa el seguiment del rostre emprant la càmera frontal del dispositiu.</string>
 
     <!-- Label for the preferences screen -->
-    <string name="eviacam_preferences_title">Ajustos d\'Enable Viacam Mobile</string>
+    <string name="eviacam_preferences_title">Ajustos d\'EVA Mobile</string>
 
     <!-- These are labels and summaries for settings -->
     <string name="motion_settings">Ajustos de moviment</string>
@@ -100,14 +100,14 @@
     <string name="stopped_click_to_resume">Aturat (clic per reprendre)</string>
 
     <!-- OpenCV installation stuff. These allow to compose a message like:
-        "Installation cancelled" "Enable Viacam Mobile"" needs OpenCV manager..."
+        "Installation cancelled" "EVA Mobile"" needs OpenCV manager..."
     -->
     <string name="installation_cancelled">Instal·lació cancel·lada</string>
     <string name="needs_opencv_retry">necessita l\'OpenCV manager per funcionar. Reintentar la instal·lació?</string>
 
     <!-- Crash report messages (ACRA) -->
     <string name="crash_toast_text">Oops! Enable Viacam s\'ha aturat</string>
-    <string name="crash_dialog_text">S\'ha produït un error inesperat que ha forçat l\'aturada d\'Enable Viacam Mobile. Si us plau, ajudi\'ns a solucionar-ho enviant dades sobre l\'error, tot el que cal fer és clicar a OK.</string>
+    <string name="crash_dialog_text">S\'ha produït un error inesperat que ha forçat l\'aturada d\'EVA Mobile. Si us plau, ajudi\'ns a solucionar-ho enviant dades sobre l\'error, tot el que cal fer és clicar a OK.</string>
     <string name="crash_dialog_comment_prompt">Pot afegir comentaris sobre el problema a continuació:</string>
     <string name="crash_dialog_ok_toast">Gràcies!</string>
 
@@ -130,7 +130,11 @@
     <string name="gamepad_rel_sensitivity_summary">Sensibilitat del mode relatiu (valors baixos estableixen una sensibilitat alta)</string>
     <string name="gamepad_preferences">Ajustos del gamepad</string>
     <string name="mouse_preferences">Ajustos del ratolí</string>
-    <string name="back">Enrere</string>
+    
+	
+	
+	<string name="wizard_icon_name">EVA Assistent</string>
+	<string name="back">Enrere</string>
     <string name="camera_viewer">Visor de càmera</string>
     <string name="camera_viewer_wizard1">Mostra la imatge de la càmera frontal en temps real</string>
     <string name="camera_viewer_wizard2"><![CDATA[<b>Marc vermell fosc:</b> rostre detectat.<br/><b>Marc blanc:</b> rostre NO detectat.<br/><br/>]]></string>
@@ -142,7 +146,7 @@
     <string name="finish">Finalitzar</string>
     <string name="help">Ajuda</string>
     <string name="home">Inici</string>
-    <string name="how_to_run"><![CDATA[Per executar Enable Viacam Mobile cal anar a: \n\nConfiguració > Accessibilitat > Enable Viacam Mobile]]></string>
+    <string name="how_to_run"><![CDATA[Per executar EVA Mobile cal anar a: \n\nConfiguració > Accessibilitat > EVA Mobile]]></string>
     <string name="install">Instal·lar</string>
     <string name="keyboard">Teclat</string>
     <string name="keyboard_remarks">La majoria de teclats estàndard no funcionen amb Enable Viacam. Es proporciona un teclat bàsic que cal activar manualment.</string>
@@ -156,7 +160,7 @@
     <string name="next">Següent</string>
     <string name="open_notifications">Obrir notificacions</string>
     <string name="open_keyboard">Obrir el teclat</string>
-    <string name="opencv_manager_required">OpenCV manager es requereix per executar Enable Viacam Mobile</string>
+    <string name="opencv_manager_required">OpenCV manager es requereix per executar EVA Mobile</string>
     <string name="prerequisites">Pre-requisits</string>
     <string name="recents">Recents</string>
     <string name="run_this_wizard_at_startup">Executar aquest assistent a l\'inici</string>

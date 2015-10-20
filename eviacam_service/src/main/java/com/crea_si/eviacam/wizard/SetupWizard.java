@@ -18,9 +18,13 @@
 */
 package com.crea_si.eviacam.wizard;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.view.View;
 
+import com.crea_si.eviacam.service.InputMethodAction;
 import com.crea_si.eviacam.service.R;
 
 import org.codepond.wizardroid.WizardFlow;
@@ -70,5 +74,64 @@ public class SetupWizard extends BasicWizardLayout {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(intent, 0);
         getActivity().finish();
+    }
+
+    @Override
+    public void onClick(final View v) {
+        if (wizard.getCurrentStepPosition() == 2 &&
+                v.getId() == org.codepond.wizardroid.R.id.wizard_next_button) {
+
+            boolean result= showKeyboardWarnDialog(new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    SetupWizard.super.onClick(v);
+                }
+            }, null);
+            if (!result) return;
+        }
+
+        super.onClick(v);
+    }
+
+    private int mStepBefore= -1;
+    @Override
+    public void onStepChanged() {
+        super.onStepChanged();
+        int stepCurrent= wizard.getCurrentStepPosition();
+        if (mStepBefore == 2 && stepCurrent== 3) {
+            showKeyboardWarnDialog(null, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    wizard.goBack();
+                }
+            });
+        }
+        mStepBefore= stepCurrent;
+    }
+
+    private boolean showKeyboardWarnDialog (DialogInterface.OnClickListener listenerPos,
+                                         DialogInterface.OnClickListener listenerNeg) {
+        if (InputMethodAction.isEnabledCustomKeyboard(getActivity())) return true;
+
+        mStepBefore= -1;
+
+        DialogInterface.OnClickListener dummyListener= new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        };
+
+        if (listenerPos== null) listenerPos= dummyListener;
+        if (listenerNeg== null) listenerNeg= dummyListener;
+
+        Resources r= getResources();
+
+        new AlertDialog.Builder(getActivity())
+            .setTitle(r.getText(R.string.keyboard_not_configured))
+            .setMessage(r.getText(R.string.keyboard_not_configured_confirm))
+            .setPositiveButton(android.R.string.yes, listenerPos)
+            .setNegativeButton(android.R.string.no, listenerNeg)
+            .setIcon(android.R.drawable.ic_dialog_alert)
+            .show();
+
+        return false;
     }
 }

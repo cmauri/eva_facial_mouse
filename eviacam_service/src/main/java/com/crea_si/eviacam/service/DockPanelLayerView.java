@@ -63,12 +63,12 @@ public class DockPanelLayerView extends RelativeLayout
     
     // arrow icon when the panel is collapsed
     private Bitmap mToggleCollapsed;
-    
-    // buttons have disabled appearance?
-    //private boolean mClickDisabledAppearance= false;
 
     // status of the click function
     private boolean mClickEnabled= true;
+
+    // status of the context menu
+    private boolean mContextMenuEnabled= false;
     
     public DockPanelLayerView(Context context) {
         super(context);
@@ -340,19 +340,27 @@ public class DockPanelLayerView extends RelativeLayout
             this.post(new Runnable() {
                 @Override
                 public void run() {
-                   if (mIsExpanded) collapse();
-                   else expand();
+                    if (mIsExpanded) collapse();
+                    else expand();
                 }
             });
         }
-
-        if (id == R.id.toggle_disable_click) {
+        else if (id == R.id.toggle_disable_click) {
             mClickEnabled= !mClickEnabled;
             this.post(new Runnable() {
                 @Override
                 public void run() {
                     updateToggleButtons ();
                     setClickDisabledAppearance();
+                }
+            });
+        }
+        else if (id == R.id.toggle_context_menu) {
+            mContextMenuEnabled= !mContextMenuEnabled;
+            this.post(new Runnable() {
+                @Override
+                public void run() {
+                    updateToggleButtons ();
                 }
             });
         }
@@ -367,15 +375,32 @@ public class DockPanelLayerView extends RelativeLayout
         else {
             ib.setImageResource(R.drawable.ic_click_button_disabled);
         }
+
+        ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_context_menu);
+        if (mContextMenuEnabled) {
+            ib.setImageResource(R.drawable.ic_context_menu_enabled);
+        }
+        else {
+            ib.setImageResource(R.drawable.ic_context_menu_disabled);
+        }
     }
 
     /**
      * Get if view state is for click function is enabled
      *
-     * @return true is view state is for click enabled
+     * @return true if view state is for click enabled
      */
     public boolean getClickEnabled () {
         return mClickEnabled;
+    }
+
+    /**
+     * Get if view context menu is enabled
+     *
+     * @return true if the context menu is enabled
+     */
+    public boolean getContextMenuEnabled () {
+        return mContextMenuEnabled;
     }
     
     private void expand() {

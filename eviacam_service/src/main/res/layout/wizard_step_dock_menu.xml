@@ -179,6 +179,32 @@
         <ImageView
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:id="@+id/imageView7"
+            android:src="@drawable/ic_context_menu_enabled"/>
+
+        <Space
+            android:layout_width="20px"
+            android:layout_height="20px"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/toggle_context_menu_button"
+            android:id="@+id/textView7"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:id="@+id/imageView6"
             android:src="@drawable/ic_click_button_enabled"/>
 

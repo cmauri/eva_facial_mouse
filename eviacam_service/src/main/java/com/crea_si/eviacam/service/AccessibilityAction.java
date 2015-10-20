@@ -55,19 +55,21 @@ class AccessibilityAction {
         }
     }
     
-    // store the pairs (accessibility action, label) of supported actions
+    /*
+     * List the (accessibility action, label) pairs of supported actions,
+     * the order of the items is relevant for selecting a default action.
+     */
     private static final ActionLabel[] mActionLabels = new ActionLabel[] {
         new ActionLabel(AccessibilityNodeInfo.ACTION_CLICK, R.string.click),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_LONG_CLICK, R.string.long_click),            
+        new ActionLabel(AccessibilityNodeInfo.ACTION_LONG_CLICK, R.string.long_click),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, R.string.scroll_backward),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.scroll_forward),
         new ActionLabel(AccessibilityNodeInfo.ACTION_COLLAPSE, R.string.collapse),
         new ActionLabel(AccessibilityNodeInfo.ACTION_COPY, R.string.copy),
         new ActionLabel(AccessibilityNodeInfo.ACTION_CUT, R.string.cut),            
         new ActionLabel(AccessibilityNodeInfo.ACTION_DISMISS, R.string.dismiss),            
         new ActionLabel(AccessibilityNodeInfo.ACTION_EXPAND, R.string.expand),
         new ActionLabel(AccessibilityNodeInfo.ACTION_PASTE, R.string.paste),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, R.string.scroll_backward),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.scroll_forward)
-        //new ActionLabel(AccessibilityNodeInfo.ACTION_FOCUS, R.string.focus)
     };
 
     private final AccessibilityService mAccessibilityService;
@@ -360,10 +362,21 @@ class AccessibilityAction {
             int availableActions= FULL_ACTION_MASK & node.getActions();
             
             if (Integer.bitCount(availableActions)> 1) {
-                /** Multiple actions available, shows context menu */
-                mControlsLayerView.showContextMenu(pInt, availableActions);
-                mContextMenuOpen= true;
-                mNode= node;
+                /* Multiple actions available, need to show the context menu? */
+                if (mDockPanelLayerView.getContextMenuEnabled()) {
+                    mControlsLayerView.showContextMenu(pInt, availableActions);
+                    mContextMenuOpen = true;
+                    mNode = node;
+                }
+                else {
+                    /* Pick the default action */
+                    for (ActionLabel al : mActionLabels) {
+                        if ((al.action | availableActions)!= 0) {
+                            performActionOnNode(node, al.action);
+                            break;
+                        }
+                    }
+                }
             }
             else {
                 // One action, goes ahead

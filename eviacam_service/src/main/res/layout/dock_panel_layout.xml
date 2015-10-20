@@ -78,6 +78,15 @@
         android:contentDescription="@string/softkeyboard_button" />
 
     <ImageButton
+        android:id="@+id/toggle_context_menu"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:padding="2dip"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/toggle_context_menu_button" />
+
+    <ImageButton
         android:id="@+id/toggle_disable_click"
         android:layout_width="35dip"
         android:layout_height="35dip"

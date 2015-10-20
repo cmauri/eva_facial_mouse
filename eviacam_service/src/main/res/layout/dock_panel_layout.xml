@@ -77,12 +77,11 @@
         android:scaleType="fitCenter"
         android:contentDescription="@string/softkeyboard_button" />
 
-     <ImageButton
-        android:id="@+id/disable_click_button"
+    <ImageButton
+        android:id="@+id/toggle_disable_click"
         android:layout_width="35dip"
         android:layout_height="35dip"
         android:padding="2dip"
-        android:src="@drawable/ic_disable_click"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
         android:contentDescription="@string/disable_click_button" />

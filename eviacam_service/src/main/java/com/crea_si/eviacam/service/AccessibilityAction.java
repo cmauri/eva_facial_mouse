@@ -102,9 +102,6 @@ class AccessibilityAction {
     // is set to true when scrolling scan needs to be run
     private boolean mNeedToRunScrollingScan = false;
 
-    // is click generation temporarily disabled?
-    private boolean mClickDisabled = false;
-
     // the current node tree contains a web view?
     private boolean mContainsWebView = false;
     
@@ -144,7 +141,7 @@ class AccessibilityAction {
         int idDockPanelAction= mDockPanelLayerView.getViewIdBelowPoint(p);
         if (idDockPanelAction == View.NO_ID) return false;
         
-        if (mDockPanelLayerView.performClick(idDockPanelAction)) return true;
+        mDockPanelLayerView.performClick(idDockPanelAction);
         
         AccessibilityService s= mAccessibilityService;
         
@@ -167,19 +164,9 @@ class AccessibilityAction {
         case R.id.softkeyboard_button:
             mInputMethodAction.openIME();
             break;
-        case R.id.disable_click_button:
-            mClickDisabled= !mClickDisabled;
-            if (mClickDisabled) refreshScrollingButtons();
-            Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    mDockPanelLayerView.setClickDisabledAppearance(mClickDisabled);
-                }
-            };
-            mHandler.post(r);
+        case R.id.toggle_disable_click:
+            if (!mDockPanelLayerView.getClickEnabled()) refreshScrollingButtons();
             break;
-        default:
-            return false;
         }
         
         return true;
@@ -256,10 +243,10 @@ class AccessibilityAction {
      * is actually actionable.
      */
     public boolean isActionable (Point p) {
-        if (!mClickDisabled) return true;
+        if (mDockPanelLayerView.getClickEnabled()) return true;
 
         // Click disabled mode, only specific button in the dock panel works
-        return (mDockPanelLayerView.getViewIdBelowPoint(p) == R.id.disable_click_button);
+        return (mDockPanelLayerView.getViewIdBelowPoint(p) == R.id.toggle_disable_click);
     }
     
     /**
@@ -268,7 +255,7 @@ class AccessibilityAction {
      * @return true if disabled
      */
     public boolean getClickDisabled() {
-        return mClickDisabled;
+        return !mDockPanelLayerView.getClickEnabled();
     }
 
     /**
@@ -391,7 +378,7 @@ class AccessibilityAction {
      * Remarks: checks whether needs to start a scrolling nodes exploration
      */
     public void refresh() {
-        if (mClickDisabled) return;
+        if (!mDockPanelLayerView.getClickEnabled()) return;
         if (!mNeedToRunScrollingScan) return;
         if (System.currentTimeMillis()< mRunScrollingScanTStamp) return;
         mNeedToRunScrollingScan = false;
@@ -406,7 +393,7 @@ class AccessibilityAction {
             EVIACAM.debug("Scanning for scrollables");
             mScrollLayerView.clearScrollAreas();
 
-            if (!mClickDisabled) {
+            if (mDockPanelLayerView.getClickEnabled()) {
                 scrollableNodes.clear();
                 mContainsWebView= findNodes (scrollableNodes,
                         AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |

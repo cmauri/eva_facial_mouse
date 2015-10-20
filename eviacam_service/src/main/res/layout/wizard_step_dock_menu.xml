@@ -180,7 +180,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:id="@+id/imageView6"
-            android:src="@drawable/ic_disable_click"/>
+            android:src="@drawable/ic_click_button_enabled"/>
 
         <Space
             android:layout_width="20px"

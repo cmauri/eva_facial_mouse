@@ -126,6 +126,44 @@
         android:excludeFromRecents="true"
         android:finishOnTaskLaunch="true" />
 
+        <!--
+         * Input method (eViacam keyboard)
+        -->
+
+        <!-- Input method service -->
+        <service
+            android:name="com.crea_si.softkeyboard.SoftKeyboard"
+            android:label="@string/ime_name"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method" />
+        </service>
+
+        <!-- IME Preferences activity -->
+        <activity
+            android:name="com.crea_si.softkeyboard.ImePreferences"
+            android:label="@string/settings_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
+        <!-- IME remote service -->
+        <service
+            android:name="com.crea_si.softkeyboard.RemoteBinderService"
+            android:label="IME messenger service"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.crea_si.softkeyboard.RemoteBinderService" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

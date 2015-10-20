@@ -37,9 +37,9 @@ import com.crea_si.input_method_aidl.IClickableIME;
 
 public class InputMethodAction implements ServiceConnection {
     
-    private static final String REMOTE_PACKAGE= "com.crea_si.softkeyboard";
-    private static final String REMOTE_ACTION= REMOTE_PACKAGE + ".RemoteBinderService";
-    private static final String IME_PACKAGE_NAME= REMOTE_PACKAGE + "/.SoftKeyboard";
+    private static final String REMOTE_PACKAGE= "com.crea_si.eviacam.service";
+    private static final String REMOTE_ACTION= "com.crea_si.softkeyboard.RemoteBinderService";
+    private static final String IME_NAME= REMOTE_PACKAGE + "/com.crea_si.softkeyboard.SoftKeyboard";
     
     // period (in milliseconds) to try to rebind again to the IME
     private static final int BIND_RETRY_PERIOD = 2000;
@@ -179,6 +179,6 @@ public class InputMethodAction implements ServiceConnection {
 
         String pkgName= Settings.Secure.getString(c.getContentResolver(),
                                                   Settings.Secure.DEFAULT_INPUT_METHOD);
-        return pkgName.contentEquals(IME_PACKAGE_NAME);
+        return pkgName.contentEquals(IME_NAME);
     }
 }

@@ -172,5 +172,9 @@
     <string name="wiz_set_keyboard1"><![CDATA[1. Obrir: Configuració > Idioma i introducció de text]]></string>
     <string name="wiz_set_keyboard2">2. Seleccionar \'Enable Viacam Keyboard\'</string>
     <string name="wiz_set_keyboard3">3. Fer un toc a \'Predeterminat\' i seleccionar \'Enable Viacam Keyboard\'</string>
+    <string name="done">Fet</string>
+    <string name="keyboard_not_configured">Teclat no configurat</string>
+    <string name="keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>
+    <string name="toggle_context_menu_button">Commutar el menú contextual del punter</string>
 
 </resources>

@@ -171,5 +171,9 @@
     <string name="wiz_set_keyboard1"><![CDATA[1. Abrir: Ajustes > Idioma e introducción de texto]]></string>
     <string name="wiz_set_keyboard2">2. Seleccionar \'Enable Viacam Keyboard\'</string>
     <string name="wiz_set_keyboard3">3. Hacer un toque a \'Predeterminado\' y seleccionar \'Enable Viacam Keyboard\'</string>
+    <string name="done">Hecho</string>
+    <string name="keyboard_not_configured">Teclado no configurado</string>
+    <string name="keyboard_not_configured_confirm">¿Está seguro que quiere continuar sin configurar el teclado?</string>
+    <string name="toggle_context_menu_button">Conmutar el menú contextual del puntero</string>
 
 </resources>

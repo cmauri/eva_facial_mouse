@@ -97,6 +97,10 @@ public class TheAccessibilityService extends AccessibilityService implements Com
      */
     @Override
     public boolean onUnbind(Intent intent) {
+        /* TODO: it seems that, at this point, views are already destroyed
+         * which might be related with the spurious crashes when switching
+         * off the accessibility service. Tested on Nexus 7 Android 5.1.1
+         */
         EVIACAM.debug("onUnbind");
         cleanup();
         return false;

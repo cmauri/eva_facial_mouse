@@ -185,9 +185,11 @@ class AccessibilityAction {
          * We had to do so because when scrolling some listview control
          * focus seems to be on the first element (but actually is on the
          * listview itself) and scrolling gets stuck.
+         *
+         * Edit: do not give focus anymore, that was part of the problem
          * 
          */
-        na.node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+        //na.node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
         na.node.performAction(na.actions);
         
         return true;

@@ -147,7 +147,9 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/help">
+    <PreferenceCategory
+        android:key="help"
+        android:title="@string/help">
 
         <Preference
             android:title="@string/configuration_wizard">
@@ -156,6 +158,11 @@
                 android:targetPackage="com.crea_si.eviacam.service"
                 android:targetClass="com.crea_si.eviacam.wizard.WizardActivity"
             />
+        </Preference>
+
+        <Preference
+            android:key="version"
+            android:title="@string/version">
         </Preference>
     </PreferenceCategory>
         

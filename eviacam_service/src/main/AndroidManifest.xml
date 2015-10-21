@@ -126,6 +126,10 @@
         android:excludeFromRecents="true"
         android:finishOnTaskLaunch="true" />
 
+        <!-- TechInfo activity -->
+        <activity android:name=".TechInfoActivity"
+                  android:exported="false" />
+
         <!--
          * Input method (eViacam keyboard)
         -->

@@ -18,7 +18,9 @@
 */
 package com.crea_si.eviacam.wizard;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,11 +40,14 @@ public class KeyboardWizardStep extends WizardStep {
 
     private void checkUpdate (View v) {
         ImageView iv = (ImageView) v.findViewById(R.id.keyboardImage);
+        Button b= (Button) v.findViewById(R.id.keyboardConfigureButton);
         if (InputMethodAction.isEnabledCustomKeyboard(getActivity())) {
             iv.setImageResource(R.drawable.ic_correct);
+            b.setEnabled(false);
         }
         else {
             iv.setImageResource(R.drawable.ic_wrong);
+            b.setEnabled(true);
         }
     }
 
@@ -55,8 +60,17 @@ public class KeyboardWizardStep extends WizardStep {
         Button b= (Button) v.findViewById(R.id.keyboardConfigureButton);
         b.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View view) { checkUpdate(v); }
+            public void onClick(View view) {
+                Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                startActivityForResult(intent, 0);
+            }
         });
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        checkUpdate(getActivity().findViewById(android.R.id.content));
     }
 }

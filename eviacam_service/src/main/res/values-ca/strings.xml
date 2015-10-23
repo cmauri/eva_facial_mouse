@@ -106,7 +106,7 @@
     <string name="needs_opencv_retry">necessita l\'OpenCV manager per funcionar. Reintentar la instal·lació?</string>
 
     <!-- Crash report messages (ACRA) -->
-    <string name="crash_toast_text">Oops! Enable Viacam s\'ha aturat</string>
+    <string name="crash_toast_text">Oops! EVA Mobile s\'ha aturat</string>
     <string name="crash_dialog_text">S\'ha produït un error inesperat que ha forçat l\'aturada d\'EVA Mobile. Si us plau, ajudi\'ns a solucionar-ho enviant dades sobre l\'error, tot el que cal fer és clicar a OK.</string>
     <string name="crash_dialog_comment_prompt">Pot afegir comentaris sobre el problema a continuació:</string>
     <string name="crash_dialog_ok_toast">Gràcies!</string>
@@ -120,7 +120,7 @@
     <string name="bottom_center">Part inferior central</string>
     <string name="top_right">Part superior dreta</string>
     <string name="bottom_right">Part inferior dreta</string>
-    <string name="eviacam_slave_mode_preferences_title">Ajustos del mode esclau d\'Enable Viacam</string>
+    <string name="eviacam_slave_mode_preferences_title">Ajustos del mode esclau d\'EVA Mobile</string>
     <string name="slave_mode_preferences">Ajustos del mode esclau</string>
     <string name="gamepad_interface_settings">Interfície del gamepad</string>
     <string name="gamepad_transparency">Transparència</string>
@@ -148,7 +148,7 @@
     <string name="how_to_run"><![CDATA[Per executar EVA Mobile cal anar a: \n\nConfiguració > Accessibilitat > EVA Mobile]]></string>
     <string name="install">Instal·lar</string>
     <string name="keyboard">Teclat</string>
-    <string name="keyboard_remarks">La majoria de teclats estàndard no funcionen amb Enable Viacam. Es proporciona un teclat bàsic que cal activar manualment.</string>
+    <string name="keyboard_remarks">La majoria de teclats estàndard no funcionen amb EVA Mobile. Es proporciona un teclat bàsic que cal activar manualment.</string>
     <string name="keyboard_setup">Configuració del teclat</string>
     <string name="known_limitations">Limitacions conegudes</string>
     <string name="limitation1">- No funciona amb la majoria de jocs</string>
@@ -169,8 +169,8 @@
     <string name="settings">Configuració</string>
     <string name="toggle_click">Commutar la generació del clic</string>
     <string name="wiz_set_keyboard1"><![CDATA[1. Obrir: Configuració > Idioma i introducció de text]]></string>
-    <string name="wiz_set_keyboard2">2. Seleccionar \'Enable Viacam Keyboard\'</string>
-    <string name="wiz_set_keyboard3">3. Fer un toc a \'Predeterminat\' i seleccionar \'Enable Viacam Keyboard\'</string>
+    <string name="wiz_set_keyboard2">2. Seleccionar \'Teclat EVA Mobile\'</string>
+    <string name="wiz_set_keyboard3">3. Fer un toc a \'Predeterminat\' i seleccionar \'Teclat EVA Mobile\'</string>
     <string name="done">Fet</string>
     <string name="keyboard_not_configured">Teclat no configurat</string>
     <string name="keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>
@@ -179,4 +179,6 @@
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA Mobile no està activat. Utilitzi l\'EVA Assistent per activar-lo.</string>
     <string name="pointer_stopped_toast">EVA Mobile s\'ha aturat %1$s sense detectar el rostre.</string>
+    <string name="configure">Configurar</string>
+    <string name="version">Versió</string>
 </resources>

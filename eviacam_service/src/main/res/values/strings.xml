@@ -111,7 +111,7 @@
     <string name="needs_opencv_retry"> needs OpenCV manager to run. Retry installation?</string>
 
     <!-- Crash report messages (ACRA) -->
-    <string name="crash_toast_text">Oops! Enable Viacam crashed</string>
+    <string name="crash_toast_text">Oops! EVA Mobile crashed</string>
     <string name="crash_dialog_text">An unexpected error occurred forcing EVA Mobile to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you!</string>
@@ -125,7 +125,7 @@
     <string name="bottom_center">Bottom center</string>
     <string name="top_right">Top right</string>
     <string name="bottom_right">Bottom right</string>
-    <string name="eviacam_slave_mode_preferences_title">Enable Viacam slave mode preferences</string>
+    <string name="eviacam_slave_mode_preferences_title">EVA Mobile slave mode preferences</string>
     <string name="slave_mode_preferences">Slave mode preferences</string>
     <string name="gamepad_interface_settings">Gamepad interface</string>
     <string name="gamepad_transparency">Transparency</string>
@@ -145,8 +145,8 @@
     <string name="install">Install</string>
     <string name="keyboard_setup">Keyboard set up</string>
     <string name="wiz_set_keyboard1"><![CDATA[1. Open: Settings > Language & input]]></string>
-    <string name="wiz_set_keyboard2">2. Select \'Enable Viacam Keyboard\'</string>
-    <string name="wiz_set_keyboard3">3. Tap \'Default\' and select \'Enable Viacam Keyboard\'</string>
+    <string name="wiz_set_keyboard2">2. Select \'EVA Mobile Keyboard\'</string>
+    <string name="wiz_set_keyboard3">3. Tap \'Default\' and select \'EVA Mobile Keyboard\'</string>
     <string name="check">Check</string>
     <string name="done">Done</string>
     <string name="opencv_manager_required">OpenCV manager is required to run EVA Mobile</string>
@@ -172,7 +172,7 @@
         you could try scrolling by using the navigation keyboard.</string>
     <string name="navigation_keyboard">Navigation keyboard</string>
     <string name="keyboard">Keyboard</string>
-    <string name="keyboard_remarks">Most standard keyboards do not work with Enable Viacam.
+    <string name="keyboard_remarks">Most standard keyboards do not work with EVA Mobile.
         We provide a basic keyboard that needs to be enabled manually.</string>
     <string name="configure">Configure</string>
     <string name="keyboard_not_configured">Keyboard not configured</string>

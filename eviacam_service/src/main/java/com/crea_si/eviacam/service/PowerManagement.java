@@ -18,41 +18,72 @@
  */
 package com.crea_si.eviacam.service;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.PowerManager;
 
 /**
  * Power management stuff
  */
-class PowerManagement {
-
-    //private int mSleepIterations= SLEEP_ITERATIONS_MIN;
-
-    // time since full power in not locked (i.e. in low energy mode)
-    private long mWakeUnlockTStamp= 0;
+class PowerManagement extends BroadcastReceiver {
+    private final Context mContext;
 
     // power management lock
     private PowerManager.WakeLock mWakeLook;
 
     // condition to interrupt sleep
-    private boolean mSleepEnabled= true;
+    private volatile boolean mSleepEnabled= true;
+
+    // screen status (we assume the screen is on at startup)
+    private boolean mScreenOn;
 
     // constructor
     public PowerManagement(Context c) {
-        /*
-         * Make sure the screen does not switch off
-         */
-        PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
+        mContext= c;
+
+        final PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
+
+        // Lock for the screen to avoid switching off
         mWakeLook = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK |
                 PowerManager.ACQUIRE_CAUSES_WAKEUP |
                 PowerManager.ON_AFTER_RELEASE , EVIACAM.TAG);
+
+        // Current screen status
+        mScreenOn = pm.isScreenOn();
+
+        /*
+         * Register screen power broadcast receiver
+         */
+        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        c.registerReceiver(this, filter);
     }
+
+    public void cleanup() {
+        mContext.unregisterReceiver(this);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+            mScreenOn = false;
+        } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+            mScreenOn = true;
+        }
+    }
+
+    public boolean getScreenOn () { return mScreenOn; }
 
     /**
      * Lock full power mode
      */
     public void lockFullPower() {
         if (!mWakeLook.isHeld()) mWakeLook.acquire();
+
+        // Set here to true to avoid the delay of the broadcast receiver
+        mScreenOn= true;
     }
 
     /**
@@ -60,7 +91,6 @@ class PowerManagement {
      */
     public void unlockFullPower() {
         if (mWakeLook.isHeld()) mWakeLook.release();
-        mWakeUnlockTStamp= System.currentTimeMillis();
     }
 
     /**
@@ -70,34 +100,10 @@ class PowerManagement {
      */
     public void sleep() {
         final int SLEEP_DURATION = 500;
-        final int SLEEP_ITERATIONS_MIN= 2;
         final int SLEEP_ITERATIONS_MAX= 10;
-        final long RAMP_BEGIN_MS= 30000; // 30 seconds
-        final long RAMP_END_MS= 60000;   // 60 seconds
-
-        // no need to sleep if running at full power
-        if (mWakeLook.isHeld()) return;
-
-        /* After RAMP_BEGIN_MS ms start increasing the number of iterations
-         * until RAMP_END_MS ms when the number of iterations it is set to
-         * the maximum value.
-         */
-        long elapsed= System.currentTimeMillis() - mWakeUnlockTStamp;
-        int waitIterations;
-        if (elapsed< RAMP_BEGIN_MS) {
-            waitIterations= SLEEP_ITERATIONS_MIN;
-        }
-        else if (elapsed< RAMP_END_MS) {
-            waitIterations= (int) ((elapsed - RAMP_BEGIN_MS) *
-                                   (SLEEP_ITERATIONS_MAX - SLEEP_ITERATIONS_MIN) /
-                                   (RAMP_END_MS - RAMP_BEGIN_MS)) + SLEEP_ITERATIONS_MIN;
-        }
-        else {
-            waitIterations= SLEEP_ITERATIONS_MAX;
-        }
 
         try {
-            for (int i= 0; mSleepEnabled && i< waitIterations; i++) {
+            for (int i= 0; mSleepEnabled && i< SLEEP_ITERATIONS_MAX; i++) {
                 Thread.sleep(SLEEP_DURATION);
             }
         } catch (InterruptedException e) { /* do nothing */ }
@@ -111,4 +117,6 @@ class PowerManagement {
     public void setSleepEnabled (boolean enabled) {
         mSleepEnabled= enabled;
     }
+
+
 }

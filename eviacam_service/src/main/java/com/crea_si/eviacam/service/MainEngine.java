@@ -49,7 +49,9 @@ public class MainEngine implements
     private static final int STATE_STOPPED= 1;
     private static final int STATE_CHECKING_OPENCV= 2;
     private static final int STATE_RUNNING= 3;
-    private static final int STATE_NO_FACE_PAUSED= 4;
+    // paused due to no face detection or screen off
+    private static final int STATE_AUTOMATICALLY_PAUSED = 4;
+    // manually paused
     private static final int STATE_PAUSED= 5;
 
     /*
@@ -321,24 +323,16 @@ public class MainEngine implements
         doPause();
     }
 
-    private void noFacePause() {
+    private void automaticPause() {
         if (mCurrentState != STATE_RUNNING) return;
-        mCurrentState= STATE_NO_FACE_PAUSED;
-
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Resources res = mService.getResources();
-                String t= String.format(res.getString(R.string.pointer_stopped_toast),
-                                        Preferences.getTimeWithoutDetectionEntryValue(mService));
-                EVIACAM.Toast(mService, t);
-            }
-        });
+        mCurrentState= STATE_AUTOMATICALLY_PAUSED;
 
         doPause();
     }
 
     private void doPause() {
+        mCameraLayerView.hideDetectionFeedback();
+
         // pause specific engine
         if (mMotionProcessor!= null) {
             mMotionProcessor.pause();
@@ -346,16 +340,19 @@ public class MainEngine implements
 
         mServiceNotification.setNotification(ServiceNotification.NOTIFICATION_ACTION_RESUME);
 
-        mCameraListener.setUpdateViewer(false);
+        // TODO: disable surface updates when screen switched off to save some CPU cycles
+        //mCameraListener.setUpdateViewer(false);
         mPowerManagement.unlockFullPower();
     }
 
     /* Resumes the engine */
     public void resume() {
-        if (mCurrentState != STATE_PAUSED && mCurrentState!= STATE_NO_FACE_PAUSED) return;
+        if (mCurrentState != STATE_PAUSED && mCurrentState!= STATE_AUTOMATICALLY_PAUSED) return;
 
         mPowerManagement.lockFullPower();
-        mCameraListener.setUpdateViewer(true);
+        //mCameraListener.setUpdateViewer(true);
+
+        mCameraLayerView.showDetectionFeedback();
 
         // resume specific engine
         if (mMotionProcessor!= null) {
@@ -381,7 +378,7 @@ public class MainEngine implements
             case STATE_RUNNING:
                 mPowerManagement.unlockFullPower();
                 // no break
-            case STATE_NO_FACE_PAUSED:
+            case STATE_AUTOMATICALLY_PAUSED:
             case STATE_PAUSED:
                 mService.stopForeground(true);
 
@@ -433,6 +430,7 @@ public class MainEngine implements
         
         mCurrentState= STATE_DISABLED;
 
+        mPowerManagement.cleanup();
         mPowerManagement = null;
 
         EViacamApplication app= (EViacamApplication) mService.getApplicationContext();
@@ -508,13 +506,31 @@ public class MainEngine implements
      */
     @Override
     public void processFrame(Mat rgba) {
-        if (mCurrentState != STATE_RUNNING && mCurrentState != STATE_NO_FACE_PAUSED) {
-            // reduce CPU load when not running
+        // For these states do nothing
+        if (mCurrentState== STATE_DISABLED || mCurrentState== STATE_STOPPED ||
+            mCurrentState== STATE_CHECKING_OPENCV) return;
+
+        /*
+         * When to screen is off make sure is working in a paused mode and reduce CPU usage
+         */
+        if (!mPowerManagement.getScreenOn()) {
+            if (mCurrentState!= STATE_PAUSED && mCurrentState!= STATE_AUTOMATICALLY_PAUSED) {
+                mHandler.post(new Runnable() {
+                   @Override
+                   public void run() { automaticPause(); } }
+                );
+            }
             mPowerManagement.sleep();
-            return;
         }
 
+        /* Here is in RUNNING or AUTOMATIC_PAUSE state */
+
         int pictRotation = mOrientationManager.getPictureRotation();
+
+        // set preview rotation
+        mCameraListener.setPreviewRotation(pictRotation);
+
+        if (mCurrentState== STATE_PAUSED) return;
 
         /*
          * call jni part to track face
@@ -523,16 +539,13 @@ public class MainEngine implements
         boolean faceDetected=
                 VisionPipeline.processFrame(rgba.getNativeObjAddr(), pictRotation, mMotion);
 
-        // set preview rotation
-        mCameraListener.setPreviewRotation(pictRotation);
-
         /*
          * Check whether need to pause/resume the engine according
          * to the face detection status
          */
         if (faceDetected) {
             mFaceDetectionCountdown.reset();
-            if (mCurrentState== STATE_NO_FACE_PAUSED) {
+            if (mCurrentState== STATE_AUTOMATICALLY_PAUSED) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() { resume(); } }
@@ -548,20 +561,21 @@ public class MainEngine implements
                 } catch (InterruptedException e) { /* do nothing */ }
             }
         }
-        else {
-            if (mFaceDetectionCountdown.hasFinished() && !mFaceDetectionCountdown.isDisabled()) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() { noFacePause(); } }
-                );
-            }
-        }
 
-        // No face paused? Don't continue processing
-        if (mCurrentState == STATE_NO_FACE_PAUSED) {
-            // reduce CPU load when not running
-            mPowerManagement.sleep();
-            return;
+        if (mCurrentState== STATE_AUTOMATICALLY_PAUSED) return;
+
+        if (mFaceDetectionCountdown.hasFinished() && !mFaceDetectionCountdown.isDisabled()) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Resources res = mService.getResources();
+                    String t = String.format(res.getString(R.string.pointer_stopped_toast),
+                            Preferences.getTimeWithoutDetectionEntryValue(mService));
+                    EVIACAM.Toast(mService, t);
+
+                    automaticPause();
+                }
+            });
         }
 
         // Provide feedback through the camera viewer

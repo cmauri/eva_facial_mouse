@@ -37,6 +37,28 @@ public class CameraLayerView extends RelativeLayout {
     // blinking management
     private final Blink mBlink= new Blink(BLINK_INTERVAL);
 
+    // show detection feeback?
+    private boolean mShowDetectionFeedback= true;
+
+    /*
+     * camera viewer size
+     */
+    private static final int CAM_SURFACE_WIDTH= 80;
+    private static final int CAM_SURFACE_HEIGHT= 60;
+
+    /*
+     * Constants for the detector status
+     */
+    private static final int BORDER_SIZE= 4;
+    private static final int BEGIN_COLOR= 0xffa5151f;
+    private static final int END_COLOR= 0xffffffff; //f5afb4;
+    private int mPaintColor= BEGIN_COLOR;
+
+    // the camera surface view
+    private SurfaceView mCameraSurfaceView;
+
+    private final View mBorderDrawer;
+
     /*
      * Class to draw the border. Done this way so that
      * only this view needs to be invalidated
@@ -59,7 +81,7 @@ public class CameraLayerView extends RelativeLayout {
             super.onDraw(canvas);
 
             /* Draw a border around the camera surface */
-            if (mCameraSurfaceView!= null) {
+            if (mCameraSurfaceView!= null && mShowDetectionFeedback) {
                 float x= mCameraSurfaceView.getX();
                 float y= mCameraSurfaceView.getY();
 
@@ -76,25 +98,6 @@ public class CameraLayerView extends RelativeLayout {
             }
         }
     }
-
-    /*
-     * camera viewer size
-     */
-    private static final int CAM_SURFACE_WIDTH= 80;
-    private static final int CAM_SURFACE_HEIGHT= 60;
-
-    /*
-     * Constants for the detector status
-     */
-    private static final int BORDER_SIZE= 4;
-    private static final int BEGIN_COLOR= 0xffa5151f;
-    private static final int END_COLOR= 0xffffffff; //f5afb4;
-    private int mPaintColor= BEGIN_COLOR;
-
-    // the camera surface view
-    private SurfaceView mCameraSurfaceView;
-
-    private final View mBorderDrawer;
 
     // constructor
     public CameraLayerView(Context context) {
@@ -149,4 +152,8 @@ public class CameraLayerView extends RelativeLayout {
         // redraw. called from a secondary thread
         mBorderDrawer.postInvalidate();
     }
+
+    public void showDetectionFeedback() { mShowDetectionFeedback= true; }
+
+    public void hideDetectionFeedback() { mShowDetectionFeedback= false; }
 }

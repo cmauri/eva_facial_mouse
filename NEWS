@@ -1,3 +1,14 @@
+v0.98
+- Add configuration wizard
+- Build as a single .apk
+- Fix the list view stuck issue (#29)
+- Update Spanish and Catalan translations
+- Improve camera viewer (refresh in real-time when paused)
+- Several improvements based on usability tests
+	- Default values
+	- Toggle for context menu
+	- More user feedback
+
 v0.95beta 
 - Project migrated to Android Studio
 - Add power management: lock power on while interacting. After some time without detecting a face it disables the on-screen pointer, enters in low power mode and allows the device to suspend.

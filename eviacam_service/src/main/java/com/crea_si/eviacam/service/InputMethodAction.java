@@ -23,13 +23,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.view.inputmethod.InputMethodManager;
 
 import com.crea_si.input_method_aidl.IClickableIME;
-
 
 /**
  * Handles the communication with the IME
@@ -53,13 +53,15 @@ public class InputMethodAction implements ServiceConnection {
     
     // time stamp of the last time the thread ran
     private long mLastBindAttemptTimeStamp = 0;
-    
+
+    private final Handler mHandler= new Handler();
+
     public InputMethodAction(Context c) {
         mContext= c;
         
         mInputMethodManager= (InputMethodManager) 
                 c.getSystemService (Context.INPUT_METHOD_SERVICE);
-        
+
         // attempt to bind with IME
         keepBindAlive();
     }
@@ -139,6 +141,15 @@ public class InputMethodAction implements ServiceConnection {
     }
     
     public void openIME() {
+        if (!isEnabledCustomKeyboard(mContext)) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    EVIACAM.Toast(mContext, R.string.keyboard_not_enabled_toast);
+                }
+            });
+        }
+
         if (mRemoteService == null) {
             EVIACAM.debug("InputMethodAction: openIME: no remote service available");
             keepBindAlive();

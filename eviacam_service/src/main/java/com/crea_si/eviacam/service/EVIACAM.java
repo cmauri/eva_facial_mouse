@@ -17,10 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /***
@@ -54,5 +56,17 @@ public class EVIACAM {
     public static void debug(String message) {
         if (!DEBUG_MESSAGES) return;
         Log.d(TAG, message);
+    }
+
+    public static void Toast (Context c, CharSequence t) {
+        Toast toast = Toast.makeText(c, t, Toast.LENGTH_LONG);
+        ViewGroup group = (ViewGroup) toast.getView();
+        TextView messageTextView = (TextView) group.getChildAt(0);
+        messageTextView.setTextSize(25);
+        toast.show();
+    }
+
+    public static void Toast (Context c, int id) {
+        Toast (c, c.getResources().getString(id));
     }
 }

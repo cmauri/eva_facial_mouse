@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 
+<!--
  /*
  ** Enable Viacam for Android, a camera based mouse emulator
  **
@@ -42,12 +42,12 @@
     <string name="click_settings">Ajustos del clic</string>
     <string name="detection_settings">Ajustos de detecció</string>
     <string name="never">Mai</string>
-    <string name="after_five_seconds">Després de 5 segons</string>
-    <string name="after_ten_seconds">Després de 10 segons</string>
-    <string name="after_thirty_seconds">Després de 30 segons</string>
-    <string name="after_one_minute">Després d\'1 minut</string>
-	<string name="after_two_minutes">Després de 2 minuts</string>
-	<string name="after_five_minutes">Després de 5 minuts</string>
+    <string name="after_five_seconds">després de 5 segons</string>
+    <string name="after_ten_seconds">després de 10 segons</string>
+    <string name="after_thirty_seconds">després de 30 segons</string>
+    <string name="after_one_minute">després d\'1 minut</string>
+    <string name="after_two_minutes">després de 2 minuts</string>
+    <string name="after_five_minutes">després de 5 minuts</string>
     <string name="dwell_area">Àrea del clic per espera</string>
     <string name="dwell_area_summary">Desplaçament màxim permès abans de reiniciar el temps del clic per espera</string>
     <string name="dwell_time">Temps de clic per espera</string>
@@ -130,11 +130,10 @@
     <string name="gamepad_rel_sensitivity_summary">Sensibilitat del mode relatiu (valors baixos estableixen una sensibilitat alta)</string>
     <string name="gamepad_preferences">Ajustos del gamepad</string>
     <string name="mouse_preferences">Ajustos del ratolí</string>
-    
-	
-	
-	<string name="wizard_icon_name">EVA Assistent</string>
-	<string name="back">Enrere</string>
+
+    <!-- Wizard -->
+    <string name="wizard_icon_name">EVA Assistent</string>
+    <string name="back">Enrere</string>
     <string name="camera_viewer">Visor de càmera</string>
     <string name="camera_viewer_wizard1">Mostra la imatge de la càmera frontal en temps real</string>
     <string name="camera_viewer_wizard2"><![CDATA[<b>Marc vermell fosc:</b> rostre detectat.<br/><b>Marc blanc:</b> rostre NO detectat.<br/><br/>]]></string>
@@ -177,4 +176,7 @@
     <string name="keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>
     <string name="toggle_context_menu_button">Commutar el menú contextual del punter</string>
 
+    <!-- Toasts -->
+    <string name="keyboard_not_enabled_toast">El teclat d\'EVA Mobile no està activat. Utilitzi l\'EVA Assistent per activar-lo.</string>
+    <string name="pointer_stopped_toast">EVA Mobile s\'ha aturat %1$s sense detectar el rostre.</string>
 </resources>

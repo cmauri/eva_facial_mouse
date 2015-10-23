@@ -29,6 +29,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -323,6 +324,16 @@ public class MainEngine implements
     private void noFacePause() {
         if (mCurrentState != STATE_RUNNING) return;
         mCurrentState= STATE_NO_FACE_PAUSED;
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Resources res = mService.getResources();
+                String t= String.format(res.getString(R.string.pointer_stopped_toast),
+                                        Preferences.getTimeWithoutDetectionEntryValue(mService));
+                EVIACAM.Toast(mService, t);
+            }
+        });
 
         doPause();
     }

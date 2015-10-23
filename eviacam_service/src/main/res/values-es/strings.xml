@@ -42,12 +42,12 @@
     <string name="click_settings">Ajustes del clic</string>
     <string name="detection_settings">Ajustes de detección</string>
     <string name="never">Nunca</string>
-    <string name="after_five_seconds">Tras 5 segundos</string>
-    <string name="after_ten_seconds">Tras 10 segundos</string>
-    <string name="after_thirty_seconds">Tras 30 segundos</string>
-    <string name="after_one_minute">Tras 1 minuto</string>
-	<string name="after_two_minutes">Tras 2 minutos</string>
-	<string name="after_five_minutes">Tras 5 minutos</string>
+    <string name="after_five_seconds">tras 5 segundos</string>
+    <string name="after_ten_seconds">tras 10 segundos</string>
+    <string name="after_thirty_seconds">tras 30 segundos</string>
+    <string name="after_one_minute">tras 1 minuto</string>
+    <string name="after_two_minutes">tras 2 minutos</string>
+    <string name="after_five_minutes">tras 5 minutos</string>
     <string name="dwell_area">Área del clic por espera</string>
     <string name="dwell_area_summary">Desplazamiento máximo permitido antes de reiniciar el tiempo de clic por espera</string>
     <string name="dwell_time">Tiempo de clic por espera</string>
@@ -130,10 +130,10 @@
     <string name="gamepad_rel_sensitivity_summary">Sensibilidad del modo relativo (valores bajos establecen una sensibilidad alta)</string>
     <string name="gamepad_preferences">Ajustes del gamepad</string>
     <string name="mouse_preferences">Ajustes del ratón</string>
-    
-	
-	<string name="wizard_icon_name">EVA Asistente</string>
-	<string name="back">Atrás</string>
+
+    <!-- Wizard -->
+    <string name="wizard_icon_name">EVA Asistente</string>
+    <string name="back">Atrás</string>
     <string name="camera_viewer">Visor de cámara</string>
     <string name="camera_viewer_wizard1">Muestra la imagen de la cámara frontal en tiempo real</string>
     <string name="camera_viewer_wizard2"><![CDATA[         <b>Borde rojo oscuro:</b> rostro detectado.<br/>         <b>Borde blanco:</b> rostro NO detectado.<br/><br/>         ]]></string>
@@ -176,4 +176,7 @@
     <string name="keyboard_not_configured_confirm">¿Está seguro que quiere continuar sin configurar el teclado?</string>
     <string name="toggle_context_menu_button">Conmutar el menú contextual del puntero</string>
 
+    <!-- Toasts -->
+    <string name="keyboard_not_enabled_toast">El teclado de EVA Mobile no está activado. Use EVA Asistente para activarlo.</string>
+    <string name="pointer_stopped_toast">EVA Mobile se ha detenido %1$s sin detectar el rostro.</string>
 </resources>

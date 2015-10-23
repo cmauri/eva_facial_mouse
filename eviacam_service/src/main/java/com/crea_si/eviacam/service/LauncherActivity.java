@@ -21,10 +21,12 @@ package com.crea_si.eviacam.service;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 /**
- * Just opens the accessibility settings
+ * Launcher activity
  */
 
 public class LauncherActivity extends Activity {
@@ -32,7 +34,8 @@ public class LauncherActivity extends Activity {
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        
+
+        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(this);
         Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivityForResult(intent, 0);
         

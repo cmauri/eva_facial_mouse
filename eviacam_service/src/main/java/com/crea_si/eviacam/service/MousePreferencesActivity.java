@@ -20,6 +20,8 @@
 package com.crea_si.eviacam.service;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -59,10 +61,12 @@ public class MousePreferencesActivity extends Activity {
     public static class SettingsFragment extends PreferenceFragment {
         // stored whether the activity has been started in slave mode
         private final boolean mSlaveMode;
-        
-        SettingsFragment (boolean slaveMode) {
-            mSlaveMode= slaveMode;
+
+        public SettingsFragment () {
+            mSlaveMode= false;
         }
+
+        SettingsFragment (boolean slaveMode) { mSlaveMode= slaveMode; }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -89,7 +93,29 @@ public class MousePreferencesActivity extends Activity {
                 cat.removePreference(p);
             }
 
-            /**
+            /*
+             * Version button
+             */
+            PreferenceGroup cat= (PreferenceGroup) getPreferenceScreen().
+                    findPreference("help");
+            Preference p= getPreferenceScreen().findPreference("version");
+            p.setSummary(getResources().getText(R.string.app_name) +
+                                        " " + BuildConfig.VERSION_NAME);
+            p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                int clickCount;
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    clickCount++;
+                    if (clickCount>= 4) {
+                        clickCount= 0;
+                        Intent i = new Intent(getActivity(), TechInfoActivity.class);
+                        startActivity(i);
+                    }
+                    return true;
+                }
+            });
+
+            /*
              * Listeners for list preference entries
              */
             ListPreference lp;

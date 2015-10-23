@@ -63,9 +63,12 @@ public class DockPanelLayerView extends RelativeLayout
     
     // arrow icon when the panel is collapsed
     private Bitmap mToggleCollapsed;
-    
-    // buttons have disabled appearance?
-    private boolean mClickDisabledAppearance= false;
+
+    // status of the click function
+    private boolean mClickEnabled= true;
+
+    // status of the context menu
+    private boolean mContextMenuEnabled= false;
     
     public DockPanelLayerView(Context context) {
         super(context);
@@ -105,7 +108,7 @@ public class DockPanelLayerView extends RelativeLayout
             removeView(mDockPanelView);
         }
         
-        createAndAddDockPanel (gravity, size);
+        createAndAddDockPanel(gravity, size);
     }
     
     @Override
@@ -171,7 +174,7 @@ public class DockPanelLayerView extends RelativeLayout
                 ib.setLayoutParams(lp);
             }
         }
-        
+
         // set layout direction
         if (gravity == Gravity.END || gravity == Gravity.START) {
             contents.setOrientation(LinearLayout.VERTICAL);
@@ -290,7 +293,7 @@ public class DockPanelLayerView extends RelativeLayout
         LinearLayout container= createContainerView (getContext(), gravity);
         
         View panelButtons= createPanelButtonsView (getContext(), container, gravity, size);
-        
+
         View toggleButton= createToggleButtonView(gravity, size);
    
         // assemble
@@ -305,9 +308,12 @@ public class DockPanelLayerView extends RelativeLayout
         
         mDockPanelView= container;
         addView(mDockPanelView);
-        
+
+        // update toggle buttons
+        updateToggleButtons();
+
         // update click disabled appearance
-        setClickDisabledAppearance (mClickDisabledAppearance);
+        setClickDisabledAppearance ();
     }
     
     /**
@@ -326,22 +332,75 @@ public class DockPanelLayerView extends RelativeLayout
      * Gives an opportunity to process a click action for a given view
      *  
      * @param id - ID of the view on which to make click
-     * @return true if action performed, false otherwise
+     *
+     * Remarks: called from a secondary thread
      */
-    public boolean performClick (int id) {
+    public void performClick (final int id) {
         if (id == R.id.expand_collapse_dock_button) {
             this.post(new Runnable() {
                 @Override
                 public void run() {
-                   if (mIsExpanded) collapse();
-                   else expand();
+                    if (mIsExpanded) collapse();
+                    else expand();
                 }
             });
-            
-            return true;
         }
-        
-        return false;
+        else if (id == R.id.toggle_disable_click) {
+            mClickEnabled= !mClickEnabled;
+            this.post(new Runnable() {
+                @Override
+                public void run() {
+                    updateToggleButtons ();
+                    setClickDisabledAppearance();
+                }
+            });
+        }
+        else if (id == R.id.toggle_context_menu) {
+            mContextMenuEnabled= !mContextMenuEnabled;
+            this.post(new Runnable() {
+                @Override
+                public void run() {
+                    updateToggleButtons ();
+                }
+            });
+        }
+    }
+
+    /* Update the bitmaps of toggle buttons */
+    private void updateToggleButtons () {
+        ImageButton ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_disable_click);
+        if (mClickEnabled) {
+            ib.setImageResource(R.drawable.ic_click_button_enabled);
+        }
+        else {
+            ib.setImageResource(R.drawable.ic_click_button_disabled);
+        }
+
+        ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_context_menu);
+        if (mContextMenuEnabled) {
+            ib.setImageResource(R.drawable.ic_context_menu_enabled);
+        }
+        else {
+            ib.setImageResource(R.drawable.ic_context_menu_disabled);
+        }
+    }
+
+    /**
+     * Get if view state is for click function is enabled
+     *
+     * @return true if view state is for click enabled
+     */
+    public boolean getClickEnabled () {
+        return mClickEnabled;
+    }
+
+    /**
+     * Get if view context menu is enabled
+     *
+     * @return true if the context menu is enabled
+     */
+    public boolean getContextMenuEnabled () {
+        return mContextMenuEnabled;
     }
     
     private void expand() {
@@ -372,12 +431,9 @@ public class DockPanelLayerView extends RelativeLayout
     
     /**
      * Enable or disable faded appearance of the buttons 
-     * 
-     * @param value true for faded appearance
      */
-    public void setClickDisabledAppearance (boolean value) {
-        mClickDisabledAppearance= value;
-        float alpha= (value? DISABLED_ALPHA : DEFAULT_ALPHA);
+    private void setClickDisabledAppearance () {
+        float alpha= (mClickEnabled? DEFAULT_ALPHA : DISABLED_ALPHA);
 
         setChildrenClickDisabledAppearance (mDockPanelView, alpha);
     }
@@ -389,7 +445,7 @@ public class DockPanelLayerView extends RelativeLayout
         if (v == null) return;
 
         if (v instanceof ImageButton) {
-            if (v.getId() != R.id.disable_click_button) v.setAlpha(alpha);
+            if (v.getId() != R.id.toggle_disable_click) v.setAlpha(alpha);
         }
         else if (v instanceof ViewGroup) {
             ViewGroup vg= (ViewGroup) v;

@@ -22,14 +22,14 @@
 <resources>
 
     <!-- Do NOT translate -->
-    <string name="app_name" translatable="false">Enable Viacam Mobile</string>
-    <string name="service_name" translatable="false">Enable Viacam Mobile</string>
+    <string name="app_name" translatable="false">EVA Mobile</string>
+    <string name="service_name" translatable="false">EVA Mobile</string>
 
     <!-- Description shown in the accessibility service screen -->
-    <string name="eviacam_service_description">Enable Viacam Mobile is a mouse emulator that moves the pointer as you move your head. It tracks your face using the frontal camera of your device.</string>
+    <string name="eviacam_service_description">EVA Mobile is a mouse emulator that moves the pointer as you move your head. It tracks your face using the frontal camera of your device.</string>
 
     <!-- Label for the preferences screen -->
-    <string name="eviacam_preferences_title">Enable Viacam Mobile settings</string>
+    <string name="eviacam_preferences_title">EVA Mobile settings</string>
 
     <!-- These are labels and summaries for settings -->
     <string name="motion_settings">Motion settings</string>
@@ -39,13 +39,15 @@
     <string name="y_axis_speed_summary">Sets response sensitivity for the Y axis</string>
     <string name="acceleration">Acceleration</string>
     <string name="acceleration_summary">Pointer acceleration. 0 disables</string>
-    <string name="clic_settings">Click settings</string>
+    <string name="click_settings">Click settings</string>
     <string name="detection_settings">Detection settings</string>
     <string name="never">Never</string>
-    <string name="after_five_seconds">After 5 seconds</string>
-    <string name="after_ten_seconds">After 10 seconds</string>
-    <string name="after_thirty_seconds">After 30 seconds</string>
-    <string name="after_one_minute">After 1 minute</string>
+    <string name="after_five_seconds">after 5 seconds</string>
+    <string name="after_ten_seconds">after 10 seconds</string>
+    <string name="after_thirty_seconds">after 30 seconds</string>
+    <string name="after_one_minute">after 1 minute</string>
+    <string name="after_two_minutes">after 2 minutes</string>
+    <string name="after_five_minutes">after 5 minutes</string>
     <string name="dwell_area">Dwell area</string>
     <string name="dwell_area_summary">Maximum allowed displacement before restarting the dwell time</string>
     <string name="dwell_time">Dwell time</string>
@@ -68,6 +70,10 @@
     <string name="large">Large</string>
     <string name="normal">Normal</string>
     <string name="small">Small</string>
+    <string name="help">Help</string>
+    <string name="configuration_wizard">Configuration wizard</string>
+    <string name="version">Version</string>
+
 
     <!-- Actions available through the accessibility API -->
     <string name="click">Click</string>
@@ -83,7 +89,7 @@
     <string name="select">Select</string>
     <string name="focus">Focus</string>
 
-    <!-- Actions available through the docking pannel -->
+    <!-- Actions available through the docking panel -->
     <string name="back_button">Back button</string>
     <string name="home_button">Home button</string>
     <string name="recents_button">Recents button</string>
@@ -91,6 +97,7 @@
     <string name="dock_panel_button">Expand/collapse dock menu</string>
     <string name="softkeyboard_button">Open keyboard</string>
     <string name="scroll_refresh_button">Refresh scrolling buttons</string>
+    <string name="toggle_context_menu_button">Toggle pointer context menu</string>
     <string name="disable_click_button">Disable click</string>
 
     <!-- Messages for the notification -->
@@ -98,14 +105,14 @@
     <string name="stopped_click_to_resume">Stopped (click to resume)</string>
 
     <!-- OpenCV installation stuff. These allow to compose a message like:
-        "Installation cancelled" "Enable Viacam Mobile"" needs OpenCV manager..."
+        "Installation cancelled" "EVA Mobile"" needs OpenCV manager..."
     -->
     <string name="installation_cancelled">Installation cancelled</string>
     <string name="needs_opencv_retry"> needs OpenCV manager to run. Retry installation?</string>
 
     <!-- Crash report messages (ACRA) -->
-    <string name="crash_toast_text">Oops! Enable Viacam crashed</string>
-    <string name="crash_dialog_text">An unexpected error occurred forcing Enable Viacam Mobile to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
+    <string name="crash_toast_text">Oops! EVA Mobile crashed</string>
+    <string name="crash_dialog_text">An unexpected error occurred forcing EVA Mobile to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you!</string>
 
@@ -118,7 +125,7 @@
     <string name="bottom_center">Bottom center</string>
     <string name="top_right">Top right</string>
     <string name="bottom_right">Bottom right</string>
-    <string name="eviacam_slave_mode_preferences_title">Enable Viacam slave mode preferences</string>
+    <string name="eviacam_slave_mode_preferences_title">EVA Mobile slave mode preferences</string>
     <string name="slave_mode_preferences">Slave mode preferences</string>
     <string name="gamepad_interface_settings">Gamepad interface</string>
     <string name="gamepad_transparency">Transparency</string>
@@ -129,4 +136,62 @@
     <string name="gamepad_preferences">Gamepad preferences</string>
     <string name="mouse_preferences">Mouse preferences</string>
 
+    <!-- Wizard -->
+    <string name="wizard_icon_name">EVA Wizard</string>
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="finish">Finish</string>
+    <string name="prerequisites">Prerequisites</string>
+    <string name="install">Install</string>
+    <string name="keyboard_setup">Keyboard set up</string>
+    <string name="wiz_set_keyboard1"><![CDATA[1. Open: Settings > Language & input]]></string>
+    <string name="wiz_set_keyboard2">2. Select \'EVA Mobile Keyboard\'</string>
+    <string name="wiz_set_keyboard3">3. Tap \'Default\' and select \'EVA Mobile Keyboard\'</string>
+    <string name="check">Check</string>
+    <string name="done">Done</string>
+    <string name="opencv_manager_required">OpenCV manager is required to run EVA Mobile</string>
+    <string name="camera_viewer">Camera viewer</string>
+    <string name="camera_viewer_wizard1">Displays the image of the frontal camera in real time</string>
+    <string name="camera_viewer_wizard2">
+        <![CDATA[
+        <b>Dark red border:</b> face detected.<br/>
+        <b>White border:</b> face NOT detected.<br/><br/>
+        ]]>
+    </string>
+    <string name="dock_menu">Dock menu</string>
+    <string name="home">Home</string>
+    <string name="recents">Recents</string>
+    <string name="open_notifications">Open notifications</string>
+    <string name="open_keyboard">Open keyboard</string>
+    <string name="toggle_click">Toggle click generation</string>
+    <string name="scroll_buttons">Scroll buttons</string>
+    <string name="scroll_buttons_description">Allow you to scroll the content of some windows and
+        views by clicking them.</string>
+    <string name="scroll_buttons_remaks">Due to restrictions of the Android platform, the scroll
+        buttons might not always work (e.g. while using a web browser). In such circumstances
+        you could try scrolling by using the navigation keyboard.</string>
+    <string name="navigation_keyboard">Navigation keyboard</string>
+    <string name="keyboard">Keyboard</string>
+    <string name="keyboard_remarks">Most standard keyboards do not work with EVA Mobile.
+        We provide a basic keyboard that needs to be enabled manually.</string>
+    <string name="configure">Configure</string>
+    <string name="keyboard_not_configured">Keyboard not configured</string>
+    <string name="keyboard_not_configured_confirm">Are you sure you want to continue without configuring the keyboard?</string>
+    <string name="configuration_settings">Configuration settings</string>
+    <string name="configuration_settings_description">Some parameters can be adjusted to fit the user\'s needs.</string>
+    <string name="settings">Settings</string>
+    <string name="known_limitations">Known limitations</string>
+    <string name="limitations_intro">Due to Android restrictions some features are not currently
+        available, yet.</string>
+    <string name="limitation1">- Does not work with many games.</string>
+    <string name="limitation2">- Web browsers do not handle properly some actions (it is
+        recommended to use Google Chrome).</string>
+    <string name="limitation3">- Applications such as Maps, Earth and Gallery work with limitations.</string>
+    <string name="how_to_run"><![CDATA[To start EVA Mobile go to:
+        \n\nSettings > Accessibility > EVA Mobile]]></string>
+    <string name="run_this_wizard_at_startup">Run this wizard at startup</string>
+
+    <!-- Toasts -->
+    <string name="keyboard_not_enabled_toast">EVA Mobile keyboard is not enabled. Use the EVA Wizard to enable it.</string>
+    <string name="pointer_stopped_toast">EVA Mobile stopped %1$s without detecting a face</string>
 </resources>

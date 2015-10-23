@@ -75,7 +75,7 @@
        
     </PreferenceCategory>
     
-    <PreferenceCategory android:title="@string/clic_settings">
+    <PreferenceCategory android:title="@string/click_settings">
 
         <com.crea_si.eviacam.service.NumberPickerPreference           
             android:key="dwell_time"
@@ -145,6 +145,25 @@
             android:defaultValue="@string/time_without_detection_default"
         />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="help"
+        android:title="@string/help">
+
+        <Preference
+            android:title="@string/configuration_wizard">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.crea_si.eviacam.service"
+                android:targetClass="com.crea_si.eviacam.wizard.WizardActivity"
+            />
+        </Preference>
+
+        <Preference
+            android:key="version"
+            android:title="@string/version">
+        </Preference>
     </PreferenceCategory>
         
 </PreferenceScreen>

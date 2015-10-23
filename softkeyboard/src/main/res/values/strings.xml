@@ -22,7 +22,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Title for Latin keyboard  -->
-    <string name="ime_name">Enable Viacam Keyboard</string>
+    <string name="ime_name">EVA Mobile Keyboard</string>
 
     <!-- Symbols that are commonly considered word separators in this language -->
     <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
@@ -37,13 +37,9 @@
     <string name="label_subtype_en_GB">English (GB)</string>
 
     <!-- Titles for ImePreference -->
-    <string name="settings_name">Enable Viacam Keyboard Settings</string>
+    <string name="settings_name">EVA Mobile Keyboard Settings</string>
     <string name="language_selection_title">Input languages</string>
     <string name="select_language">Select input languages</string>
     <string name="general_category">General</string>
 
-    <string name="crash_toast_text">Oops! Enable Viacam keyboard crashed</string>
-    <string name="crash_dialog_text">An unexpected error occurred forcing Enable Viacam keyboard to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
-    <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
-    <string name="crash_dialog_ok_toast">Thank you!</string>
 </resources>

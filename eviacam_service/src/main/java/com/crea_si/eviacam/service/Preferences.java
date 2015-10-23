@@ -21,6 +21,7 @@ package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 
 public class Preferences {
     /**
@@ -61,6 +62,34 @@ public class Preferences {
         return Integer.parseInt(sp.getString(KEY_TIME_WITHOUT_DETECTION, null));
     }
 
+    public static String getTimeWithoutDetectionEntryValue(Context c) {
+        // current value
+        int value= getTimeWithoutDetection(getSharedPreferences(c));
+
+        // search value in array entries
+        Resources res= c.getResources();
+        String[] entries= res.getStringArray(R.array.time_without_detection_values);
+        int pos;
+        for (pos= 0; pos< entries.length; pos++) {
+            if (entries[pos].contentEquals(String.valueOf(value))) break;
+        }
+
+        /*
+         * if found, pick the entry value. inside a try/catch block in case
+         * there is a size mismatch between entries and values arrays
+         */
+        try {
+            if (pos< entries.length) {
+                String[] values= res.getStringArray(R.array.time_without_detection_entries);
+                return values[pos];
+            }
+        }
+        catch (Exception e) { /* do nothing */ }
+
+        // fallback path, should never happen
+        return String.valueOf(value);
+    }
+
     /**
      * Gamepad locations
      */
@@ -70,19 +99,19 @@ public class Preferences {
     public static final int LOCATION_GAMEPAD_BOTTOM_CENTER= 3;
     public static final int LOCATION_GAMEPAD_TOP_RIGHT= 4;
     public static final int LOCATION_GAMEPAD_BOTTOM_RIGHT= 5;
-    
+
     public static int getGamepadLocation(SharedPreferences sp) {
         return Integer.parseInt(sp.getString(KEY_GAMEPAD_LOCATION, null));
     }
-    
+
     public static int getGamepadTransparency(SharedPreferences sp) {
         return Integer.parseInt(sp.getString(KEY_GAMEPAD_TRANSPARENCY, "100"));
     }
-    
+
     public static int getGamepadAbsSpeed(SharedPreferences sp) {
         return sp.getInt(KEY_GAMEPAD_ABS_SPEED, 0);
     }
-    
+
     public static int getGamepadRelSensitivity(SharedPreferences sp) {
         return sp.getInt(KEY_GAMEPAD_REL_SENSITIVITY, 0);
     }

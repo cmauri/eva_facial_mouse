@@ -163,9 +163,19 @@
     <string name="scroll_buttons_remaks">Degut a restriccions de la plataforma Android, els botons de desplaçament no sempre funcionen (ex. quan s\'utilitza un navegador). En aquestes circumstàncies podeu provar de fer el desplaçament utilitzant el teclat de navegació.</string>
     <string name="settings">Configuració</string>
     <string name="toggle_click">Commutar la generació del clic</string>
-    <string name="wiz_set_keyboard1"><![CDATA[1. Obrir: Configuració > Idioma i introducció de text]]></string>
-    <string name="wiz_set_keyboard2">2. Seleccionar \'Teclat EVA\'</string>
-    <string name="wiz_set_keyboard3">3. Fer un toc a \'Predeterminat\' i seleccionar \'Teclat EVA\'</string>
+    <string name="wiz_set_keyboard">
+        <![CDATA[1. Obrir: \'Configuració > Idioma i introducció de text\']]>\n
+        2. Activar \'Teclat EVA\'\n
+        3. Tocar \'Predeterminat\'\n
+        4. Escollir \'Teclat EVA\'
+    </string>
+    <string name="wiz_set_keyboard_lollipop">
+        <![CDATA[1. Obrir: \'Configuració > Idioma i introducció de text > Teclat actual > TRIA ELS TECLATS\']]>\n
+        2. Activar \'Teclat EVA\'\n
+        3. Enrere\n
+        4. Tocar \'Teclat actual\'\n
+        5. Escollir \'Teclat EVA\'
+    </string>
     <string name="done">Fet</string>
     <string name="keyboard_not_configured">Teclat no configurat</string>
     <string name="keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>

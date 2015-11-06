@@ -72,20 +72,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/wiz_set_keyboard1"
-                android:id="@+id/textView5"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/wiz_set_keyboard2"
-                android:id="@+id/textView6"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/wiz_set_keyboard3"
-                android:id="@+id/textView7"/>
+                android:text="@string/wiz_set_keyboard"
+                android:id="@+id/wiz_set_keyboard"/>
 
             <Space
                 android:layout_width="10dp"
@@ -94,7 +82,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/configure"
+                android:text="@string/settings"
                 android:id="@+id/keyboardConfigureButton"/>
 
         </LinearLayout>

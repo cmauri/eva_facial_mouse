@@ -19,6 +19,7 @@
 package com.crea_si.eviacam.wizard;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.crea_si.eviacam.service.InputMethodAction;
 import com.crea_si.eviacam.service.R;
@@ -55,6 +57,12 @@ public class KeyboardWizardStep extends WizardStep {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.wizard_step_keyboard, container, false);
+
+        /* Different instruction for Lollipop */
+        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP) {
+            TextView tv = (TextView) v.findViewById(R.id.wiz_set_keyboard);
+            tv.setText(getResources().getText(R.string.wiz_set_keyboard_lollipop));
+        }
 
         checkUpdate(v);
         Button b= (Button) v.findViewById(R.id.keyboardConfigureButton);

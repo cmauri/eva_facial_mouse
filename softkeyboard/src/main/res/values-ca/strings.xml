@@ -32,6 +32,13 @@
     <string name="label_next_key">Següent</string>
     <string name="label_send_key">Enviar</string>
 
+    <!-- Labels for navigation keyboard -->
+    <string name="del">Supr</string>
+    <string name="home">Inici</string>
+    <string name="pgup">RePàg</string>
+    <string name="end">Fi</string>
+    <string name="pgdown">AvPàg</string>
+
     <!-- Labels for subtype -->
     <string name="label_subtype_generic">%s</string>
     <string name="label_subtype_en_GB">English (GB)</string>

@@ -183,7 +183,7 @@
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Utilitzi l\'EVA Assistent per activar-lo.</string>
-    <string name="pointer_stopped_toast">EVA s\'ha aturat %1$s sense detectar el rostre.</string>
+    <string name="pointer_stopped_toast">EVA s\'ha aturat %1$s sense detectar el rostre. Per tornar-lo a activar asseguri\'s que el seu rostre apareix dins el visor de càmera.</string>
     <string name="configure">Configurar</string>
     <string name="version">Versió</string>
 </resources>

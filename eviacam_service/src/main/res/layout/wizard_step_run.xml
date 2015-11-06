@@ -32,6 +32,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/how_to_run"
-        android:id="@+id/textView17"/>
+        android:id="@+id/textView"/>
 
 </LinearLayout>

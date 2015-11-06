@@ -18,10 +18,12 @@
 */
 package com.crea_si.eviacam.wizard;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.crea_si.eviacam.service.R;
 
@@ -37,6 +39,12 @@ public class RunWizardStep extends WizardStep {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v=  inflater.inflate(R.layout.wizard_step_run, container, false);
+
+        Resources res = getActivity().getResources();
+
+        TextView tv= (TextView) v.findViewById(R.id.textView);
+        tv.setText(String.format(res.getString(R.string.how_to_run),
+                    res.getString(R.string.app_name)));
 
         return v;
     }

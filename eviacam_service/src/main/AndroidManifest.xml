@@ -23,7 +23,7 @@
         <service
             android:name=".TheAccessibilityService"
             android:icon="@drawable/ic_launcher"
-            android:label="@string/service_name"
+            android:label="@string/app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" 
             android:settingsActivity="com.crea_si.eviacam.service.MousePreferencesActivity" 
             android:configChanges="orientation|screenSize" >

@@ -51,6 +51,9 @@ public class SetupWizard extends BasicWizardLayout {
         setBackButtonText(r.getString(R.string.back));
         setFinishButtonText(r.getString(R.string.finish));
 
+        /* Label of the activity */
+        getActivity().setTitle(r.getString(R.string.app_name));
+
         /* Add your steps in the order you want them to appear and eventually
          * call create() to create the wizard flow.
          */

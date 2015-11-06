@@ -81,7 +81,8 @@ public class TechInfoActivity extends Activity {
                 CharSequence[] recipients= new String[1];
                 recipients[0]= "cesar@crea-si.com";
                 i.putExtra(Intent.EXTRA_EMAIL  , recipients);
-                i.putExtra(Intent.EXTRA_SUBJECT, "EVA Mobile: device details");
+                i.putExtra(Intent.EXTRA_SUBJECT, String.format("%1$s: device details",
+                                                 getResources().getText(R.string.app_name)));
                 i.putExtra(Intent.EXTRA_TEXT, fInfo);
                 try {
                     startActivity(Intent.createChooser(i, "Send mail..."));

@@ -38,9 +38,6 @@ public class WhatsIsWizardStep extends WizardStep {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.wizard_step_whatis, container, false);
-        TextView tv = (TextView) v.findViewById(R.id.textView);
-        CharSequence text= getResources().getText(R.string.eviacam_service_description);
-        tv.setText(text);
 
         return v;
     }

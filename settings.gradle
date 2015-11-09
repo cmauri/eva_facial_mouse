@@ -1,7 +1,7 @@
 include ':openCVLibrary2410'
 include ':eviacam_api'
 include ':input_method_aidl'
-include ':eviacam_service'
+include ':eviacam'
 include ':eviacam_api_demo'
 include ':softkeyboard'
 include ':WizarDroid:wizardroid'

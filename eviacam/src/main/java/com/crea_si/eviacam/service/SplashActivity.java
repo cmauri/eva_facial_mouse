@@ -23,13 +23,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.crea_si.eviacam.Eula;
 import com.crea_si.eviacam.R;
 
 /**
  * Displays an splash screen, and checks and guides the installation of the openCV manager.
  * Does it here (activity) so that installation dialog could be properly displayed.
  */
-public class SplashActivity extends Activity implements OpenCVInstallHelper.Listener {
+public class SplashActivity extends Activity
+        implements OpenCVInstallHelper.Listener, Eula.Listener {
     /* Duration of the splash */
     private static final int SPLASH_DISPLAY_LENGTH = 2000;
 
@@ -46,13 +48,16 @@ public class SplashActivity extends Activity implements OpenCVInstallHelper.List
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.splash_layout);
-        //mHelper= new OpenCVInstallHelper(this, this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Eula.acceptEula(this, this);
+    }
 
+    @Override
+    public void onAcceptEula() {
         if (sOpenCVReady) {
             MainEngine.initCVReady();
 
@@ -69,6 +74,11 @@ public class SplashActivity extends Activity implements OpenCVInstallHelper.List
         else {
             mHelper= new OpenCVInstallHelper(this, this);
         }
+    }
+
+    @Override
+    public void onCancelEula() {
+        finish();
     }
 
     @Override

@@ -29,6 +29,8 @@ import android.os.RemoteException;
 import android.provider.Settings;
 import android.view.inputmethod.InputMethodManager;
 
+import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.R;
 import com.crea_si.input_method_aidl.IClickableIME;
 
 /**

@@ -19,6 +19,8 @@
 
 package com.crea_si.eviacam.service;
 
+import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.api.GamepadButtons;
 import com.crea_si.eviacam.api.SlaveMode;
 

@@ -23,6 +23,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
+import com.crea_si.eviacam.Preferences;
+
 /**
  * Detect (face) shakes 
  * 

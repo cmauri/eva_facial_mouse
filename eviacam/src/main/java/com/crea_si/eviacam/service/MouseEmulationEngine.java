@@ -18,6 +18,7 @@
  */
 package com.crea_si.eviacam.service;
 
+import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.api.IMouseEventListener;
 
 import android.accessibilityservice.AccessibilityService;

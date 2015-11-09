@@ -22,6 +22,8 @@ package com.crea_si.eviacam.service;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.crea_si.eviacam.EVIACAM;
+
 class AccessibilityNodeDebug {
     static 
     public String getNodeInfo (AccessibilityNodeInfo node) {

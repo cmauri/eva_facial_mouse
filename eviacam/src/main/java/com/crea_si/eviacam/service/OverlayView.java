@@ -25,6 +25,8 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.graphics.PixelFormat;
 
+import com.crea_si.eviacam.EVIACAM;
+
 public class OverlayView extends RelativeLayout {
 
     OverlayView(Context c) {

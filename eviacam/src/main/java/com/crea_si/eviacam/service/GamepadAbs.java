@@ -19,6 +19,7 @@
 
 package com.crea_si.eviacam.service;
 
+import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.api.GamepadButtons;
 
 import android.content.Context;

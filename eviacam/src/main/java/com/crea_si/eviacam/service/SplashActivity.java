@@ -23,6 +23,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.crea_si.eviacam.R;
+
 /**
  * Displays an splash screen, and checks and guides the installation of the openCV manager.
  * Does it here (activity) so that installation dialog could be properly displayed.

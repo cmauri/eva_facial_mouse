@@ -30,6 +30,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.TypedValue;
 import android.view.View;
 
+import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.R;
+
 /**
  * Layout to draw click progress feedback and pointer
  * 

@@ -23,6 +23,8 @@ import android.graphics.Point;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.crea_si.eviacam.EVIACAM;
+
 class ViewUtils {
     /**
      * Determines if given point is inside view

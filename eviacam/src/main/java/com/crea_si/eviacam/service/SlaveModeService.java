@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.api.GamepadParams;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
@@ -66,7 +67,7 @@ public class SlaveModeService extends Service {
                 return futureResult.get();
             } 
             catch (ExecutionException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage());
             } 
             catch (InterruptedException e) {
                 EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 

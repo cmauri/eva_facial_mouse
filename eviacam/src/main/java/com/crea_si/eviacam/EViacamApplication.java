@@ -20,7 +20,7 @@
  * Support to catch unexpected exceptions
  * TODO: disable/halt service after an error
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -33,10 +33,10 @@ import org.acra.annotation.ReportsCrashes;
 @ReportsCrashes( 
     mailTo = "cesar@crea-si.com",
     mode = ReportingInteractionMode.DIALOG,
-    resToastText = R.string.crash_toast_text,
-    resDialogText = R.string.crash_dialog_text,
-    resDialogCommentPrompt = R.string.crash_dialog_comment_prompt,
-    resDialogOkToast = R.string.crash_dialog_ok_toast
+    resToastText = com.crea_si.eviacam.R.string.crash_toast_text,
+    resDialogText = com.crea_si.eviacam.R.string.crash_dialog_text,
+    resDialogCommentPrompt = com.crea_si.eviacam.R.string.crash_dialog_comment_prompt,
+    resDialogOkToast = com.crea_si.eviacam.R.string.crash_dialog_ok_toast
 )
 
 public class EViacamApplication extends Application {

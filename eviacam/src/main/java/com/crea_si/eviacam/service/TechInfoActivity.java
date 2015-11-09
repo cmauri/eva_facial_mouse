@@ -27,6 +27,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crea_si.eviacam.BuildConfig;
+import com.crea_si.eviacam.R;
+
 public class TechInfoActivity extends Activity {
 
     @Override

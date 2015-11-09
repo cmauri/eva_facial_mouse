@@ -34,6 +34,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.NumberPicker;
 
+import com.crea_si.eviacam.R;
+
 /**
  * A {@link android.preference.Preference} that displays a number picker as a dialog.
  */

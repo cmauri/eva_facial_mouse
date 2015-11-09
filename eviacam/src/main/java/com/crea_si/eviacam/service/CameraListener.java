@@ -39,6 +39,9 @@ import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.view.SurfaceView;
 
+import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.R;
+
 
 @SuppressWarnings("deprecation")
 public class CameraListener implements CvCameraViewListener2 {

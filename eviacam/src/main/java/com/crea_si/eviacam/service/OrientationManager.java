@@ -26,6 +26,8 @@ import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.crea_si.eviacam.EVIACAM;
+
 class OrientationManager {
 
     private final Context mContext;

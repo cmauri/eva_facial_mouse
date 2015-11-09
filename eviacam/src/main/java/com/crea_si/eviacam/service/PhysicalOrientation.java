@@ -23,6 +23,8 @@ import android.content.Context;
 import android.hardware.SensorManager;
 import android.view.OrientationEventListener;
 
+import com.crea_si.eviacam.EVIACAM;
+
 class PhysicalOrientation extends OrientationEventListener {
     private int mCurrentOrientation = 0;
     

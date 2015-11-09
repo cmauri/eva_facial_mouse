@@ -25,6 +25,8 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.crea_si.eviacam.EVIACAM;
+
 /**
  * The Enable Viacam accessibility service
  */

@@ -38,6 +38,9 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.R;
+
 public class DockPanelLayerView extends RelativeLayout 
     implements OnSharedPreferenceChangeListener {
     

@@ -25,7 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.crea_si.eviacam.service.R;
+import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.SplashActivity;
 
 import org.codepond.wizardroid.WizardStep;

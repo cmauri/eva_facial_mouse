@@ -33,7 +33,10 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
-/**
+import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.R;
+
+ /**
  * Manages actions relative to the Android accessibility API 
  */
 
@@ -358,7 +361,7 @@ class AccessibilityAction {
             
             if (node == null) return;
 
-            EVIACAM.debug("Actionable node found: (" + pInt.x + ", " + pInt.y + ")." + 
+            EVIACAM.debug("Actionable node found: (" + pInt.x + ", " + pInt.y + ")." +
                     AccessibilityNodeDebug.getNodeInfo(node));
             
             int availableActions= FULL_ACTION_MASK & node.getActions();

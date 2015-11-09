@@ -24,6 +24,8 @@ import java.util.List;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
+import com.crea_si.eviacam.EVIACAM;
+
 class AccessibilityWindowDebug {
     static
     public void displayFullWindowTree (List<AccessibilityWindowInfo> l) {

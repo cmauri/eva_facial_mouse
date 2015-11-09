@@ -26,6 +26,9 @@ import android.content.res.Resources;
 import android.graphics.PointF;
 import android.media.AudioManager;
 
+import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.R;
+
 class DwellClick implements OnSharedPreferenceChangeListener {
     /**
      * Enums and constants

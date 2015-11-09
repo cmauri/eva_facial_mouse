@@ -22,9 +22,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.crea_si.eviacam.service.R;
+import com.crea_si.eviacam.R;
 
 import org.codepond.wizardroid.WizardStep;
 

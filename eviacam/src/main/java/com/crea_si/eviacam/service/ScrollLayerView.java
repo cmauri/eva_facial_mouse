@@ -35,6 +35,9 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.ImageView.ScaleType;
 
+import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.R;
+
 /**
  * Layer to draw scrolling buttons
  *  

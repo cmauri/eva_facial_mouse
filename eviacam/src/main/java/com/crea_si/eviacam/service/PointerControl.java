@@ -26,6 +26,9 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
 
+import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.R;
+
 import java.lang.Math;
 
 @SuppressLint("Assert")
@@ -56,7 +59,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
        
         // get constants from resources
         Resources r= c.getResources();
-        AXIS_SPEED_MIN= r.getInteger(R.integer.axis_speed_min);                
+        AXIS_SPEED_MIN= r.getInteger(R.integer.axis_speed_min);
         AXIS_SPEED_MAX= r.getInteger(R.integer.axis_speed_max);
         
         ACCELERATION_MIN= r.getInteger(R.integer.acceleration_min);

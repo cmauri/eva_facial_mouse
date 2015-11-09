@@ -27,6 +27,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
+import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.R;
+
 /**
  * Manage pause/resume notifications
  */

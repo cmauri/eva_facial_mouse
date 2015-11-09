@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.crea_si.eviacam.service" >
+    package="com.crea_si.eviacam" >
 
     <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -21,7 +21,7 @@
         
         <!-- Accessibility service -->
         <service
-            android:name=".TheAccessibilityService"
+            android:name=".service.TheAccessibilityService"
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" 
@@ -38,7 +38,7 @@
 
         <!-- Enable Viacam main (mouse) preferences -->
         <activity
-            android:name=".MousePreferencesActivity"
+            android:name=".service.MousePreferencesActivity"
             android:label="@string/eviacam_preferences_title"
             android:launchMode="singleTop"
             android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
@@ -52,7 +52,7 @@
         
         <!-- Splash screen -->
         <activity
-            android:name=".SplashActivity" 
+            android:name=".service.SplashActivity"
             android:exported="false"
             android:noHistory="false"
             android:excludeFromRecents="false"
@@ -61,7 +61,7 @@
         
         <!-- Launcher activity -->
         <activity
-            android:name=".LauncherActivity"
+            android:name=".service.LauncherActivity"
             android:label="@string/app_name"
             android:noHistory="true"
             android:excludeFromRecents="true"
@@ -88,7 +88,7 @@
 
         <!-- Slave mode service -->
         <service
-            android:name=".SlaveModeService"
+            android:name=".service.SlaveModeService"
             android:label="Slave mode service"
             android:exported="true">
             <intent-filter>
@@ -98,7 +98,7 @@
         
         <!-- Slave mode preferences -->
         <activity
-            android:name=".SlaveModePreferencesActivity"
+            android:name=".service.SlaveModePreferencesActivity"
             android:label="@string/eviacam_slave_mode_preferences_title"
             android:launchMode="singleTop"
             android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
@@ -110,7 +110,7 @@
        
         <!-- Gamepad preferences -->
         <activity
-            android:name=".GamepadPreferencesActivity"
+            android:name=".service.GamepadPreferencesActivity"
             android:label="@string/gamepad_preferences"
             android:exported="true"
             android:launchMode="singleTop"
@@ -127,7 +127,7 @@
         android:finishOnTaskLaunch="true" />
 
         <!-- TechInfo activity -->
-        <activity android:name=".TechInfoActivity"
+        <activity android:name=".service.TechInfoActivity"
                   android:exported="false" />
 
         <!--

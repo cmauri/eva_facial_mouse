@@ -20,6 +20,10 @@ package com.crea_si.eviacam.service;
 
 import org.opencv.core.Mat;
 
+import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.EViacamApplication;
+import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
 import com.crea_si.eviacam.api.IGamepadEventListener;

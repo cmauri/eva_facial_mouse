@@ -93,6 +93,7 @@ public class NumberPickerPreference extends DialogPreference {
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult) {
+            mPicker.clearFocus();
             setValue(mPicker.getValue());
         }
     }

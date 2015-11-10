@@ -551,12 +551,8 @@ public class SoftKeyboard extends InputMethodService
         // adjust coordinates relative to the edge of the keyboard
         x= x - coord[0];
         y= y - coord[1];
-        Keyboard.Key k= sInstance.mInputViewManager.getKeyBelow (x, y);
-        if (k != null) {
-            sInstance.onKey(k.codes[0], k.codes);
-        }
 
-        return true;
+        return sInstance.mInputViewManager.performClick(x, y);
     }
 
     @Override

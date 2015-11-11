@@ -25,6 +25,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.crea_si.eviacam.Analytics;
 import com.crea_si.eviacam.EVIACAM;
 
 /**
@@ -54,6 +55,8 @@ public class TheAccessibilityService extends AccessibilityService implements Com
             return;
         }
 
+        Analytics.get().trackStartService();
+
         mEngine= MainEngine.getInstance().getAccessibilityServiceModeEngine(this);
         mEngine.start();
         
@@ -67,6 +70,8 @@ public class TheAccessibilityService extends AccessibilityService implements Com
     private void cleanup() {
         // TODO: handle exceptions properly
         if (!mInitialized) return;
+
+        Analytics.get().trackStopService();
 
         if (mEngine!= null) {
             mEngine.cleanup();

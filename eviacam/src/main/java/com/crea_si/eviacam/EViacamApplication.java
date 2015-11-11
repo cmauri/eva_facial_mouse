@@ -26,6 +26,8 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Process;
 
+import com.google.android.gms.analytics.Tracker;
+
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
@@ -41,9 +43,12 @@ import org.acra.annotation.ReportsCrashes;
 
 public class EViacamApplication extends Application {
     private SharedPreferences mSharedPreferences;
+    private static Tracker sTracker;
     
     public void onCreate() {
         super.onCreate();
+
+        Analytics.init(this);
 
         // Raise priority to improve responsiveness
         Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);

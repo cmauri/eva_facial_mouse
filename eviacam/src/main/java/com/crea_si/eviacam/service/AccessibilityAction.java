@@ -167,7 +167,7 @@ class AccessibilityAction {
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
             break;
         case R.id.softkeyboard_button:
-            mInputMethodAction.openIME();
+            mInputMethodAction.toggleIME();
             break;
         case R.id.toggle_disable_click:
             if (!mDockPanelLayerView.getClickEnabled()) refreshScrollingButtons();

@@ -181,6 +181,21 @@ public class InputMethodAction implements ServiceConnection {
         }
     }
 
+    public void toggleIME() {
+        if (mRemoteService == null) {
+            EVIACAM.debug("InputMethodAction: toggleIME: no remote service available");
+            keepBindAlive();
+            return;
+        }
+        // Does not check mInputMethodManager.isActive because does not mean IME is open
+        try {
+            mRemoteService.toggleIME();
+        } catch (RemoteException e) {
+            // Nothing to be done
+            EVIACAM.debug("InputMethodAction: exception while trying to toggle IME");
+        }
+    }
+
     /**
      * Check if the custom keyboard is enabled and is the default one
      * @param c context

@@ -18,4 +18,9 @@ interface IClickableIME {
      * Closes the IME
      */
     void closeIME();
+
+    /**
+     * Open IME if closed, close otherwise
+     */
+     void toggleIME();
 }

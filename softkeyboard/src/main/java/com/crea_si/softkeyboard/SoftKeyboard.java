@@ -259,7 +259,7 @@ public class SoftKeyboard extends InputMethodService
          * When subtype changes we need to recreate the keyboard layouts and apply them
          * 
          */
-        mInputViewManager.selectSubtype (subtype);
+        mInputViewManager.selectSubtype(subtype);
         mInputViewManager.enableSelected(subtype);
     }
 
@@ -700,6 +700,16 @@ public class SoftKeyboard extends InputMethodService
         InputMethodManager imm=
                 (InputMethodManager) sInstance.getSystemService(INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromInputMethod(sInstance.mIdentifiyingToken, 0);
+    }
+
+    /**
+     * Toggle the IME
+     *
+     * Needs to be static because is called from an external service
+     */
+    public static void toggleIME() {
+        if (!sInstance.mReadyForInput) openIME();
+        else closeIME();
     }
 
     /**

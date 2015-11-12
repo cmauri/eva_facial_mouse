@@ -71,7 +71,7 @@ public class DockPanelLayerView extends RelativeLayout
     private boolean mClickEnabled= true;
 
     // status of the context menu
-    private boolean mContextMenuEnabled= false;
+    private boolean mContextMenuEnabled= true;
     
     public DockPanelLayerView(Context context) {
         super(context);

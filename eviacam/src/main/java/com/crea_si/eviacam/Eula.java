@@ -44,7 +44,7 @@ public class Eula {
         }
 
         // Show the Eula
-        String title = a.getString(R.string.app_name) + " v" + BuildConfig.VERSION_NAME;
+        String title = a.getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME;
         String message = a.getString(R.string.eula);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(a)

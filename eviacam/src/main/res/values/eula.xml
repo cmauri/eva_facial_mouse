@@ -1,52 +1,38 @@
 <resources>
     <!-- EULA TODO: translate -->
     <string name="eula">
-        TERMINOS Y CONDICIONES DE USO DE LA APLICACIÓN EVA FACIAL MOUSE\n
+      TERMS AND CONDITIONS FOR USING THE APPLICATION EVA FACIAL MOUSE\n
 \n
-Estos Términos y Condiciones regulan la descarga, acceso y utilización de la aplicación móvil “EVA FACIAL MOUSE” (en adelante, la “Aplicación”), que CREA Sistemas Informáticos (en adelante, “CREA”) y la Fundación Vodafone España (en adelante, “FVE” ”) ponen a disposición de los usuarios.\n
-Esta versión de la Aplicación está disponible de forma gratuita. \n
-El acceso a la Aplicación supone que el usuario reconoce  ha aceptado y consentido  sin reservas de las presentes condiciones de uso.\n
+These Terms and Conditions regulate the download, access and use of the mobile application "EVA FACIAL MOUSE" (hereinafter the "Application"), which CREA Sistemas Informaticos (hereinafter "CREA") and the Vodafone Spain Foundation (hereinafter "VSF") release to o users.\n
+This version of the application is available for free.\n
+Access to the application assumes that the user has accepted and agreed recognizes without reservation of these conditions.\n
 \n
-1. OBJETO\n
+1. Scope\n
+The application aims to help improve physical accessibility for people with some disabilities. The application provides an alternative method of access (hands-free) to those people who, for whatever reason, can not make a regular use of mobile devices.\n
+Some of the groups that can benefit from this project are people with amputations, cerebral palsy, spinal cord injury, muscular dystrophy, multiple sclerosis, amyotrophic lateral sclerosis (ALS) and other diseases or disabilities.\n
+The application is available to users for their personal use (never business)\n
+It runs on an Android 4.1 mobile phone or higher equipped with front camera.\n
 \n
-La Aplicación tiene el objetivo de contribuir a mejorar la accesibilidad física de las personas con dificultades de manipulación en el uso de dispositivos móviles y/o tabletas Android. La aplicación proporciona un método de acceso alternativo (sin usar las manos) a aquellos colectivos que, por cualquier motivo, no pueden hacer uso de los dispositivos móviles con las interacciones habituales, para que puedan beneficiarse de los mismos y utilizarlos en igualdad de condiciones.\n
+2. RIGHTS OF INTELLECTUAL PROPERTY.\n
+CREA and VSF offer software source code under the GPL or LGPL license or under any other open source license. Intellectual property rights are of CREA. VSF exercises exclusive use and the rights to exploit them in any form and in particular the rights of reproduction, distribution, public communication and transformation.\n
+The other owners of intellectual and industrial property photographs, logos, and any other symbols or content included in the application have been granted the corresponding authorizations for their reproduction, distribution and making available to the public.\n
 \n
-Algunos de los colectivos que pueden beneficiarse de este proyecto son las personas con amputaciones, parálisis cerebral, lesión medular, distrofia muscular, esclerosis múltiple, esclerosis lateral amiotrófica (ELA) y otras enfermedades o discapacidades. En el diseño y desarrollo de esta Aplicación han intervenido profesionales especialistas así como un grupo de usuarios que participaron en el periodo de prueba.\n
+3. PRIVACY POLICY.\n
+The application will use Google Analytics as a tool to make use of and trends in interaction with it. CREA and VSF may use the personal information you provide in dissociated form (without personal identification) for internal purposes, such as compiling statistics purposes. Application may collect, store or accumulate certain non-personal information regarding your use.\n
+Google Analytics for the general conditions of Google http://www.google.com/analytics/terms/ accessible and Google privacy policies are governed accessible https://www.google.com/intl/en/policies/privacy/. To proceed with the deactivation of Google Analytics: https://support.google.com/analytics/answer/1009696\n
 \n
-La Aplicación se pone a disposición de los usuarios para su uso personal (nunca empresarial)\n
-Funciona en un teléfono móvil Android 4.1 o superior y con cámara frontal. \n
+3. VARIOUS\n
+VSF and CREA reserve the right to edit, update, modify, suspend, remove, or terminate the services provided by the application, including all or part of its contents, without prior notice and to modify the form or type of access to the Application.\n
+Possible causes of change can take place, for reasons such as their adaptation to possible legislative changes and changes in the application itself, as well as those that can be derived from existing codes type in the matter or by strategic or corporative reasons .\n
 \n
-2. DERECHOS DE PROPIEDAD INTELECTUAL E INDUSTRIAL\n
+4. EXCLUSION OF LIABILITY.\n
+Neither CREA nor VSF responsible for the use of the application by a under-age person, being the download and use of the Application the sole responsibility of the user.\n
+The Application is provided "as is" without warranty of any kind. CREA and VSF not responsible for the final quality of the application and that it serves and meets all the objectives of it are made. Nevertheless, CREA and VSF agree on the extent of its ability to help improve the quality of the application, but can not guarantee the accuracy or timeliness of the content of it.\n
+Responsibility for use of the Application relates solely to the user. Except as provided in these Terms and Conditions, neither creates nor the VSF are responsible for any loss or damage arising in connection with the download or use of the Application, such as those produced as a result of errors, faults or blockages in the Operation of the application (for example, without limitation: error in the lines of communications, defects in the hardware or application software or failures in the Internet). Similarly, CREA and VSF not be liable for damage resulting from improper or inappropriate use of the application by the users.\n
 \n
-CREA y la FVE ofrecen el código fuente del software bajo la licencia de GPL o LGPL o bajo cualquier otra licencia del código abierto, si bienlos derechos de propiedad intelectual e industrial sobre la Aplicación son titularidad de CREA y de la  FVE correspondiendo a esta última el ejercicio exclusivo de los derechos de explotación de los mismos en cualquier forma y, en especial, los derechos de reproducción, distribución, comunicación pública y transformación. \n
+5. LEGISLATION AND JURISDICTION.\n
+You agree that the applicable law and the competent courts and tribunals to hear the differences arising from the interpretation or application of these clauses are Spanish, and submit, expressly waiving any other jurisdiction, the courts of Madrid.\n
 \n
-Los terceros titulares de derechos de propiedad intelectual e industrial sobre fotografías, logotipos, y cualesquiera otros símbolos o contenidos incluidos en la Aplicación han concedido las correspondientes autorizaciones para su reproducción, distribución y puesta a disposición del público.\n
-\n
-3. POLITICA DE PRIVACIDAD\n
-\n
-La Aplicación utilizará Google Analytics  como herramienta para conocer uso y las tendencias de interacción de la misma. CREA y la FVE podrán utilizar la información de carácter personal que nos facilite de forma disociada (sin identificación personal) para fines internos, tales como la elaboración de estadísticas. La Aplicación podrá recabar, almacenar o acumular determinada información de carácter no personal referente a su uso.\n
-\n
-Google Analytics se rige por las condiciones generales de Google accesibles en http://www.google.com/analytics/terms/es.html  y las políticas de privacidad en Google accesibles  en https://www.google.es/intl/es/policies/privacy/. Para proceder a la desactivación de Google Analytics: https://support.google.com/analytics/answer/1009696?hl=es\n
-\n
-4. VARIOS\n
-\n
-CREA y la FVE se reservan el derecho de editar, actualizar, modificar, suspender, eliminar o finalizar los servicios ofrecidos por la Aplicación, incluyendo todo o parte de su contenido, sin necesidad de previo aviso, así como de modificar la forma o tipo de acceso a esta \n
-\n
-Las posibles causas de modificación pueden tener lugar, por motivos tales, como su adaptación a las posibles novedades legislativas y cambios en la propia Aplicación, así como a las que se puedan derivar de los códigos tipos existentes en la materia o por motivos estratégicos o corporativos.\n
-\n
-5. EXCLUSIÓN DE RESPONSABILIDAD\n
-\n
-Ni CREA ni la FVE serán responsables del uso de la Aplicación por un menor de edad, siendo la  descarga y uso de la Aplicación la exclusiva responsabilidad del usuario.\n
-\n
-La Aplicación se presta “tal y como es” y sin ninguna clase de garantía. CREA y la FVE no se hacen responsables de la calidad final de la Aplicación ni de que ésta sirva y cumpla con todos los objetivos de la misma. No obstante lo anterior, CREA y la FVE se comprometen en la medida de sus posibilidades a contribuir a mejorar la calidad de la Aplicación, pero no puede garantizar la precisión ni la actualidad del contenido de la misma.\n
-\n
-La responsabilidad de uso de la Aplicación corresponde solo al usuario. Salvo lo establecido en estos Términos y Condiciones, ni CREA ni la FVE son responsables de ninguna pérdida o daño que se produzca en relación con la descarga o el uso de la Aplicación, tales como los producidos como consecuencia de fallos, averías o bloqueos en el funcionamiento de la Aplicación (por ejemplo, y sin carácter limitativo: error en las líneas de comunicaciones, defectos en el hardware o software de la Aplicación o fallos en la red de Internet). Igualmente, CREA y la FVE tampoco serán responsables de los daños producidos como consecuencia de un uso indebido o inadecuado de la Aplicación por parte de los usuarios. \n
-\n
-5. LEGISLACIÓN Y FUERO\n
-\n
-El usuario acepta que la legislación aplicable y los Juzgados y Tribunales competentes para conocer de las divergencias derivadas de la interpretación o aplicación de este clausulado son los españoles, y se somete, con renuncia expresa a cualquier otro fuero, a los juzgados y tribunales de la ciudad de Madrid.\n
-\n
-He leído y acepto las condiciones de uso de la aplicación EVA FACIAL MOUSE.\n
-
+I have read and accept the terms of use of the EVA Facial Mouse.\n
     </string>
 </resources>

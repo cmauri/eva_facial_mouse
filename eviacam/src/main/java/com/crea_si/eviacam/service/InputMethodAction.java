@@ -141,8 +141,8 @@ public class InputMethodAction implements ServiceConnection {
             return false;
         }
     }
-    
-    public void openIME() {
+
+    private boolean IMEPrereq () {
         if (!isEnabledCustomKeyboard(mContext)) {
             mHandler.post(new Runnable() {
                 @Override
@@ -150,13 +150,22 @@ public class InputMethodAction implements ServiceConnection {
                     EVIACAM.Toast(mContext, R.string.keyboard_not_enabled_toast);
                 }
             });
+
+            return false;
         }
 
         if (mRemoteService == null) {
-            EVIACAM.debug("InputMethodAction: openIME: no remote service available");
+            EVIACAM.debug("InputMethodAction: IMEPrereq: no remote service available");
             keepBindAlive();
-            return;
+            return false;
         }
+
+        return true;
+    }
+
+    public void openIME() {
+        if (!IMEPrereq()) return;
+
         //if (mInputMethodManager.isActive()) return; // already open
         try {
             mRemoteService.openIME();
@@ -172,6 +181,7 @@ public class InputMethodAction implements ServiceConnection {
             keepBindAlive();
             return;
         }
+
         // Does not check mInputMethodManager.isActive because does not mean IME is open
         try {
             mRemoteService.closeIME();
@@ -182,11 +192,8 @@ public class InputMethodAction implements ServiceConnection {
     }
 
     public void toggleIME() {
-        if (mRemoteService == null) {
-            EVIACAM.debug("InputMethodAction: toggleIME: no remote service available");
-            keepBindAlive();
-            return;
-        }
+        if (!IMEPrereq()) return;
+
         // Does not check mInputMethodManager.isActive because does not mean IME is open
         try {
             mRemoteService.toggleIME();

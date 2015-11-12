@@ -182,7 +182,7 @@
     <string name="toggle_context_menu_button">Conmutar el menú contextual del puntero</string>
 
     <!-- Toasts -->
-    <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Use EVA Asistente para activarlo.</string>
+    <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>
     <string name="pointer_stopped_toast">EVA se ha detenido %1$s sin detectar el rostro. Para volverlo a activar asegurese de que su rostro aparece dentro del visor de cámara.</string>
     <string name="configure">Configurar</string>
     <string name="version">Versión</string>

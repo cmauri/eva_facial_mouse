@@ -1,3 +1,18 @@
+v1.0
+- Some improvements after usability tests
+	- Show message when opening web browser
+	- Context menu buttons resize according to user settings
+	- Set context menu enabled by default
+	- Keyboard button toggles softkeyboard state
+	- Improve message when face not detected
+	- Provide visual feedback when clicking the softkeyboard
+	- Update some icons
+- Add analytics support
+- Add Lollipop themes
+- Fix bug: NumberPickerPreference value not updated using the softkeyboard
+- Add EULA
+- Rename EVA Mobile => (EVA Facial Mouse, EVA)
+
 v0.98
 - Add configuration wizard
 - Build as a single .apk

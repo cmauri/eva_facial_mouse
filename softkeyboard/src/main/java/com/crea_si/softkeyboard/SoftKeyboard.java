@@ -259,7 +259,7 @@ public class SoftKeyboard extends InputMethodService
          * When subtype changes we need to recreate the keyboard layouts and apply them
          * 
          */
-        mInputViewManager.selectSubtype (subtype);
+        mInputViewManager.selectSubtype(subtype);
         mInputViewManager.enableSelected(subtype);
     }
 
@@ -551,12 +551,8 @@ public class SoftKeyboard extends InputMethodService
         // adjust coordinates relative to the edge of the keyboard
         x= x - coord[0];
         y= y - coord[1];
-        Keyboard.Key k= sInstance.mInputViewManager.getKeyBelow (x, y);
-        if (k != null) {
-            sInstance.onKey(k.codes[0], k.codes);
-        }
 
-        return true;
+        return sInstance.mInputViewManager.performClick(x, y);
     }
 
     @Override
@@ -704,6 +700,16 @@ public class SoftKeyboard extends InputMethodService
         InputMethodManager imm=
                 (InputMethodManager) sInstance.getSystemService(INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromInputMethod(sInstance.mIdentifiyingToken, 0);
+    }
+
+    /**
+     * Toggle the IME
+     *
+     * Needs to be static because is called from an external service
+     */
+    public static void toggleIME() {
+        if (!sInstance.mReadyForInput) openIME();
+        else closeIME();
     }
 
     /**

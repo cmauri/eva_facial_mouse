@@ -20,7 +20,10 @@ import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.Keyboard.Key;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.text.InputType;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -46,6 +49,8 @@ public class InputViewManager {
 
     final private InputMethodService mIMEService;
     final private InputMethodManager mInputMethodManager;
+
+    private final Handler mHandler= new Handler();
 
     private LatinKeyboardView mInputView;
 
@@ -272,6 +277,42 @@ public class InputViewManager {
 
         return null;
     }
+
+    /**
+     * Perform a click on the keyboard
+     * @param x - abscissa coordinate relative to the view of the keyboard
+     * @param y - ordinate coordinate relative to the view of the keyboard
+     * @return - true if click performed
+     */
+    public boolean performClick (int x, int y) {
+        // has clicked inside the keyboard?
+        if (mInputView == null) return false;
+
+        long time= SystemClock.uptimeMillis();
+        MotionEvent down= MotionEvent.obtain(time, time, MotionEvent.ACTION_DOWN, x, y, 0);
+
+        // dispatch down event
+        mInputView.dispatchTouchEvent(down);
+
+        // program up event after some ms
+        mDelayedX= x;
+        mDelayedY= y;
+        mHandler.postDelayed(mDelayedEvent, 150);
+
+        return true;
+    }
+
+    /* Runnable and parameters to send the UP event */
+    private int mDelayedX, mDelayedY;
+    private Runnable mDelayedEvent= new Runnable() {
+        @Override
+        public void run() {
+            long time= SystemClock.uptimeMillis();
+            MotionEvent up=
+                    MotionEvent.obtain(time, time, MotionEvent.ACTION_UP, mDelayedX, mDelayedY, 0);
+            if (mInputView!= null) mInputView.dispatchTouchEvent(up);
+        }
+    };
     
     /*
      * Return whether the qwerty layout is shifted

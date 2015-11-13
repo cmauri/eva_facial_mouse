@@ -22,7 +22,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Title for Latin keyboard  -->
-    <string name="ime_name">Teclado EVA Mobile</string>
+    <string name="ime_name">Teclado EVA</string>
 
     <!-- Symbols that are commonly considered word separators in this language -->
     <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
@@ -32,12 +32,19 @@
     <string name="label_next_key">Siguiente</string>
     <string name="label_send_key">Enviar</string>
 
+    <!-- Labels for navigation keyboard -->
+    <string name="del">Supr</string>
+    <string name="home">Inici</string>
+    <string name="pgup">RePág</string>
+    <string name="end">Fin</string>
+    <string name="pgdown">AvPág</string>
+
     <!-- Labels for subtype -->
     <string name="label_subtype_generic">%s</string>
     <string name="label_subtype_en_GB">English (GB)</string>
 
     <!-- Titles for ImePreference -->
-    <string name="settings_name">Configuración del teclado EVA Mobile</string>
+    <string name="settings_name">Configuración del teclado EVA</string>
     <string name="language_selection_title">Idiomas de entrada</string>
     <string name="select_language">Seleccionar idiomas de entrada</string>
     <string name="general_category">General</string>

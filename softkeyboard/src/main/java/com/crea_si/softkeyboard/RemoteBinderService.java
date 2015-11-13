@@ -71,6 +71,18 @@ public class RemoteBinderService extends Service {
             };
             mMainThreadHandler.post(r);
         }
+
+        @Override
+        public void toggleIME() throws RemoteException {
+            Runnable r= new Runnable() {
+                @Override
+                public void run() {
+                    EVIACAMSOFTKBD.debug("RemoteBinderService: closeIME");
+                    SoftKeyboard.toggleIME();
+                }
+            };
+            mMainThreadHandler.post(r);
+        }
     };
 
     /** Calls click on the main thread and waits for the result */

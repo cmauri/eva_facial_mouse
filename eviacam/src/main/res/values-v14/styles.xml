@@ -1,0 +1,11 @@
+<resources>
+
+    <!--
+        Base application theme for API 14+.
+    -->
+    <style name="AppBaseTheme" parent="@android:style/Theme.DeviceDefault">
+        <!-- API 14 theme customizations can go here. -->
+    </style>
+
+    <style name="Theme.Dialog" parent="@android:style/Theme.DeviceDefault.Dialog" />
+</resources>

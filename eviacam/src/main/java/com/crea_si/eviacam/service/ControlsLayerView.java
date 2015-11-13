@@ -16,8 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -26,7 +25,7 @@ import android.widget.RelativeLayout;
 
 public class ControlsLayerView extends RelativeLayout {
     // view of the pointer context menu 
-    ContextMenuView mContextMenuView;
+    private ContextMenuView mContextMenuView;
         
     public ControlsLayerView(Context context) {
         super(context);
@@ -39,6 +38,11 @@ public class ControlsLayerView extends RelativeLayout {
         mContextMenuView.setLayoutParams(lp);
         mContextMenuView.setVisibility(View.GONE);
         addView(mContextMenuView);
+    }
+
+    public void cleanup() {
+        mContextMenuView.cleanup();
+        mContextMenuView= null;
     }
     
     public void showContextMenu(final Point p, final int actions) {
@@ -72,14 +76,14 @@ public class ControlsLayerView extends RelativeLayout {
                         mContextMenuView.getLayoutParams();
                 
                 // get actions menu expected width
-                int expectedWidth= mContextMenuView.getMeasuredWidth();
+                int expectedWidth= mContextMenuView.getMeasuredWidthScaled();
                 
                 // fits at the left of the pointer?
                 if (p.x - expectedWidth> 0) lp.leftMargin= p.x - expectedWidth;
                 else lp.leftMargin= p.x;
                 
                 // get actions menu expected height
-                int expectedHeight= mContextMenuView.getMeasuredHeight();
+                int expectedHeight= mContextMenuView.getMeasuredHeightScaled();
                 
                 // fits below the pointer?
                 if (p.y + expectedHeight< getHeight()) lp.topMargin= p.y;
@@ -99,8 +103,6 @@ public class ControlsLayerView extends RelativeLayout {
      * test if one button has been clicked
      */
     public int testClick (Point p)  {
-        if (!ViewUtils.isPointInsideView(p, mContextMenuView)) return 0;
-
         return mContextMenuView.testClick(p);
     }
     

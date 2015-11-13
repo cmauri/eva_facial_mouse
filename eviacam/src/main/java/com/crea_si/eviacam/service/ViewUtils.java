@@ -30,9 +30,10 @@ class ViewUtils {
      * Determines if given point is inside view
      * @param p - coordinates of point 
      * @param view - view object to compare
+     * @param scale - scale factor in X and Y, assumes pivot is in (0, 0)
      * @return true if the point is within view bounds, false otherwise
      */
-    public static boolean isPointInsideView(Point p, View view) {
+    public static boolean isPointInsideView(Point p, View view, float scale) {
         if (view == null) return false;
         
         int[] location= new int[2];
@@ -41,12 +42,21 @@ class ViewUtils {
         
         if (p.x< location[0] || p.y< location[1]) return false;
 
-        if (location[0] + view.getWidth() < p.x || 
-            location[1] + view.getHeight() < p.y) return false;
+        if (location[0] + view.getWidth() * scale < p.x ||
+            location[1] + view.getHeight() * scale < p.y) return false;
    
         return true;
     }
 
+    /**
+     * Determines if given point is inside view
+     * @param p - coordinates of point
+     * @param view - view object to compare
+     * @return true if the point is within view bounds, false otherwise
+     */
+    public static boolean isPointInsideView(Point p, View view) {
+        return isPointInsideView(p, view, 1.0f);
+    }
     
     /**
      * Given a view, finds recursively a view with the point inside and which have ID

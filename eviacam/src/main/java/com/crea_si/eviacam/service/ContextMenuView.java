@@ -16,19 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-class ContextMenuView extends LinearLayout {
+import com.crea_si.eviacam.Preferences;
+
+class ContextMenuView extends LinearLayout
+        implements SharedPreferences.OnSharedPreferenceChangeListener {
     
     private class ActionButton {
         final int action;
@@ -43,11 +46,47 @@ class ContextMenuView extends LinearLayout {
     private int mActionsMask= 0;
     
     // references to actions and buttons pairs
-    List<ActionButton> mActionButtons= new ArrayList<ActionButton>();
+    private List<ActionButton> mActionButtons= new ArrayList<ActionButton>();
+
+    // Buttons scale factor
+    private float mScale = 1.0f;
     
     public ContextMenuView(Context c) {
         super(c);
         setOrientation(LinearLayout.VERTICAL);
+
+        // shared preferences
+        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateSettings(sp);
+    }
+
+    public void cleanup() {
+        SharedPreferences sp= Preferences.getSharedPreferences(getContext());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    private void updateSettings(SharedPreferences sp) {
+        // get values from shared resources
+        mScale = Preferences.getUIElementsSize(sp);
+
+        /*
+         * scale view according to size selected by the user
+         */
+        setScaleX(mScale);
+        setScaleY(mScale);
+        setPivotX(0.0f);
+        setPivotY(0.0f);
+
+        requestLayout();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                                          String key) {
+        if (key.equals(Preferences.KEY_UI_ELEMENTS_SIZE)) {
+            updateSettings(sharedPreferences);
+        }
     }
     
     /*
@@ -55,12 +94,12 @@ class ContextMenuView extends LinearLayout {
      * collection for further reference 
      */
     public void populateAction (int action, int labelId) {
-        Button b= new Button (getContext());
+        Button b= new Button(getContext());
         b.setText(getResources().getString(labelId));
         b.setVisibility(View.GONE);
-        
+
         addView(b);
-        
+
         mActionButtons.add(new ActionButton(action, b));
     }
     
@@ -78,18 +117,28 @@ class ContextMenuView extends LinearLayout {
 
         // measure how much space will need
         measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        
+
         mActionsMask= actions;
     }
 
     public int testClick (Point p)  {
+        if (!ViewUtils.isPointInsideView(p, this, mScale)) return 0;
+
         for (ActionButton ab : mActionButtons) {
             if (ab.button.getVisibility() == View.VISIBLE &&
-                ViewUtils.isPointInsideView(p, ab.button)) {
+                ViewUtils.isPointInsideView(p, ab.button, mScale)) {
                 return ab.action;
             }
         }
        
         return 0;
+    }
+
+    public int getMeasuredWidthScaled() {
+        return (int) (getMeasuredWidth() * mScale);
+    }
+
+    public int getMeasuredHeightScaled() {
+        return (int) (getMeasuredHeight() * mScale);
     }
 }

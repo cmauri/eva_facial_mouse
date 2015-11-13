@@ -122,12 +122,15 @@ public class MouseEmulationEngine implements MotionProcessor {
         mPointerControl.cleanup();
         mPointerControl= null;
 
-        // nothing to be done for mScrollLayerView and mControlsLayer
+        // nothing to be done for mScrollLayerView
 
         if (mDockPanelView!= null) {
             mDockPanelView.cleanup();
             mDockPanelView= null;
         }
+
+        mControlsLayer.cleanup();
+        mControlsLayer= null;
 
         mPointerLayer.cleanup();
         mPointerLayer= null;

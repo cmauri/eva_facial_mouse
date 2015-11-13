@@ -24,6 +24,7 @@ import java.util.List;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
@@ -76,7 +77,7 @@ class AccessibilityAction {
     };
 
     private final AccessibilityService mAccessibilityService;
-    
+
     // layer view for context menu
     private final ControlsLayerView mControlsLayerView;
     
@@ -109,7 +110,10 @@ class AccessibilityAction {
 
     // the current node tree contains a web view?
     private boolean mContainsWebView = false;
-    
+
+    // navigation keyboard advice shown?
+    private boolean mNavigationKeyboardAdviceShown= false;
+
     public AccessibilityAction (AccessibilityService as, ControlsLayerView cv, 
                                 DockPanelLayerView dplv, ScrollLayerView slv) {
         mAccessibilityService= as;
@@ -135,6 +139,10 @@ class AccessibilityAction {
             asi.flags|= AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
             mAccessibilityService.setServiceInfo(asi);
         }
+    }
+
+    private Context getContext() {
+        return mControlsLayerView.getContext();
     }
     
     public void cleanup () {
@@ -417,6 +425,10 @@ class AccessibilityAction {
                         AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
                                 AccessibilityNodeInfo.ACTION_SCROLL_FORWARD,
                         "android.webkit.WebView");
+                if (mContainsWebView && !mNavigationKeyboardAdviceShown) {
+                    EVIACAM.Toast(getContext(), R.string.navigation_kbd_advice);
+                    mNavigationKeyboardAdviceShown= true;
+                }
                 for (AccessibilityNodeInfo n : scrollableNodes) {
                     mScrollLayerView.addScrollArea(n);
                 }

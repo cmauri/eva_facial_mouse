@@ -65,6 +65,7 @@
     <string name="large">Grande</string>
     <string name="normal">Normal</string>
     <string name="small">Pequeño</string>
+    <string name="version">Versión</string>
 
     <!-- Actions available through the accessibility API -->
     <string name="click">Clic</string>
@@ -144,6 +145,7 @@
     <string name="install">Instalar</string>
     <string name="keyboard">Teclado</string>
     <string name="keyboard_remarks">La mayoría de teclados estándar no funcionan con EVA. Se proporciona un teclado básico que se debe activar manualmente.</string>
+    <string name="configure">Configurar</string>
     <string name="keyboard_setup">Configuración del teclado</string>
     <string name="known_limitations">Limitaciones conocidas</string>
     <string name="limitation1">- No funciona con la mayoría de juegos</string>
@@ -184,6 +186,6 @@
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>
     <string name="pointer_stopped_toast">EVA se ha detenido %1$s sin detectar el rostro. Para volverlo a activar asegurese de que su rostro aparece dentro del visor de cámara.</string>
-    <string name="configure">Configurar</string>
-    <string name="version">Versión</string>
+    <string name="navigation_kbd_advice">Use el Teclado de Navegación para desplazar los contenidos del navegador web.</string>
+
 </resources>

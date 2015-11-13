@@ -203,4 +203,6 @@
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. Run EVA Wizard to set it up.</string>
     <string name="pointer_stopped_toast">EVA stopped %1$s without detecting a face. To enable it again make sure your face is centered inside the camera viewer.</string>
+    <string name="navigation_kbd_advice">Use the Navigation Keyboard to scroll the browser contents.</string>
+
 </resources>

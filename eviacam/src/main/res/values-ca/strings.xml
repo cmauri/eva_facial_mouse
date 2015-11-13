@@ -65,6 +65,7 @@
     <string name="large">Gran</string>
     <string name="normal">Normal</string>
     <string name="small">Petit</string>
+    <string name="version">Versió</string>
 
     <!-- Actions available through the accessibility API -->
     <string name="click">Clic</string>
@@ -144,6 +145,7 @@
     <string name="install">Instal·lar</string>
     <string name="keyboard">Teclat</string>
     <string name="keyboard_remarks">La majoria de teclats estàndard no funcionen amb EVA. Es proporciona un teclat bàsic que cal activar manualment.</string>
+    <string name="configure">Configurar</string>
     <string name="keyboard_setup">Configuració del teclat</string>
     <string name="known_limitations">Limitacions conegudes</string>
     <string name="limitation1">- No funciona amb la majoria de jocs</string>
@@ -184,6 +186,6 @@
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Executi l\'EVA Assistent per activar-lo.</string>
     <string name="pointer_stopped_toast">EVA s\'ha aturat %1$s sense detectar el rostre. Per tornar-lo a activar asseguri\'s que el seu rostre apareix dins el visor de càmera.</string>
-    <string name="configure">Configurar</string>
-    <string name="version">Versió</string>
+    <string name="navigation_kbd_advice">Utilitzi el Teclat de Navegació per desplaçar els continguts del navegador web.</string>
+
 </resources>

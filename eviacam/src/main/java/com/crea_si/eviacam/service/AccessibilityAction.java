@@ -151,13 +151,20 @@ class AccessibilityAction {
 
     /** Manages global actions, return false if action not generated */
     private boolean manageGlobalActions (Point p) {
+        /*
+         * Is the action for the dock panel?
+         */
         int idDockPanelAction= mDockPanelLayerView.getViewIdBelowPoint(p);
         if (idDockPanelAction == View.NO_ID) return false;
-        
+
+        /*  Process action by the view */
         mDockPanelLayerView.performClick(idDockPanelAction);
-        
-        AccessibilityService s= mAccessibilityService;
-        
+
+        /*
+         * Process action here
+         */
+        final AccessibilityService s= mAccessibilityService;
+
         switch (idDockPanelAction) {
         case R.id.back_button:
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
@@ -177,8 +184,22 @@ class AccessibilityAction {
         case R.id.softkeyboard_button:
             mInputMethodAction.toggleIME();
             break;
+        case R.id.toggle_context_menu:
+            if (mDockPanelLayerView.getContextMenuEnabled()) {
+                EVIACAM.ShortToast(getContext(), R.string.context_menu_enabled);
+            }
+            else {
+                EVIACAM.ShortToast(getContext(), R.string.context_menu_disabled);
+            }
+            break;
         case R.id.toggle_disable_click:
-            if (!mDockPanelLayerView.getClickEnabled()) refreshScrollingButtons();
+            if (mDockPanelLayerView.getClickEnabled()) {
+                EVIACAM.ShortToast(getContext(), R.string.rest_mode_disabled);
+            }
+            else {
+                EVIACAM.ShortToast(getContext(), R.string.rest_mode_enabled);
+                refreshScrollingButtons();
+            }
             break;
         }
         

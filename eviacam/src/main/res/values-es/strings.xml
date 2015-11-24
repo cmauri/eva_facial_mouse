@@ -187,5 +187,8 @@
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>
     <string name="pointer_stopped_toast">EVA se ha detenido %1$s sin detectar el rostro. Para volverlo a activar asegurese de que su rostro aparece dentro del visor de cámara.</string>
     <string name="navigation_kbd_advice">Use el Teclado de Navegación para desplazar los contenidos del navegador web.</string>
-
+    <string name="context_menu_enabled">Menú contextual activado</string>
+    <string name="context_menu_disabled">Menú contextual desactivado</string>
+    <string name="rest_mode_enabled">Modo reposo activado</string>
+    <string name="rest_mode_disabled">Modo reposo desactivado</string>
 </resources>

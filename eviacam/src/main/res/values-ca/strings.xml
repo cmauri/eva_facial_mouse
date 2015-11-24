@@ -187,5 +187,8 @@
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Executi l\'EVA Assistent per activar-lo.</string>
     <string name="pointer_stopped_toast">EVA s\'ha aturat %1$s sense detectar el rostre. Per tornar-lo a activar asseguri\'s que el seu rostre apareix dins el visor de càmera.</string>
     <string name="navigation_kbd_advice">Utilitzi el Teclat de Navegació per desplaçar els continguts del navegador web.</string>
-
+    <string name="context_menu_enabled">Menú contextual activat</string>
+    <string name="context_menu_disabled">Menú contextual desactivat</string>
+    <string name="rest_mode_enabled">Mode repòs activat</string>
+    <string name="rest_mode_disabled">Mode repòs desactivat</string>
 </resources>

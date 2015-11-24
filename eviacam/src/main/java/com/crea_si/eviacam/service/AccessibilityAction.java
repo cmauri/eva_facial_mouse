@@ -405,7 +405,7 @@ class AccessibilityAction {
                 else {
                     /* Pick the default action */
                     for (ActionLabel al : mActionLabels) {
-                        if ((al.action | availableActions)!= 0) {
+                        if ((al.action & availableActions)!= 0) {
                             performActionOnNode(node, al.action);
                             break;
                         }

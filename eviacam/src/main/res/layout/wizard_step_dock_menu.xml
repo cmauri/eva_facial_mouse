@@ -190,7 +190,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/toggle_context_menu_button"
+            android:text="@string/toggle_context_menu"
             android:id="@+id/textView7"
             />
 
@@ -206,7 +206,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:id="@+id/imageView6"
-            android:src="@drawable/ic_click_button_enabled"/>
+            android:src="@drawable/ic_rest_mode_disabled"/>
 
         <Space
             android:layout_width="20px"
@@ -216,7 +216,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/toggle_click"
+            android:text="@string/toggle_rest_mode"
             android:id="@+id/textView6"
             />
 

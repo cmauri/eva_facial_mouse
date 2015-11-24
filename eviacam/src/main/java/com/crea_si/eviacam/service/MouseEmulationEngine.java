@@ -238,7 +238,7 @@ public class MouseEmulationEngine implements MotionProcessor {
         // update pointer position and click progress
         mPointerLayer.updatePosition(pointerLocation);
         if (mAccessibilityAction!= null) {
-            mPointerLayer.setClickDisabledAppearance(mAccessibilityAction.getClickDisabled());
+            mPointerLayer.setRestModeAppearance(mAccessibilityAction.getRestModeEnabled());
         }
         mPointerLayer.updateClickProgress(mDwellClick.getClickProgressPercent());
         mPointerLayer.postInvalidate();

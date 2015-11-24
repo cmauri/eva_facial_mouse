@@ -154,11 +154,11 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
     }
     
     /**
-     * Enable or disable faded appearance of the pointer 
+     * Enable or disable faded appearance of the pointer for the rest mode
      * 
      * @param value true for faded appearance
      */
-    public void setClickDisabledAppearance (boolean value) {
+    public void setRestModeAppearance(boolean value) {
         mAlphaPointer= (value? DISABLED_ALPHA : DEFAULT_ALPHA);
     }
 }

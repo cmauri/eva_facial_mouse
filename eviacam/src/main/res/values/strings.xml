@@ -96,8 +96,8 @@
     <string name="dock_panel_button">Expand/collapse dock menu</string>
     <string name="softkeyboard_button">Open keyboard</string>
     <string name="scroll_refresh_button">Refresh scrolling buttons</string>
-    <string name="toggle_context_menu_button">Toggle pointer context menu</string>
-    <string name="disable_click_button">Disable click</string>
+    <string name="toggle_context_menu">Toggle pointer context menu</string>
+    <string name="toggle_rest_mode">Toggle rest mode</string>
 
     <!-- Messages for the notification -->
     <string name="running_click_to_pause">Running (click to pause)</string>
@@ -172,7 +172,6 @@
     <string name="recents">Recents</string>
     <string name="open_notifications">Open notifications</string>
     <string name="open_keyboard">Open keyboard</string>
-    <string name="toggle_click">Toggle click generation</string>
     <string name="scroll_buttons">Scroll buttons</string>
     <string name="scroll_buttons_description">Allow you to scroll the content of some windows and
         views by clicking them.</string>
@@ -204,5 +203,8 @@
     <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. Run EVA Wizard to set it up.</string>
     <string name="pointer_stopped_toast">EVA stopped %1$s without detecting a face. To enable it again make sure your face is centered inside the camera viewer.</string>
     <string name="navigation_kbd_advice">Use the Navigation Keyboard to scroll the browser contents.</string>
-
+    <string name="context_menu_enabled">Context menu enabled</string>
+    <string name="context_menu_disabled">Context menu disabled</string>
+    <string name="rest_mode_enabled">Rest mode enabled</string>
+    <string name="rest_mode_disabled">Rest mode disabled</string>
 </resources>

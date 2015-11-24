@@ -82,7 +82,7 @@ public class TechInfoActivity extends Activity {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("message/rfc822");
                 CharSequence[] recipients= new String[1];
-                recipients[0]= "cesar@crea-si.com";
+                recipients[0]= "eva.facial.mouse@gmail.com";
                 i.putExtra(Intent.EXTRA_EMAIL  , recipients);
                 i.putExtra(Intent.EXTRA_SUBJECT, String.format("%1$s: device details",
                                                  getResources().getText(R.string.app_name)));

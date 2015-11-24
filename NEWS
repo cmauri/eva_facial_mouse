@@ -1,3 +1,8 @@
+v1.1
+- Add message when pressing some buttons of the dock menu (usability)
+- Fix bug: default action not selected properly
+- Update terms and conditions
+
 v1.0
 - Some improvements after usability tests
 	- Show message when opening web browser

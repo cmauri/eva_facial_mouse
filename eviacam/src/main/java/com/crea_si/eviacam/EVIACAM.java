@@ -20,6 +20,8 @@
 package com.crea_si.eviacam;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -40,6 +42,8 @@ public class EVIACAM {
     private static final boolean DEBUG_MESSAGES = DEBUG;
     
     private static HeartBeat sHeartBeat;
+
+    public static final Handler sHandler= new Handler();
     
     public static void debugInit(Context c) {
         if (!ATTACH_DEBUGGER) return;
@@ -60,15 +64,41 @@ public class EVIACAM {
         Log.d(TAG, message);
     }
 
-    public static void Toast (Context c, CharSequence t) {
-        Toast toast = Toast.makeText(c, t, Toast.LENGTH_LONG);
+    private static void doToast (Context c, CharSequence t, int duration) {
+        final Toast toast = Toast.makeText(c, t, duration);
         ViewGroup group = (ViewGroup) toast.getView();
         TextView messageTextView = (TextView) group.getChildAt(0);
         messageTextView.setTextSize(25);
         toast.show();
     }
 
-    public static void Toast (Context c, int id) {
-        Toast (c, c.getResources().getString(id));
+    public static void Toast (final Context c, final CharSequence t, final int duration) {
+        if (Looper.myLooper()== Looper.getMainLooper()) {
+            doToast(c, t, duration);
+        }
+        else {
+            sHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    doToast(c, t, duration);
+                }
+            });
+        }
+    }
+
+    public static void LongToast (Context c, CharSequence t) {
+        Toast(c, t, Toast.LENGTH_LONG);
+    }
+
+    public static void LongToast (Context c, int id) {
+        LongToast(c, c.getResources().getString(id));
+    }
+
+    public static void ShortToast (Context c, CharSequence t) {
+        Toast(c, t, Toast.LENGTH_SHORT);
+    }
+
+    public static void ShortToast (Context c, int id) {
+        ShortToast(c, c.getResources().getString(id));
     }
 }

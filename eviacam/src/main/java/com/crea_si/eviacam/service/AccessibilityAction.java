@@ -151,13 +151,20 @@ class AccessibilityAction {
 
     /** Manages global actions, return false if action not generated */
     private boolean manageGlobalActions (Point p) {
+        /*
+         * Is the action for the dock panel?
+         */
         int idDockPanelAction= mDockPanelLayerView.getViewIdBelowPoint(p);
         if (idDockPanelAction == View.NO_ID) return false;
-        
+
+        /*  Process action by the view */
         mDockPanelLayerView.performClick(idDockPanelAction);
-        
-        AccessibilityService s= mAccessibilityService;
-        
+
+        /*
+         * Process action here
+         */
+        final AccessibilityService s= mAccessibilityService;
+
         switch (idDockPanelAction) {
         case R.id.back_button:
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
@@ -177,8 +184,22 @@ class AccessibilityAction {
         case R.id.softkeyboard_button:
             mInputMethodAction.toggleIME();
             break;
-        case R.id.toggle_disable_click:
-            if (!mDockPanelLayerView.getClickEnabled()) refreshScrollingButtons();
+        case R.id.toggle_context_menu:
+            if (mDockPanelLayerView.getContextMenuEnabled()) {
+                EVIACAM.ShortToast(getContext(), R.string.context_menu_enabled);
+            }
+            else {
+                EVIACAM.ShortToast(getContext(), R.string.context_menu_disabled);
+            }
+            break;
+        case R.id.toggle_rest_mode:
+            if (mDockPanelLayerView.getRestModeEnabled()) {
+                EVIACAM.ShortToast(getContext(), R.string.rest_mode_enabled);
+                refreshScrollingButtons();
+            }
+            else {
+                EVIACAM.ShortToast(getContext(), R.string.rest_mode_disabled);
+            }
             break;
         }
         
@@ -254,14 +275,14 @@ class AccessibilityAction {
      * @return true if the element below is actionable
      * 
      * Remarks: it is used to implement a button to disable/enable
-     * clicking function. It does not check if the node below the pointer
-     * is actually actionable.
+     * rest mode (clicking function disabled). It does not check
+     * if the node below the pointer is actually actionable.
      */
     public boolean isActionable (Point p) {
-        if (mDockPanelLayerView.getClickEnabled()) return true;
+        if (!mDockPanelLayerView.getRestModeEnabled()) return true;
 
-        // Click disabled mode, only specific button in the dock panel works
-        return (mDockPanelLayerView.getViewIdBelowPoint(p) == R.id.toggle_disable_click);
+        // Rest mode, only specific button in the dock panel works
+        return (mDockPanelLayerView.getViewIdBelowPoint(p) == R.id.toggle_rest_mode);
     }
     
     /**
@@ -269,8 +290,8 @@ class AccessibilityAction {
      * 
      * @return true if disabled
      */
-    public boolean getClickDisabled() {
-        return !mDockPanelLayerView.getClickEnabled();
+    public boolean getRestModeEnabled() {
+        return mDockPanelLayerView.getRestModeEnabled();
     }
 
     /**
@@ -384,7 +405,7 @@ class AccessibilityAction {
                 else {
                     /* Pick the default action */
                     for (ActionLabel al : mActionLabels) {
-                        if ((al.action | availableActions)!= 0) {
+                        if ((al.action & availableActions)!= 0) {
                             performActionOnNode(node, al.action);
                             break;
                         }
@@ -404,7 +425,7 @@ class AccessibilityAction {
      * Remarks: checks whether needs to start a scrolling nodes exploration
      */
     public void refresh() {
-        if (!mDockPanelLayerView.getClickEnabled()) return;
+        if (mDockPanelLayerView.getRestModeEnabled()) return;
         if (!mNeedToRunScrollingScan) return;
         if (System.currentTimeMillis()< mRunScrollingScanTStamp) return;
         mNeedToRunScrollingScan = false;
@@ -419,14 +440,14 @@ class AccessibilityAction {
             EVIACAM.debug("Scanning for scrollables");
             mScrollLayerView.clearScrollAreas();
 
-            if (mDockPanelLayerView.getClickEnabled()) {
+            if (!mDockPanelLayerView.getRestModeEnabled()) {
                 scrollableNodes.clear();
                 mContainsWebView= findNodes (scrollableNodes,
                         AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
                                 AccessibilityNodeInfo.ACTION_SCROLL_FORWARD,
                         "android.webkit.WebView");
                 if (mContainsWebView && !mNavigationKeyboardAdviceShown) {
-                    EVIACAM.Toast(getContext(), R.string.navigation_kbd_advice);
+                    EVIACAM.LongToast(getContext(), R.string.navigation_kbd_advice);
                     mNavigationKeyboardAdviceShown= true;
                 }
                 for (AccessibilityNodeInfo n : scrollableNodes) {

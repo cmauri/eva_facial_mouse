@@ -33,7 +33,7 @@ import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 @ReportsCrashes( 
-    mailTo = "cesar@crea-si.com",
+    mailTo = "eva.facial.mouse@gmail.com",
     mode = ReportingInteractionMode.DIALOG,
     resToastText = com.crea_si.eviacam.R.string.crash_toast_text,
     resDialogText = com.crea_si.eviacam.R.string.crash_dialog_text,

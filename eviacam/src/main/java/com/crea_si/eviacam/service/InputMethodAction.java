@@ -147,7 +147,7 @@ public class InputMethodAction implements ServiceConnection {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAM.Toast(mContext, R.string.keyboard_not_enabled_toast);
+                    EVIACAM.LongToast(mContext, R.string.keyboard_not_enabled_toast);
                 }
             });
 

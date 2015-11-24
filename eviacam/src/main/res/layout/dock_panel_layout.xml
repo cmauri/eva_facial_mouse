@@ -84,15 +84,15 @@
         android:padding="2dip"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/toggle_context_menu_button" />
+        android:contentDescription="@string/toggle_context_menu" />
 
     <ImageButton
-        android:id="@+id/toggle_disable_click"
+        android:id="@+id/toggle_rest_mode"
         android:layout_width="35dip"
         android:layout_height="35dip"
         android:padding="2dip"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/disable_click_button" />
+        android:contentDescription="@string/toggle_rest_mode" />
 
 </LinearLayout>

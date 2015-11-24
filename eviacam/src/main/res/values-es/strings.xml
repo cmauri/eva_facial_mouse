@@ -89,7 +89,8 @@
     <string name="dock_panel_button">Expandir/replegar menú flotante</string>
     <string name="softkeyboard_button">Abrir teclado</string>
     <string name="scroll_refresh_button">Refrescar los botones de desplazamiento</string>
-    <string name="disable_click_button">Desactivar clic</string>
+    <string name="toggle_context_menu">Conmutar el menú contextual del puntero</string>
+    <string name="toggle_rest_mode">Commutar el modo reposo</string>
 
     <!-- Messages for the notification -->
     <string name="running_click_to_pause">Se está ejecutando (clic para pausar)</string>
@@ -164,7 +165,6 @@
     <string name="scroll_buttons_description">Permiten desplazar el contenido de algunas ventanas y vistas al hacer clic.</string>
     <string name="scroll_buttons_remaks">Debido a restricciones de la plataforma Android, los botones de desplazamiento no siempre funcionan (ej. cuando se utiliza un navegador). En estas circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación.</string>
     <string name="settings">Ajustes</string>
-    <string name="toggle_click">Conmutar la generación del clic</string>
     <string name="wiz_set_keyboard">
         <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto\']]>\n
         2. Activar \'Teclado EVA\'\n
@@ -181,11 +181,13 @@
     <string name="done">Hecho</string>
     <string name="keyboard_not_configured">Teclado no configurado</string>
     <string name="keyboard_not_configured_confirm">¿Está seguro que quiere continuar sin configurar el teclado?</string>
-    <string name="toggle_context_menu_button">Conmutar el menú contextual del puntero</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>
     <string name="pointer_stopped_toast">EVA se ha detenido %1$s sin detectar el rostro. Para volverlo a activar asegurese de que su rostro aparece dentro del visor de cámara.</string>
     <string name="navigation_kbd_advice">Use el Teclado de Navegación para desplazar los contenidos del navegador web.</string>
-
+    <string name="context_menu_enabled">Menú contextual activado</string>
+    <string name="context_menu_disabled">Menú contextual desactivado</string>
+    <string name="rest_mode_enabled">Modo reposo activado</string>
+    <string name="rest_mode_disabled">Modo reposo desactivado</string>
 </resources>

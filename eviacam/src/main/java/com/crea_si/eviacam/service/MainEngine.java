@@ -575,7 +575,7 @@ public class MainEngine implements
                     Resources res = mService.getResources();
                     String t = String.format(res.getString(R.string.pointer_stopped_toast),
                             Preferences.getTimeWithoutDetectionEntryValue(mService));
-                    EVIACAM.Toast(mService, t);
+                    EVIACAM.LongToast(mService, t);
 
                     automaticPause();
                 }

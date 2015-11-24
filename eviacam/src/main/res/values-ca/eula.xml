@@ -1,38 +1,54 @@
 <resources>
     <!-- EULA TODO: translate -->
     <string name="eula">
-       TERMINOS Y CONDICIONES DE USO DE LA APLICACIÓN EVA FACIAL MOUSE\n
+TERMINOS Y CONDICIONES DE USO DE LA APLICACIÓN EVA FACIAL MOUSE\n
 \n
 Estos Términos y Condiciones regulan la descarga, acceso y utilización de la aplicación móvil “EVA FACIAL MOUSE” (en adelante, la “Aplicación”), que CREA Sistemas Informáticos (en adelante, “CREA”) y la Fundación Vodafone España (en adelante, “FVE”) ponen a disposición de los usuarios.\n
+\n
 Esta versión de la Aplicación está disponible de forma gratuita. \n
+\n
 El acceso a la Aplicación supone que el usuario reconoce  ha aceptado y consentido  sin reservas de las presentes condiciones de uso.\n
 \n
 1. OBJETO\n
+\n
 La Aplicación tiene el objetivo de contribuir a mejorar la accesibilidad física de las personas con dificultades de manipulación en el uso de dispositivos móviles y/o tabletas Android. La aplicación proporciona un método de acceso alternativo (sin usar las manos) a aquellos colectivos que, por cualquier motivo, no pueden hacer uso de los dispositivos móviles con las interacciones habituales, para que puedan beneficiarse de los mismos y utilizarlos en igualdad de condiciones.\n
+\n
 Algunos de los colectivos que pueden beneficiarse de este proyecto son las personas con amputaciones, parálisis cerebral, lesión medular, distrofia muscular, esclerosis múltiple, esclerosis lateral amiotrófica (ELA) y otras enfermedades o discapacidades. En el diseño y desarrollo de esta Aplicación han intervenido profesionales especialistas así como un grupo de usuarios que participaron en el periodo de prueba.\n
+\n
 La Aplicación se pone a disposición de los usuarios para su uso personal (nunca empresarial)\n
+\n
 Funciona en un teléfono móvil Android 4.1 o superior y con cámara frontal. \n
 \n
 2. DERECHOS DE PROPIEDAD INTELECTUAL E INDUSTRIAL.\n
+\n
 CREA y la FVE ofrecen el código fuente del software bajo la licencia de GPL o LGPL o bajo cualquier otra licencia del código abierto, si bien los derechos de propiedad  intelectual sobre la Aplicación son de CREA, correspondiendo a la FVE el ejercicio exclusivo de uso y  de los derechos de explotación de los mismos en cualquier forma y, en especial, los derechos de reproducción, distribución, comunicación pública y transformación. \n
+\n
 Los terceros titulares de derechos de propiedad intelectual e industrial sobre fotografías, logotipos, y cualesquiera otros símbolos o contenidos incluidos en la Aplicación han concedido las correspondientes autorizaciones para su reproducción, distribución y puesta a disposición del público.\n
 \n
 3. POLITICA DE PRIVACIDAD.\n
+\n
 La Aplicación utilizará Google Analytics  como herramienta para conocer uso y las tendencias de interacción de la misma. CREA y la FVE podrán utilizar la información de carácter personal que nos facilite de forma disociada (sin identificación personal) para fines internos, tales como la elaboración de estadísticas. La Aplicación podrá recabar, almacenar o acumular determinada información de carácter no personal referente a su uso.\n
+\n
 Google Analytics se rige por las condiciones generales de Google accesibles en http://www.google.com/analytics/terms/es.html  y las políticas de privacidad en Google accesibles  en https://www.google.es/intl/es/policies/privacy/. Para proceder a la desactivación de Google Analytics: https://support.google.com/analytics/answer/1009696?hl=es\n
 \n
 3. VARIOS\n
+\n
 CREA y la FVE se reservan el derecho de editar, actualizar, modificar, suspender, eliminar o finalizar los servicios ofrecidos por la Aplicación, incluyendo todo o parte de su contenido, sin necesidad de previo aviso, así como de modificar la forma o tipo de acceso a esta \n
+\n
 Las posibles causas de modificación pueden tener lugar, por motivos tales, como su adaptación a las posibles novedades legislativas y cambios en la propia Aplicación, así como a las que se puedan derivar de los códigos tipos existentes en la materia o por motivos estratégicos o corporativos.\n
 \n
 4. EXCLUSIÓN DE RESPONSABILIDAD.\n
+\n
 Ni CREA ni la FVE serán responsables del uso de la Aplicación por un menor de edad, siendo la  descarga y uso de la Aplicación la exclusiva responsabilidad del usuario.\n
+\n
 La Aplicación se presta “tal y como es” y sin ninguna clase de garantía. CREA y la FVE no se hacen responsables de la calidad final de la Aplicación ni de que ésta sirva y cumpla con todos los objetivos de la misma. No obstante lo anterior, CREA y la FVE se comprometen en la medida de sus posibilidades a contribuir a mejorar la calidad de la Aplicación, pero no puede garantizar la precisión ni la actualidad del contenido de la misma.\n
+\n
 La responsabilidad de uso de la Aplicación corresponde solo al usuario. Salvo lo establecido en estos Términos y Condiciones, ni CREA ni la FVE son responsables de ninguna pérdida o daño que se produzca en relación con la descarga o el uso de la Aplicación, tales como los producidos como consecuencia de fallos, averías o bloqueos en el funcionamiento de la Aplicación (por ejemplo, y sin carácter limitativo: error en las líneas de comunicaciones, defectos en el hardware o software de la Aplicación o fallos en la red de Internet). Igualmente, CREA y la FVE tampoco serán responsables de los daños producidos como consecuencia de un uso indebido o inadecuado de la Aplicación por parte de los usuarios. \n
 \n
 5. LEGISLACIÓN Y FUERO.\n
+\n
 El usuario acepta que la legislación aplicable y los Juzgados y Tribunales competentes para conocer de las divergencias derivadas de la interpretación o aplicación de este clausulado son los españoles, y se somete, con renuncia expresa a cualquier otro fuero, a los juzgados y tribunales de la ciudad de Madrid. \n
 \n
-        He leído y acepto las condiciones de uso de la aplicación EVA FACIAL MOUSE.\n
+He leído y acepto las condiciones de uso de la aplicación EVA FACIAL MOUSE.\n
     </string>
 </resources>

@@ -67,12 +67,12 @@ public class DockPanelLayerView extends RelativeLayout
     // arrow icon when the panel is collapsed
     private Bitmap mToggleCollapsed;
 
-    // status of the click function
-    private boolean mClickEnabled= true;
-
     // status of the context menu
     private boolean mContextMenuEnabled= true;
-    
+
+    // status of the rest mode
+    private boolean mRestModeEnabled= false;
+
     public DockPanelLayerView(Context context) {
         super(context);
        
@@ -315,8 +315,8 @@ public class DockPanelLayerView extends RelativeLayout
         // update toggle buttons
         updateToggleButtons();
 
-        // update click disabled appearance
-        setClickDisabledAppearance ();
+        // update rest mode appearance
+        setRestModeAppearance();
     }
     
     /**
@@ -348,13 +348,13 @@ public class DockPanelLayerView extends RelativeLayout
                 }
             });
         }
-        else if (id == R.id.toggle_disable_click) {
-            mClickEnabled= !mClickEnabled;
+        else if (id == R.id.toggle_rest_mode) {
+            mRestModeEnabled= !mRestModeEnabled;
             this.post(new Runnable() {
                 @Override
                 public void run() {
                     updateToggleButtons ();
-                    setClickDisabledAppearance();
+                    setRestModeAppearance();
                 }
             });
         }
@@ -371,12 +371,12 @@ public class DockPanelLayerView extends RelativeLayout
 
     /* Update the bitmaps of toggle buttons */
     private void updateToggleButtons () {
-        ImageButton ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_disable_click);
-        if (mClickEnabled) {
-            ib.setImageResource(R.drawable.ic_click_button_enabled);
+        ImageButton ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_rest_mode);
+        if (mRestModeEnabled) {
+            ib.setImageResource(R.drawable.ic_rest_mode_enabled);
         }
         else {
-            ib.setImageResource(R.drawable.ic_click_button_disabled);
+            ib.setImageResource(R.drawable.ic_rest_mode_disabled);
         }
 
         ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_context_menu);
@@ -389,12 +389,12 @@ public class DockPanelLayerView extends RelativeLayout
     }
 
     /**
-     * Get if view state is for click function is enabled
+     * Get if view state for rest mode
      *
-     * @return true if view state is for click enabled
+     * @return true if view state is in rest mode
      */
-    public boolean getClickEnabled () {
-        return mClickEnabled;
+    public boolean getRestModeEnabled () {
+        return mRestModeEnabled;
     }
 
     /**
@@ -435,25 +435,25 @@ public class DockPanelLayerView extends RelativeLayout
     /**
      * Enable or disable faded appearance of the buttons 
      */
-    private void setClickDisabledAppearance () {
-        float alpha= (mClickEnabled? DEFAULT_ALPHA : DISABLED_ALPHA);
+    private void setRestModeAppearance() {
+        float alpha= (mRestModeEnabled? DISABLED_ALPHA : DEFAULT_ALPHA);
 
-        setChildrenClickDisabledAppearance (mDockPanelView, alpha);
+        setChildrenRestModeAppearance(mDockPanelView, alpha);
     }
     
     /*
-     * Recursive function change alpha to all buttons except the click disable one
+     * Recursive function change alpha to all buttons except the rest mode one
      */
-    private static void setChildrenClickDisabledAppearance (View v, float alpha) {
+    private static void setChildrenRestModeAppearance(View v, float alpha) {
         if (v == null) return;
 
         if (v instanceof ImageButton) {
-            if (v.getId() != R.id.toggle_disable_click) v.setAlpha(alpha);
+            if (v.getId() != R.id.toggle_rest_mode) v.setAlpha(alpha);
         }
         else if (v instanceof ViewGroup) {
             ViewGroup vg= (ViewGroup) v;
             for (int i= 0; i< vg.getChildCount(); i++) {
-                setChildrenClickDisabledAppearance (vg.getChildAt(i), alpha);
+                setChildrenRestModeAppearance(vg.getChildAt(i), alpha);
             }
         }
     }

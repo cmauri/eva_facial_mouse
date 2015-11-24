@@ -426,7 +426,7 @@ class AccessibilityAction {
                                 AccessibilityNodeInfo.ACTION_SCROLL_FORWARD,
                         "android.webkit.WebView");
                 if (mContainsWebView && !mNavigationKeyboardAdviceShown) {
-                    EVIACAM.Toast(getContext(), R.string.navigation_kbd_advice);
+                    EVIACAM.LongToast(getContext(), R.string.navigation_kbd_advice);
                     mNavigationKeyboardAdviceShown= true;
                 }
                 for (AccessibilityNodeInfo n : scrollableNodes) {

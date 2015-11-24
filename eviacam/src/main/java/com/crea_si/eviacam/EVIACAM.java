@@ -60,15 +60,27 @@ public class EVIACAM {
         Log.d(TAG, message);
     }
 
-    public static void Toast (Context c, CharSequence t) {
-        Toast toast = Toast.makeText(c, t, Toast.LENGTH_LONG);
+    public static void Toast (Context c, CharSequence t, int duration) {
+        Toast toast = Toast.makeText(c, t, duration);
         ViewGroup group = (ViewGroup) toast.getView();
         TextView messageTextView = (TextView) group.getChildAt(0);
         messageTextView.setTextSize(25);
         toast.show();
     }
 
-    public static void Toast (Context c, int id) {
-        Toast (c, c.getResources().getString(id));
+    public static void LongToast (Context c, CharSequence t) {
+        Toast(c, t, Toast.LENGTH_LONG);
+    }
+
+    public static void LongToast (Context c, int id) {
+        LongToast(c, c.getResources().getString(id));
+    }
+
+    public static void ShortToast (Context c, CharSequence t) {
+        Toast(c, t, Toast.LENGTH_SHORT);
+    }
+
+    public static void ShortToast (Context c, int id) {
+        ShortToast(c, c.getResources().getString(id));
     }
 }

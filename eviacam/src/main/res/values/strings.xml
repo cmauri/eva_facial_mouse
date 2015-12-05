@@ -32,10 +32,8 @@
 
     <!-- These are labels and summaries for settings -->
     <string name="motion_settings">Motion settings</string>
-    <string name="x_axis_speed">X axis speed</string>
-    <string name="x_axis_speed_summary">Sensitivity for the X axis</string>
-    <string name="y_axis_speed">Y axis speed</string>
-    <string name="y_axis_speed_summary">Sets response sensitivity for the Y axis</string>
+    <string name="x_axis_speed">Horizontal speed</string>
+    <string name="y_axis_speed">Vertical speed</string>
     <string name="acceleration">Acceleration</string>
     <string name="acceleration_summary">Pointer acceleration. 0 disables</string>
     <string name="click_settings">Click settings</string>

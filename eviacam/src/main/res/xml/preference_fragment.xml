@@ -27,18 +27,16 @@
        <com.crea_si.eviacam.service.NumberPickerPreference           
             android:key="x_axis_speed"
             android:title="@string/x_axis_speed"
-            android:dialogMessage="@string/x_axis_speed_summary" 
-            android:summary="@string/x_axis_speed_summary"
-            android:defaultValue="@integer/axis_speed_default" 
+            android:dialogMessage="@string/x_axis_speed"
+            android:defaultValue="@integer/axis_speed_default"
             app:minValue="@integer/axis_speed_min"
             app:maxValue="@integer/axis_speed_max"
         />
        <com.crea_si.eviacam.service.NumberPickerPreference           
             android:key="y_axis_speed"
             android:title="@string/y_axis_speed"
-            android:dialogMessage="@string/y_axis_speed_summary" 
-            android:summary="@string/y_axis_speed_summary"
-            android:defaultValue="@integer/axis_speed_default" 
+            android:dialogMessage="@string/y_axis_speed"
+            android:defaultValue="@integer/axis_speed_default"
             app:minValue="@integer/axis_speed_min"
             app:maxValue="@integer/axis_speed_max"
         />

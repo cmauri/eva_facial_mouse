@@ -28,10 +28,8 @@
 
     <!-- These are labels and summaries for settings -->
     <string name="motion_settings">Ajustes de movimiento</string>
-    <string name="x_axis_speed">Velocidad eje X</string>
-    <string name="x_axis_speed_summary">Sensibilidad del eje X</string>
-    <string name="y_axis_speed">Velocidad eje Y</string>
-    <string name="y_axis_speed_summary">Sensibilidad del eje Y</string>
+    <string name="x_axis_speed">Velocidad horizontal</string>
+    <string name="y_axis_speed">Velocidad vertical</string>
     <string name="acceleration">Aceleración</string>
     <string name="acceleration_summary">Aceleración del puntero. 0 desactiva</string>
     <string name="click_settings">Ajustes del clic</string>

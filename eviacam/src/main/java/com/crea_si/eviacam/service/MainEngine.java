@@ -239,8 +239,8 @@ public class MainEngine implements
         mCameraLayerView.addCameraSurface(mCameraListener.getCameraSurface());
 
         // orientation manager
-        mOrientationManager= new OrientationManager(mService,
-                                                    mCameraListener.getCameraOrientation());
+        OrientationManager.init(mService, mCameraListener.getCameraOrientation());
+        mOrientationManager= OrientationManager.get();
 
         // Service notification listener
         mServiceNotification= new ServiceNotification(mService, this);
@@ -587,9 +587,6 @@ public class MainEngine implements
 
         // compensate mirror effect
         mMotion.x= -mMotion.x;
-
-        // fix motion orientation according to device rotation and screen orientation
-        mOrientationManager.fixVectorOrientation(mMotion);
 
         // process motion on specific engine
         mMotionProcessor.processMotion(mMotion);

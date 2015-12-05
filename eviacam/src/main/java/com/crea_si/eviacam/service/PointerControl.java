@@ -19,10 +19,10 @@
 
 package com.crea_si.eviacam.service;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PointF;
 
@@ -31,7 +31,6 @@ import com.crea_si.eviacam.R;
 
 import java.lang.Math;
 
-@SuppressLint("Assert")
 class PointerControl implements OnSharedPreferenceChangeListener {
     // constants
     private final int AXIS_SPEED_MIN;
@@ -43,17 +42,31 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private final int MOTION_THRESHOLD_MIN;
     private final int ACCEL_ARRAY_SIZE= 30;
 
-    // internal status attributes
-    private float mXMultiplier, mYMultiplier;   // derived from axis_speed
-    private float mAccelArray[]= new float[ACCEL_ARRAY_SIZE]; // derived from acceleration
-    private float mLowPassFilterWeight; // derived from motion_smoothing
-    private float mDXPrevious, mDYPrevious; // previous values for the filter
+    // speed multipliers (derived from axis_speed)
+    private float mLongSideSpeed, mShortSideSpeed;
+
+    // pre-computed acceleration vector (derived from acceleration setting)
+    private float mAccelArray[]= new float[ACCEL_ARRAY_SIZE];
+
+    // filter weight (derived from motion_smoothing)
+    private float mLowPassFilterWeight;
+
+    // previous motion (needed for the motion filter)
+    private PointF mPrevMotion = new PointF();
+
+    // motion threshold in screen pixels
     private int mMotionThreshold;
+
+    // pointer location in screen coordinates
     private PointF mPointerLocation= new PointF();
+
+    // view to display the pointer
     private PointerLayerView mPointerLayerView;
+
+    // preferences stuff
     private SharedPreferences mSharedPref;
-    
-    // methods
+
+    // constructor
     public PointerControl(Context c, PointerLayerView pv) {
         mPointerLayerView= pv;
        
@@ -89,9 +102,11 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         setYSpeed(yAxisSpeed);
         int acceleration= mSharedPref.getInt(Preferences.KEY_ACCELERATION, ACCELERATION_MIN);
         setAcceleration(acceleration);
-        int motionSmoothing= mSharedPref.getInt(Preferences.KEY_MOTION_SMOOTHING, MOTION_SMOOTHING_MIN);
+        int motionSmoothing= mSharedPref.getInt(Preferences.KEY_MOTION_SMOOTHING,
+                MOTION_SMOOTHING_MIN);
         setMotionSmoothing(motionSmoothing);
-        mMotionThreshold= mSharedPref.getInt(Preferences.KEY_MOTION_THRESHOLD, MOTION_THRESHOLD_MIN);
+        mMotionThreshold= mSharedPref.getInt(Preferences.KEY_MOTION_THRESHOLD,
+                MOTION_THRESHOLD_MIN);
     }
     
     // clean-up object
@@ -102,8 +117,10 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
-        if (key.equals(Preferences.KEY_X_AXIS_SPEED) || key.equals(Preferences.KEY_Y_AXIS_SPEED) ||
-            key.equals(Preferences.KEY_ACCELERATION) || key.equals(Preferences.KEY_MOTION_SMOOTHING) ||
+        if (key.equals(Preferences.KEY_X_AXIS_SPEED) ||
+            key.equals(Preferences.KEY_Y_AXIS_SPEED) ||
+            key.equals(Preferences.KEY_ACCELERATION) ||
+            key.equals(Preferences.KEY_MOTION_SMOOTHING) ||
             key.equals(Preferences.KEY_MOTION_THRESHOLD)) {
             updateSettings();
         }
@@ -115,20 +132,19 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     
     private void setXSpeed(int value) {
         if (value >= AXIS_SPEED_MIN && value <= AXIS_SPEED_MAX) {
-            mXMultiplier= computeSpeedFactor(value);
+            mLongSideSpeed = computeSpeedFactor(value);
         }
     }
 
     private void setYSpeed (int value) {
         if (value >= AXIS_SPEED_MIN && value <= AXIS_SPEED_MAX) {
-            mYMultiplier= computeSpeedFactor(value);
+            mShortSideSpeed = computeSpeedFactor(value);
         }
     }
 
-    
     private void setRelAcceleration (int delta0, float factor0, int delta1, float factor1) {
-        assert (delta0> 2 && delta1> 2); 
-        assert (factor0> 0.0f && factor1> 0.0f);
+        //assert (delta0> 2 && delta1> 2);
+        //assert (factor0> 0.0f && factor1> 0.0f);
         
         if (delta0>= ACCEL_ARRAY_SIZE) delta0= ACCEL_ARRAY_SIZE;
         if (delta1>= ACCEL_ARRAY_SIZE) delta1= ACCEL_ARRAY_SIZE;
@@ -163,7 +179,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
             case 3: setRelAcceleration (7, 1.5f, 14, 2.0f); break;
             case 4: setRelAcceleration (5, 1.5f, 10, 3.0f); break;
             case 5: setRelAcceleration (3, 1.5f,  8, 3.0f); break;
-            default: assert (false);
+            default: throw new IllegalStateException("Wrong acceleration value");
         }
     }
 
@@ -180,34 +196,61 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         mPointerLocation.x = mPointerLayerView.getWidth() / 2;
         mPointerLocation.y = mPointerLayerView.getHeight() / 2;
     }
-    
+
+    // current motion (avoid creating an instance for each updateMotion call)
+    private PointF mCurrMotion = new PointF();
+
+    /**
+     * Called for each frame to update pointer position
+     * @param vel motion vector in world coordinates (i.e. upright face coordinates)
+     */
     public void updateMotion(PointF vel) {
-        float dx= vel.x;
-        float dy= vel.y;
+        mCurrMotion.x= vel.x;
+        mCurrMotion.y= vel.y;
 
         // multipliers
-        dx*= mXMultiplier;
-        dy*= mYMultiplier;
+        OrientationManager om= OrientationManager.get();
+        int naturalOrientation= om.getDeviceNaturalOrientation();
+        int currentOrientation= om.getDeviceCurrentOrientation();
+
+        if (naturalOrientation == Configuration.ORIENTATION_LANDSCAPE &&
+            (currentOrientation== 0 || currentOrientation== 180) ||
+            naturalOrientation == Configuration.ORIENTATION_PORTRAIT &&
+            (currentOrientation== 90 || currentOrientation== 270)) {
+            mCurrMotion.x *= mLongSideSpeed;
+            mCurrMotion.y *= mShortSideSpeed;
+        }
+        else {
+            mCurrMotion.x *= mShortSideSpeed;
+            mCurrMotion.y *= mLongSideSpeed;
+        }
 
         // low-pass filter
-        dx= dx * (1.0f - mLowPassFilterWeight) + mDXPrevious * mLowPassFilterWeight;
-        dy= dy * (1.0f - mLowPassFilterWeight) + mDYPrevious * mLowPassFilterWeight;
-        mDXPrevious= dx;
-        mDYPrevious= dy;
+        mCurrMotion.x= mCurrMotion.x * (1.0f - mLowPassFilterWeight) +
+                mPrevMotion.x * mLowPassFilterWeight;
+        mCurrMotion.y= mCurrMotion.y * (1.0f - mLowPassFilterWeight) +
+                mPrevMotion.y * mLowPassFilterWeight;
+        mPrevMotion.x= mCurrMotion.x;
+        mPrevMotion.y= mCurrMotion.y;
 
         // acceleration
-        double distance= Math.sqrt (dx * dx + dy * dy);
+        double distance= Math.sqrt (mCurrMotion.x * mCurrMotion.x + mCurrMotion.y * mCurrMotion.y);
         int iAccelArray= (int) (distance + 0.5f);
         if (iAccelArray>= ACCEL_ARRAY_SIZE) iAccelArray= ACCEL_ARRAY_SIZE - 1;
-        dx*= mAccelArray[iAccelArray];
-        dy*= mAccelArray[iAccelArray];
+        mCurrMotion.x*= mAccelArray[iAccelArray];
+        mCurrMotion.y*= mAccelArray[iAccelArray];
 
         // stop margin
-        if (-mMotionThreshold < dx && dx < mMotionThreshold) dx= 0.0f;
-        if (-mMotionThreshold < dy && dy < mMotionThreshold) dy= 0.0f;
-        
+        if (-mMotionThreshold < mCurrMotion.x &&
+                mCurrMotion.x < mMotionThreshold) mCurrMotion.x= 0.0f;
+        if (-mMotionThreshold < mCurrMotion.y &&
+                mCurrMotion.y < mMotionThreshold) mCurrMotion.y= 0.0f;
+
+        // apply rotation
+        OrientationManager.get().fixVectorOrientation(mCurrMotion);
+
         // update pointer location
-        mPointerLocation.x+= dx;
+        mPointerLocation.x+= mCurrMotion.x;
         if (mPointerLocation.x< 0) {
             mPointerLocation.x= 0;
         }
@@ -217,7 +260,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
                 mPointerLocation.x= width - 1;
         }
          
-        mPointerLocation.y+= dy;
+        mPointerLocation.y+= mCurrMotion.y;
         if (mPointerLocation.y< 0) {
             mPointerLocation.y= 0;
         }

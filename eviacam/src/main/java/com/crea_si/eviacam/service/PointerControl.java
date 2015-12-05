@@ -22,7 +22,6 @@ package com.crea_si.eviacam.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PointF;
 
@@ -43,7 +42,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private final int ACCEL_ARRAY_SIZE= 30;
 
     // speed multipliers (derived from axis_speed)
-    private float mLongSideSpeed, mShortSideSpeed;
+    private float mHorizontalSpeed, mVerticalSpeed;
 
     // pre-computed acceleration vector (derived from acceleration setting)
     private float mAccelArray[]= new float[ACCEL_ARRAY_SIZE];
@@ -132,13 +131,13 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     
     private void setXSpeed(int value) {
         if (value >= AXIS_SPEED_MIN && value <= AXIS_SPEED_MAX) {
-            mLongSideSpeed = computeSpeedFactor(value);
+            mHorizontalSpeed = computeSpeedFactor(value);
         }
     }
 
     private void setYSpeed (int value) {
         if (value >= AXIS_SPEED_MIN && value <= AXIS_SPEED_MAX) {
-            mShortSideSpeed = computeSpeedFactor(value);
+            mVerticalSpeed = computeSpeedFactor(value);
         }
     }
 
@@ -209,6 +208,22 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         mCurrMotion.y= vel.y;
 
         // multipliers
+        mCurrMotion.x *= mHorizontalSpeed;
+        mCurrMotion.y *= mVerticalSpeed;
+
+        /*
+            The following commented block implements a behaviour in which
+            the speed multipliers are specific for each side (long / short)
+            of the device. When the device is rotated, so are the multipliers.
+
+            After some tests (not with users) I decided to keep the old behaviour.
+            Now each speed multiplier is specific for each axis of the motion
+            of the face in the real world (e.g. horizontal speed multiplier is
+            always used for horizontal face motion).
+
+            TODO: perhaps this needs some usability testing
+         */
+        /*
         OrientationManager om= OrientationManager.get();
         int naturalOrientation= om.getDeviceNaturalOrientation();
         int currentOrientation= om.getDeviceCurrentOrientation();
@@ -223,7 +238,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         else {
             mCurrMotion.x *= mShortSideSpeed;
             mCurrMotion.y *= mLongSideSpeed;
-        }
+        }*/
 
         // low-pass filter
         mCurrMotion.x= mCurrMotion.x * (1.0f - mLowPassFilterWeight) +

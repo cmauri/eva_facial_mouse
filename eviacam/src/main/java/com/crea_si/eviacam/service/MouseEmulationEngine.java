@@ -19,6 +19,7 @@
 package com.crea_si.eviacam.service;
 
 import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.api.IMouseEventListener;
 
 import android.accessibilityservice.AccessibilityService;
@@ -33,6 +34,20 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
 public class MouseEmulationEngine implements MotionProcessor {
+    /*
+     * states of the engine
+     */
+    private static final int STATE_STOPPED= 0;
+    private static final int STATE_RUNNING= 1;
+    private static final int STATE_PAUSED= 2;
+
+    // current state
+    private int mState= STATE_STOPPED;
+
+    private final Service mService;
+
+    private final OverlayView mOverlayView;
+
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
     
@@ -55,58 +70,92 @@ public class MouseEmulationEngine implements MotionProcessor {
     private AccessibilityAction mAccessibilityAction;
     
     // event listener
-    IMouseEventListener mMouseEventListener;
-    
+    private IMouseEventListener mMouseEventListener;
+
+    // is in calibration mode?
+    private boolean mCalibrationMode= false;
+
+    // constructor
     public MouseEmulationEngine(Service s, OverlayView ov) {
-        /*
-         * UI stuff 
-         */
-        if (s instanceof AccessibilityService) {
-            mDockPanelView= new DockPanelLayerView(s);
-            ov.addFullScreenLayer(mDockPanelView);
+        mService= s;
+        mOverlayView= ov;
+    }
+
+    private void init() {
+        /* need to perform speed calibration? */
+        if (mService instanceof AccessibilityService &&
+            !Preferences.getMouseCalibrationPerformed(mService)) {
+            // DEBUG
+            // mCalibrationMode= true;
         }
 
-        mScrollLayerView= new ScrollLayerView(s);
-        ov.addFullScreenLayer(mScrollLayerView);
-        
-        mControlsLayer= new ControlsLayerView(s);
-        ov.addFullScreenLayer(mControlsLayer);
-        
+        /*
+         * UI stuff
+         */
+        if (mService instanceof AccessibilityService) {
+            mDockPanelView= new DockPanelLayerView(mService);
+            mOverlayView.addFullScreenLayer(mDockPanelView);
+            if (mCalibrationMode) mDockPanelView.setVisibility(View.INVISIBLE);
+        }
+
+        mScrollLayerView= new ScrollLayerView(mService);
+        mOverlayView.addFullScreenLayer(mScrollLayerView);
+        if (mCalibrationMode) mScrollLayerView.setVisibility(View.INVISIBLE);
+
+        mControlsLayer= new ControlsLayerView(mService);
+        mOverlayView.addFullScreenLayer(mControlsLayer);
+        if (mCalibrationMode) mControlsLayer.setVisibility(View.INVISIBLE);
+
         // pointer layer (should be the last one)
-        mPointerLayer= new PointerLayerView(s);
-        ov.addFullScreenLayer(mPointerLayer);
+        mPointerLayer= new PointerLayerView(mService);
+        mOverlayView.addFullScreenLayer(mPointerLayer);
 
         /*
          * control stuff
          */
-        mPointerControl= new PointerControl(s, mPointerLayer);
-        
-        mDwellClick= new DwellClick(s);
-        
-        if (s instanceof AccessibilityService) {
-            mAccessibilityAction= new AccessibilityAction ((AccessibilityService) s, 
+        mPointerControl= new PointerControl(mService, mPointerLayer);
+
+        mDwellClick= new DwellClick(mService);
+
+        if (mService instanceof AccessibilityService) {
+            mAccessibilityAction= new AccessibilityAction ((AccessibilityService) mService,
                     mControlsLayer, mDockPanelView, mScrollLayerView);
         }
+
+        if (mCalibrationMode) {
+            // DEBUG
+            new OverlayFocusableView(mService);
+        }
+
+        mState = STATE_PAUSED;
     }
     
     @Override
     public void pause() {
+        if (mState != STATE_RUNNING) return;
         mPointerLayer.setVisibility(View.INVISIBLE);
         mScrollLayerView.setVisibility(View.INVISIBLE);
         mControlsLayer.setVisibility(View.INVISIBLE);
         if (mDockPanelView!= null) mDockPanelView.setVisibility(View.INVISIBLE);
+        mState = STATE_PAUSED;
     }
     
     @Override
     public void resume() {
+        if (mState == STATE_RUNNING) return;
+        if (mState == STATE_STOPPED) init();
+
         mPointerControl.reset();
         mDwellClick.reset();
         if (mAccessibilityAction!= null) mAccessibilityAction.reset();
 
-        if (mDockPanelView!= null) mDockPanelView.setVisibility(View.VISIBLE);
-        mControlsLayer.setVisibility(View.VISIBLE);
-        mScrollLayerView.setVisibility(View.VISIBLE);
+        if (!mCalibrationMode) {
+            if (mDockPanelView != null) mDockPanelView.setVisibility(View.VISIBLE);
+            mControlsLayer.setVisibility(View.VISIBLE);
+            mScrollLayerView.setVisibility(View.VISIBLE);
+        }
         mPointerLayer.setVisibility(View.VISIBLE);
+        mState = STATE_RUNNING;
     }    
     
     @Override
@@ -216,6 +265,8 @@ public class MouseEmulationEngine implements MotionProcessor {
      */
     @Override
     public void processMotion(PointF motion) {
+        if (mState != STATE_RUNNING) return;
+
         // update pointer location given face motion
         mPointerControl.updateMotion(motion);
         
@@ -237,6 +288,13 @@ public class MouseEmulationEngine implements MotionProcessor {
         
         // update pointer position and click progress
         mPointerLayer.updatePosition(pointerLocation);
+
+        // when in calibration mode, update pointer on the screen and finish
+        if (mCalibrationMode) {
+            mPointerLayer.postInvalidate();
+            return;
+        }
+
         if (mAccessibilityAction!= null) {
             mPointerLayer.setRestModeAppearance(mAccessibilityAction.getRestModeEnabled());
         }

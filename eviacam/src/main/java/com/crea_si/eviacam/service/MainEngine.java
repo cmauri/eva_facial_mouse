@@ -225,11 +225,9 @@ public class MainEngine implements
         else {
             /*
              * Start in slave mode. Instantiate both gamepad and mouse emulation.
-             * Initially mouse emulation is disabled
              */
             mMotionProcessor= mGamepadEngine= new GamepadEngine(mService, mOverlayView);
             mMouseEmulationEngine= new MouseEmulationEngine(mService, mOverlayView);
-            mMouseEmulationEngine.pause();
         }
 
         /*
@@ -312,6 +310,9 @@ public class MainEngine implements
                         ServiceNotification.NOTIFICATION_ACTION_PAUSE));
 
         mFaceDetectionCountdown.reset();
+
+        // start engine
+        mMotionProcessor.resume();
 
         mCurrentState= STATE_RUNNING;
     }

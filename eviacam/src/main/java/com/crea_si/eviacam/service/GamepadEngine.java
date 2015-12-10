@@ -31,7 +31,11 @@ import android.view.View;
 public class GamepadEngine implements MotionProcessor {
     // time in ms after which the direction highlight is switched off
     private static final int TIME_OFF_MS= 100;
-    
+
+    private final Context mContext;
+
+    private final OverlayView mOverlayView;
+
     // Absolute gamepad geometric logic
     private GamepadAbs mGamepadAbs;
     
@@ -53,24 +57,29 @@ public class GamepadEngine implements MotionProcessor {
     private int mOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
     
     // is paused?
-    private boolean isPaused= false;
+    private boolean isPaused= true;
 
     public GamepadEngine(Context c, OverlayView ov) {
-        mGamepadAbs= new GamepadAbs(c);
+        mContext= c;
+        mOverlayView= ov;
+    }
+
+    private void init() {
+        mGamepadAbs= new GamepadAbs(mContext);
         
-        mShakeDetectorX= new ShakeDetector(c);
-        mShakeDetectorY= new ShakeDetector(c);
+        mShakeDetectorX= new ShakeDetector(mContext);
+        mShakeDetectorY= new ShakeDetector(mContext);
         
         /*
          * UI stuff 
          */
-        mGamepadView= new GamepadView(c);
-        
-        ov.addFullScreenLayer(mGamepadView);
+        mGamepadView= new GamepadView(mContext);
+
+        mOverlayView.addFullScreenLayer(mGamepadView);
 
         // pointer layer (should be the last one)
-        mPointerLayer= new PointerLayerView(c);
-        ov.addFullScreenLayer(mPointerLayer);
+        mPointerLayer= new PointerLayerView(mContext);
+        mOverlayView.addFullScreenLayer(mPointerLayer);
     }
 
     @Override
@@ -82,6 +91,9 @@ public class GamepadEngine implements MotionProcessor {
 
     @Override
     public void resume() {
+        // need init?
+        if (mGamepadAbs== null) init();
+
         if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {
             mPointerLayer.setVisibility(View.VISIBLE);
         }
@@ -141,6 +153,7 @@ public class GamepadEngine implements MotionProcessor {
     
     @Override
     public void processMotion(PointF motion) {
+        if (isPaused) return;
         if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {
             processMotionAbsoluteGamepad(motion);
         }

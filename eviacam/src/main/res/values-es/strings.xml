@@ -188,4 +188,6 @@
     <string name="context_menu_disabled">Menú contextual desactivado</string>
     <string name="rest_mode_enabled">Modo reposo activado</string>
     <string name="rest_mode_disabled">Modo reposo desactivado</string>
+    <string name="speed_configuration_summary">Ajuste la velocidad para poder alcanzar toda la pantalla con el puntero.</string>
+    <string name="pointer_speed_configuration">Configuración de la velocidad del puntero</string>
 </resources>

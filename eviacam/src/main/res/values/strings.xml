@@ -205,5 +205,6 @@
     <string name="context_menu_disabled">Context menu disabled</string>
     <string name="rest_mode_enabled">Rest mode enabled</string>
     <string name="rest_mode_disabled">Rest mode disabled</string>
-    <string name="speed_configuration_summary">Move your head. Try to reach the four corners. Set speed accordingly.</string>
+    <string name="speed_configuration_summary">Set the speed so that you can reach the whole screen with the pointer.</string>
+    <string name="pointer_speed_configuration">Pointer speed configuration</string>
 </resources>

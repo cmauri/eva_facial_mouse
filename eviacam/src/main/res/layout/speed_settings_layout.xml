@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Pointer speed configuration"
+            android:text="@string/pointer_speed_configuration"
             android:id="@+id/textView16"
             android:layout_marginBottom="10dp"/>
 

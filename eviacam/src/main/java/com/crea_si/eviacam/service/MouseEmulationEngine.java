@@ -33,7 +33,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-public class MouseEmulationEngine implements MotionProcessor {
+public class MouseEmulationEngine implements MotionProcessor, SpeedSettingsView.OnDoneListener {
     /*
      * states of the engine
      */
@@ -75,6 +75,9 @@ public class MouseEmulationEngine implements MotionProcessor {
     // is in calibration mode?
     private boolean mCalibrationMode= false;
 
+    // view to configure the speed of the pointer
+    SpeedSettingsView mSpeedSettingsView;
+
     // constructor
     public MouseEmulationEngine(Service s, OverlayView ov) {
         mService= s;
@@ -85,8 +88,7 @@ public class MouseEmulationEngine implements MotionProcessor {
         /* need to perform speed calibration? */
         if (mService instanceof AccessibilityService &&
             !Preferences.getMouseCalibrationPerformed(mService)) {
-            // DEBUG
-            // mCalibrationMode= true;
+            mCalibrationMode= true;
         }
 
         /*
@@ -123,8 +125,8 @@ public class MouseEmulationEngine implements MotionProcessor {
         }
 
         if (mCalibrationMode) {
-            // DEBUG
-            new OverlayFocusableView(mService);
+            mSpeedSettingsView= new SpeedSettingsView(mService);
+            mSpeedSettingsView.setOnDoneListener(this);
         }
 
         mState = STATE_PAUSED;
@@ -133,6 +135,8 @@ public class MouseEmulationEngine implements MotionProcessor {
     @Override
     public void pause() {
         if (mState != STATE_RUNNING) return;
+        if (mSpeedSettingsView!= null) OverlayUtils.removeView(mSpeedSettingsView);
+
         mPointerLayer.setVisibility(View.INVISIBLE);
         mScrollLayerView.setVisibility(View.INVISIBLE);
         mControlsLayer.setVisibility(View.INVISIBLE);
@@ -144,19 +148,35 @@ public class MouseEmulationEngine implements MotionProcessor {
     public void resume() {
         if (mState == STATE_RUNNING) return;
         if (mState == STATE_STOPPED) init();
+        if (mSpeedSettingsView!= null) OverlayUtils.addInteractiveView(mSpeedSettingsView);
+        doResume();
+        mState = STATE_RUNNING;
+    }
 
+    private void doResume() {
         mPointerControl.reset();
         mDwellClick.reset();
         if (mAccessibilityAction!= null) mAccessibilityAction.reset();
 
-        if (!mCalibrationMode) {
+        if (mSpeedSettingsView== null) {
             if (mDockPanelView != null) mDockPanelView.setVisibility(View.VISIBLE);
             mControlsLayer.setVisibility(View.VISIBLE);
             mScrollLayerView.setVisibility(View.VISIBLE);
         }
         mPointerLayer.setVisibility(View.VISIBLE);
-        mState = STATE_RUNNING;
-    }    
+    }
+
+    /* When speed calibration done */
+    @Override
+    public void onDone() {
+        OverlayUtils.removeView(mSpeedSettingsView);
+        mSpeedSettingsView= null;
+        Preferences.setMouseCalibrationPerformed(mService, true);
+
+        doResume();
+
+        mCalibrationMode= false;
+    }
     
     @Override
     public void cleanup() {

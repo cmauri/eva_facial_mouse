@@ -205,4 +205,5 @@
     <string name="context_menu_disabled">Context menu disabled</string>
     <string name="rest_mode_enabled">Rest mode enabled</string>
     <string name="rest_mode_disabled">Rest mode disabled</string>
+    <string name="speed_configuration_summary">Move your head. Try to reach the four corners. Set speed accordingly.</string>
 </resources>

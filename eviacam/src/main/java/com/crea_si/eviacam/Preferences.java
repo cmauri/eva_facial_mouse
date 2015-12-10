@@ -50,8 +50,81 @@ public class Preferences {
     public static final String KEY_GAMEPAD_ABS_SPEED= "gamepad_abs_speed";
     public static final String KEY_GAMEPAD_REL_SENSITIVITY= "gamepad_rel_sensitivity";
 
+    /**
+        Run-time constants
+     */
+    private static boolean sRuntimeConstantsLoaded= false;
+    private static int AXIS_SPEED_DEFAULT;
+    private static int AXIS_SPEED_MIN;
+    private static int AXIS_SPEED_MAX;
+    private static int ACCELERATION_MIN;
+    private static int ACCELERATION_MAX;
+    private static int MOTION_SMOOTHING_MIN;
+    private static int MOTION_SMOOTHING_MAX;
+    private static int MOTION_THRESHOLD_MIN;
+
+
     public static SharedPreferences getSharedPreferences(Context c) {
         return ((EViacamApplication) c.getApplicationContext()).getSharedPreferences();
+    }
+
+    private static void loadRuntimeConstants (Context c) {
+        final Resources r= c.getResources();
+
+        AXIS_SPEED_DEFAULT= r.getInteger(R.integer.axis_speed_default);
+        AXIS_SPEED_MIN= r.getInteger(R.integer.axis_speed_min);
+        AXIS_SPEED_MAX= r.getInteger(R.integer.axis_speed_max);
+        ACCELERATION_MIN= r.getInteger(R.integer.acceleration_min);
+        ACCELERATION_MAX= r.getInteger(R.integer.acceleration_max);
+        MOTION_SMOOTHING_MIN= r.getInteger(R.integer.motion_smoothing_min);
+        MOTION_SMOOTHING_MAX= r.getInteger(R.integer.motion_smoothing_max);
+        MOTION_THRESHOLD_MIN= r.getInteger(R.integer.motion_threshold_min);
+
+        sRuntimeConstantsLoaded= true;
+    }
+
+    private static int constrainSpeedValue (int v) {
+        if (v< AXIS_SPEED_MIN) return AXIS_SPEED_MIN;
+        if (v> AXIS_SPEED_MAX) return AXIS_SPEED_MAX;
+        return v;
+    }
+
+    public static int getHorizontalSpeed(Context c) {
+        if (!sRuntimeConstantsLoaded) loadRuntimeConstants(c);
+        int result=
+                getSharedPreferences(c).getInt(Preferences.KEY_X_AXIS_SPEED, AXIS_SPEED_DEFAULT);
+
+        return constrainSpeedValue (result);
+    }
+
+    public static int setHorizontalSpeed(Context c, int v) {
+        if (!sRuntimeConstantsLoaded) loadRuntimeConstants(c);
+        v= constrainSpeedValue(v);
+
+        SharedPreferences.Editor spe= getSharedPreferences(c).edit();
+        spe.putInt(Preferences.KEY_X_AXIS_SPEED, v);
+        spe.apply();
+
+        return v;
+    }
+
+    public static int getVerticalSpeed(Context c) {
+        if (!sRuntimeConstantsLoaded) loadRuntimeConstants(c);
+        int result=
+                getSharedPreferences(c).getInt(Preferences.KEY_Y_AXIS_SPEED, AXIS_SPEED_DEFAULT);
+
+        return constrainSpeedValue (result);
+    }
+
+    public static int setVerticalSpeed(Context c, int v) {
+        if (!sRuntimeConstantsLoaded) loadRuntimeConstants(c);
+        v= constrainSpeedValue(v);
+
+        SharedPreferences.Editor spe= getSharedPreferences(c).edit();
+        spe.putInt(Preferences.KEY_Y_AXIS_SPEED, v);
+        spe.apply();
+
+        return v;
     }
 
     public static float getUIElementsSize(SharedPreferences sp) {

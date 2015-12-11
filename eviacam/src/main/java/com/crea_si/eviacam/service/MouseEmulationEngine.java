@@ -20,10 +20,13 @@ package com.crea_si.eviacam.service;
 
 import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.api.IMouseEventListener;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.AlertDialog;
 import android.app.Service;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.RemoteException;
@@ -31,6 +34,7 @@ import android.os.SystemClock;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 
 public class MouseEmulationEngine implements MotionProcessor, SpeedSettingsView.OnDoneListener {
@@ -170,11 +174,27 @@ public class MouseEmulationEngine implements MotionProcessor, SpeedSettingsView.
     @Override
     public void onDone() {
         OverlayUtils.removeView(mSpeedSettingsView);
-        mSpeedSettingsView= null;
+        mSpeedSettingsView = null;
         Preferences.setMouseCalibrationPerformed(mService, true);
+        mPointerLayer.setVisibility(View.INVISIBLE);
 
+        AlertDialog alertDialog = new AlertDialog.Builder(mService)
+                .setTitle(R.string.app_name)
+                .setMessage(R.string.to_adjust_speed_settings)
+                .setPositiveButton(R.string.got_it, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onDone2();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .create();
+        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        alertDialog.show();
+    }
+
+    private void onDone2() {
         doResume();
-
         mCalibrationMode= false;
     }
     

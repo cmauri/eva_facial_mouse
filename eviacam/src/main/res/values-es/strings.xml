@@ -190,4 +190,6 @@
     <string name="rest_mode_disabled">Modo reposo desactivado</string>
     <string name="speed_configuration_summary">Ajuste la velocidad para poder alcanzar toda la pantalla con el puntero.</string>
     <string name="pointer_speed_configuration">Configuración de la velocidad del puntero</string>
+    <string name="to_adjust_speed_settings">Para ajustar la velocidad del puntero abrir:\nAjustes > Accesibilidad>\nEVA Facial Mouse > Ajustes</string>
+    <string name="got_it">Entendido</string>
 </resources>

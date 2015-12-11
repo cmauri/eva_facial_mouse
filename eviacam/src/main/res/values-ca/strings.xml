@@ -190,4 +190,6 @@
     <string name="rest_mode_disabled">Mode repòs desactivat</string>
     <string name="speed_configuration_summary">Ajusti la velocitat per poder abastar tota la pantalla amb el punter.</string>
     <string name="pointer_speed_configuration">Configuració de la velocitat del punter</string>
+    <string name="to_adjust_speed_settings">Per ajustar la velocitat del punter obrir:\nConfiguració > Accessibilitat>\nEVA Facial Mouse > Configuració</string>
+    <string name="got_it">Entesos</string>
 </resources>

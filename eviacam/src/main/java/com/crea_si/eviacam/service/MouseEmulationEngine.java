@@ -26,9 +26,12 @@ import com.crea_si.eviacam.api.IMouseEventListener;
 import android.accessibilityservice.AccessibilityService;
 import android.app.AlertDialog;
 import android.app.Service;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.media.AudioManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.view.InputDevice;
@@ -37,7 +40,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 
-public class MouseEmulationEngine implements MotionProcessor, SpeedSettingsView.OnDoneListener {
+public class MouseEmulationEngine implements
+        MotionProcessor, SpeedSettingsView.OnDoneListener,
+        SharedPreferences.OnSharedPreferenceChangeListener {
     /*
      * states of the engine
      */
@@ -69,6 +74,12 @@ public class MouseEmulationEngine implements MotionProcessor, SpeedSettingsView.
     
     // dwell clicking function
     private DwellClick mDwellClick;
+
+    // whether to play a sound when action performed
+    private boolean mSoundOnClick;
+
+    // audio manager for FX notifications
+    private final AudioManager mAudioManager;
     
     // perform actions on the UI using the accessibility API
     private AccessibilityAction mAccessibilityAction;
@@ -86,6 +97,29 @@ public class MouseEmulationEngine implements MotionProcessor, SpeedSettingsView.
     public MouseEmulationEngine(Service s, OverlayView ov) {
         mService= s;
         mOverlayView= ov;
+
+        mAudioManager= (AudioManager) s.getSystemService(Context.AUDIO_SERVICE);
+
+        // register preference change listener
+        Preferences.getSharedPreferences(s).registerOnSharedPreferenceChangeListener(this);
+
+        updateSettings();
+    }
+
+    private void updateSettings() {
+        // get values from shared resources
+        mSoundOnClick= Preferences.getSoundOnClick(mService);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(Preferences.KEY_SOUND_ON_CLICK)) updateSettings();
+    }
+
+    private void playSound () {
+        if (mSoundOnClick) {
+            mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
+        }
     }
 
     private void init() {
@@ -200,6 +234,8 @@ public class MouseEmulationEngine implements MotionProcessor, SpeedSettingsView.
     
     @Override
     public void cleanup() {
+        Preferences.getSharedPreferences(mService).unregisterOnSharedPreferenceChangeListener(this);
+
         if (mAccessibilityAction!= null) {
             mAccessibilityAction.cleanup();
             mAccessibilityAction= null;
@@ -348,6 +384,7 @@ public class MouseEmulationEngine implements MotionProcessor, SpeedSettingsView.
             // perform action when needed
             if (clickGenerated) {
                 mAccessibilityAction.performAction(pInt);
+                if (mSoundOnClick) playSound ();
             }
         }
 

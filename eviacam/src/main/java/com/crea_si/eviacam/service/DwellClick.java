@@ -24,7 +24,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
-import android.media.AudioManager;
 
 import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.R;
@@ -39,7 +38,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     
     private final int DWELL_TIME_DEFAULT;
     private final int DWELL_AREA_DEFAULT;
-    private final boolean SOUND_ON_CLICK_DEFAULT;
     private final boolean CONSECUTIVE_CLICKS;
 
     // delegate to measure elapsed time
@@ -55,15 +53,9 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     // for each updatePointerLocation call
     private float mDwellAreaSquared;    
     
-    // whether to play a sound when action performed
-    private boolean mSoundOnClick;
-    
     // if true it keeps generating clicks whilst the pointer is stopped
     private boolean mConsecutiveClicks;
-    
-    // audio manager for FX notifications
-    AudioManager mAudioManager;
-    
+
     // to remember previous pointer location and measure traveled distance
     private PointF mPrevPointerLocation= new PointF();
     
@@ -72,12 +64,9 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         Resources r= c.getResources();
         DWELL_TIME_DEFAULT= r.getInteger(R.integer.dwell_time_default) * 100;
         DWELL_AREA_DEFAULT= r.getInteger(R.integer.dwell_area_default);
-        SOUND_ON_CLICK_DEFAULT= r.getBoolean(R.bool.sound_on_click_default);
         CONSECUTIVE_CLICKS= r.getBoolean(R.bool.consecutive_clicks_default);
         
         mCountdown= new Countdown(DWELL_TIME_DEFAULT);
-        
-        mAudioManager= (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
         
         // shared preferences
         mSharedPref = Preferences.getSharedPreferences(c);
@@ -94,7 +83,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         mCountdown.setTimeToWait(dwellTime);
         int dwellArea= mSharedPref.getInt(Preferences.KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
         mDwellAreaSquared= dwellArea * dwellArea;
-        mSoundOnClick= mSharedPref.getBoolean(Preferences.KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
         mConsecutiveClicks = mSharedPref.getBoolean(
                 Preferences.KEY_CONSECUTIVE_CLICKS, CONSECUTIVE_CLICKS);
     }
@@ -107,14 +95,8 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (key.equals(Preferences.KEY_DWELL_TIME) || key.equals(Preferences.KEY_DWELL_AREA) ||
-            key.equals(Preferences.KEY_SOUND_ON_CLICK) || key.equals(Preferences.KEY_CONSECUTIVE_CLICKS)) {
+            key.equals(Preferences.KEY_CONSECUTIVE_CLICKS)) {
                 updateSettings();
-        }
-    }
-    
-    private void playSound () {
-        if (mSoundOnClick) {
-            mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
         }
     }
 
@@ -162,7 +144,6 @@ class DwellClick implements OnSharedPreferenceChangeListener {
             }
             else {
                 if (mCountdown.hasFinished()) {
-                    playSound ();
                     retval= true;
                     if (mConsecutiveClicks) {
                         mState= State.POINTER_MOVING;

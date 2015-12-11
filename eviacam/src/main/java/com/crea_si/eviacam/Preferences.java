@@ -63,6 +63,7 @@ public class Preferences {
     private static int MOTION_SMOOTHING_MIN;
     private static int MOTION_SMOOTHING_MAX;
     private static int MOTION_THRESHOLD_MIN;
+    private static boolean SOUND_ON_CLICK_DEFAULT;
 
 
     public static SharedPreferences getSharedPreferences(Context c) {
@@ -80,6 +81,7 @@ public class Preferences {
         MOTION_SMOOTHING_MIN= r.getInteger(R.integer.motion_smoothing_min);
         MOTION_SMOOTHING_MAX= r.getInteger(R.integer.motion_smoothing_max);
         MOTION_THRESHOLD_MIN= r.getInteger(R.integer.motion_threshold_min);
+        SOUND_ON_CLICK_DEFAULT= r.getBoolean(R.bool.sound_on_click_default);
 
         sRuntimeConstantsLoaded= true;
     }
@@ -126,6 +128,12 @@ public class Preferences {
         spe.apply();
 
         return v;
+    }
+
+    public static boolean getSoundOnClick(Context c) {
+        if (!sRuntimeConstantsLoaded) loadRuntimeConstants(c);
+        return getSharedPreferences(c).getBoolean(
+                Preferences.KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
     }
 
     public static float getUIElementsSize(SharedPreferences sp) {

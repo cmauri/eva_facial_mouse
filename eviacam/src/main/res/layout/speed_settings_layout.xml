@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/pointer_speed_configuration"
+            android:text="@string/pointer_speed"
             android:id="@+id/textView16"
             android:layout_marginBottom="10dp"/>
 
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/speed_configuration_summary"
+            android:text="@string/pointer_speed_summary"
             android:id="@+id/textView17"
             android:layout_marginBottom="10dp"/>
 
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/x_axis_speed"
+            android:text="@string/horizontal"
             android:id="@+id/textView18"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"/>
@@ -73,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/y_axis_speed"
+            android:text="@string/vertical"
             android:id="@+id/textView20"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"/>

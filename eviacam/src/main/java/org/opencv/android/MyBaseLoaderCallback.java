@@ -5,7 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Resources;
 import android.util.Log;
+
+import com.crea_si.eviacam.R;
 
 /**
  * Basic implementation of LoaderCallbackInterface.
@@ -18,6 +21,8 @@ public abstract class MyBaseLoaderCallback implements LoaderCallbackInterface {
 
     public void onManagerConnected(int status)
     {
+        Resources res= mAppContext.getResources();
+
         switch (status)
         {
             /** OpenCV initialization was successful. **/
@@ -31,9 +36,11 @@ public abstract class MyBaseLoaderCallback implements LoaderCallbackInterface {
                 Log.e(TAG, "Package installation failed!");
                 AlertDialog MarketErrorMessage = new AlertDialog.Builder(mAppContext).create();
                 MarketErrorMessage.setTitle("OpenCV Manager");
-                MarketErrorMessage.setMessage("Package installation failed!");
+                MarketErrorMessage.setMessage(res.getText(R.string.package_installation_failed));
                 MarketErrorMessage.setCancelable(false); // This blocks the 'BACK' button
-                MarketErrorMessage.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new OnClickListener() {
+                MarketErrorMessage.setButton(
+                        AlertDialog.BUTTON_POSITIVE,
+                        res.getText(android.R.string.ok), new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
@@ -52,9 +59,10 @@ public abstract class MyBaseLoaderCallback implements LoaderCallbackInterface {
                 Log.d(TAG, "OpenCV Manager Service is uncompatible with this app!");
                 AlertDialog IncomatibilityMessage = new AlertDialog.Builder(mAppContext).create();
                 IncomatibilityMessage.setTitle("OpenCV Manager");
-                IncomatibilityMessage.setMessage("OpenCV Manager service is incompatible with this app. Try to update it via Google Play.");
+                IncomatibilityMessage.setMessage(res.getText(R.string.opencv_incompatible));
                 IncomatibilityMessage.setCancelable(false); // This blocks the 'BACK' button
-                IncomatibilityMessage.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new OnClickListener() {
+                IncomatibilityMessage.setButton(AlertDialog.BUTTON_POSITIVE,
+                        res.getText(android.R.string.ok), new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
@@ -67,10 +75,10 @@ public abstract class MyBaseLoaderCallback implements LoaderCallbackInterface {
                 Log.e(TAG, "OpenCV loading failed!");
                 AlertDialog InitFailedDialog = new AlertDialog.Builder(mAppContext).create();
                 InitFailedDialog.setTitle("OpenCV error");
-                InitFailedDialog.setMessage("OpenCV was not initialised correctly. Application will be shut down");
+                InitFailedDialog.setMessage(res.getText(R.string.opencv_init_error));
                 InitFailedDialog.setCancelable(false); // This blocks the 'BACK' button
-                InitFailedDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new OnClickListener() {
-
+                InitFailedDialog.setButton(AlertDialog.BUTTON_POSITIVE,
+                        res.getText(android.R.string.ok), new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
@@ -83,24 +91,26 @@ public abstract class MyBaseLoaderCallback implements LoaderCallbackInterface {
 
     public void onPackageInstall(final int operation, final InstallCallbackInterface callback)
     {
+        Resources res= mAppContext.getResources();
+
         switch (operation)
         {
             case InstallCallbackInterface.NEW_INSTALLATION:
             {
                 AlertDialog InstallMessage = new AlertDialog.Builder(mAppContext).create();
-                InstallMessage.setTitle("Package not found");
-                InstallMessage.setMessage(callback.getPackageName() + " package was not found! Try to install it?");
+                InstallMessage.setTitle(res.getText(R.string.opencv_installation));
+                InstallMessage.setMessage(res.getText(R.string.opencv_installation_summary));
                 InstallMessage.setCancelable(false); // This blocks the 'BACK' button
-                InstallMessage.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new OnClickListener()
-                {
+                InstallMessage.setButton(AlertDialog.BUTTON_POSITIVE,
+                        res.getText(android.R.string.yes), new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which)
                     {
                         callback.install();
                     }
                 });
 
-                InstallMessage.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new OnClickListener() {
-
+                InstallMessage.setButton(AlertDialog.BUTTON_NEGATIVE,
+                        res.getText(android.R.string.no), new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which)
                     {
                         callback.cancel();
@@ -112,15 +122,17 @@ public abstract class MyBaseLoaderCallback implements LoaderCallbackInterface {
             case InstallCallbackInterface.INSTALLATION_PROGRESS:
             {
                 AlertDialog WaitMessage = new AlertDialog.Builder(mAppContext).create();
-                WaitMessage.setTitle("OpenCV is not ready");
-                WaitMessage.setMessage("Installation is in progress. Wait or exit?");
+                WaitMessage.setTitle(R.string.opencv_not_ready);
+                WaitMessage.setMessage(res.getText(R.string.opencv_installation_in_progress));
                 WaitMessage.setCancelable(false); // This blocks the 'BACK' button
-                WaitMessage.setButton(AlertDialog.BUTTON_POSITIVE, "Wait", new OnClickListener() {
+                WaitMessage.setButton(AlertDialog.BUTTON_POSITIVE,
+                        res.getText(R.string.wait), new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         callback.wait_install();
                     }
                 });
-                WaitMessage.setButton(AlertDialog.BUTTON_NEGATIVE, "Exit", new OnClickListener() {
+                WaitMessage.setButton(AlertDialog.BUTTON_NEGATIVE,
+                        res.getText(android.R.string.cancel), new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         callback.cancel();
                     }

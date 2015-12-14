@@ -100,7 +100,17 @@
         "Installation cancelled" "EVA"" needs OpenCV manager..."
     -->
     <string name="installation_cancelled">Instalación cancelada</string>
-    <string name="needs_opencv_retry">necesita OpenCV manager para funcionar. ¿Reintentar la instalación?</string>
+    <string name="needs_opencv_retry">necesita OpenCV Manager para funcionar. ¿Reintentar la instalación?</string>
+    <string name="opencv_manager_required">OpenCV Manager se requiere para ejecutar EVA</string>
+    <string name="package_installation_failed">La instalación del paquete ha fallado</string>
+    <string name="opencv_incompatible">OpenCV Manager es incompatible con esta app. Intente actualizarlo a través de Google Play</string>
+    <string name="opencv_init_error">OpenCV no se ha inicializado correctamente. La aplicación se cerrará</string>
+    <string name="opencv_installation">Instalación de OpenCV Manager</string>
+    <string name="opencv_installation_summary">EVA requiere OpenCV Manager. ¿Intentar instalarlo?</string>
+    <string name="opencv_not_ready">OpenCV no está listo</string>
+    <string name="opencv_installation_in_progress">Instalación en proceso. ¿Esperar o cancelar?</string>
+    <string name="wait">Esperar</string>
+    <string name="retry">Reintentar</string>
 
     <!-- Crash report messages (ACRA) -->
     <string name="crash_toast_text">Oops! EVA se ha detenido</string>
@@ -157,7 +167,6 @@
     <string name="next">Siguiente</string>
     <string name="open_keyboard">Abrir el teclado</string>
     <string name="open_notifications">Abrir notificaciones</string>
-    <string name="opencv_manager_required">OpenCV manager se requiere para ejecutar EVA</string>
     <string name="prerequisites">Pre-requisitos</string>
     <string name="recents">Recientes</string>
     <string name="run_this_wizard_at_startup">Ejecutar este asistente al inicio</string>

@@ -101,12 +101,22 @@
     -->
     <string name="installation_cancelled">Instal·lació cancel·lada</string>
     <string name="needs_opencv_retry">necessita l\'OpenCV manager per funcionar. Reintentar la instal·lació?</string>
+    <string name="opencv_manager_required">OpenCV manager es requereix per executar EVA</string>
+    <string name="package_installation_failed">La instal·lació del paquet ha fallat</string>
+    <string name="opencv_incompatible">El OpenCV Manager és incompatible amb aquesta app. Intenti actualitzar-lo a través de Google Play</string>
+    <string name="opencv_init_error">OpenCV no s\'ha inicialitzat correctament. L\'aplicació es tancarà</string>
+    <string name="opencv_installation">Instal·lació de l\'OpenCV Manager</string>
+    <string name="opencv_installation_summary">EVA requereix l\'OpenCV Manager. Intentar instal·lar-lo?</string>
+    <string name="opencv_not_ready">OpenCV no està llest</string>
+    <string name="opencv_installation_in_progress">Instal·lació en procés. Esperar o cancel·lar?</string>
+    <string name="wait">Esperar</string>
 
     <!-- Crash report messages (ACRA) -->
     <string name="crash_toast_text">Oops! EVA s\'ha aturat</string>
     <string name="crash_dialog_text">S\'ha produït un error inesperat que ha forçat l\'aturada d\'EVA. Si us plau, ajudi\'ns a solucionar-ho enviant dades sobre l\'error, tot el que cal fer és clicar a OK.</string>
     <string name="crash_dialog_comment_prompt">Pot afegir comentaris sobre el problema a continuació:</string>
     <string name="crash_dialog_ok_toast">Gràcies!</string>
+    <string name="retry">Reintentar</string>
 
     <!-- Slave mode gamepad settings -->
     <string name="gamepad_settings">Ajustos del gamepad</string>
@@ -157,7 +167,6 @@
     <string name="next">Següent</string>
     <string name="open_notifications">Obrir notificacions</string>
     <string name="open_keyboard">Obrir el teclat</string>
-    <string name="opencv_manager_required">OpenCV manager es requereix per executar EVA</string>
     <string name="prerequisites">Pre-requisits</string>
     <string name="recents">Recents</string>
     <string name="run_this_wizard_at_startup">Executar aquest assistent a l\'inici</string>

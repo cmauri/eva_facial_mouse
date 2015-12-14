@@ -107,7 +107,17 @@
         "Installation cancelled" "EVA"" needs OpenCV manager..."
     -->
     <string name="installation_cancelled">Installation cancelled</string>
-    <string name="needs_opencv_retry"> needs OpenCV manager to run. Retry installation?</string>
+    <string name="needs_opencv_retry"> needs OpenCV Manager to run. Retry installation?</string>
+    <string name="opencv_manager_required">OpenCV Manager is required to run EVA</string>
+    <string name="package_installation_failed">Package installation failed</string>
+    <string name="opencv_incompatible">OpenCV Manager service is incompatible with this app. Try to update it via Google Play.</string>
+    <string name="opencv_init_error">OpenCV was not initialised correctly. Application will be shut down</string>
+    <string name="opencv_installation">OpenCV Manager installation</string>
+    <string name="opencv_installation_summary">EVA requires OpenCV Manager. Try to install it?</string>
+    <string name="opencv_not_ready">OpenCV is not ready</string>
+    <string name="opencv_installation_in_progress">Installation is in progress. Wait or cancel?</string>
+    <string name="wait">Wait</string>
+    <string name="retry">Retry</string>
 
     <!-- Crash report messages (ACRA) -->
     <string name="crash_toast_text">Oops! EVA crashed</string>
@@ -158,7 +168,6 @@
     </string>
     <string name="check">Check</string>
     <string name="done">Done</string>
-    <string name="opencv_manager_required">OpenCV manager is required to run EVA</string>
     <string name="camera_viewer">Camera viewer</string>
     <string name="camera_viewer_wizard1">Displays the image of the frontal camera in real time</string>
     <string name="camera_viewer_wizard2">

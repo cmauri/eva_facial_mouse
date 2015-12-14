@@ -26,7 +26,7 @@ import android.content.DialogInterface.OnClickListener;
 
 import com.crea_si.eviacam.R;
 
-import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.MyBaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.MyCameraBridgeViewBase;
 import org.opencv.android.MyJavaCameraView;
@@ -46,7 +46,7 @@ public class OpenCVInstallHelper {
     private final Listener mListener;
 
     /* Callback for openCV initialization */
-    private final BaseLoaderCallback mLoaderCallback;
+    private final MyBaseLoaderCallback mLoaderCallback;
 
     /* openCV capture & view facility */
     private MyCameraBridgeViewBase mCameraView;
@@ -55,7 +55,7 @@ public class OpenCVInstallHelper {
     public OpenCVInstallHelper(Context c, Listener l) {
         mContext= c;
         mListener= l;
-        mLoaderCallback= new BaseLoaderCallback(c) {
+        mLoaderCallback= new MyBaseLoaderCallback(c) {
             @Override
             public void onManagerConnected(int status) {
                 switch (status) {

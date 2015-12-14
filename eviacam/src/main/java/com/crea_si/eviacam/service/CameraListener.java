@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.MyBaseLoaderCallback;
 import org.opencv.android.MyCameraBridgeViewBase;
 import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.MyJavaCameraView;
@@ -58,7 +58,7 @@ public class CameraListener implements CvCameraViewListener2 {
     private final int mCameraOrientation;
 
     // callback for camera initialization
-    private final BaseLoaderCallback mLoaderCallback;
+    private final MyBaseLoaderCallback mLoaderCallback;
     
     /** 
      * Load a resource into a temporary file
@@ -103,7 +103,7 @@ public class CameraListener implements CvCameraViewListener2 {
     public CameraListener(Context c, FrameProcessor fp) {
         mContext= c;
         mFrameProcessor= fp;
-        mLoaderCallback = new BaseLoaderCallback(c) {
+        mLoaderCallback = new MyBaseLoaderCallback(c) {
             @Override
             public void onManagerConnected(int status) {
                 switch (status) {

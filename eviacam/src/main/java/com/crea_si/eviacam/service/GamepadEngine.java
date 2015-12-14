@@ -39,8 +39,8 @@ public class GamepadEngine implements MotionProcessor {
     // Absolute gamepad geometric logic
     private GamepadAbs mGamepadAbs;
     
-    private ShakeDetector mShakeDetectorX;
-    private ShakeDetector mShakeDetectorY;
+    private ShakeDetector mShakeDetectorH;
+    private ShakeDetector mShakeDetectorV;
     
     private int mLastPressedButton= GamepadButtons.PAD_NONE;
 
@@ -67,8 +67,8 @@ public class GamepadEngine implements MotionProcessor {
     private void init() {
         mGamepadAbs= new GamepadAbs(mContext);
         
-        mShakeDetectorX= new ShakeDetector(mContext);
-        mShakeDetectorY= new ShakeDetector(mContext);
+        mShakeDetectorH = new ShakeDetector(mContext);
+        mShakeDetectorV = new ShakeDetector(mContext);
         
         /*
          * UI stuff 
@@ -103,20 +103,30 @@ public class GamepadEngine implements MotionProcessor {
     
     @Override
     public void cleanup() {
-        mPointerLayer.cleanup();
-        mPointerLayer= null;
-        
-        mGamepadView.cleanup();
-        mGamepadView= null;
+        if (mPointerLayer != null) {
+            mPointerLayer.cleanup();
+            mPointerLayer = null;
+        }
 
-        mShakeDetectorX.cleanup();
-        mShakeDetectorX= null;
+        if (mGamepadView != null) {
+            mGamepadView.cleanup();
+            mGamepadView = null;
+        }
 
-        mShakeDetectorY.cleanup();
-        mShakeDetectorY= null;
+        if (mShakeDetectorH != null) {
+            mShakeDetectorH.cleanup();
+            mShakeDetectorH = null;
+        }
 
-        mGamepadAbs.cleanup();
-        mGamepadAbs= null;
+        if (mShakeDetectorV != null) {
+            mShakeDetectorV.cleanup();
+            mShakeDetectorV = null;
+        }
+
+        if (mGamepadAbs != null) {
+            mGamepadAbs.cleanup();
+            mGamepadAbs = null;
+        }
     }
 
     public boolean registerListener(IGamepadEventListener l) {
@@ -218,7 +228,7 @@ public class GamepadEngine implements MotionProcessor {
         int button= GamepadButtons.PAD_NONE;
         
         /** Y axis */
-        int shakeY= mShakeDetectorY.update(motion.y);
+        int shakeY= mShakeDetectorV.update(motion.y);
         if (shakeY> 0) {
             button= GamepadButtons.PAD_DOWN;
             mGamepadView.setHighlightedButton(button);
@@ -234,7 +244,7 @@ public class GamepadEngine implements MotionProcessor {
         
         /** X axis */
         if (shakeY== 0) {
-            int shakeX= mShakeDetectorX.update(motion.x);
+            int shakeX= mShakeDetectorH.update(motion.x);
             if (shakeX> 0) {
                 button= GamepadButtons.PAD_RIGHT;
                 mGamepadView.setHighlightedButton(button);

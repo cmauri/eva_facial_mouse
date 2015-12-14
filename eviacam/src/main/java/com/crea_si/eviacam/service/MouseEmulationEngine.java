@@ -241,11 +241,15 @@ public class MouseEmulationEngine implements
             mAccessibilityAction= null;
         }
 
-        mDwellClick.cleanup();
-        mDwellClick= null;
+        if (mDwellClick!= null) {
+            mDwellClick.cleanup();
+            mDwellClick = null;
+        }
 
-        mPointerControl.cleanup();
-        mPointerControl= null;
+        if (mPointerControl!= null) {
+            mPointerControl.cleanup();
+            mPointerControl = null;
+        }
 
         // nothing to be done for mScrollLayerView
 
@@ -254,11 +258,15 @@ public class MouseEmulationEngine implements
             mDockPanelView= null;
         }
 
-        mControlsLayer.cleanup();
-        mControlsLayer= null;
+        if (mControlsLayer!= null) {
+            mControlsLayer.cleanup();
+            mControlsLayer = null;
+        }
 
-        mPointerLayer.cleanup();
-        mPointerLayer= null;
+        if (mPointerLayer!= null) {
+            mPointerLayer.cleanup();
+            mPointerLayer = null;
+        }
     }
 
     public void onAccessibilityEvent(AccessibilityEvent event) {

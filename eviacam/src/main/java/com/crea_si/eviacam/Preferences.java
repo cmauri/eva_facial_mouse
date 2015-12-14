@@ -33,8 +33,8 @@ public class Preferences {
     /**
      * Preference keys
      */
-    public static final String KEY_X_AXIS_SPEED= "x_axis_speed";
-    public static final String KEY_Y_AXIS_SPEED= "y_axis_speed";
+    public static final String KEY_HORIZONTAL_SPEED = "horizontal_speed";
+    public static final String KEY_VERTICAL_SPEED = "vertical_speed";
     public static final String KEY_ACCELERATION= "acceleration";
     public static final String KEY_MOTION_SMOOTHING= "motion_smoothing";
     public static final String KEY_MOTION_THRESHOLD= "motion_threshold";
@@ -49,9 +49,116 @@ public class Preferences {
     public static final String KEY_GAMEPAD_TRANSPARENCY= "gamepad_transparency";
     public static final String KEY_GAMEPAD_ABS_SPEED= "gamepad_abs_speed";
     public static final String KEY_GAMEPAD_REL_SENSITIVITY= "gamepad_rel_sensitivity";
+    public static final String KEY_MOUSE_CALIBRATION_PERFORMED= "mouse_calibration_performed";
+
+    /**
+        Run-time constants
+     */
+    private static boolean sRuntimeConstantsLoaded= false;
+    private static int AXIS_SPEED_DEFAULT;
+    private static int AXIS_SPEED_MIN;
+    private static int AXIS_SPEED_MAX;
+    private static int ACCELERATION_DEFAULT;
+    private static int ACCELERATION_MIN;
+    private static int ACCELERATION_MAX;
+    private static int MOTION_SMOOTHING_DEFAULT;
+    private static int MOTION_SMOOTHING_MIN;
+    private static int MOTION_SMOOTHING_MAX;
+    private static int MOTION_THRESHOLD_DEFAULT;
+    private static int MOTION_THRESHOLD_MIN;
+    private static int MOTION_THRESHOLD_MAX;
+    private static boolean SOUND_ON_CLICK_DEFAULT;
+
 
     public static SharedPreferences getSharedPreferences(Context c) {
         return ((EViacamApplication) c.getApplicationContext()).getSharedPreferences();
+    }
+
+    private static void loadRuntimeConstants (Context c) {
+        if (sRuntimeConstantsLoaded) return;
+        final Resources r= c.getResources();
+
+        AXIS_SPEED_DEFAULT= r.getInteger(R.integer.axis_speed_default);
+        AXIS_SPEED_MIN= r.getInteger(R.integer.axis_speed_min);
+        AXIS_SPEED_MAX= r.getInteger(R.integer.axis_speed_max);
+        ACCELERATION_DEFAULT= r.getInteger(R.integer.acceleration_default);
+        ACCELERATION_MIN= r.getInteger(R.integer.acceleration_min);
+        ACCELERATION_MAX= r.getInteger(R.integer.acceleration_max);
+        MOTION_SMOOTHING_DEFAULT= r.getInteger(R.integer.motion_smoothing_default);
+        MOTION_SMOOTHING_MIN= r.getInteger(R.integer.motion_smoothing_min);
+        MOTION_SMOOTHING_MAX= r.getInteger(R.integer.motion_smoothing_max);
+        MOTION_THRESHOLD_DEFAULT= r.getInteger(R.integer.motion_threshold_default);
+        MOTION_THRESHOLD_MIN= r.getInteger(R.integer.motion_threshold_min);
+        MOTION_THRESHOLD_MAX= r.getInteger(R.integer.motion_threshold_max);
+        SOUND_ON_CLICK_DEFAULT= r.getBoolean(R.bool.sound_on_click_default);
+
+        sRuntimeConstantsLoaded= true;
+    }
+
+    private static int constraint (int v, int min, int max) {
+        if (v< min) return min;
+        if (v> max) return max;
+        return v;
+    }
+
+    public static int getHorizontalSpeed(Context c) {
+        loadRuntimeConstants(c);
+        int v= getSharedPreferences(c).getInt(Preferences.KEY_HORIZONTAL_SPEED, AXIS_SPEED_DEFAULT);
+        return constraint (v, AXIS_SPEED_MIN, AXIS_SPEED_MAX);
+    }
+
+    public static int setHorizontalSpeed(Context c, int v) {
+        loadRuntimeConstants(c);
+        v= constraint (v, AXIS_SPEED_MIN, AXIS_SPEED_MAX);
+
+        SharedPreferences.Editor spe= getSharedPreferences(c).edit();
+        spe.putInt(Preferences.KEY_HORIZONTAL_SPEED, v);
+        spe.apply();
+
+        return v;
+    }
+
+    public static int getVerticalSpeed(Context c) {
+        loadRuntimeConstants(c);
+        int v= getSharedPreferences(c).getInt(Preferences.KEY_VERTICAL_SPEED, AXIS_SPEED_DEFAULT);
+        return constraint(v, AXIS_SPEED_MIN, AXIS_SPEED_MAX);
+    }
+
+    public static int setVerticalSpeed(Context c, int v) {
+        loadRuntimeConstants(c);
+        v= constraint (v, AXIS_SPEED_MIN, AXIS_SPEED_MAX);
+
+        SharedPreferences.Editor spe= getSharedPreferences(c).edit();
+        spe.putInt(Preferences.KEY_VERTICAL_SPEED, v);
+        spe.apply();
+
+        return v;
+    }
+
+    public static int getAcceleration(Context c) {
+        loadRuntimeConstants(c);
+        int v= getSharedPreferences(c).getInt(Preferences.KEY_ACCELERATION, ACCELERATION_DEFAULT);
+        return constraint (v, ACCELERATION_MIN, ACCELERATION_MAX);
+    }
+
+    public static int getMotionSmoothing(Context c) {
+        loadRuntimeConstants(c);
+        int v= getSharedPreferences(c).getInt(
+                Preferences.KEY_MOTION_SMOOTHING, MOTION_SMOOTHING_DEFAULT);
+        return constraint (v, MOTION_SMOOTHING_MIN, MOTION_SMOOTHING_MAX);
+    }
+
+    public static int getMotionThreshold(Context c) {
+        loadRuntimeConstants(c);
+        int v= getSharedPreferences(c).getInt(
+                Preferences.KEY_MOTION_THRESHOLD, MOTION_THRESHOLD_DEFAULT);
+        return constraint (v, MOTION_THRESHOLD_MIN, MOTION_THRESHOLD_MAX);
+    }
+
+    public static boolean getSoundOnClick(Context c) {
+        loadRuntimeConstants(c);
+        return getSharedPreferences(c).getBoolean(
+                Preferences.KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
     }
 
     public static float getUIElementsSize(SharedPreferences sp) {
@@ -88,6 +195,16 @@ public class Preferences {
 
         // fallback path, should never happen
         return String.valueOf(value);
+    }
+
+    public static boolean getMouseCalibrationPerformed(Context c) {
+        return getSharedPreferences(c).getBoolean(KEY_MOUSE_CALIBRATION_PERFORMED, false);
+    }
+
+    public static void setMouseCalibrationPerformed(Context c, boolean value) {
+        SharedPreferences.Editor spe= getSharedPreferences(c).edit();
+        spe.putBoolean(KEY_MOUSE_CALIBRATION_PERFORMED, value);
+        spe.apply();
     }
 
     /**

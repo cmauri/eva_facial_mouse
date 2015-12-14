@@ -28,8 +28,10 @@
 
     <!-- These are labels and summaries for settings -->
     <string name="motion_settings">Ajustes de movimiento</string>
-    <string name="x_axis_speed">Velocidad horizontal</string>
-    <string name="y_axis_speed">Velocidad vertical</string>
+    <string name="horizontal">Horizontal</string>
+    <string name="horizontal_speed">Velocidad horizontal</string>
+    <string name="vertical">Vertical</string>
+    <string name="vertical_speed">Velocidad vertical</string>
     <string name="acceleration">Aceleración</string>
     <string name="acceleration_summary">Aceleración del puntero. 0 desactiva</string>
     <string name="click_settings">Ajustes del clic</string>
@@ -188,4 +190,8 @@
     <string name="context_menu_disabled">Menú contextual desactivado</string>
     <string name="rest_mode_enabled">Modo reposo activado</string>
     <string name="rest_mode_disabled">Modo reposo desactivado</string>
+    <string name="pointer_speed">Velocidad del puntero</string>
+    <string name="pointer_speed_summary">Mueva la cabeza y trate de alcanzar toda la pantalla. Ajuste la velocidad si es preciso.</string>
+    <string name="to_adjust_speed_settings">Para ajustar la velocidad, vaya a\nAjustes > Accesibilidad>\nEVA Facial Mouse > Ajustes</string>
+    <string name="got_it">Entendido</string>
 </resources>

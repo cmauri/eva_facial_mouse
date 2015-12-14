@@ -32,8 +32,10 @@
 
     <!-- These are labels and summaries for settings -->
     <string name="motion_settings">Motion settings</string>
-    <string name="x_axis_speed">Horizontal speed</string>
-    <string name="y_axis_speed">Vertical speed</string>
+    <string name="horizontal">Horizontal</string>
+    <string name="horizontal_speed">Horizontal speed</string>
+    <string name="vertical">Vertical</string>
+    <string name="vertical_speed">Vertical speed</string>
     <string name="acceleration">Acceleration</string>
     <string name="acceleration_summary">Pointer acceleration. 0 disables</string>
     <string name="click_settings">Click settings</string>
@@ -205,4 +207,8 @@
     <string name="context_menu_disabled">Context menu disabled</string>
     <string name="rest_mode_enabled">Rest mode enabled</string>
     <string name="rest_mode_disabled">Rest mode disabled</string>
+    <string name="pointer_speed_summary">Move your head and try to reach the whole screen. Adjust the speed if necessary.</string>
+    <string name="pointer_speed">Pointer speed</string>
+    <string name="to_adjust_speed_settings">To adjust the speed, go to\nSettings > Accessibility >\nEVA Facial Mouse > Settings</string>
+    <string name="got_it">Got it</string>
 </resources>

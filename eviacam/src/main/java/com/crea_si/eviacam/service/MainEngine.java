@@ -52,8 +52,9 @@ public class MainEngine implements
     private static final int STATE_DISABLED= 0;
     private static final int STATE_STOPPED= 1;
     private static final int STATE_RUNNING= 2;
-    // paused due to no face detection or screen off
-    private static final int STATE_AUTOMATICALLY_PAUSED = 3;
+    // Standby is when engine timed out after not detecting a face
+    // for a while. It keeps running trying to detect a face.
+    private static final int STATE_STANDBY = 3;
     // manually paused
     private static final int STATE_PAUSED= 4;
 
@@ -333,9 +334,9 @@ public class MainEngine implements
         doPause();
     }
 
-    private void automaticPause() {
+    private void standby() {
         if (mCurrentState != STATE_RUNNING) return;
-        mCurrentState= STATE_AUTOMATICALLY_PAUSED;
+        mCurrentState= STATE_STANDBY;
 
         doPause();
     }
@@ -357,7 +358,7 @@ public class MainEngine implements
 
     /* Resumes the engine */
     public void resume() {
-        if (mCurrentState != STATE_PAUSED && mCurrentState!= STATE_AUTOMATICALLY_PAUSED) return;
+        if (mCurrentState != STATE_PAUSED && mCurrentState!= STATE_STANDBY) return;
 
         mPowerManagement.lockFullPower();
         //mCameraListener.setUpdateViewer(true);
@@ -388,7 +389,7 @@ public class MainEngine implements
             case STATE_RUNNING:
                 mPowerManagement.unlockFullPower();
                 // no break
-            case STATE_AUTOMATICALLY_PAUSED:
+            case STATE_STANDBY:
             case STATE_PAUSED:
                 mService.stopForeground(true);
 
@@ -518,19 +519,19 @@ public class MainEngine implements
         if (mCurrentState== STATE_DISABLED || mCurrentState== STATE_STOPPED) return;
 
         /*
-         * When to screen is off make sure is working in a paused mode and reduce CPU usage
+         * When to screen is off make sure is working in standby mode and reduce CPU usage
          */
         if (!mPowerManagement.getScreenOn()) {
-            if (mCurrentState!= STATE_PAUSED && mCurrentState!= STATE_AUTOMATICALLY_PAUSED) {
+            if (mCurrentState!= STATE_PAUSED && mCurrentState!= STATE_STANDBY) {
                 mHandler.post(new Runnable() {
                    @Override
-                   public void run() { automaticPause(); } }
+                   public void run() { standby(); } }
                 );
             }
             mPowerManagement.sleep();
         }
 
-        /* Here is in RUNNING or AUTOMATIC_PAUSE state */
+        /* Here is in RUNNING or in STANDBY state */
 
         int pictRotation = mOrientationManager.getPictureRotation();
 
@@ -552,7 +553,7 @@ public class MainEngine implements
          */
         if (faceDetected) {
             mFaceDetectionCountdown.reset();
-            if (mCurrentState== STATE_AUTOMATICALLY_PAUSED) {
+            if (mCurrentState== STATE_STANDBY) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() { resume(); } }
@@ -569,7 +570,7 @@ public class MainEngine implements
             }
         }
 
-        if (mCurrentState== STATE_AUTOMATICALLY_PAUSED) return;
+        if (mCurrentState== STATE_STANDBY) return;
 
         if (mFaceDetectionCountdown.hasFinished() && !mFaceDetectionCountdown.isDisabled()) {
             mHandler.post(new Runnable() {
@@ -580,7 +581,7 @@ public class MainEngine implements
                             Preferences.getTimeWithoutDetectionEntryValue(mService));
                     EVIACAM.LongToast(mService, t);
 
-                    automaticPause();
+                    standby();
                 }
             });
         }

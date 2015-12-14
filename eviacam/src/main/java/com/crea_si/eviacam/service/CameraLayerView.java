@@ -53,6 +53,7 @@ public class CameraLayerView extends RelativeLayout {
     private static final int BEGIN_COLOR= 0xffa5151f;
     private static final int END_COLOR= 0xffffffff; //f5afb4;
     private int mPaintColor= BEGIN_COLOR;
+    private static final long FADE_TIME= 5000;
 
     // the camera surface view
     private SurfaceView mCameraSurfaceView;
@@ -128,24 +129,27 @@ public class CameraLayerView extends RelativeLayout {
      *
      * @param countdown a Countdown object
      */
-    public void updateFaceDetectorStatus(Countdown countdown) {
-        int p= countdown.getElapsedPercent();
-
+    public void updateFaceDetectorStatus(FaceDetectionCountdown countdown) {
         /*
-         * Color of the border
+         * Color of the border. Fade BEGIN_COLOR into END_COLOR throughout FADE_TIME
          */
-        int r = (Color.red(BEGIN_COLOR) * (100 - p) + Color.red(END_COLOR) * p) / 100;
-        int g = (Color.green(BEGIN_COLOR) * (100 - p) + Color.green(END_COLOR) * p) / 100;
-        int b = (Color.blue(BEGIN_COLOR) * (100 - p) + Color.blue(END_COLOR) * p) / 100;
+        // Elapsed time since last face detection
+        long elapsed= countdown.getElapsedTime();
+        if (elapsed>= FADE_TIME) elapsed= FADE_TIME;
+        int perc= (int) ((elapsed * 100) / FADE_TIME);
+        int r = (Color.red(BEGIN_COLOR) * (100 - perc) + Color.red(END_COLOR) * perc) / 100;
+        int g = (Color.green(BEGIN_COLOR) * (100 - perc) + Color.green(END_COLOR) * perc) / 100;
+        int b = (Color.blue(BEGIN_COLOR) * (100 - perc) + Color.blue(END_COLOR) * perc) / 100;
         mPaintColor = Color.argb(0xff, r, g, b);
 
         /*
-         * Blinking control
+         * Blinking control. When countdown is disable means that there is no
+         * no auto-off feature, this blinking is not used
          */
-        if (p== 100 || countdown.getRemainingTime()> BLINK_TIMEOUT) {
+        if (countdown.isDisabled() || countdown.getElapsedPercent() == 100 ||
+            countdown.getRemainingTime() > BLINK_TIMEOUT) {
             mBlink.stop();
-        }
-        else {
+        } else {
             mBlink.start();
         }
 

@@ -63,7 +63,7 @@ public class TheAccessibilityService extends AccessibilityService implements Com
         if (mEngine == null) return;
 
         Analytics.get().trackStartService();
-        mEngine.start();
+        //mEngine.start();
         mInitialized = true;
     }
 

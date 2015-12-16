@@ -126,13 +126,13 @@ public class MainEngine implements
     private MainEngine() { }
 
     /**
-     * Try to start the engine as a request from an accessibility service
+     * Try to init the engine as a request from an accessibility service
      * 
      * @param as the reference to the accessibility service
-     * @return a reference to the engine interface or null if cannot be started
+     * @return a reference to the engine interface or null if cannot be initiated
      */
-    public AccessibilityServiceModeEngine getAccessibilityServiceModeEngine 
-                                                        (AccessibilityService as) {
+    public AccessibilityServiceModeEngine initAccessibilityServiceModeEngine
+                                                            (AccessibilityService as) {
         if (mCurrentState != STATE_DISABLED) {
             // Already started, if was as accessibility service something went wrong
             if (mMode == A11Y_SERVICE_MODE) throw new IllegalStateException();
@@ -150,13 +150,24 @@ public class MainEngine implements
     }
 
     /**
+     * Get an instance to the current accessibility mode engine
+     *
+     * @return a reference to the engine interface or null if not available
+     */
+    public AccessibilityServiceModeEngine getAccessibilityServiceModeEngine() {
+        if (mMode== A11Y_SERVICE_MODE) return this;
+
+        return null;
+    }
+
+    /**
      * Return the slave mode engine
      * 
      * @param s service which instantiates the engine
      * @return a reference to the engine interface or null if cannot be created (i.e. accessibility
      *           service engine already instantiated).
      */
-    public SlaveModeEngine getSlaveModeEngine (Service s) {
+    public SlaveModeEngine initSlaveModeEngine(Service s) {
         if (mCurrentState != STATE_DISABLED) {
             // Already instantiated, if was in slave mode something went wrong
             if (mMode == SLAVE_MODE) throw new IllegalStateException();
@@ -475,6 +486,51 @@ public class MainEngine implements
 
         // Resume engine if needed
         if (mCurrentState != STATE_PAUSED) mMotionProcessor.start();
+    }
+
+    @Override
+    public boolean isReady() {
+        return (mCurrentState != STATE_DISABLED);
+    }
+
+    @Override
+    public void enablePointer() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enablePointer();
+    }
+
+    @Override
+    public void disablePointer() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disablePointer();
+    }
+
+    @Override
+    public void enableClick() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableClick();
+    }
+
+    @Override
+    public void disableClick() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableClick();
+    }
+
+    @Override
+    public void enableDockPanel() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableDockPanel();
+    }
+
+    @Override
+    public void disableDockPanel() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableDockPanel();
+    }
+
+    @Override
+    public void enableScrollButtons() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableScrollButtons();
+    }
+
+    @Override
+    public void disableScrollButtons() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableScrollButtons();
     }
 
     @Override

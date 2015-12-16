@@ -252,7 +252,7 @@ public class SlaveModeService extends Service {
         }
 
         mSlaveModeEngine= 
-            MainEngine.getInstance().getSlaveModeEngine(this);
+            MainEngine.getInstance().initSlaveModeEngine(this);
 
         if (mSlaveModeEngine== null) {
             /* 

@@ -22,22 +22,34 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class CameraViewerWizardStep extends WizardStep {
-
+public class PositioningWizardStep extends WizardStep {
     // You must have an empty constructor for every step
-    public CameraViewerWizardStep() {
-    }
+    public PositioningWizardStep() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.wizard_step_camera_viewer, container, false);
+        View v= inflater.inflate(R.layout.wizard_step_positioning, container, false);
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+    }
+
+    @Override
+    public void onExit(int exitCode) {
+        AccessibilityServiceModeEngine engine=
+                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        engine.stop();
     }
 }

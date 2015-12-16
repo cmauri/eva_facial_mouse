@@ -141,9 +141,8 @@
     <!-- Wizard -->
     <string name="wizard_icon_name">EVA Assistent</string>
     <string name="back">Enrere</string>
-    <string name="camera_viewer">Visor de càmera</string>
-    <string name="camera_viewer_wizard1">Mostra la imatge de la càmera frontal en temps real</string>
-    <string name="camera_viewer_wizard2"><![CDATA[<b>Marc vermell fosc:</b> rostre detectat.<br/><b>Marc blanc:</b> rostre NO detectat.<br/><br/>]]></string>
+    <string name="positioning">Posicionament</string>
+    <string name="positioning_summary">Instal·li el dispositiu en front de la cara de l\'usuari, amb el cap en una posició natural, a uns 30-50cm.\nLa cara completa ha d\'aparèixer centrada al visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
     <string name="check">Comprovar</string>
     <string name="configuration_settings">Opcions de configuració</string>
     <string name="configuration_settings_description">Alguns paràmetres es poden ajustar per adaptar-se a les necessitats de l\'usuari.</string>

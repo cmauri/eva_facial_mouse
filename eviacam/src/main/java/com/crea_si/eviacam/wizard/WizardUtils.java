@@ -56,13 +56,13 @@ class WizardUtils {
             ad.setTitle(res.getText(R.string.eva_not_running));
             ad.setMessage(res.getText(R.string.eva_not_running_summary));
             ad.setButton(
-                DialogInterface.BUTTON_NEUTRAL, res.getText(R.string.close),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finishWizard(a);
-                    }
-                });
+                    DialogInterface.BUTTON_NEUTRAL, res.getText(R.string.close),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finishWizard(a);
+                        }
+                    });
             ad.show();
         }
     }

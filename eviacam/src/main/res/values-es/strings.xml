@@ -141,9 +141,8 @@
     <!-- Wizard -->
     <string name="wizard_icon_name">EVA Asistente</string>
     <string name="back">Atrás</string>
-    <string name="camera_viewer">Visor de cámara</string>
-    <string name="camera_viewer_wizard1">Muestra la imagen de la cámara frontal en tiempo real</string>
-    <string name="camera_viewer_wizard2"><![CDATA[         <b>Borde rojo oscuro:</b> rostro detectado.<br/>         <b>Borde blanco:</b> rostro NO detectado.<br/><br/>         ]]></string>
+    <string name="positioning">Posicionamiento</string>
+    <string name="positioning_summary">Instale el dispositivo en frente de la cara del usuario, con la cabeza en posición natural, a unos 30-50cm.\nLa cara completa debe aparecer centrada en el visor de la parte superior para ser detectada. Cuando esto sucede, el marco pasa a rojo y una cruz indica el centro del rostro.</string>
     <string name="check">Comprobar</string>
     <string name="configuration_settings">Opciones de configuración</string>
     <string name="configuration_settings_description">Algunos parámetros se pueden ajustar para adaptarse a las necesidades del usuario.</string>

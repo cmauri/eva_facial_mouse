@@ -168,14 +168,8 @@
     </string>
     <string name="check">Check</string>
     <string name="done">Done</string>
-    <string name="camera_viewer">Camera viewer</string>
-    <string name="camera_viewer_wizard1">Displays the image of the frontal camera in real time</string>
-    <string name="camera_viewer_wizard2">
-        <![CDATA[
-        <b>Dark red border:</b> face detected.<br/>
-        <b>White border:</b> face NOT detected.<br/><br/>
-        ]]>
-    </string>
+    <string name="positioning">Positioning</string>
+    <string name="positioning_summary">Mount the device facing the user\'s face, with his head in a natural position, around 30-50cm.\nThe full face should appear centered in the viewer above to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face.</string>
     <string name="dock_menu">Dock menu</string>
     <string name="home">Home</string>
     <string name="recents">Recents</string>

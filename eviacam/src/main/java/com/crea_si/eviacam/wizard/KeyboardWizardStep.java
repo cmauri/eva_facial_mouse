@@ -80,5 +80,6 @@ public class KeyboardWizardStep extends WizardStep {
     public void onResume() {
         super.onResume();
         checkUpdate(getActivity().findViewById(android.R.id.content));
+        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
     }
 }

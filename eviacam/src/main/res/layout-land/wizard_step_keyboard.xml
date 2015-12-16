@@ -57,37 +57,28 @@
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:id="@+id/keyboardImage" />
+            android:id="@+id/keyboardImage"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="top"
+            />
 
-        <Space
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"/>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:weightSum="1">
+            android:text="@string/wiz_set_keyboard"
+            android:ellipsize="none"
+            android:scrollHorizontally="false"
+            android:id="@+id/wiz_set_keyboard"
+            android:layout_weight="1"
+            android:layout_marginRight="15dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/wiz_set_keyboard"
-                android:id="@+id/wiz_set_keyboard"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-            <Space
-                android:layout_width="10dp"
-                android:layout_height="10dp"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings"
-                android:id="@+id/keyboardConfigureButton"
-                />
-
-        </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:id="@+id/keyboardConfigureButton"
+            android:layout_gravity="bottom"/>
     </LinearLayout>
 
 </LinearLayout>

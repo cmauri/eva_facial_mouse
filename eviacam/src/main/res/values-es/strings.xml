@@ -175,17 +175,17 @@
     <string name="scroll_buttons_remaks">Debido a restricciones de la plataforma Android, los botones de desplazamiento no siempre funcionan (ej. cuando se utiliza un navegador). En estas circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación.</string>
     <string name="settings">Ajustes</string>
     <string name="wiz_set_keyboard">
-        <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto\']]>\n
-        2. Activar \'Teclado EVA\'\n
-        3. Tocar \'Predeterminado\'\n
-        4. Escoger \'Teclado EVA\'
+        <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto\']]>
+        \n2. Activar \'Teclado EVA\'
+        \n3. Tocar \'Predeterminado\'
+        \n4. Escoger \'Teclado EVA\'
     </string>
     <string name="wiz_set_keyboard_lollipop">
-        <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto > Teclado actual > ELEGIR TECLADOS\']]>\n
-        2. Activar \'Teclado EVA\'\n
-        3. Atrás\n
-        4. Tocar \'Teclado actual\'\n
-        5. Escoger \'Teclado EVA\'
+        <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto > Teclado actual > ELEGIR TECLADOS\']]>
+        \n2. Activar \'Teclado EVA\'
+        \n3. Atrás
+        \n4. Tocar \'Teclado actual\'
+        \n5. Escoger \'Teclado EVA\'
     </string>
     <string name="done">Hecho</string>
     <string name="keyboard_not_configured">Teclado no configurado</string>

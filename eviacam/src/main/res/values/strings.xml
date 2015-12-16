@@ -154,17 +154,17 @@
     <string name="install">Install</string>
     <string name="keyboard_setup">Keyboard set up</string>
     <string name="wiz_set_keyboard">
-        <![CDATA[1. Open: \'Settings > Language & input\']]>\n
-        2. Enable \'EVA Keyboard\'\n
-        3. Tap \'Default\'\n
-        4. Choose \'EVA Keyboard\'
+        <![CDATA[1. Open: \'Settings > Language & input\']]>
+        \n2. Enable \'EVA Keyboard\'
+        \n3. Tap \'Default\'
+        \n4. Choose \'EVA Keyboard\'
     </string>
     <string name="wiz_set_keyboard_lollipop">
-        <![CDATA[1. Open: \'Settings > Language & input > Current Keyboard > CHOOSE KEYBOARDS\']]>\n
-        2. Enable \'EVA Keyboard\'\n
-        3. Go back\n
-        4. Tap \'Current Keyboard\'\n
-        5. Choose \'EVA Keyboard\'
+        <![CDATA[1. Open: \'Settings > Language & input > Current Keyboard > CHOOSE KEYBOARDS\']]>
+        \n2. Enable \'EVA Keyboard\'
+        \n3. Go back
+        \n4. Tap \'Current Keyboard\'
+        \n5. Choose \'EVA Keyboard\'
     </string>
     <string name="check">Check</string>
     <string name="done">Done</string>

@@ -18,10 +18,14 @@
 */
 package com.crea_si.eviacam.wizard;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import com.crea_si.eviacam.R;
 
@@ -34,6 +38,44 @@ public class WelcomeWizardStep extends WizardStep {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.splash_layout, container, false);
+        View v= inflater.inflate(R.layout.wizard_step_welcome, container, false);
+
+        final Resources res= getResources();
+        final CheckBox skipWizardCheckBox= (CheckBox) v.findViewById(R.id.checkBoxSkipWizard);
+
+        skipWizardCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog ad = new AlertDialog.Builder(getActivity()).create();
+                ad.setCancelable(false); // This blocks the 'BACK' button
+                ad.setMessage(res.getText(R.string.close_wizard_q));
+                ad.setButton(
+                    DialogInterface.BUTTON_POSITIVE, res.getText(android.R.string.yes),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            WizardUtils.fullStartEngine();
+                            WizardUtils.finishWizard(getActivity());
+                        }
+                    });
+                ad.setButton(
+                    DialogInterface.BUTTON_NEGATIVE, res.getText(android.R.string.no),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            skipWizardCheckBox.setChecked(false);
+                        }
+                    });
+                ad.show();
+            }
+        });
+
+        return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
     }
 }

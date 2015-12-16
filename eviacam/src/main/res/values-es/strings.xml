@@ -190,6 +190,11 @@
     <string name="done">Hecho</string>
     <string name="keyboard_not_configured">Teclado no configurado</string>
     <string name="keyboard_not_configured_confirm">¿Está seguro que quiere continuar sin configurar el teclado?</string>
+    <string name="skip_wizard">Saltar este asistente</string>
+    <string name="close_wizard_q">¿Cerrar el asistente?</string>
+    <string name="eva_not_running">EVA no se está ejecutando</string>
+    <string name="eva_not_running_summary">Para ejecutar este asistente es necesario activar el servicio EVA Facial Mouse</string>
+    <string name="close">Cerrar</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>

@@ -207,6 +207,11 @@
     <string name="how_to_run"><![CDATA[To start EVA go to:
         \n\nSettings > Accessibility > %1$s]]></string>
     <string name="run_this_wizard_at_startup">Run this wizard at startup</string>
+    <string name="skip_wizard">Skip this wizard</string>
+    <string name="close_wizard_q">Close wizard?</string>
+    <string name="eva_not_running">EVA not running</string>
+    <string name="eva_not_running_summary">To run this wizard you need to enable EVA Facial Mouse service</string>
+    <string name="close">Close</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. Run EVA Wizard to set it up.</string>

@@ -190,6 +190,11 @@
     <string name="done">Fet</string>
     <string name="keyboard_not_configured">Teclat no configurat</string>
     <string name="keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>
+    <string name="skip_wizard">Saltar aquest assistent</string>
+    <string name="close_wizard_q">Tancar l\'assistent?</string>
+    <string name="eva_not_running">EVA no s\'està executant</string>
+    <string name="eva_not_running_summary">Per executar aquest assistent cal activar el servei EVA Facial Mouse</string>
+    <string name="close">Tancar</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Executi l\'EVA Assistent per activar-lo.</string>

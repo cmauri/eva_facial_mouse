@@ -291,9 +291,18 @@ public class MainEngine implements
         
         mCurrentState= STATE_STOPPED;
 
-        // TODO: currently start engine after initialization
-        start();
-
+        /*
+         * start things when needed
+         */
+        if (mMode == A11Y_SERVICE_MODE) {
+            if (Preferences.getRunTutorial(mService)) {
+                Intent dialogIntent = new Intent(mService,
+                        com.crea_si.eviacam.wizard.WizardActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mService.startActivity(dialogIntent);
+            }
+            else start();
+        }
     }
     
     @Override

@@ -49,7 +49,7 @@ public class Preferences {
     public static final String KEY_GAMEPAD_TRANSPARENCY= "gamepad_transparency";
     public static final String KEY_GAMEPAD_ABS_SPEED= "gamepad_abs_speed";
     public static final String KEY_GAMEPAD_REL_SENSITIVITY= "gamepad_rel_sensitivity";
-    public static final String KEY_MOUSE_CALIBRATION_PERFORMED= "mouse_calibration_performed";
+    public static final String KEY_RUN_TUTORIAL= "run_tutorial";
 
     /**
         Run-time constants
@@ -197,13 +197,13 @@ public class Preferences {
         return String.valueOf(value);
     }
 
-    public static boolean getMouseCalibrationPerformed(Context c) {
-        return getSharedPreferences(c).getBoolean(KEY_MOUSE_CALIBRATION_PERFORMED, false);
+    public static boolean getRunTutorial(Context c) {
+        return getSharedPreferences(c).getBoolean(KEY_RUN_TUTORIAL, true);
     }
 
-    public static void setMouseCalibrationPerformed(Context c, boolean value) {
+    public static void setRunTutorial(Context c, boolean value) {
         SharedPreferences.Editor spe= getSharedPreferences(c).edit();
-        spe.putBoolean(KEY_MOUSE_CALIBRATION_PERFORMED, value);
+        spe.putBoolean(KEY_RUN_TUTORIAL, value);
         spe.apply();
     }
 

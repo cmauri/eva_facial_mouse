@@ -543,6 +543,14 @@ public class MainEngine implements
     }
 
     @Override
+    public void enableAll() {
+        enablePointer();
+        enableClick();
+        enableDockPanel();
+        enableScrollButtons();
+    }
+
+    @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (mMouseEmulationEngine!= null && mMode == A11Y_SERVICE_MODE) {
             mMouseEmulationEngine.onAccessibilityEvent(event);

@@ -21,7 +21,7 @@ package com.crea_si.eviacam.service;
 
 import android.view.accessibility.AccessibilityEvent;
 
-interface AccessibilityServiceModeEngine extends Engine {
+public interface AccessibilityServiceModeEngine extends Engine {
     boolean isReady();
     void enablePointer();
     void disablePointer();
@@ -31,5 +31,6 @@ interface AccessibilityServiceModeEngine extends Engine {
     void disableDockPanel();
     void enableScrollButtons();
     void disableScrollButtons();
+    void enableAll();
     void onAccessibilityEvent(AccessibilityEvent event);
 }

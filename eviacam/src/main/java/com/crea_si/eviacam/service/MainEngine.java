@@ -316,7 +316,7 @@ public class MainEngine implements
         mFaceDetectionCountdown.reset();
 
         // start engine
-        mMotionProcessor.resume();
+        mMotionProcessor.start();
 
         mCurrentState= STATE_RUNNING;
 
@@ -346,7 +346,7 @@ public class MainEngine implements
 
         // pause specific engine
         if (mMotionProcessor!= null) {
-            mMotionProcessor.pause();
+            mMotionProcessor.stop();
         }
 
         mServiceNotification.setNotification(ServiceNotification.NOTIFICATION_ACTION_RESUME);
@@ -367,7 +367,7 @@ public class MainEngine implements
 
         // resume specific engine
         if (mMotionProcessor!= null) {
-            mMotionProcessor.resume();
+            mMotionProcessor.start();
         }
 
         // make sure that UI changes during pause (e.g. docking panel edge) are applied
@@ -459,11 +459,11 @@ public class MainEngine implements
 
         // Pause old engine & switch to new
         if (mSlaveOperationMode== SlaveMode.MOUSE) {
-            mMouseEmulationEngine.pause();
+            mMouseEmulationEngine.stop();
             mMotionProcessor= mGamepadEngine;
         }
         else if (mode== SlaveMode.MOUSE){
-            mGamepadEngine.pause();
+            mGamepadEngine.stop();
             mMotionProcessor= mMouseEmulationEngine;
         }
 
@@ -474,7 +474,7 @@ public class MainEngine implements
         }
 
         // Resume engine if needed
-        if (mCurrentState != STATE_PAUSED) mMotionProcessor.resume(); 
+        if (mCurrentState != STATE_PAUSED) mMotionProcessor.start();
     }
 
     @Override

@@ -26,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.service.MainEngine;
 import com.crea_si.eviacam.service.SplashActivity;
 
 import org.codepond.wizardroid.WizardStep;
@@ -40,17 +42,18 @@ public class SettingsWizardStep extends WizardStep {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.wizard_step_settings, container, false);
-
-        Button button= (Button) v.findViewById(R.id.settings_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent dialogIntent = new Intent(getActivity(),
-                        com.crea_si.eviacam.service.MousePreferencesActivity.class);
-                getActivity().startActivity(dialogIntent);
-            }
-        });
-
         return v;
+    }
+
+    @Override
+    public void onExit(int exitCode) {
+        AccessibilityServiceModeEngine engine =
+                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        if (exitCode== WizardStep.EXIT_PREVIOUS) {
+            engine.enablePointer();
+        }
+        else {
+            //
+        }
     }
 }

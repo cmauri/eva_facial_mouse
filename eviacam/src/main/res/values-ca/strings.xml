@@ -145,7 +145,7 @@
     <string name="positioning_summary">Instal·li el dispositiu en front de la cara de l\'usuari, amb el cap en una posició natural, a uns 30-50cm.\nLa cara completa ha d\'aparèixer centrada al visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
     <string name="check">Comprovar</string>
     <string name="configuration_settings">Opcions de configuració</string>
-    <string name="configuration_settings_description">Alguns paràmetres es poden ajustar per adaptar-se a les necessitats de l\'usuari.</string>
+    <string name="configuration_settings_summary">La velocitat del punter i altres paràmetres es poden ajustar des de\nConfiguració > Accessibilitat> EVA Facial Mouse > Configuració</string>
     <string name="configuration_wizard">Assistent de configuració</string>
     <string name="dock_menu">Menú flotant</string>
     <string name="finish">Finalitzar</string>
@@ -189,6 +189,8 @@
     <string name="done">Fet</string>
     <string name="keyboard_not_configured">Teclat no configurat</string>
     <string name="keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>
+    <string name="pointer_speed">Velocitat del punter</string>
+    <string name="pointer_speed_summary">Mogui el cap per moure el punter. Tracti d\'abastar tota la pantalla. Ajusti les velocitats si cal.</string>
     <string name="skip_wizard">Ometre aquest assistent</string>
     <string name="close_wizard_q">Tancar l\'assistent?</string>
     <string name="eva_not_running">EVA no s\'està executant</string>
@@ -205,8 +207,5 @@
     <string name="context_menu_disabled">Menú contextual desactivat</string>
     <string name="rest_mode_enabled">Mode repòs activat</string>
     <string name="rest_mode_disabled">Mode repòs desactivat</string>
-    <string name="pointer_speed_summary">Mogui el cap per moure el punter. Tracti d\'abastar tota la pantalla. Ajusti les velocitats si cal.</string>
-    <string name="pointer_speed">Velocitat del punter</string>
-    <string name="to_adjust_speed_settings">Per ajustar la velocitat, vagi a\nConfiguració > Accessibilitat>\nEVA Facial Mouse > Configuració</string>
     <string name="got_it">Entesos</string>
 </resources>

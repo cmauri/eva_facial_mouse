@@ -59,7 +59,7 @@
     <string name="consecutive_clicks">Consecutive clicks</string>
     <string name="time_without_detection">Stop pointer when face not detected</string>
     <string name="interface_settings">Interface settings</string>
-    <string name="docking_panel_edge">Dock menu position</string>
+    <string name="dock_menu_position">Dock menu position</string>
     <string name="left">Left</string>
     <string name="right">Right</string>
     <string name="top">Top</string>
@@ -93,7 +93,7 @@
     <string name="home_button">Home button</string>
     <string name="recents_button">Recents button</string>
     <string name="notifications_button">Notifications button</string>
-    <string name="dock_panel_button">Expand/collapse dock menu</string>
+    <string name="dock_menu_button">Expand/collapse dock menu</string>
     <string name="softkeyboard_button">Open keyboard</string>
     <string name="scroll_refresh_button">Refresh scrolling buttons</string>
     <string name="toggle_context_menu">Toggle pointer context menu</string>

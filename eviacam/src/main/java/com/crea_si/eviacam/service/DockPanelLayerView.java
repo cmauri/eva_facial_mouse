@@ -222,7 +222,7 @@ public class DockPanelLayerView extends RelativeLayout
         ImageButton ib= new ImageButton(this.getContext());
         ib.setId(R.id.expand_collapse_dock_button);
         ib.setBackgroundColor(getResources().getColor(R.color.half_alpha));
-        ib.setContentDescription(this.getContext().getText(R.string.dock_panel_button));
+        ib.setContentDescription(this.getContext().getText(R.string.dock_menu_button));
         ib.setScaleType(ScaleType.FIT_CENTER);
         int padding_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
                 TOGGLE_BUTTON_PADDING_DP, getResources().getDisplayMetrics());

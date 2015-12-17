@@ -55,7 +55,7 @@
     <string name="consecutive_clicks">Clics consecutius</string>
     <string name="time_without_detection">Aturar el punter quan no es detecti el rostre</string>
     <string name="interface_settings">Ajustos de la interfície</string>
-    <string name="docking_panel_edge">Posició del menú encastat</string>
+    <string name="dock_menu_position">Posició del menú encastat</string>
     <string name="left">Esquerra</string>
     <string name="right">Dreta</string>
     <string name="top">Part superior</string>
@@ -86,7 +86,7 @@
     <string name="home_button">Botó d\'inici</string>
     <string name="recents_button">Botó recents</string>
     <string name="notifications_button">Botó de notificació</string>
-    <string name="dock_panel_button">Expandir/replegar menú encastat</string>
+    <string name="dock_menu_button">Expandir/replegar menú encastat</string>
     <string name="softkeyboard_button">Obrir teclat</string>
     <string name="scroll_refresh_button">Refrescar el botons de desplaçament</string>
     <string name="toggle_context_menu">Commutar el menú contextual del punter</string>

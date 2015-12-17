@@ -28,10 +28,10 @@ import com.crea_si.eviacam.service.InputMethodAction;
 import com.crea_si.eviacam.R;
 
 import org.codepond.wizardroid.WizardFlow;
+import org.codepond.wizardroid.WizardStep;
 import org.codepond.wizardroid.layouts.BasicWizardLayout;
 
 public class SetupWizard extends BasicWizardLayout {
-
     /**
      * Note that initially BasicWizardLayout inherits from
      * {@link android.support.v4.app.Fragment}
@@ -65,9 +65,10 @@ public class SetupWizard extends BasicWizardLayout {
                 .addStep(SpeedSettingsWizardStep.class)
                 .addStep(SettingsWizardStep.class)
                 .addStep(PreClickWizardStep.class)
-                .addStep(ClickWizardStep.class, true)
-                .addStep(DockMenuWizardStep.class)
+                .addStep(ClickWizardStep.class)
+                .addStep(PreScrollButtonsWizardStep.class)
                 .addStep(ScrollButtonsWizardStep.class)
+                .addStep(DockMenuWizardStep.class)
                 .addStep(LimitationsWizardStep.class)
                 .addStep(RunWizardStep.class)
                 .create();

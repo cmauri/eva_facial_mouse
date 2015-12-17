@@ -57,15 +57,14 @@ public class PositioningWizardStep extends WizardStep implements Runnable {
     }
 
     @Override
-    public void onExit(int exitCode) {
+    public void onEnter() {
         AccessibilityServiceModeEngine engine =
                 MainEngine.getInstance().getAccessibilityServiceModeEngine();
-        if (exitCode== WizardStep.EXIT_PREVIOUS) {
-            engine.stop();
-        }
-        else {
-            engine.enablePointer();
-        }
+        engine.disableClick();
+        engine.disableDockPanel();
+        engine.disablePointer();
+        engine.disableScrollButtons();
+        engine.start();
     }
 
     @Override

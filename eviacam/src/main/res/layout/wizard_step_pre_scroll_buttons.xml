@@ -22,7 +22,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:paddingLeft="10dp"
               android:paddingTop="10dp"
               android:paddingRight="10dp">
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/keyboard"
+        android:text="@string/scroll_buttons"
         android:id="@+id/textView2"
         />
 
@@ -45,18 +45,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_marginTop="10dp">
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/imageView7"
+            android:src="@drawable/scrollback_icon"/>
+
+        <Space
+            android:layout_width="20px"
+            android:layout_height="20px"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/keyboard_remarks"
-            android:id="@+id/textView11"/>
+            android:text="@string/scroll_buttons_description"
+            android:id="@+id/textView11"
+            android:textAppearance="@android:style/TextAppearance.Medium"/>
 
     </LinearLayout>
 
-    <Space
-        android:layout_width="20px"
-        android:layout_height="20px"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/click_enabled_next"
+        android:id="@+id/textView8"/>
 
 </LinearLayout>

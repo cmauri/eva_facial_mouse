@@ -40,11 +40,45 @@
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"/>
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/imageView7"
+            android:src="@drawable/scrollback_icon"/>
+
+        <Space
+            android:layout_width="20px"
+            android:layout_height="20px"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scroll_buttons_description"
+            android:id="@+id/textView11"/>
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="20px"
+        android:layout_height="20px"/>
+
+    <com.crea_si.eviacam.wizard.HtmlTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/click_scroll_button_to_continue"
-        android:id="@+id/textView19"/>
+        android:text="@string/scroll_buttons_remaks"
+        android:id="@+id/textView10"/>
+
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView8"
+        android:src="@drawable/navigation_keyboard"/>
 
 </LinearLayout>

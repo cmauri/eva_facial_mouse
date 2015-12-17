@@ -170,7 +170,7 @@
     <string name="recents">Recientes</string>
     <string name="run_this_wizard_at_startup">Ejecutar este asistente al inicio</string>
     <string name="scroll_buttons">Botones de desplazamiento</string>
-    <string name="scroll_buttons_description">Permiten desplazar el contenido de algunas ventanas y vistas al hacer clic.</string>
+    <string name="scroll_buttons_description">Para desplazar contenidos, utilice los Botones de Desplazamiento</string>
     <string name="scroll_buttons_remaks">Debido a restricciones de la plataforma Android, los botones de desplazamiento no siempre funcionan (ej. cuando se utiliza un navegador). En estas circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación.</string>
     <string name="settings">Ajustes</string>
     <string name="wiz_set_keyboard">
@@ -196,10 +196,11 @@
     <string name="close">Cerrar</string>
     <string name="trying_to_detect_face">Intentando detectar rostro...</string>
     <string name="face_detected">Rostro detectado</string>
-    <string name="pre_click_summary">Para hacer clic, detenga el puntero unos instantes sobre el lugar deseado. Pasados unos instantes el clic se generará automáticamente. Si el elemento que hay debajo acepta más de una acción, se mostrará un menú contextual.</string>
+    <string name="pre_click_summary">Para hacer clic, detenga el puntero sobre el lugar deseado. Pasados unos instantes el clic se generará automáticamente. Si el elemento que hay debajo acepta más de una acción, se mostrará un menú contextual.</string>
     <string name="click_enabled_next">En la pantalla siguiente se activará la función del clic.</string>
     <string name="to_test_click">Para probar el clic, utilice el botón de abajo. Note que, si hace clic fuera del botón, se le ofrecerán dos opciones para hacer desplazamiento.</string>
-    <string name="to_continue_make_click">Para continuar, haga un Clic y un Clic Largo al botón</string>
+    <string name="to_continue_make_click">Antes de continuar, intente hacer un Clic y un Clic Largo al botón</string>
+    <string name="click_scroll_button_to_continue">Haga clic al botón de desplazamiento de la parte inferior para continuar</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>

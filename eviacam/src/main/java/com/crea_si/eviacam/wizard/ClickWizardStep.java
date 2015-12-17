@@ -31,7 +31,6 @@ import com.crea_si.eviacam.service.MainEngine;
 import org.codepond.wizardroid.WizardStep;
 
 public class ClickWizardStep extends WizardStep {
-
     private boolean mClickDone= false;
     private boolean mLongClickDone= false;
 
@@ -69,16 +68,14 @@ public class ClickWizardStep extends WizardStep {
     }
 
     @Override
-    public void onExit(int exitCode) {
+    public void onEnter() {
         AccessibilityServiceModeEngine engine =
                 MainEngine.getInstance().getAccessibilityServiceModeEngine();
-        if (exitCode== WizardStep.EXIT_PREVIOUS) {
-            engine.disablePointer();
-            engine.disableClick();
-        }
-        else {
-            engine.disableClick();
-        }
+        engine.enableClick();
+        engine.disableDockPanel();
+        engine.enablePointer();
+        engine.disableScrollButtons();
+        engine.start();
     }
 
     @Override

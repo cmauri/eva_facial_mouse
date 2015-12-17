@@ -29,16 +29,16 @@ import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class PreClickWizardStep extends WizardStep {
+public class PreScrollButtonsWizardStep extends WizardStep {
 
     // You must have an empty constructor for every step
-    public PreClickWizardStep() {
+    public PreScrollButtonsWizardStep() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.wizard_step_pre_click, container, false);
+        View v = inflater.inflate(R.layout.wizard_step_pre_scroll_buttons, container, false);
         return v;
     }
 
@@ -50,6 +50,7 @@ public class PreClickWizardStep extends WizardStep {
         engine.disableDockPanel();
         engine.disablePointer();
         engine.disableScrollButtons();
+        //engine.start();
     }
 
     @Override

@@ -103,14 +103,12 @@ public class SpeedSettingsWizardStep extends WizardStep {
     }
 
     @Override
-    public void onExit(int exitCode) {
+    public void onEnter() {
         AccessibilityServiceModeEngine engine =
                 MainEngine.getInstance().getAccessibilityServiceModeEngine();
-        if (exitCode== WizardStep.EXIT_PREVIOUS) {
-            engine.disablePointer();
-        }
-        else {
-            engine.disablePointer();
-        }
+        engine.disableClick();
+        engine.disableDockPanel();
+        engine.enablePointer();
+        engine.disableScrollButtons();
     }
 }

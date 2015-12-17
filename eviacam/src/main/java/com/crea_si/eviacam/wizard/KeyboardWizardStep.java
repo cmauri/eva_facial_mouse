@@ -86,15 +86,9 @@ public class KeyboardWizardStep extends WizardStep {
     }
 
     @Override
-    public void onExit(int exitCode) {
-        if (exitCode== WizardStep.EXIT_NEXT) {
-            AccessibilityServiceModeEngine engine=
-                    MainEngine.getInstance().getAccessibilityServiceModeEngine();
-            engine.disableClick();
-            engine.disableDockPanel();
-            engine.disablePointer();
-            engine.disableScrollButtons();
-            engine.start();
-        }
+    public void onEnter() {
+        AccessibilityServiceModeEngine engine=
+                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        engine.stop();
     }
 }

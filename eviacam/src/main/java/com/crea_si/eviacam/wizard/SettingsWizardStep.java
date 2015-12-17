@@ -42,15 +42,14 @@ public class SettingsWizardStep extends WizardStep {
         return v;
     }
 
+
     @Override
-    public void onExit(int exitCode) {
+    public void onEnter() {
         AccessibilityServiceModeEngine engine =
                 MainEngine.getInstance().getAccessibilityServiceModeEngine();
-        if (exitCode== WizardStep.EXIT_PREVIOUS) {
-            engine.enablePointer();
-        }
-        else {
-            //
-        }
+        engine.disableClick();
+        engine.disableDockPanel();
+        engine.disablePointer();
+        engine.disableScrollButtons();
     }
 }

@@ -212,6 +212,8 @@
     <string name="face_detected">Face detected</string>
     <string name="pre_click_summary">To make click, stop the pointer for a while over the desired location. After a few moments the click will be generated automatically. If the element below accepts more than one action, a contextual menu will be displayed.</string>
     <string name="click_enabled_next">In the next screen the click function will be enabled.</string>
+    <string name="to_test_click">To test click, use the button below. Notice that, if you click outside the button, two scrolling options are offered.</string>
+    <string name="to_continue_make_click">To continue, make a Click and a Long Click on the button</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. Run EVA Wizard to set it up.</string>
@@ -222,4 +224,5 @@
     <string name="rest_mode_enabled">Rest mode enabled</string>
     <string name="rest_mode_disabled">Rest mode disabled</string>
     <string name="got_it">Got it</string>
+    <string name="button">Button</string>
 </resources>

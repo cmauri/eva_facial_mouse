@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
@@ -29,16 +30,41 @@ import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class PreClickWizardStep extends WizardStep {
+public class ClickWizardStep extends WizardStep {
+
+    private boolean mClickDone= false;
+    private boolean mLongClickDone= false;
 
     // You must have an empty constructor for every step
-    public PreClickWizardStep() {
+    public ClickWizardStep() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.wizard_step_pre_click, container, false);
+        View v = inflater.inflate(R.layout.wizard_step_click, container, false);
+
+        final Button b= (Button) v.findViewById(R.id.button);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                b.setText(R.string.click);
+                mClickDone= true;
+
+                if (mClickDone && mLongClickDone) notifyCompleted();
+            }
+        });
+
+        b.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                b.setText(R.string.long_click);
+                mLongClickDone= true;
+                if (mClickDone && mLongClickDone) notifyCompleted();
+                return true;
+            }
+        });
+
         return v;
     }
 
@@ -47,12 +73,11 @@ public class PreClickWizardStep extends WizardStep {
         AccessibilityServiceModeEngine engine =
                 MainEngine.getInstance().getAccessibilityServiceModeEngine();
         if (exitCode== WizardStep.EXIT_PREVIOUS) {
-            engine.enablePointer();
+            engine.disablePointer();
             engine.disableClick();
         }
         else {
-            engine.enablePointer();
-            engine.enableClick();
+            engine.disableClick();
         }
     }
 

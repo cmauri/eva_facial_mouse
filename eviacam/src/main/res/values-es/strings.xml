@@ -198,6 +198,8 @@
     <string name="face_detected">Rostro detectado</string>
     <string name="pre_click_summary">Para hacer clic, detenga el puntero unos instantes sobre el lugar deseado. Pasados unos instantes el clic se generará automáticamente. Si el elemento que hay debajo acepta más de una acción, se mostrará un menú contextual.</string>
     <string name="click_enabled_next">En la pantalla siguiente se activará la función del clic.</string>
+    <string name="to_test_click">Para probar el clic, utilice el botón de abajo. Note que, si hace clic fuera del botón, se le ofrecerán dos opciones para hacer desplazamiento.</string>
+    <string name="to_continue_make_click">Para continuar, haga un Clic y un Clic Largo al botón</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>

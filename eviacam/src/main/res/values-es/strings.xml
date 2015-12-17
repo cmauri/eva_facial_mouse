@@ -189,7 +189,7 @@
     <string name="done">Hecho</string>
     <string name="keyboard_not_configured">Teclado no configurado</string>
     <string name="keyboard_not_configured_confirm">¿Está seguro que quiere continuar sin configurar el teclado?</string>
-    <string name="skip_wizard">Saltar este asistente</string>
+    <string name="skip_wizard">Omitir este asistente</string>
     <string name="close_wizard_q">¿Cerrar el asistente?</string>
     <string name="eva_not_running">EVA no se está ejecutando</string>
     <string name="eva_not_running_summary">Para ejecutar este asistente es necesario activar el servicio EVA Facial Mouse</string>
@@ -206,7 +206,7 @@
     <string name="rest_mode_enabled">Modo reposo activado</string>
     <string name="rest_mode_disabled">Modo reposo desactivado</string>
     <string name="pointer_speed">Velocidad del puntero</string>
-    <string name="pointer_speed_summary">Mueva la cabeza y trate de alcanzar toda la pantalla. Ajuste la velocidad si es preciso.</string>
+    <string name="pointer_speed_summary">Mueva la cabeza para mover el puntero. Trate de alcanzar toda la pantalla. Ajuste las velocidades si es preciso.</string>
     <string name="to_adjust_speed_settings">Para ajustar la velocidad, vaya a\nAjustes > Accesibilidad>\nEVA Facial Mouse > Ajustes</string>
     <string name="got_it">Entendido</string>
 </resources>

@@ -189,7 +189,7 @@
     <string name="done">Fet</string>
     <string name="keyboard_not_configured">Teclat no configurat</string>
     <string name="keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>
-    <string name="skip_wizard">Saltar aquest assistent</string>
+    <string name="skip_wizard">Ometre aquest assistent</string>
     <string name="close_wizard_q">Tancar l\'assistent?</string>
     <string name="eva_not_running">EVA no s\'està executant</string>
     <string name="eva_not_running_summary">Per executar aquest assistent cal activar el servei EVA Facial Mouse</string>
@@ -205,7 +205,7 @@
     <string name="context_menu_disabled">Menú contextual desactivat</string>
     <string name="rest_mode_enabled">Mode repòs activat</string>
     <string name="rest_mode_disabled">Mode repòs desactivat</string>
-    <string name="pointer_speed_summary">Mogui el cap i tracti d\'abastar tota la pantalla. Ajusti la velocitat si cal.</string>
+    <string name="pointer_speed_summary">Mogui el cap per moure el punter. Tracti d\'abastar tota la pantalla. Ajusti les velocitats si cal.</string>
     <string name="pointer_speed">Velocitat del punter</string>
     <string name="to_adjust_speed_settings">Per ajustar la velocitat, vagi a\nConfiguració > Accessibilitat>\nEVA Facial Mouse > Configuració</string>
     <string name="got_it">Entesos</string>

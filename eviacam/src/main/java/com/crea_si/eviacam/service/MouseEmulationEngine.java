@@ -431,7 +431,12 @@ class MouseEmulationEngine implements
         if (mAccessibilityAction!= null) {
             mPointerLayer.setRestModeAppearance(mAccessibilityAction.getRestModeEnabled());
         }
-        mPointerLayer.updateClickProgress(mDwellClick.getClickProgressPercent());
+        if (mClickEnabled) {
+            mPointerLayer.updateClickProgress(mDwellClick.getClickProgressPercent());
+        }
+        else {
+            mPointerLayer.updateClickProgress(0);
+        }
         mPointerLayer.postInvalidate();
         
         // this needs to be called regularly

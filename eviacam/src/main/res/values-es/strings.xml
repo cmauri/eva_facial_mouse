@@ -194,6 +194,8 @@
     <string name="eva_not_running">EVA no se está ejecutando</string>
     <string name="eva_not_running_summary">Para ejecutar este asistente es necesario activar el servicio EVA Facial Mouse</string>
     <string name="close">Cerrar</string>
+    <string name="trying_to_detect_face">Intentando detectar rostro...</string>
+    <string name="face_detected">Rostro detectado</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>

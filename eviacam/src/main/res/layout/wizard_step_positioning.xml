@@ -45,6 +45,16 @@
         android:layout_height="wrap_content"
         android:text="@string/positioning_summary"
         android:id="@+id/textView4"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/trying_to_detect_face"
+        android:id="@+id/textViewDetectionStatus"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"/>
 
 </LinearLayout>

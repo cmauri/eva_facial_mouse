@@ -542,6 +542,17 @@ public class MainEngine implements
         if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableScrollButtons();
     }
 
+    /**
+     * Return elapsed time since last face detection
+     *
+     * @return elapsed time in ms or 0 if no detection
+     */
+    @Override
+    public long getFaceDetectionElapsedTime() {
+        if (mCurrentState != STATE_RUNNING) return 0;
+        return mFaceDetectionCountdown.getElapsedTime();
+    }
+
     @Override
     public void enableAll() {
         enablePointer();
@@ -625,7 +636,7 @@ public class MainEngine implements
          * to the face detection status
          */
         if (faceDetected) {
-            mFaceDetectionCountdown.reset();
+            mFaceDetectionCountdown.start();
             if (mCurrentState== STATE_STANDBY) {
                 mHandler.post(new Runnable() {
                     @Override

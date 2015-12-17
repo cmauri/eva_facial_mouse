@@ -194,6 +194,8 @@
     <string name="eva_not_running">EVA no s\'està executant</string>
     <string name="eva_not_running_summary">Per executar aquest assistent cal activar el servei EVA Facial Mouse</string>
     <string name="close">Tancar</string>
+    <string name="trying_to_detect_face">Intentant detectar rostre...</string>
+    <string name="face_detected">Rostre detectat</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Executi l\'EVA Assistent per activar-lo.</string>

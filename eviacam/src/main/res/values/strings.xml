@@ -206,6 +206,8 @@
     <string name="eva_not_running">EVA not running</string>
     <string name="eva_not_running_summary">To run this wizard you need to enable EVA Facial Mouse service</string>
     <string name="close">Close</string>
+    <string name="trying_to_detect_face">Trying to detect face...</string>
+    <string name="face_detected">Face detected</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. Run EVA Wizard to set it up.</string>

@@ -22,8 +22,9 @@ package com.crea_si.eviacam.service;
 import android.content.res.Configuration;
 
 interface Engine {
-    void onConfigurationChanged(Configuration newConfig);
+    long getFaceDetectionElapsedTime();
     boolean start();
     void stop();
     void cleanup();
+    void onConfigurationChanged(Configuration newConfig);
 }

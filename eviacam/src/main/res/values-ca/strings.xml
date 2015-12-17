@@ -198,6 +198,8 @@
     <string name="close">Tancar</string>
     <string name="trying_to_detect_face">Intentant detectar rostre...</string>
     <string name="face_detected">Rostre detectat</string>
+    <string name="pre_click_summary">Per fer clic, aturi el punter uns instants sobre el lloc desitjat. Passats uns instants el clic es generarà automàticament. Si l\'element que hi ha a sota accepta més d\'una acció, es mostrarà un menú contextual.</string>
+    <string name="click_enabled_next">A la pantalla següent s\'activarà la funció del clic.</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Executi l\'EVA Assistent per activar-lo.</string>

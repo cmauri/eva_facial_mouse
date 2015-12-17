@@ -29,16 +29,16 @@ import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class SettingsWizardStep extends WizardStep {
+public class PreClickWizardStep extends WizardStep {
 
     // You must have an empty constructor for every step
-    public SettingsWizardStep() {
+    public PreClickWizardStep() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.wizard_step_settings, container, false);
+        View v = inflater.inflate(R.layout.wizard_step_pre_click, container, false);
         return v;
     }
 
@@ -48,9 +48,11 @@ public class SettingsWizardStep extends WizardStep {
                 MainEngine.getInstance().getAccessibilityServiceModeEngine();
         if (exitCode== WizardStep.EXIT_PREVIOUS) {
             engine.enablePointer();
+            engine.disableClick();
         }
         else {
-            //
+            engine.enablePointer();
+            engine.enableClick();
         }
     }
 }

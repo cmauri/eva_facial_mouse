@@ -210,6 +210,8 @@
     <string name="close">Close</string>
     <string name="trying_to_detect_face">Trying to detect face...</string>
     <string name="face_detected">Face detected</string>
+    <string name="pre_click_summary">To make click, stop the pointer for a while over the desired location. After a few moments the click will be generated automatically. If the element below accepts more than one action, a contextual menu will be displayed.</string>
+    <string name="click_enabled_next">In the next screen the click function will be enabled.</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. Run EVA Wizard to set it up.</string>

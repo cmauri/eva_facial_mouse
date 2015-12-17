@@ -158,10 +158,13 @@
     <string name="configure">Configurar</string>
     <string name="keyboard_setup">Configuració del teclat</string>
     <string name="known_limitations">Limitacions conegudes</string>
-    <string name="limitation1">- No funciona amb la majoria de jocs</string>
-    <string name="limitation2">- Els navegadors no gestionen adequadament algunes accions (es recomana usar Google Chrome).</string>
-    <string name="limitation3">- Aplicacions com Maps, Earth i Galeria funcionen amb limitacions.</string>
-    <string name="limitations_intro">Degut a restriccions d\'Android algunes funcions no estan encara disponibles.</string>
+    <string name="limitations_summary">Degut a restriccions d\'Android algunes funcions no estan encara disponibles.
+        \n- No es pot utilitzar la càmera
+        \n- No es poden agafar trucades en la majoria de dispositius
+        \n- No funciona amb la majoria de jocs
+        \n- Aplicacions com Maps, Earth, Galeria i els navegadors web (es recomana Google Chrome) funcionen amb limitacions
+        \n- Els botons de desplaçament no sempre funcionen. En aquestes circumstàncies podeu provar a fer el desplaçament utilitzant el teclat de navegació (vegi a continuació)
+    </string>
     <string name="navigation_keyboard">Teclat de navegació</string>
     <string name="next">Següent</string>
     <string name="open_notifications">Obrir notificacions</string>
@@ -171,7 +174,6 @@
     <string name="run_this_wizard_at_startup">Executar aquest assistent a l\'inici</string>
     <string name="scroll_buttons">Botons de desplaçament</string>
     <string name="scroll_buttons_description">Per desplaçar continguts, utilitzi els Botons de Desplaçament</string>
-    <string name="scroll_buttons_remaks">Degut a restriccions de la plataforma Android, els botons de desplaçament no sempre funcionen (ex. quan s\'utilitza un navegador). En aquestes circumstàncies podeu provar de fer el desplaçament utilitzant el teclat de navegació.</string>
     <string name="settings">Configuració</string>
     <string name="wiz_set_keyboard">
         <![CDATA[1. Obrir: \'Configuració > Idioma i introducció de text\']]>

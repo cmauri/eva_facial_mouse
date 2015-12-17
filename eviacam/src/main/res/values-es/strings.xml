@@ -158,10 +158,13 @@
     <string name="configure">Configurar</string>
     <string name="keyboard_setup">Configuración del teclado</string>
     <string name="known_limitations">Limitaciones conocidas</string>
-    <string name="limitation1">- No funciona con la mayoría de juegos</string>
-    <string name="limitation2">- Los navegadores no gestionan adecuadamente algunas acciones (se recomienda usar Google Chrome).</string>
-    <string name="limitation3">- Aplicaciones como Maps, Earth y Galería funcionan con limitaciones.</string>
-    <string name="limitations_intro">Debido a restricciones de Android algunas funciones no están todavía disponibles.</string>
+    <string name="limitations_summary">Debido a restricciones de Android algunas funciones no están todavía disponibles.
+        \n- No se puede utilizar la cámara
+        \n- No se pueden coger llamadas en la mayoría de dispositivos
+        \n- No funciona con la mayoría de juegos
+        \n- Aplicaciones como Maps, Earth, Galería y los navegadores web (recomendamos Google Chrome) funcionan con limitaciones
+        \n- Los botones de desplazamiento no siempre funcionan. En tales circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación (véase a continuación)
+    </string>
     <string name="navigation_keyboard">Teclado de navegación</string>
     <string name="next">Siguiente</string>
     <string name="open_keyboard">Abrir el teclado</string>
@@ -171,7 +174,7 @@
     <string name="run_this_wizard_at_startup">Ejecutar este asistente al inicio</string>
     <string name="scroll_buttons">Botones de desplazamiento</string>
     <string name="scroll_buttons_description">Para desplazar contenidos, utilice los Botones de Desplazamiento</string>
-    <string name="scroll_buttons_remaks">Debido a restricciones de la plataforma Android, los botones de desplazamiento no siempre funcionan (ej. cuando se utiliza un navegador). En estas circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación.</string>
+
     <string name="settings">Ajustes</string>
     <string name="wiz_set_keyboard">
         <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto\']]>

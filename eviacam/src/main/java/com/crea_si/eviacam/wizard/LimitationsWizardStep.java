@@ -26,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -39,5 +41,21 @@ public class LimitationsWizardStep extends WizardStep {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.wizard_step_limitations, container, false);
+    }
+
+    @Override
+    public void onEnter() {
+        AccessibilityServiceModeEngine engine =
+                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        engine.disableClick();
+        engine.disableDockPanel();
+        engine.disablePointer();
+        engine.disableScrollButtons();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
     }
 }

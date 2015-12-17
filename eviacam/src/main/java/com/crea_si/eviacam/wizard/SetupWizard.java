@@ -28,7 +28,6 @@ import com.crea_si.eviacam.service.InputMethodAction;
 import com.crea_si.eviacam.R;
 
 import org.codepond.wizardroid.WizardFlow;
-import org.codepond.wizardroid.WizardStep;
 import org.codepond.wizardroid.layouts.BasicWizardLayout;
 
 public class SetupWizard extends BasicWizardLayout {
@@ -68,8 +67,8 @@ public class SetupWizard extends BasicWizardLayout {
                 .addStep(ClickWizardStep.class)
                 .addStep(PreScrollButtonsWizardStep.class)
                 .addStep(ScrollButtonsWizardStep.class)
-                .addStep(DockMenuWizardStep.class)
                 .addStep(LimitationsWizardStep.class)
+                .addStep(DockMenuWizardStep.class)
                 .addStep(RunWizardStep.class)
                 .create();
     }

@@ -66,7 +66,7 @@
     <string name="normal">Normal</string>
     <string name="small">Petit</string>
     <string name="version">Versió</string>
-    <string name="wizard_will_run">L\'assistent s\'executarà el proper cop que engegui EVA</string>
+    <string name="wizard_will_run">L\'assistent s\'executarà el proper cop que iniciï EVA</string>
 
     <!-- Actions available through the accessibility API -->
     <string name="click">Clic</string>
@@ -87,7 +87,7 @@
     <string name="home_button">Botó d\'inici</string>
     <string name="recents_button">Botó recents</string>
     <string name="notifications_button">Botó de notificació</string>
-    <string name="dock_menu_button">Expandir/replegar menú encastat</string>
+    <string name="dock_menu_button">Expandir/replegar Menú Flotant</string>
     <string name="softkeyboard_button">Obrir teclat</string>
     <string name="scroll_refresh_button">Refrescar el Botons de Desplaçament</string>
     <string name="toggle_context_menu">Commutar el Menú Contextual del punter</string>
@@ -143,7 +143,7 @@
     <string name="wizard_icon_name">EVA Assistent</string>
     <string name="back">Enrere</string>
     <string name="positioning">Posicionament</string>
-    <string name="positioning_summary">Instal·li el dispositiu en front de la cara, amb el cap en una posició natural, a uns 30-50cm.\nLa cara completa ha d\'aparèixer centrada al visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
+    <string name="positioning_summary">Instal·li el dispositiu enfront de la cara, amb el cap en una posició natural, a uns 30-50cm.\nLa cara completa ha d\'aparèixer dins el visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
     <string name="check">Comprovar</string>
     <string name="configuration_settings">Opcions de configuració</string>
     <string name="configuration_settings_summary">La velocitat del punter i altres paràmetres es poden ajustar des de\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
@@ -202,9 +202,9 @@
     <string name="close">Tancar</string>
     <string name="trying_to_detect_face">Intentant detectar rostre...</string>
     <string name="face_detected">Rostre detectat</string>
-    <string name="pre_click_summary">Per fer clic, aturi el punter sobre el lloc desitjat. Passats uns instants el clic es generarà automàticament. Si l\'element que hi ha a sota accepta més d\'una acció, es mostrarà un menú contextual.</string>
-    <string name="click_enabled_next">A la pantalla següent s\'activarà la funció del clic.</string>
-    <string name="to_test_click">Per provar el clic, utilitzi el botó de sota. Noti que, si fa clic fora del botó, se li ofereixen dues opcions per fer desplaçacament.</string>
+    <string name="pre_click_summary">Per fer clic, aturi el punter sobre el lloc desitjat. Passats uns instants el clic es generarà automàticament. Si l\'element que hi ha a sota accepta més d\'una acció, es mostrarà el Menú Contextual.</string>
+    <string name="click_enabled_next">A la pantalla següent s\'activarà el punter amb la funció del clic</string>
+    <string name="to_test_click">Per provar el clic, utilitzi el botó següent. Noti que, si fa clic fora del botó, se li ofereixen dues opcions per fer desplaçacament.</string>
     <string name="to_continue_make_click">Abans de continuar, intenti fer un Clic i un Clic Llarg al botó</string>
     <string name="click_scroll_button_to_continue">Faci clic al botó de desplaçament de la part inferior per continuar</string>
     <string name="notification_icon">Icona de notificació</string>
@@ -217,10 +217,10 @@
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Executi l\'EVA Assistent per activar-lo.</string>
     <string name="pointer_stopped_toast">EVA s\'ha aturat %1$s sense detectar el rostre. Per tornar-lo a activar asseguri\'s que el seu rostre apareix dins el visor de càmera.</string>
     <string name="navigation_kbd_advice">Utilitzi el Teclat de Navegació per desplaçar els continguts del navegador web.</string>
-    <string name="context_menu_enabled">Menú contextual activat</string>
-    <string name="context_menu_disabled">Menú contextual desactivat</string>
-    <string name="rest_mode_enabled">Mode repòs activat</string>
-    <string name="rest_mode_disabled">Mode repòs desactivat</string>
+    <string name="context_menu_enabled">Menú Contextual activat</string>
+    <string name="context_menu_disabled">Menú Contextual desactivat</string>
+    <string name="rest_mode_enabled">Mode Repòs activat</string>
+    <string name="rest_mode_disabled">Mode Repòs desactivat</string>
     <string name="got_it">Entesos</string>
     <string name="button">Botó</string>
 </resources>

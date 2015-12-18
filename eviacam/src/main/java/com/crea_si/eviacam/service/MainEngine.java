@@ -311,6 +311,7 @@ public class MainEngine implements
          * Check and update current state
          */
         if (mCurrentState==STATE_RUNNING) return true;
+        resume();
         if (mCurrentState!= STATE_STOPPED) return false;
         
         /*

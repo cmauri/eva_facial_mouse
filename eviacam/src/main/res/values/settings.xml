@@ -25,7 +25,7 @@
     <integer name="axis_speed_min">1</integer>
     <integer name="axis_speed_max">25</integer>
     
-    <integer name="acceleration_default">1</integer>
+    <integer name="acceleration_default">2</integer>
     <integer name="acceleration_min">0</integer>
     <integer name="acceleration_max">5</integer>
     

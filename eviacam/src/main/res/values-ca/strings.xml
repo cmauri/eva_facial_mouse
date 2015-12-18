@@ -66,6 +66,7 @@
     <string name="normal">Normal</string>
     <string name="small">Petit</string>
     <string name="version">Versió</string>
+    <string name="wizard_will_run">L\'assistent s\'executarà el proper cop que engegui EVA</string>
 
     <!-- Actions available through the accessibility API -->
     <string name="click">Clic</string>

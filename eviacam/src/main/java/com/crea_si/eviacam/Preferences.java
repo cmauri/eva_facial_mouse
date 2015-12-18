@@ -201,10 +201,14 @@ public class Preferences {
         return getSharedPreferences(c).getBoolean(KEY_RUN_TUTORIAL, true);
     }
 
-    public static void setRunTutorial(Context c, boolean value) {
-        SharedPreferences.Editor spe= getSharedPreferences(c).edit();
+    public static void setRunTutorial(SharedPreferences sp, boolean value) {
+        SharedPreferences.Editor spe= sp.edit();
         spe.putBoolean(KEY_RUN_TUTORIAL, value);
         spe.apply();
+    }
+
+    public static void setRunTutorial(Context c, boolean value) {
+        setRunTutorial(getSharedPreferences(c), value);
     }
 
     /**

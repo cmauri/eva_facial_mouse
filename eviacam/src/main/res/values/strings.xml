@@ -72,7 +72,7 @@
     <string name="help">Help</string>
     <string name="configuration_wizard">Configuration wizard</string>
     <string name="version">Version</string>
-
+    <string name="wizard_will_run">The wizard will run the next time you start EVA</string>
 
     <!-- Actions available through the accessibility API -->
     <string name="click">Click</string>

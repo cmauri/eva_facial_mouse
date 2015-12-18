@@ -66,6 +66,7 @@
     <string name="normal">Normal</string>
     <string name="small">Pequeño</string>
     <string name="version">Versión</string>
+    <string name="wizard_will_run">El asistente se ejecutará la próxima vez que arranque EVA</string>
 
     <!-- Actions available through the accessibility API -->
     <string name="click">Clic</string>

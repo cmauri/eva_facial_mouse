@@ -95,9 +95,9 @@
     <string name="notifications_button">Notifications button</string>
     <string name="dock_menu_button">Expand/collapse dock menu</string>
     <string name="softkeyboard_button">Open keyboard</string>
-    <string name="scroll_refresh_button">Refresh scrolling buttons</string>
-    <string name="toggle_context_menu">Toggle pointer context menu</string>
-    <string name="toggle_rest_mode">Toggle rest mode</string>
+    <string name="scroll_refresh_button">Refresh Scroll Buttons</string>
+    <string name="toggle_context_menu">Toggle pointer Context Menu</string>
+    <string name="toggle_rest_mode">Toggle Rest mode. To disable automatic clicks while you read or watch a video, for instance.</string>
 
     <!-- Messages for the notification -->
     <string name="running_click_to_pause">Running (click to pause)</string>
@@ -171,11 +171,12 @@
     <string name="positioning">Positioning</string>
     <string name="positioning_summary">Mount the device facing the user\'s face, with his head in a natural position, around 30-50cm.\nThe full face should appear centered in the viewer above to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face.</string>
     <string name="dock_menu">Dock menu</string>
+    <string name="dock_menu_summary">The Dock Menu on the left edge of the screen allows quick access to a number of functions</string>
     <string name="home">Home</string>
     <string name="recents">Recents</string>
     <string name="open_notifications">Open notifications</string>
     <string name="open_keyboard">Open keyboard</string>
-    <string name="scroll_buttons">Scroll buttons</string>
+    <string name="scroll_buttons">Scroll Buttons</string>
     <string name="scroll_buttons_description">To scroll contents, use the Scroll Buttons</string>
     <string name="navigation_keyboard">Navigation keyboard</string>
     <string name="keyboard">Keyboard</string>
@@ -195,7 +196,7 @@
         \n- You can\'t take incoming calls in most devices
         \n- Most games don\'t work
         \n- Applications such as Maps, Earth, Gallery and web browsers (Google Chrome is recommended) work with limitations
-        \n- Scrolling buttons not always work. In such circumstances you could try scrolling using the navigation keyboard (see below)
+        \n- Scroll Buttons not always work. In such circumstances you could try scrolling using the navigation keyboard (see below)
     </string>
     <string name="how_to_run"><![CDATA[To start EVA go to:
         \n\nSettings > Accessibility > %1$s]]></string>

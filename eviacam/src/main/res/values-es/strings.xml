@@ -88,9 +88,9 @@
     <string name="notifications_button">Botón de notificación</string>
     <string name="dock_menu_button">Expandir/replegar menú flotante</string>
     <string name="softkeyboard_button">Abrir teclado</string>
-    <string name="scroll_refresh_button">Refrescar los botones de desplazamiento</string>
-    <string name="toggle_context_menu">Conmutar el menú contextual del puntero</string>
-    <string name="toggle_rest_mode">Commutar el modo reposo</string>
+    <string name="scroll_refresh_button">Refrescar los Botones de Desplazamiento</string>
+    <string name="toggle_context_menu">Conmutar el Menú Contextual del puntero</string>
+    <string name="toggle_rest_mode">Commutar el Modo Reposo. Para desactivar el clic automático mientras lee o mira un video, por ejemplo.</string>
 
     <!-- Messages for the notification -->
     <string name="running_click_to_pause">Se está ejecutando (clic para pausar)</string>
@@ -148,6 +148,7 @@
     <string name="configuration_settings_summary">La velocidad del puntero y otros parámetros pueden ajustarse desde\nAjustes > Accesibilidad> EVA Facial Mouse > Ajustes</string>
     <string name="configuration_wizard">Asistente de configuración</string>
     <string name="dock_menu">Menú flotante</string>
+    <string name="dock_menu_summary">El Menú Flotante que aparece en el borde izquierdo de la pantalla permite el acceso rápido a una serie de funciones</string>
     <string name="finish">Finalizar</string>
     <string name="help">Ayuda</string>
     <string name="home">Inicio</string>
@@ -216,4 +217,5 @@
     <string name="pointer_speed">Velocidad del puntero</string>
     <string name="pointer_speed_summary">Mueva la cabeza para mover el puntero. Trate de alcanzar toda la pantalla. Ajuste las velocidades si es preciso.</string>
     <string name="got_it">Entendido</string>
+    <string name="button">Botón</string>
 </resources>

@@ -142,10 +142,10 @@
     <string name="wizard_icon_name">EVA Assistent</string>
     <string name="back">Enrere</string>
     <string name="positioning">Posicionament</string>
-    <string name="positioning_summary">Instal·li el dispositiu en front de la cara de l\'usuari, amb el cap en una posició natural, a uns 30-50cm.\nLa cara completa ha d\'aparèixer centrada al visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
+    <string name="positioning_summary">Instal·li el dispositiu en front de la cara, amb el cap en una posició natural, a uns 30-50cm.\nLa cara completa ha d\'aparèixer centrada al visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
     <string name="check">Comprovar</string>
     <string name="configuration_settings">Opcions de configuració</string>
-    <string name="configuration_settings_summary">La velocitat del punter i altres paràmetres es poden ajustar des de\nConfiguració > Accessibilitat> EVA Facial Mouse > Configuració</string>
+    <string name="configuration_settings_summary">La velocitat del punter i altres paràmetres es poden ajustar des de\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
     <string name="configuration_wizard">Assistent de configuració</string>
     <string name="dock_menu">Menú flotant</string>
     <string name="dock_menu_summary">El Menú Flotant que apareix en la vora esquerra de la pantalla permet l\'accés ràpid a una sèrie de funcions</string>
@@ -161,7 +161,7 @@
     <string name="known_limitations">Limitacions conegudes</string>
     <string name="limitations_summary">Degut a restriccions d\'Android algunes funcions no estan encara disponibles.
         \n- No es pot utilitzar la càmera
-        \n- No es poden agafar trucades en la majoria de dispositius
+        \n- No es poden agafar trucades en alguns dispositius
         \n- No funciona amb la majoria de jocs
         \n- Aplicacions com Maps, Earth, Galeria i els navegadors web (es recomana Google Chrome) funcionen amb limitacions
         \n- Els botons de desplaçament no sempre funcionen. En aquestes circumstàncies podeu provar a fer el desplaçament utilitzant el teclat de navegació (vegi a continuació)
@@ -208,6 +208,9 @@
     <string name="click_scroll_button_to_continue">Faci clic al botó de desplaçament de la part inferior per continuar</string>
     <string name="notification_icon">Icona de notificació</string>
     <string name="notification_icon_summary">Per pausar i reprendre EVA (p.e. quan es proporciona assistència), utilitzi la icona de notificació de la part superior.</string>
+    <string name="we_finished">Ja hem acabat!</string>
+    <string name="run_wizard_again">Per tornar a executar aquest assistent, vagi a\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
+    <string name="full_enable_after">Totes les funcions d\'EVA s\'activaran al finalitzar aquest assistent</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Executi l\'EVA Assistent per activar-lo.</string>

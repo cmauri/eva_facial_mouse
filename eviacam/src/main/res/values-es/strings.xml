@@ -142,7 +142,7 @@
     <string name="wizard_icon_name">EVA Asistente</string>
     <string name="back">Atrás</string>
     <string name="positioning">Posicionamiento</string>
-    <string name="positioning_summary">Instale el dispositivo en frente de la cara del usuario, con la cabeza en posición natural, a unos 30-50cm.\nLa cara completa debe aparecer centrada en el visor de la parte superior para ser detectada. Cuando esto sucede, el marco pasa a rojo y una cruz indica el centro del rostro.</string>
+    <string name="positioning_summary">Instale el dispositivo en frente de la cara, con la cabeza en posición natural, a unos 30-50cm.\nLa cara completa debe aparecer centrada en el visor de la parte superior para ser detectada. Cuando esto sucede, el marco pasa a rojo y una cruz indica el centro del rostro.</string>
     <string name="check">Comprobar</string>
     <string name="configuration_settings">Opciones de configuración</string>
     <string name="configuration_settings_summary">La velocidad del puntero y otros parámetros pueden ajustarse desde\nAjustes > Accesibilidad> EVA Facial Mouse > Ajustes</string>
@@ -161,7 +161,7 @@
     <string name="known_limitations">Limitaciones conocidas</string>
     <string name="limitations_summary">Debido a restricciones de Android algunas funciones no están todavía disponibles.
         \n- No se puede utilizar la cámara
-        \n- No se pueden coger llamadas en la mayoría de dispositivos
+        \n- No se pueden coger llamadas en algunos dispositivos
         \n- No funciona con la mayoría de juegos
         \n- Aplicaciones como Maps, Earth, Galería y los navegadores web (recomendamos Google Chrome) funcionan con limitaciones
         \n- Los botones de desplazamiento no siempre funcionan. En tales circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación (véase a continuación)
@@ -207,6 +207,9 @@
     <string name="click_scroll_button_to_continue">Haga clic al botón de desplazamiento de la parte inferior para continuar</string>
     <string name="notification_icon">Icono de notificación</string>
     <string name="notification_icon_summary">Para pausar y reanudar EVA (ej. cuando se proporciona asistencia), utilice el icono de notificación de la parte superior.</string>
+    <string name="we_finished">¡Hemos finalizado!</string>
+    <string name="run_wizard_again">Para volver a ejecutar este asistente, vaya a\nAjustes > Accesibilidad > EVA Facial Mouse > Ajustes</string>
+    <string name="full_enable_after">Todas las funciones de EVA se activarán al finalizar este asistente</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>

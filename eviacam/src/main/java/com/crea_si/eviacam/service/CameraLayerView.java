@@ -156,7 +156,7 @@ public class CameraLayerView extends RelativeLayout {
         mBorderDrawer.postInvalidate();
     }
 
-    public void showDetectionFeedback() { mShowDetectionFeedback= true; }
+    public void enableDetectionFeedback() { mShowDetectionFeedback= true; }
 
-    public void hideDetectionFeedback() { mShowDetectionFeedback= false; }
+    public void disableDetectionFeedback() { mShowDetectionFeedback= false; }
 }

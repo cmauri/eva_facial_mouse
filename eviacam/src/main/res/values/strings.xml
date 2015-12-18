@@ -169,7 +169,7 @@
     <string name="check">Check</string>
     <string name="done">Done</string>
     <string name="positioning">Positioning</string>
-    <string name="positioning_summary">Mount the device facing the user\'s face, with his head in a natural position, around 30-50cm.\nThe full face should appear centered in the viewer above to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face.</string>
+    <string name="positioning_summary">Mount the device facing the face, with the head in a natural position, around 30-50cm.\nThe full face should appear centered in the viewer above to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face.</string>
     <string name="dock_menu">Dock menu</string>
     <string name="dock_menu_summary">The Dock Menu on the left edge of the screen allows quick access to a number of functions</string>
     <string name="home">Home</string>
@@ -193,14 +193,13 @@
     <string name="known_limitations">Known limitations</string>
     <string name="limitations_summary">Due to Android restrictions some features are not currently available, yet.
         \n- You can\'t use the camera
-        \n- You can\'t take incoming calls in most devices
+        \n- You can\'t take incoming calls in some devices
         \n- Most games don\'t work
         \n- Applications such as Maps, Earth, Gallery and web browsers (Google Chrome is recommended) work with limitations
         \n- Scroll Buttons not always work. In such circumstances you could try scrolling using the navigation keyboard (see below)
     </string>
     <string name="how_to_run"><![CDATA[To start EVA go to:
         \n\nSettings > Accessibility > %1$s]]></string>
-    <string name="run_this_wizard_at_startup">Run this wizard at startup</string>
     <string name="skip_wizard">Skip this wizard</string>
     <string name="close_wizard_q">Close wizard?</string>
     <string name="eva_not_running">EVA not running</string>
@@ -215,6 +214,9 @@
     <string name="click_scroll_button_to_continue">Click on the Scroll Button of the bottom right to continue</string>
     <string name="notification_icon">Notification icon</string>
     <string name="notification_icon_summary">To pause and resume EVA (e.g. when providing assistance), use the notification icon above.</string>
+    <string name="we_finished">We finished!</string>
+    <string name="run_wizard_again">To run this wizard again, go to\nSettings > Accessibility > EVA Facial Mouse > Settings</string>
+    <string name="full_enable_after">All the functions of EVA will be enabled after this wizard</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. Run EVA Wizard to set it up.</string>
@@ -226,4 +228,5 @@
     <string name="rest_mode_disabled">Rest mode disabled</string>
     <string name="got_it">Got it</string>
     <string name="button">Button</string>
+
 </resources>

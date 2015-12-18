@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
+import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.R;
 
 import org.codepond.wizardroid.WizardStep;
@@ -55,6 +56,7 @@ public class WelcomeWizardStep extends WizardStep {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             WizardUtils.fullStartEngine();
+                            Preferences.setRunTutorial(getActivity(), false);
                             WizardUtils.finishWizard(getActivity());
                         }
                     });

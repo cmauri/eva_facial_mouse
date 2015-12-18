@@ -324,6 +324,8 @@ public class MainEngine implements
         // show GUI elements
         mOverlayView.requestLayout();
         mOverlayView.setVisibility(View.VISIBLE);
+
+        mCameraLayerView.enableDetectionFeedback();
         
         // start processing frames
         mCameraListener.startCamera();
@@ -362,7 +364,7 @@ public class MainEngine implements
     }
 
     private void doPause() {
-        mCameraLayerView.hideDetectionFeedback();
+        mCameraLayerView.disableDetectionFeedback();
 
         // pause specific engine
         if (mMotionProcessor!= null) {
@@ -383,7 +385,7 @@ public class MainEngine implements
         mPowerManagement.lockFullPower();
         //mCameraListener.setUpdateViewer(true);
 
-        mCameraLayerView.showDetectionFeedback();
+        mCameraLayerView.enableDetectionFeedback();
 
         // resume specific engine
         if (mMotionProcessor!= null) {

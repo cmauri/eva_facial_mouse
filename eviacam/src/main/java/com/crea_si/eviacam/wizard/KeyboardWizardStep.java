@@ -29,8 +29,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
 import com.crea_si.eviacam.service.InputMethodAction;
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -80,5 +82,13 @@ public class KeyboardWizardStep extends WizardStep {
     public void onResume() {
         super.onResume();
         checkUpdate(getActivity().findViewById(android.R.id.content));
+        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+    }
+
+    @Override
+    public void onEnter() {
+        AccessibilityServiceModeEngine engine=
+                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        engine.stop();
     }
 }

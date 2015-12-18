@@ -114,7 +114,7 @@
         
         <ListPreference
             android:key="docking_panel_edge"
-            android:title="@string/docking_panel_edge"
+            android:title="@string/dock_menu_position"
             android:summary="%s"
             android:entries="@array/docking_panel_edge_entries"
             android:entryValues="@array/docking_panel_edge_values"
@@ -150,12 +150,8 @@
         android:title="@string/help">
 
         <Preference
+            android:key="wizard"
             android:title="@string/configuration_wizard">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:targetPackage="com.crea_si.eviacam.service"
-                android:targetClass="com.crea_si.eviacam.wizard.WizardActivity"
-            />
         </Preference>
 
         <Preference

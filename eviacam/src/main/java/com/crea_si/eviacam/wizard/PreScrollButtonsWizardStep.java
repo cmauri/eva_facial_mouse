@@ -18,12 +18,10 @@
 */
 package com.crea_si.eviacam.wizard;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
@@ -31,16 +29,17 @@ import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class LimitationsWizardStep extends WizardStep {
+public class PreScrollButtonsWizardStep extends WizardStep {
 
     // You must have an empty constructor for every step
-    public LimitationsWizardStep() {
+    public PreScrollButtonsWizardStep() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.wizard_step_limitations, container, false);
+        View v = inflater.inflate(R.layout.wizard_step_pre_scroll_buttons, container, false);
+        return v;
     }
 
     @Override
@@ -51,6 +50,7 @@ public class LimitationsWizardStep extends WizardStep {
         engine.disableDockPanel();
         engine.disablePointer();
         engine.disableScrollButtons();
+        //engine.start();
     }
 
     @Override

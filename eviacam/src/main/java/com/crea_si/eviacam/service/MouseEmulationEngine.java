@@ -20,14 +20,11 @@ package com.crea_si.eviacam.service;
 
 import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.Preferences;
-import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.api.IMouseEventListener;
 
 import android.accessibilityservice.AccessibilityService;
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -37,43 +34,51 @@ import android.os.SystemClock;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 
-public class MouseEmulationEngine implements
-        MotionProcessor, SpeedSettingsView.OnDoneListener,
+class MouseEmulationEngine implements
+        MotionProcessor,
         SharedPreferences.OnSharedPreferenceChangeListener {
     /*
      * states of the engine
      */
     private static final int STATE_STOPPED= 0;
     private static final int STATE_RUNNING= 1;
-    private static final int STATE_PAUSED= 2;
 
     // current state
     private int mState= STATE_STOPPED;
 
     private final Service mService;
 
-    private final OverlayView mOverlayView;
-
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
+
+    // pointer is enabled?
+    private boolean mPointerEnabled= true;
     
     // layer for drawing the docking panel
     private DockPanelLayerView mDockPanelView;
 
+    // docking panel enabled?
+    private boolean mDockPanelEnabled= true;
+
     // layer for the scrolling user interface
     private ScrollLayerView mScrollLayerView;
+
+    // scroll buttons enabled?
+    private boolean mScrollEnabled= true;
     
     // layer for drawing different controls
-    private ControlsLayerView mControlsLayer;
+    private ControlsLayerView mContextMenuView;
     
     // object which provides the logic for the pointer motion and actions 
     private PointerControl mPointerControl;
     
     // dwell clicking function
     private DwellClick mDwellClick;
+
+    // click enabled?
+    private boolean mClickEnabled= true;
 
     // whether to play a sound when action performed
     private boolean mSoundOnClick;
@@ -87,18 +92,44 @@ public class MouseEmulationEngine implements
     // event listener
     private IMouseEventListener mMouseEventListener;
 
-    // is in calibration mode?
-    private boolean mCalibrationMode= false;
-
-    // view to configure the speed of the pointer
-    SpeedSettingsView mSpeedSettingsView;
-
     // constructor
     public MouseEmulationEngine(Service s, OverlayView ov) {
-        mService= s;
-        mOverlayView= ov;
 
+        /*
+         * Final stuff
+         */
+        mService= s;
         mAudioManager= (AudioManager) s.getSystemService(Context.AUDIO_SERVICE);
+
+        /*
+         * UI stuff
+         */
+        if (s instanceof AccessibilityService) {
+            mDockPanelView= new DockPanelLayerView(s);
+            ov.addFullScreenLayer(mDockPanelView);
+        }
+
+        mScrollLayerView= new ScrollLayerView(s);
+        ov.addFullScreenLayer(mScrollLayerView);
+
+        mContextMenuView = new ControlsLayerView(s);
+        ov.addFullScreenLayer(mContextMenuView);
+
+        // pointer layer (should be the last one)
+        mPointerLayer= new PointerLayerView(s);
+        ov.addFullScreenLayer(mPointerLayer);
+
+        /*
+         * control stuff
+         */
+        mPointerControl= new PointerControl(s, mPointerLayer);
+
+        mDwellClick= new DwellClick(s);
+
+        if (s instanceof AccessibilityService) {
+            mAccessibilityAction= new AccessibilityAction ((AccessibilityService) s,
+                    mContextMenuView, mDockPanelView, mScrollLayerView);
+        }
 
         // register preference change listener
         Preferences.getSharedPreferences(s).registerOnSharedPreferenceChangeListener(this);
@@ -122,116 +153,132 @@ public class MouseEmulationEngine implements
         }
     }
 
-    private void init() {
-        /* need to perform speed calibration? */
-        if (mService instanceof AccessibilityService &&
-            !Preferences.getMouseCalibrationPerformed(mService)) {
-            mCalibrationMode= true;
+    public void enablePointer() {
+        if (!mPointerEnabled) {
+            mPointerControl.reset();
+            mPointerLayer.setVisibility(View.VISIBLE);
+
+            // Reset context menu
+            //if (mAccessibilityAction!= null) { mAccessibilityAction.reset(); }
+
+            mPointerEnabled= true;
         }
-
-        /*
-         * UI stuff
-         */
-        if (mService instanceof AccessibilityService) {
-            mDockPanelView= new DockPanelLayerView(mService);
-            mOverlayView.addFullScreenLayer(mDockPanelView);
-            if (mCalibrationMode) mDockPanelView.setVisibility(View.INVISIBLE);
-        }
-
-        mScrollLayerView= new ScrollLayerView(mService);
-        mOverlayView.addFullScreenLayer(mScrollLayerView);
-        if (mCalibrationMode) mScrollLayerView.setVisibility(View.INVISIBLE);
-
-        mControlsLayer= new ControlsLayerView(mService);
-        mOverlayView.addFullScreenLayer(mControlsLayer);
-        if (mCalibrationMode) mControlsLayer.setVisibility(View.INVISIBLE);
-
-        // pointer layer (should be the last one)
-        mPointerLayer= new PointerLayerView(mService);
-        mOverlayView.addFullScreenLayer(mPointerLayer);
-
-        /*
-         * control stuff
-         */
-        mPointerControl= new PointerControl(mService, mPointerLayer);
-
-        mDwellClick= new DwellClick(mService);
-
-        if (mService instanceof AccessibilityService) {
-            mAccessibilityAction= new AccessibilityAction ((AccessibilityService) mService,
-                    mControlsLayer, mDockPanelView, mScrollLayerView);
-        }
-
-        if (mCalibrationMode) {
-            mSpeedSettingsView= new SpeedSettingsView(mService);
-            mSpeedSettingsView.setOnDoneListener(this);
-        }
-
-        mState = STATE_PAUSED;
     }
-    
-    @Override
-    public void pause() {
-        if (mState != STATE_RUNNING) return;
-        if (mSpeedSettingsView!= null) OverlayUtils.removeView(mSpeedSettingsView);
 
-        mPointerLayer.setVisibility(View.INVISIBLE);
-        mScrollLayerView.setVisibility(View.INVISIBLE);
-        mControlsLayer.setVisibility(View.INVISIBLE);
-        if (mDockPanelView!= null) mDockPanelView.setVisibility(View.INVISIBLE);
-        mState = STATE_PAUSED;
+    public void disablePointer() {
+        if (mPointerEnabled) {
+            mPointerLayer.setVisibility(View.INVISIBLE);
+
+            // Reset (remove) context menu
+            if (mAccessibilityAction!= null) { mAccessibilityAction.reset(); }
+
+            mPointerEnabled= false;
+        }
     }
-    
-    @Override
-    public void resume() {
+
+    public void enableClick() {
+        if (!mClickEnabled) {
+            // Reset context menu
+            //if (mAccessibilityAction!= null) { mAccessibilityAction.reset(); }
+            //mContextMenuView.setVisibility(View.VISIBLE);
+
+            mDwellClick.reset();
+
+            mClickEnabled= true;
+        }
+    }
+
+    public void disableClick() {
+        if (mClickEnabled) {
+            // Reset (remove) context menu
+            if (mAccessibilityAction!= null) { mAccessibilityAction.reset(); }
+            //mContextMenuView.setVisibility(View.INVISIBLE);
+
+            mClickEnabled= false;
+        }
+    }
+
+    public void enableDockPanel() {
+        if (!mDockPanelEnabled) {
+            if (mDockPanelView != null) mDockPanelView.setVisibility(View.VISIBLE);
+            mDockPanelEnabled= true;
+        }
+    }
+
+    public void disableDockPanel() {
+        if (mDockPanelEnabled) {
+            if (mDockPanelView != null) mDockPanelView.setVisibility(View.INVISIBLE);
+            mDockPanelEnabled= false;
+        }
+    }
+
+    public void enableScrollButtons() {
+        if (!mScrollEnabled) {
+            if (mAccessibilityAction!= null) { mAccessibilityAction.enableScrollingScan(); }
+            mScrollEnabled= true;
+        }
+    }
+
+    public void disableScrollButtons() {
+        if (mScrollEnabled) {
+            if (mAccessibilityAction!= null) { mAccessibilityAction.disableScrollingScan(); }
+            mScrollEnabled= false;
+        }
+    }
+
+    //@Override
+    public void start() {
         if (mState == STATE_RUNNING) return;
-        if (mState == STATE_STOPPED) init();
-        if (mSpeedSettingsView!= null) OverlayUtils.addInteractiveView(mSpeedSettingsView);
-        doResume();
+
+        /* Pointer layer */
+        mPointerControl.reset();
+        mPointerLayer.setVisibility(mPointerEnabled? View.VISIBLE : View.INVISIBLE);
+
+        /* Click */
+        // Reset context menu when needed if previously shown
+        if (mAccessibilityAction!= null) mAccessibilityAction.reset();
+        mContextMenuView.setVisibility(View.VISIBLE);
+        mDwellClick.reset();
+
+        /* Dock panel */
+        if (mDockPanelView != null) {
+            mDockPanelView.setVisibility(mDockPanelEnabled ? View.VISIBLE : View.INVISIBLE);
+        }
+
+        /* Scroll buttons */
+        if (mAccessibilityAction!= null) {
+            if (mScrollEnabled) mAccessibilityAction.enableScrollingScan ();
+            else mAccessibilityAction.disableScrollingScan();
+        }
+        mScrollLayerView.setVisibility(View.VISIBLE);
+
         mState = STATE_RUNNING;
     }
 
-    private void doResume() {
-        mPointerControl.reset();
-        mDwellClick.reset();
-        if (mAccessibilityAction!= null) mAccessibilityAction.reset();
+    //@Override
+    public void stop() {
+        if (mState != STATE_RUNNING) return;
 
-        if (mSpeedSettingsView== null) {
-            if (mDockPanelView != null) mDockPanelView.setVisibility(View.VISIBLE);
-            mControlsLayer.setVisibility(View.VISIBLE);
-            mScrollLayerView.setVisibility(View.VISIBLE);
-        }
-        mPointerLayer.setVisibility(View.VISIBLE);
-    }
-
-    /* When speed calibration done */
-    @Override
-    public void onDone() {
-        OverlayUtils.removeView(mSpeedSettingsView);
-        mSpeedSettingsView = null;
-        Preferences.setMouseCalibrationPerformed(mService, true);
+        /* Pointer layer */
         mPointerLayer.setVisibility(View.INVISIBLE);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(mService)
-                .setTitle(R.string.app_name)
-                .setMessage(R.string.to_adjust_speed_settings)
-                .setPositiveButton(R.string.got_it, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        onDone2();
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .create();
-        alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-        alertDialog.show();
+        /* Click */
+        // Reset context menu when needed if previously shown
+        if (mAccessibilityAction!= null) mAccessibilityAction.reset();
+        mContextMenuView.setVisibility(View.INVISIBLE);
+
+        /* Dock panel */
+        if (mDockPanelView != null) {
+            mDockPanelView.setVisibility(View.INVISIBLE);
+        }
+
+        /* Scroll buttons */
+        if (mAccessibilityAction!= null) { mAccessibilityAction.disableScrollingScan(); }
+        mScrollLayerView.setVisibility(View.INVISIBLE);
+
+        mState = STATE_STOPPED;
     }
 
-    private void onDone2() {
-        doResume();
-        mCalibrationMode= false;
-    }
-    
     @Override
     public void cleanup() {
         Preferences.getSharedPreferences(mService).unregisterOnSharedPreferenceChangeListener(this);
@@ -258,9 +305,9 @@ public class MouseEmulationEngine implements
             mDockPanelView= null;
         }
 
-        if (mControlsLayer!= null) {
-            mControlsLayer.cleanup();
-            mControlsLayer = null;
+        if (mContextMenuView != null) {
+            mContextMenuView.cleanup();
+            mContextMenuView = null;
         }
 
         if (mPointerLayer!= null) {
@@ -351,6 +398,14 @@ public class MouseEmulationEngine implements
     public void processMotion(PointF motion) {
         if (mState != STATE_RUNNING) return;
 
+        // If pointer nor enabled just refresh scrolling buttons and exit
+        if (!mPointerEnabled) {
+            if (mAccessibilityAction != null) {
+                mAccessibilityAction.refresh();
+            }
+            return;
+        }
+
         // update pointer location given face motion
         mPointerControl.updateMotion(motion);
         
@@ -373,16 +428,15 @@ public class MouseEmulationEngine implements
         // update pointer position and click progress
         mPointerLayer.updatePosition(pointerLocation);
 
-        // when in calibration mode, update pointer on the screen and finish
-        if (mCalibrationMode) {
-            mPointerLayer.postInvalidate();
-            return;
-        }
-
         if (mAccessibilityAction!= null) {
             mPointerLayer.setRestModeAppearance(mAccessibilityAction.getRestModeEnabled());
         }
-        mPointerLayer.updateClickProgress(mDwellClick.getClickProgressPercent());
+        if (mClickEnabled) {
+            mPointerLayer.updateClickProgress(mDwellClick.getClickProgressPercent());
+        }
+        else {
+            mPointerLayer.updateClickProgress(0);
+        }
         mPointerLayer.postInvalidate();
         
         // this needs to be called regularly
@@ -390,7 +444,7 @@ public class MouseEmulationEngine implements
             mAccessibilityAction.refresh();
                 
             // perform action when needed
-            if (clickGenerated) {
+            if (clickGenerated && mClickEnabled) {
                 mAccessibilityAction.performAction(pInt);
                 if (mSoundOnClick) playSound ();
             }

@@ -19,59 +19,48 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:paddingLeft="10dp"
-              android:paddingTop="10dp"
-              android:paddingRight="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/known_limitations"
-        android:id="@+id/textView2"
-        />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/limitations_intro"
-        android:id="@+id/textView11"
-        android:layout_marginTop="10dp"/>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true" >
 
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp">
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:paddingLeft="10dp"
+                  android:paddingTop="10dp"
+                  android:paddingRight="10dp"
+        >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/limitation1"
-            android:id="@+id/textView12"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/known_limitations"
+            android:id="@+id/textView2"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/limitation2"
-            android:id="@+id/textView13"/>
+            android:text="@string/limitations_summary"
+            android:id="@+id/textView11"
+            android:layout_marginTop="10dp"
+            android:textAppearance="@android:style/TextAppearance.Medium"/>
 
-        <TextView
-            android:layout_width="wrap_content"
+        <ImageView
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:text="@string/limitation3"
-            android:id="@+id/textView14"/>
+            android:id="@+id/imageView8"
+            android:src="@drawable/navigation_keyboard"/>
 
     </LinearLayout>
-
-</LinearLayout>
+</ScrollView>

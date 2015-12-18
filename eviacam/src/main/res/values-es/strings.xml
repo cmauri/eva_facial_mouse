@@ -55,7 +55,7 @@
     <string name="consecutive_clicks">Clics consecutivos</string>
     <string name="time_without_detection">Detener el puntero cuando no se detecte el rostro</string>
     <string name="interface_settings">Ajustes de la interfaz</string>
-    <string name="docking_panel_edge">Posición del menú flotante</string>
+    <string name="dock_menu_position">Posición del menú flotante</string>
     <string name="left">Izquierda</string>
     <string name="right">Derecha</string>
     <string name="top">Parte superior</string>
@@ -66,6 +66,7 @@
     <string name="normal">Normal</string>
     <string name="small">Pequeño</string>
     <string name="version">Versión</string>
+    <string name="wizard_will_run">El asistente se ejecutará la próxima vez que arranque EVA</string>
 
     <!-- Actions available through the accessibility API -->
     <string name="click">Clic</string>
@@ -86,11 +87,11 @@
     <string name="home_button">Botón de inicio</string>
     <string name="recents_button">Botón recientes</string>
     <string name="notifications_button">Botón de notificación</string>
-    <string name="dock_panel_button">Expandir/replegar menú flotante</string>
+    <string name="dock_menu_button">Expandir/replegar menú flotante</string>
     <string name="softkeyboard_button">Abrir teclado</string>
-    <string name="scroll_refresh_button">Refrescar los botones de desplazamiento</string>
-    <string name="toggle_context_menu">Conmutar el menú contextual del puntero</string>
-    <string name="toggle_rest_mode">Commutar el modo reposo</string>
+    <string name="scroll_refresh_button">Refrescar los Botones de Desplazamiento</string>
+    <string name="toggle_context_menu">Conmutar el Menú Contextual del puntero</string>
+    <string name="toggle_rest_mode">Commutar el Modo Reposo. Para desactivar el clic automático mientras lee o mira un video, por ejemplo.</string>
 
     <!-- Messages for the notification -->
     <string name="running_click_to_pause">Se está ejecutando (clic para pausar)</string>
@@ -141,14 +142,14 @@
     <!-- Wizard -->
     <string name="wizard_icon_name">EVA Asistente</string>
     <string name="back">Atrás</string>
-    <string name="camera_viewer">Visor de cámara</string>
-    <string name="camera_viewer_wizard1">Muestra la imagen de la cámara frontal en tiempo real</string>
-    <string name="camera_viewer_wizard2"><![CDATA[         <b>Borde rojo oscuro:</b> rostro detectado.<br/>         <b>Borde blanco:</b> rostro NO detectado.<br/><br/>         ]]></string>
+    <string name="positioning">Posicionamiento</string>
+    <string name="positioning_summary">Instale el dispositivo en frente de la cara, con la cabeza en posición natural, a unos 30-50cm.\nLa cara completa debe aparecer centrada en el visor de la parte superior para ser detectada. Cuando esto sucede, el marco pasa a rojo y una cruz indica el centro del rostro.</string>
     <string name="check">Comprobar</string>
     <string name="configuration_settings">Opciones de configuración</string>
-    <string name="configuration_settings_description">Algunos parámetros se pueden ajustar para adaptarse a las necesidades del usuario.</string>
+    <string name="configuration_settings_summary">La velocidad del puntero y otros parámetros pueden ajustarse desde\nAjustes > Accesibilidad> EVA Facial Mouse > Ajustes</string>
     <string name="configuration_wizard">Asistente de configuración</string>
     <string name="dock_menu">Menú flotante</string>
+    <string name="dock_menu_summary">El Menú Flotante que aparece en el borde izquierdo de la pantalla permite el acceso rápido a una serie de funciones</string>
     <string name="finish">Finalizar</string>
     <string name="help">Ayuda</string>
     <string name="home">Inicio</string>
@@ -159,10 +160,13 @@
     <string name="configure">Configurar</string>
     <string name="keyboard_setup">Configuración del teclado</string>
     <string name="known_limitations">Limitaciones conocidas</string>
-    <string name="limitation1">- No funciona con la mayoría de juegos</string>
-    <string name="limitation2">- Los navegadores no gestionan adecuadamente algunas acciones (se recomienda usar Google Chrome).</string>
-    <string name="limitation3">- Aplicaciones como Maps, Earth y Galería funcionan con limitaciones.</string>
-    <string name="limitations_intro">Debido a restricciones de Android algunas funciones no están todavía disponibles.</string>
+    <string name="limitations_summary">Debido a restricciones de Android algunas funciones no están todavía disponibles.
+        \n- No se puede utilizar la cámara
+        \n- No se pueden coger llamadas en algunos dispositivos
+        \n- No funciona con la mayoría de juegos
+        \n- Aplicaciones como Maps, Earth, Galería y los navegadores web (recomendamos Google Chrome) funcionan con limitaciones
+        \n- Los botones de desplazamiento no siempre funcionan. En tales circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación (véase a continuación)
+    </string>
     <string name="navigation_keyboard">Teclado de navegación</string>
     <string name="next">Siguiente</string>
     <string name="open_keyboard">Abrir el teclado</string>
@@ -171,25 +175,42 @@
     <string name="recents">Recientes</string>
     <string name="run_this_wizard_at_startup">Ejecutar este asistente al inicio</string>
     <string name="scroll_buttons">Botones de desplazamiento</string>
-    <string name="scroll_buttons_description">Permiten desplazar el contenido de algunas ventanas y vistas al hacer clic.</string>
-    <string name="scroll_buttons_remaks">Debido a restricciones de la plataforma Android, los botones de desplazamiento no siempre funcionan (ej. cuando se utiliza un navegador). En estas circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación.</string>
+    <string name="scroll_buttons_description">Para desplazar contenidos, utilice los Botones de Desplazamiento</string>
+
     <string name="settings">Ajustes</string>
     <string name="wiz_set_keyboard">
-        <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto\']]>\n
-        2. Activar \'Teclado EVA\'\n
-        3. Tocar \'Predeterminado\'\n
-        4. Escoger \'Teclado EVA\'
+        <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto\']]>
+        \n2. Activar \'Teclado EVA\'
+        \n3. Tocar \'Predeterminado\'
+        \n4. Escoger \'Teclado EVA\'
     </string>
     <string name="wiz_set_keyboard_lollipop">
-        <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto > Teclado actual > ELEGIR TECLADOS\']]>\n
-        2. Activar \'Teclado EVA\'\n
-        3. Atrás\n
-        4. Tocar \'Teclado actual\'\n
-        5. Escoger \'Teclado EVA\'
+        <![CDATA[1. Abrir: \'Ajustes > Idioma e introducción de texto > Teclado actual > ELEGIR TECLADOS\']]>
+        \n2. Activar \'Teclado EVA\'
+        \n3. Atrás
+        \n4. Tocar \'Teclado actual\'
+        \n5. Escoger \'Teclado EVA\'
     </string>
     <string name="done">Hecho</string>
     <string name="keyboard_not_configured">Teclado no configurado</string>
     <string name="keyboard_not_configured_confirm">¿Está seguro que quiere continuar sin configurar el teclado?</string>
+    <string name="skip_wizard">Omitir este asistente</string>
+    <string name="close_wizard_q">¿Cerrar el asistente?</string>
+    <string name="eva_not_running">EVA no se está ejecutando</string>
+    <string name="eva_not_running_summary">Para ejecutar este asistente es necesario activar el servicio EVA Facial Mouse</string>
+    <string name="close">Cerrar</string>
+    <string name="trying_to_detect_face">Intentando detectar rostro...</string>
+    <string name="face_detected">Rostro detectado</string>
+    <string name="pre_click_summary">Para hacer clic, detenga el puntero sobre el lugar deseado. Pasados unos instantes el clic se generará automáticamente. Si el elemento que hay debajo acepta más de una acción, se mostrará un menú contextual.</string>
+    <string name="click_enabled_next">En la pantalla siguiente se activará la función del clic.</string>
+    <string name="to_test_click">Para probar el clic, utilice el botón de abajo. Note que, si hace clic fuera del botón, se le ofrecerán dos opciones para hacer desplazamiento.</string>
+    <string name="to_continue_make_click">Antes de continuar, intente hacer un Clic y un Clic Largo al botón</string>
+    <string name="click_scroll_button_to_continue">Haga clic al botón de desplazamiento de la parte inferior para continuar</string>
+    <string name="notification_icon">Icono de notificación</string>
+    <string name="notification_icon_summary">Para pausar y reanudar EVA (ej. cuando se proporciona asistencia), utilice el icono de notificación de la parte superior.</string>
+    <string name="we_finished">¡Hemos finalizado!</string>
+    <string name="run_wizard_again">Para volver a ejecutar este asistente, vaya a\nAjustes > Accesibilidad > EVA Facial Mouse > Ajustes</string>
+    <string name="full_enable_after">Todas las funciones de EVA se activarán al finalizar este asistente</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>
@@ -200,7 +221,7 @@
     <string name="rest_mode_enabled">Modo reposo activado</string>
     <string name="rest_mode_disabled">Modo reposo desactivado</string>
     <string name="pointer_speed">Velocidad del puntero</string>
-    <string name="pointer_speed_summary">Mueva la cabeza y trate de alcanzar toda la pantalla. Ajuste la velocidad si es preciso.</string>
-    <string name="to_adjust_speed_settings">Para ajustar la velocidad, vaya a\nAjustes > Accesibilidad>\nEVA Facial Mouse > Ajustes</string>
+    <string name="pointer_speed_summary">Mueva la cabeza para mover el puntero. Trate de alcanzar toda la pantalla. Ajuste las velocidades si es preciso.</string>
     <string name="got_it">Entendido</string>
+    <string name="button">Botón</string>
 </resources>

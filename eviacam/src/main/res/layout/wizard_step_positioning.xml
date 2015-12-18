@@ -22,7 +22,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="wrap_content"
+              android:layout_height="match_parent"
               android:paddingLeft="10dp"
               android:paddingTop="10dp"
               android:paddingRight="10dp">
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/scroll_buttons"
+        android:text="@string/positioning"
         android:id="@+id/textView2"
         />
 
@@ -43,8 +43,18 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/positioning_summary"
+        android:id="@+id/textView4"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/click_scroll_button_to_continue"
-        android:id="@+id/textView19"/>
+        android:layout_marginBottom="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/trying_to_detect_face"
+        android:id="@+id/textViewDetectionStatus"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"/>
 
 </LinearLayout>

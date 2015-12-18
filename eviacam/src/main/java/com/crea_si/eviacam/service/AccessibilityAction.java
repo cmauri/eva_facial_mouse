@@ -102,6 +102,9 @@ class AccessibilityAction {
     // node on which the action should be performed when context menu open
     private AccessibilityNodeInfo mNode;
 
+    // scroll buttons exploration enabled?
+    private boolean mScrollingScanEnabled= true;
+
     // time stamp at which scrolling scan need to execute
     private long mRunScrollingScanTStamp = 0;
     
@@ -148,6 +151,9 @@ class AccessibilityAction {
     public void cleanup () {
         mInputMethodAction.cleanup();
     }
+
+    public void enableScrollingScan () { mScrollingScanEnabled= true; }
+    public void disableScrollingScan () { mScrollingScanEnabled= false; }
 
     /** Manages global actions, return false if action not generated */
     private boolean manageGlobalActions (Point p) {
@@ -440,7 +446,7 @@ class AccessibilityAction {
             EVIACAM.debug("Scanning for scrollables");
             mScrollLayerView.clearScrollAreas();
 
-            if (!mDockPanelLayerView.getRestModeEnabled()) {
+            if (mScrollingScanEnabled && !mDockPanelLayerView.getRestModeEnabled()) {
                 scrollableNodes.clear();
                 mContainsWebView= findNodes (scrollableNodes,
                         AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |

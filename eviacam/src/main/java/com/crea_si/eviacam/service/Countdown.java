@@ -44,9 +44,14 @@ class Countdown {
     }
 
     /**
-     * Restart the countdown
+     * Reset the countdown
      */
-    public void reset () {
+    public void reset () { mLastTimeStamp= 0; }
+
+    /**
+     * Start the countdown
+     */
+    public void start () {
         mLastTimeStamp= System.currentTimeMillis();
     }
 

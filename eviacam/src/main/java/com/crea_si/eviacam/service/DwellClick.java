@@ -135,7 +135,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         else if (mState == State.POINTER_MOVING) {
             if (!movedAboveThreshold (mPrevPointerLocation, pl)) {
                 mState= State.COUNTDOWN_STARTED;
-                mCountdown.reset();
+                mCountdown.start();
             }
         }
         else if (mState == State.COUNTDOWN_STARTED) {

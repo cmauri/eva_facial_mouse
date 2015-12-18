@@ -126,13 +126,13 @@ public class MainEngine implements
     private MainEngine() { }
 
     /**
-     * Try to start the engine as a request from an accessibility service
+     * Try to init the engine as a request from an accessibility service
      * 
      * @param as the reference to the accessibility service
-     * @return a reference to the engine interface or null if cannot be started
+     * @return a reference to the engine interface or null if cannot be initiated
      */
-    public AccessibilityServiceModeEngine getAccessibilityServiceModeEngine 
-                                                        (AccessibilityService as) {
+    public AccessibilityServiceModeEngine initAccessibilityServiceModeEngine
+                                                            (AccessibilityService as) {
         if (mCurrentState != STATE_DISABLED) {
             // Already started, if was as accessibility service something went wrong
             if (mMode == A11Y_SERVICE_MODE) throw new IllegalStateException();
@@ -150,13 +150,24 @@ public class MainEngine implements
     }
 
     /**
+     * Get an instance to the current accessibility mode engine
+     *
+     * @return a reference to the engine interface or null if not available
+     */
+    public AccessibilityServiceModeEngine getAccessibilityServiceModeEngine() {
+        if (mMode== A11Y_SERVICE_MODE) return this;
+
+        return null;
+    }
+
+    /**
      * Return the slave mode engine
      * 
      * @param s service which instantiates the engine
      * @return a reference to the engine interface or null if cannot be created (i.e. accessibility
      *           service engine already instantiated).
      */
-    public SlaveModeEngine getSlaveModeEngine (Service s) {
+    public SlaveModeEngine initSlaveModeEngine(Service s) {
         if (mCurrentState != STATE_DISABLED) {
             // Already instantiated, if was in slave mode something went wrong
             if (mMode == SLAVE_MODE) throw new IllegalStateException();
@@ -280,9 +291,18 @@ public class MainEngine implements
         
         mCurrentState= STATE_STOPPED;
 
-        // TODO: currently start engine after initialization
-        start();
-
+        /*
+         * start things when needed
+         */
+        if (mMode == A11Y_SERVICE_MODE) {
+            if (Preferences.getRunTutorial(mService)) {
+                Intent dialogIntent = new Intent(mService,
+                        com.crea_si.eviacam.wizard.WizardActivity.class);
+                dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mService.startActivity(dialogIntent);
+            }
+            else start();
+        }
     }
     
     @Override
@@ -304,6 +324,8 @@ public class MainEngine implements
         // show GUI elements
         mOverlayView.requestLayout();
         mOverlayView.setVisibility(View.VISIBLE);
+
+        mCameraLayerView.enableDetectionFeedback();
         
         // start processing frames
         mCameraListener.startCamera();
@@ -316,7 +338,7 @@ public class MainEngine implements
         mFaceDetectionCountdown.reset();
 
         // start engine
-        mMotionProcessor.resume();
+        mMotionProcessor.start();
 
         mCurrentState= STATE_RUNNING;
 
@@ -342,11 +364,11 @@ public class MainEngine implements
     }
 
     private void doPause() {
-        mCameraLayerView.hideDetectionFeedback();
+        mCameraLayerView.disableDetectionFeedback();
 
         // pause specific engine
         if (mMotionProcessor!= null) {
-            mMotionProcessor.pause();
+            mMotionProcessor.stop();
         }
 
         mServiceNotification.setNotification(ServiceNotification.NOTIFICATION_ACTION_RESUME);
@@ -363,11 +385,11 @@ public class MainEngine implements
         mPowerManagement.lockFullPower();
         //mCameraListener.setUpdateViewer(true);
 
-        mCameraLayerView.showDetectionFeedback();
+        mCameraLayerView.enableDetectionFeedback();
 
         // resume specific engine
         if (mMotionProcessor!= null) {
-            mMotionProcessor.resume();
+            mMotionProcessor.start();
         }
 
         // make sure that UI changes during pause (e.g. docking panel edge) are applied
@@ -459,11 +481,11 @@ public class MainEngine implements
 
         // Pause old engine & switch to new
         if (mSlaveOperationMode== SlaveMode.MOUSE) {
-            mMouseEmulationEngine.pause();
+            mMouseEmulationEngine.stop();
             mMotionProcessor= mGamepadEngine;
         }
         else if (mode== SlaveMode.MOUSE){
-            mGamepadEngine.pause();
+            mGamepadEngine.stop();
             mMotionProcessor= mMouseEmulationEngine;
         }
 
@@ -474,7 +496,71 @@ public class MainEngine implements
         }
 
         // Resume engine if needed
-        if (mCurrentState != STATE_PAUSED) mMotionProcessor.resume(); 
+        if (mCurrentState != STATE_PAUSED) mMotionProcessor.start();
+    }
+
+    @Override
+    public boolean isReady() {
+        return (mCurrentState != STATE_DISABLED);
+    }
+
+    @Override
+    public void enablePointer() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enablePointer();
+    }
+
+    @Override
+    public void disablePointer() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disablePointer();
+    }
+
+    @Override
+    public void enableClick() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableClick();
+    }
+
+    @Override
+    public void disableClick() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableClick();
+    }
+
+    @Override
+    public void enableDockPanel() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableDockPanel();
+    }
+
+    @Override
+    public void disableDockPanel() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableDockPanel();
+    }
+
+    @Override
+    public void enableScrollButtons() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableScrollButtons();
+    }
+
+    @Override
+    public void disableScrollButtons() {
+        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableScrollButtons();
+    }
+
+    /**
+     * Return elapsed time since last face detection
+     *
+     * @return elapsed time in ms or 0 if no detection
+     */
+    @Override
+    public long getFaceDetectionElapsedTime() {
+        if (mCurrentState != STATE_RUNNING) return 0;
+        return mFaceDetectionCountdown.getElapsedTime();
+    }
+
+    @Override
+    public void enableAll() {
+        enablePointer();
+        enableClick();
+        enableDockPanel();
+        enableScrollButtons();
     }
 
     @Override
@@ -552,7 +638,7 @@ public class MainEngine implements
          * to the face detection status
          */
         if (faceDetected) {
-            mFaceDetectionCountdown.reset();
+            mFaceDetectionCountdown.start();
             if (mCurrentState== STATE_STANDBY) {
                 mHandler.post(new Runnable() {
                     @Override

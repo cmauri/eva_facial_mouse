@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/scroll_buttons"
+        android:text="@string/notification_icon"
         android:id="@+id/textView2"
         />
 
@@ -43,8 +43,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/notification_icon_summary"
+        android:id="@+id/textView11"
+        android:layout_marginTop="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/click_scroll_button_to_continue"
-        android:id="@+id/textView19"/>
+        android:layout_marginBottom="10dp"/>
 
 </LinearLayout>

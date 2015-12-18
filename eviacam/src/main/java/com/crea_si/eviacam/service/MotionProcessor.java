@@ -23,7 +23,7 @@ import android.graphics.PointF;
 
 interface MotionProcessor {
     void processMotion(PointF motion);
-    void pause();
-    void resume();
+    void start();
+    void stop();
     void cleanup();
 }

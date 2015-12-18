@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+<!-- 
  /*
  ** Enable Viacam for Android, a camera based mouse emulator
  **
@@ -19,33 +19,24 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:paddingLeft="10dp"
-              android:paddingTop="10dp"
-              android:paddingRight="10dp">
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+               android:orientation="vertical" android:layout_width="fill_parent"
+               android:layout_height="fill_parent" >
 
-    <TextView
+    <ImageView android:id="@+id/splashscreen"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/splash_horizontal"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:layout_gravity="center" />
+
+    <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/configuration_settings"
-        android:id="@+id/textView2"
-        />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/configuration_settings_summary"
-        android:id="@+id/textView11"
-        android:layout_marginTop="10dp"
+        android:text="@string/skip_wizard"
+        android:id="@+id/checkBoxSkipWizard"
+        android:layout_weight="0"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </LinearLayout>

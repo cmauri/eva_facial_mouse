@@ -18,44 +18,43 @@
 */
 package com.crea_si.eviacam.wizard;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
+import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
 import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class LimitationsWizardStep extends WizardStep {
+public class FinalWizardStep extends WizardStep {
 
     // You must have an empty constructor for every step
-    public LimitationsWizardStep() {
+    public FinalWizardStep() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.wizard_step_limitations, container, false);
+        View v=  inflater.inflate(R.layout.wizard_step_final, container, false);
+        return v;
     }
 
     @Override
     public void onEnter() {
         AccessibilityServiceModeEngine engine =
                 MainEngine.getInstance().getAccessibilityServiceModeEngine();
-        engine.disableClick();
-        engine.disableDockPanel();
-        engine.disablePointer();
-        engine.disableScrollButtons();
+        Preferences.setRunTutorial(getActivity(), false);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+    public void onExit(int exitCode) {
+        if (exitCode == WizardStep.EXIT_NEXT) {
+            WizardUtils.fullStartEngine();
+            WizardUtils.finishWizard(getActivity());
+        }
     }
 }

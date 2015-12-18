@@ -31,7 +31,6 @@ import org.codepond.wizardroid.WizardFlow;
 import org.codepond.wizardroid.layouts.BasicWizardLayout;
 
 public class SetupWizard extends BasicWizardLayout {
-
     /**
      * Note that initially BasicWizardLayout inherits from
      * {@link android.support.v4.app.Fragment}
@@ -61,12 +60,17 @@ public class SetupWizard extends BasicWizardLayout {
                 .addStep(WelcomeWizardStep.class)
                 .addStep(WhatsIsWizardStep.class)
                 .addStep(KeyboardWizardStep.class)
-                //.addStep(CameraViewerWizardStep.class)
-                .addStep(DockMenuWizardStep.class)
-                .addStep(ScrollButtonsWizardStep.class)
+                .addStep(PositioningWizardStep.class, true)
+                .addStep(SpeedSettingsWizardStep.class)
                 .addStep(SettingsWizardStep.class)
+                .addStep(PreClickWizardStep.class)
+                .addStep(ClickWizardStep.class)
+                .addStep(PreScrollButtonsWizardStep.class)
+                .addStep(ScrollButtonsWizardStep.class)
                 .addStep(LimitationsWizardStep.class)
-                .addStep(RunWizardStep.class)
+                .addStep(DockMenuWizardStep.class)
+                .addStep(NotificationIconWizardStep.class)
+                .addStep(FinalWizardStep.class)
                 .create();
     }
 

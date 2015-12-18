@@ -52,7 +52,7 @@ public class CameraLayerView extends RelativeLayout {
     private static final int BORDER_SIZE= 4;
     private static final int BEGIN_COLOR= 0xffa5151f;
     private static final int END_COLOR= 0xffffffff; //f5afb4;
-    private int mPaintColor= BEGIN_COLOR;
+    private int mPaintColor= END_COLOR;
     private static final long FADE_TIME= 5000;
 
     // the camera surface view
@@ -72,7 +72,6 @@ public class CameraLayerView extends RelativeLayout {
             super(context);
 
             mPaint= new Paint();
-            mPaint.setColor(BEGIN_COLOR);
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(BORDER_SIZE);
         }
@@ -157,7 +156,7 @@ public class CameraLayerView extends RelativeLayout {
         mBorderDrawer.postInvalidate();
     }
 
-    public void showDetectionFeedback() { mShowDetectionFeedback= true; }
+    public void enableDetectionFeedback() { mShowDetectionFeedback= true; }
 
-    public void hideDetectionFeedback() { mShowDetectionFeedback= false; }
+    public void disableDetectionFeedback() { mShowDetectionFeedback= false; }
 }

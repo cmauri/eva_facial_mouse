@@ -213,6 +213,8 @@
     <string name="to_test_click">To test click, use the button below. Notice that, if you click outside the button, two scrolling options are offered.</string>
     <string name="to_continue_make_click">Before continuing, try to make a Click and a Long Click on the button</string>
     <string name="click_scroll_button_to_continue">Click on the Scroll Button of the bottom right to continue</string>
+    <string name="notification_icon">Notification icon</string>
+    <string name="notification_icon_summary">To pause and resume EVA (e.g. when providing assistance), use the notification icon above.</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. Run EVA Wizard to set it up.</string>

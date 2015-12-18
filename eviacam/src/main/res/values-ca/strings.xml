@@ -206,6 +206,8 @@
     <string name="to_test_click">Per provar el clic, utilitzi el botó de sota. Noti que, si fa clic fora del botó, se li ofereixen dues opcions per fer desplaçacament.</string>
     <string name="to_continue_make_click">Abans de continuar, intenti fer un Clic i un Clic Llarg al botó</string>
     <string name="click_scroll_button_to_continue">Faci clic al botó de desplaçament de la part inferior per continuar</string>
+    <string name="notification_icon">Icona de notificació</string>
+    <string name="notification_icon_summary">Per pausar i reprendre EVA (p.e. quan es proporciona assistència), utilitzi la icona de notificació de la part superior.</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Executi l\'EVA Assistent per activar-lo.</string>

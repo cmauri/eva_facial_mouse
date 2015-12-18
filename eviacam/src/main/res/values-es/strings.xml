@@ -205,6 +205,8 @@
     <string name="to_test_click">Para probar el clic, utilice el botón de abajo. Note que, si hace clic fuera del botón, se le ofrecerán dos opciones para hacer desplazamiento.</string>
     <string name="to_continue_make_click">Antes de continuar, intente hacer un Clic y un Clic Largo al botón</string>
     <string name="click_scroll_button_to_continue">Haga clic al botón de desplazamiento de la parte inferior para continuar</string>
+    <string name="notification_icon">Icono de notificación</string>
+    <string name="notification_icon_summary">Para pausar y reanudar EVA (ej. cuando se proporciona asistencia), utilice el icono de notificación de la parte superior.</string>
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>

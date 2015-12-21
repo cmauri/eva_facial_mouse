@@ -41,9 +41,9 @@
     <integer name="dwell_time_min">1</integer>
     <integer name="dwell_time_max">50</integer>
     
-    <integer name="dwell_area_default">5</integer>
+    <integer name="dwell_area_default">7</integer>
     <integer name="dwell_area_min">0</integer>
-    <integer name="dwell_area_max">8</integer>
+    <integer name="dwell_area_max">15</integer>
 
     <bool name="sound_on_click_default">true</bool>
     <bool name="consecutive_clicks_default">false</bool>

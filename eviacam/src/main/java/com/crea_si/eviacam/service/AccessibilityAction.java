@@ -201,11 +201,11 @@ class AccessibilityAction {
         case R.id.toggle_rest_mode:
             if (mDockPanelLayerView.getRestModeEnabled()) {
                 EVIACAM.ShortToast(getContext(), R.string.rest_mode_enabled);
+                refreshScrollingButtons();
             }
             else {
                 EVIACAM.ShortToast(getContext(), R.string.rest_mode_disabled);
             }
-            refreshScrollingButtons();
             break;
         }
         
@@ -448,20 +448,14 @@ class AccessibilityAction {
 
             if (mScrollingScanEnabled && !mDockPanelLayerView.getRestModeEnabled()) {
                 scrollableNodes.clear();
-                mContainsWebView= findScrollableNodes(scrollableNodes,
+                mContainsWebView= findNodes (scrollableNodes,
                         AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD |
-                                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+                                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD,
+                        "android.webkit.WebView");
                 if (mContainsWebView && !mNavigationKeyboardAdviceShown) {
                     EVIACAM.LongToast(getContext(), R.string.navigation_kbd_advice);
                     mNavigationKeyboardAdviceShown= true;
                 }
-
-                /*
-                if (scrollableNodes.size()> 0)
-                    AccessibilityNodeDebug.displayFullTree(
-                            mAccessibilityService.getRootInActiveWindow());
-                */
-
                 for (AccessibilityNodeInfo n : scrollableNodes) {
                     mScrollLayerView.addScrollArea(n);
                 }
@@ -498,7 +492,7 @@ class AccessibilityAction {
             EVIACAM.debug("WINDOW_CONTENT_CHANGED");
 
             // If contains a WebView stop processing
-            //if (mContainsWebView) return;
+            if (mContainsWebView) return;
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 switch (event.getContentChangeTypes ()) {
@@ -519,7 +513,7 @@ class AccessibilityAction {
             EVIACAM.debug("VIEW_SCROLLED");
 
             // If contains a WebView stop processing
-            //if (mContainsWebView) return;
+            if (mContainsWebView) return;
 
             break;
 
@@ -613,35 +607,40 @@ class AccessibilityAction {
     }
 
     /**
-     * Finds recursively all scrollable nodes
+     * Finds recursively all nodes that support certain actions
      *
      * @param result - list where results will be stored
      * @param actions - bitmask of actions
-     * @return true if stopped in a webview
+     * @param exclude - class name to exclude from the search, null to not exclude anything
+     * @return if some node has been excluded
      */
-    private boolean findScrollableNodes(List<AccessibilityNodeInfo> result, int actions) {
+    private boolean findNodes(List<AccessibilityNodeInfo> result,
+                              int actions, String exclude) {
         // get root node
         final AccessibilityNodeInfo rootNode = mAccessibilityService.getRootInActiveWindow();
 
-        return findScrollableNodes0(result, actions, rootNode);
+        return findNodes0 (result, actions, exclude, rootNode);
     }
 
     /** Actual recursive call for findNode */
-    private static boolean findScrollableNodes0(
-            List<AccessibilityNodeInfo> result, int actions, final AccessibilityNodeInfo node) {
+    private static boolean findNodes0 (
+            List<AccessibilityNodeInfo> result, int actions,
+            String exclude, final AccessibilityNodeInfo node) {
 
-        if (node == null) return false; // || !node.isVisibleToUser()) return false;
+        if (node == null || !node.isVisibleToUser()) return false;
+        if (exclude!= null) {
+            CharSequence className= node.getClassName();
+            if (className!= null && className.toString().equals(exclude)) return true;
+        }
         if ((node.getActions() & actions) != 0) {
             result.add(node);
         }
-        CharSequence className= node.getClassName();
-        if (className!= null && className.toString().equals("android.webkit.WebView")) return true;
 
         // propagate calls to children
         final int child_count = node.getChildCount();
         boolean excluded= false;
         for (int i = 0; i < child_count; i++) {
-            excluded= findScrollableNodes0(result, actions, node.getChild(i)) || excluded;
+            excluded= findNodes0 (result, actions, exclude, node.getChild(i)) || excluded;
         }
 
         return excluded;

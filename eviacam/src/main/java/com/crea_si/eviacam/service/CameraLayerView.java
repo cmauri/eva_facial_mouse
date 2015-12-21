@@ -20,9 +20,11 @@
  package com.crea_si.eviacam.service;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.TypedValue;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -41,10 +43,21 @@ public class CameraLayerView extends RelativeLayout {
     private boolean mShowDetectionFeedback= true;
 
     /*
-     * camera viewer size
+     * Default camera viewer size in pixels
      */
-    private static final int CAM_SURFACE_WIDTH= 80;
-    private static final int CAM_SURFACE_HEIGHT= 60;
+    private static final int CAM_SURFACE_WIDTH_DEFAULT= 80;
+    private static final int CAM_SURFACE_HEIGHT_DEFAULT= 60;
+
+    /*
+     * This the minimum width the camera viewer will have
+     */
+    private static final int CAM_SURFACE_MIN_WIDTH_DP= 50;
+
+    /*
+     * Computed camera viewer size in pixels
+     */
+    private final int CAM_SURFACE_WIDTH;
+    private final int CAM_SURFACE_HEIGHT;
 
     /*
      * Constants for the detector status
@@ -102,6 +115,22 @@ public class CameraLayerView extends RelativeLayout {
     // constructor
     public CameraLayerView(Context context) {
         super(context);
+
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                CAM_SURFACE_MIN_WIDTH_DP, r.getDisplayMetrics());
+        if (px< CAM_SURFACE_WIDTH_DEFAULT) {
+            // Use the default values
+            CAM_SURFACE_WIDTH= CAM_SURFACE_WIDTH_DEFAULT;
+            CAM_SURFACE_HEIGHT= CAM_SURFACE_HEIGHT_DEFAULT;
+        }
+        else {
+            // Use calculated values. Make sure is not too small.
+            CAM_SURFACE_WIDTH= (int) px;
+            CAM_SURFACE_HEIGHT= (int)
+                    ((px * CAM_SURFACE_HEIGHT_DEFAULT) / CAM_SURFACE_WIDTH_DEFAULT);
+        }
+
         mBorderDrawer= new BorderDrawer(context);
         addView(mBorderDrawer);
     }

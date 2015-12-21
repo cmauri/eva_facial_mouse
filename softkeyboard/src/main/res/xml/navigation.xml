@@ -29,8 +29,8 @@
              android:keyEdgeFlags="left" android:keyWidth="15%p" />
         <Key android:codes="-112" android:keyLabel="@string/del" />
         <Key android:codes="-122" android:keyLabel="@string/home"/>
-        <Key android:codes="19" android:keyLabel="^"/>
-        <Key android:codes="92" android:keyLabel="@string/pgup"/>
+        <Key android:codes="19" android:keyLabel="↑"/>
+        <Key android:codes="92" android:keyLabel="⇧" />
         <Key android:codes="@integer/key_return" 
              android:keyIcon="@drawable/sym_keyboard_return" android:keyEdgeFlags="right"/>
     </Row>
@@ -39,10 +39,10 @@
         <Key android:codes="@integer/key_switch_alpha_symbol" android:keyLabel="ABC" 
              android:keyEdgeFlags="left" android:keyWidth="15%p" />
         <Key android:codes="-123" android:keyLabel="@string/end" />
-        <Key android:codes="21" android:keyLabel="&lt;"/>
-        <Key android:codes="20" android:keyLabel="v"/>
-        <Key android:codes="22" android:keyLabel="&gt;"/>
-        <Key android:codes="93" android:keyLabel="@string/pgdown" android:keyEdgeFlags="right"/>
+        <Key android:codes="21" android:keyLabel="←"/>
+        <Key android:codes="20" android:keyLabel="↓"/>
+        <Key android:codes="22" android:keyLabel="→"/>
+        <Key android:codes="93" android:keyLabel="⇩" android:keyEdgeFlags="right"/>
     </Row>
 
 </Keyboard>

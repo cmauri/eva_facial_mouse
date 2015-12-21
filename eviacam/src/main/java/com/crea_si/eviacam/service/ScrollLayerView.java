@@ -63,8 +63,8 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     }
     
     /** Button size in device pixels */
-    private static final int SCROLL_BUTTON_WIDTH_DP= 30;
-    private static final int SCROLL_BUTTON_HEIGHT_DP= 30;
+    private static final int SCROLL_BUTTON_WIDTH_DP= 35;
+    private static final int SCROLL_BUTTON_HEIGHT_DP= 35;
     private static final int SCROLL_BUTTON_PADDING_DP= 2;
     
     /** Factor to scale the size of the buttons */

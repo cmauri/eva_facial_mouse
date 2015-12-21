@@ -221,10 +221,33 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
          */
         final Rect tmpRect = new Rect();
         node.getBoundsInScreen(tmpRect);
-        
+
         final int width = getScrollButtonWidth();
         final int height = getScrollButtonHeight();
-        
+
+        /**
+         * Unfortunately, it seems that sometimes the previous call report coordinates outside
+         * the screen, even negative ones! This usually happens with WebView
+         *
+         * Well, it seems that the problem could be reproduced this way:
+         * 1.- Open a quite complex web page. Such as:
+         *  http://politica.elpais.com/politica/2015/12/21/actualidad/1450654461_794856.html?rel=cx_articulo#cxrecs_s
+         * 2.- Use the scroll button to scroll down the page until it does
+         *     not appear in the bottom right corner any more. From now on, coordinates are
+         *     not properly reported
+         *
+         * Workaround: check the coordinates and adjust. Note that this does not fix the problem
+         * because all nodes now have this kind of weird coordinates.
+         */
+        if (tmpRect.left< 0) tmpRect.left= 0;
+        if (tmpRect.top< 0) tmpRect.top= 0;
+        final int viewWidth= getWidth();
+        if (tmpRect.right< tmpRect.left) tmpRect.right= tmpRect.left + width;
+        if (tmpRect.right> viewWidth) tmpRect.right= viewWidth;
+        final int viewHeight= getHeight();
+        if(tmpRect.bottom< tmpRect.top) tmpRect.bottom= tmpRect.top + height;
+        if (tmpRect.bottom> viewHeight) tmpRect.bottom= viewHeight;
+
         final int actions = node.getActions();
         
         /** Scroll backward buttons */

@@ -115,11 +115,11 @@ class AccessibilityNodeDebug {
         result+= "]";
 
         //node.isPassword();
-        
-        /*
+
         Rect boundsInParent = new Rect();
         node.getBoundsInParent(boundsInParent);
-        */
+        result+= boundsInParent.toString();
+
         Rect boundsInScreen = new Rect();
         node.getBoundsInScreen(boundsInScreen);
 

@@ -50,6 +50,7 @@ public class Preferences {
     public static final String KEY_GAMEPAD_ABS_SPEED= "gamepad_abs_speed";
     public static final String KEY_GAMEPAD_REL_SENSITIVITY= "gamepad_rel_sensitivity";
     public static final String KEY_RUN_TUTORIAL= "run_tutorial";
+    public static final String KEY_SHOW_LAUNCHER_HELP= "show_launcher_help";
 
     /**
         Run-time constants
@@ -209,6 +210,16 @@ public class Preferences {
 
     public static void setRunTutorial(Context c, boolean value) {
         setRunTutorial(getSharedPreferences(c), value);
+    }
+
+    public static boolean getShowLauncherHelp (SharedPreferences sp) {
+        return sp.getBoolean(KEY_SHOW_LAUNCHER_HELP, true);
+    }
+
+    public static void setShowLauncherHelp (SharedPreferences sp, boolean value) {
+        SharedPreferences.Editor spe= sp.edit();
+        spe.putBoolean(KEY_SHOW_LAUNCHER_HELP, value);
+        spe.apply();
     }
 
     /**

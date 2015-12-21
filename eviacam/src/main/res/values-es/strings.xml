@@ -153,7 +153,6 @@
     <string name="finish">Finalizar</string>
     <string name="help">Ayuda</string>
     <string name="home">Inicio</string>
-    <string name="how_to_run"><![CDATA[Para ejecutar EVA ir a: \n\nAjustes > Accesibilidad > %1$s]]></string>
     <string name="install">Instalar</string>
     <string name="keyboard">Teclado</string>
     <string name="keyboard_remarks">La mayoría de teclados estándar no funcionan con EVA. Se proporciona un teclado básico que se debe activar manualmente.</string>
@@ -224,4 +223,6 @@
     <string name="pointer_speed_summary">Mueva la cabeza para mover el puntero. Trate de alcanzar toda la pantalla. Ajuste las velocidades si es preciso.</string>
     <string name="got_it">Entendido</string>
     <string name="button">Botón</string>
+    <string name="how_to_run">Para ejecutar EVA, vaya a\n\nAjustes > Accesibilidad > EVA Facial Mouse</string>
+    <string name="dont_remember_again">No volver a recordar</string>
 </resources>

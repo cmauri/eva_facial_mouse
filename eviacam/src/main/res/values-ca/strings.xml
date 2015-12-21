@@ -153,7 +153,6 @@
     <string name="finish">Finalitzar</string>
     <string name="help">Ajuda</string>
     <string name="home">Inici</string>
-    <string name="how_to_run"><![CDATA[Per executar EVA cal anar a: \n\nConfiguració > Accessibilitat > %1$s]]></string>
     <string name="install">Instal·lar</string>
     <string name="keyboard">Teclat</string>
     <string name="keyboard_remarks">La majoria de teclats estàndard no funcionen amb EVA. Es proporciona un teclat bàsic que cal activar manualment.</string>
@@ -223,4 +222,6 @@
     <string name="rest_mode_disabled">Mode Repòs desactivat</string>
     <string name="got_it">Entesos</string>
     <string name="button">Botó</string>
+    <string name="how_to_run">Per executar EVA, vagi a\n\nConfiguració > Accessibilitat > EVA Facial Mouse</string>
+    <string name="dont_remember_again">No tornar a recordar</string>
 </resources>

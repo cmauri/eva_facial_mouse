@@ -31,12 +31,16 @@ import android.view.View;
 public class GamepadEngine implements MotionProcessor {
     // time in ms after which the direction highlight is switched off
     private static final int TIME_OFF_MS= 100;
-    
+
+    private final Context mContext;
+
+    private final OverlayView mOverlayView;
+
     // Absolute gamepad geometric logic
     private GamepadAbs mGamepadAbs;
     
-    private ShakeDetector mShakeDetectorX;
-    private ShakeDetector mShakeDetectorY;
+    private ShakeDetector mShakeDetectorH;
+    private ShakeDetector mShakeDetectorV;
     
     private int mLastPressedButton= GamepadButtons.PAD_NONE;
 
@@ -53,35 +57,43 @@ public class GamepadEngine implements MotionProcessor {
     private int mOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
     
     // is paused?
-    private boolean isPaused= false;
+    private boolean isPaused= true;
 
     public GamepadEngine(Context c, OverlayView ov) {
-        mGamepadAbs= new GamepadAbs(c);
+        mContext= c;
+        mOverlayView= ov;
+    }
+
+    private void init() {
+        mGamepadAbs= new GamepadAbs(mContext);
         
-        mShakeDetectorX= new ShakeDetector(c);
-        mShakeDetectorY= new ShakeDetector(c);
+        mShakeDetectorH = new ShakeDetector(mContext);
+        mShakeDetectorV = new ShakeDetector(mContext);
         
         /*
          * UI stuff 
          */
-        mGamepadView= new GamepadView(c);
-        
-        ov.addFullScreenLayer(mGamepadView);
+        mGamepadView= new GamepadView(mContext);
+
+        mOverlayView.addFullScreenLayer(mGamepadView);
 
         // pointer layer (should be the last one)
-        mPointerLayer= new PointerLayerView(c);
-        ov.addFullScreenLayer(mPointerLayer);
+        mPointerLayer= new PointerLayerView(mContext);
+        mOverlayView.addFullScreenLayer(mPointerLayer);
     }
 
     @Override
-    public void pause() {
+    public void stop() {
         mGamepadView.setVisibility(View.INVISIBLE);
         mPointerLayer.setVisibility(View.INVISIBLE);
         isPaused= true;
     }
 
     @Override
-    public void resume() {
+    public void start() {
+        // need init?
+        if (mGamepadAbs== null) init();
+
         if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {
             mPointerLayer.setVisibility(View.VISIBLE);
         }
@@ -91,20 +103,30 @@ public class GamepadEngine implements MotionProcessor {
     
     @Override
     public void cleanup() {
-        mPointerLayer.cleanup();
-        mPointerLayer= null;
-        
-        mGamepadView.cleanup();
-        mGamepadView= null;
+        if (mPointerLayer != null) {
+            mPointerLayer.cleanup();
+            mPointerLayer = null;
+        }
 
-        mShakeDetectorX.cleanup();
-        mShakeDetectorX= null;
+        if (mGamepadView != null) {
+            mGamepadView.cleanup();
+            mGamepadView = null;
+        }
 
-        mShakeDetectorY.cleanup();
-        mShakeDetectorY= null;
+        if (mShakeDetectorH != null) {
+            mShakeDetectorH.cleanup();
+            mShakeDetectorH = null;
+        }
 
-        mGamepadAbs.cleanup();
-        mGamepadAbs= null;
+        if (mShakeDetectorV != null) {
+            mShakeDetectorV.cleanup();
+            mShakeDetectorV = null;
+        }
+
+        if (mGamepadAbs != null) {
+            mGamepadAbs.cleanup();
+            mGamepadAbs = null;
+        }
     }
 
     public boolean registerListener(IGamepadEventListener l) {
@@ -141,6 +163,7 @@ public class GamepadEngine implements MotionProcessor {
     
     @Override
     public void processMotion(PointF motion) {
+        if (isPaused) return;
         if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {
             processMotionAbsoluteGamepad(motion);
         }
@@ -205,7 +228,7 @@ public class GamepadEngine implements MotionProcessor {
         int button= GamepadButtons.PAD_NONE;
         
         /** Y axis */
-        int shakeY= mShakeDetectorY.update(motion.y);
+        int shakeY= mShakeDetectorV.update(motion.y);
         if (shakeY> 0) {
             button= GamepadButtons.PAD_DOWN;
             mGamepadView.setHighlightedButton(button);
@@ -221,7 +244,7 @@ public class GamepadEngine implements MotionProcessor {
         
         /** X axis */
         if (shakeY== 0) {
-            int shakeX= mShakeDetectorX.update(motion.x);
+            int shakeX= mShakeDetectorH.update(motion.x);
             if (shakeX> 0) {
                 button= GamepadButtons.PAD_RIGHT;
                 mGamepadView.setHighlightedButton(button);

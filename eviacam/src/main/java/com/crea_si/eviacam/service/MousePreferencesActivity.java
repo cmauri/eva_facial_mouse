@@ -20,7 +20,9 @@
 package com.crea_si.eviacam.service;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -97,10 +99,24 @@ public class MousePreferencesActivity extends Activity {
             }
 
             /*
+             * Wizard button
+             */
+            Preference wizPreference= getPreferenceScreen().findPreference("wizard");
+            wizPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Preferences.setRunTutorial(getPreferenceManager().getSharedPreferences(), true);
+                    new AlertDialog.Builder(getActivity())
+                            .setMessage(R.string.wizard_will_run)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .create().show();
+                    return true;
+                }
+            });
+
+            /*
              * Version button
              */
-            PreferenceGroup cat= (PreferenceGroup) getPreferenceScreen().
-                    findPreference("help");
             Preference p= getPreferenceScreen().findPreference("version");
             p.setSummary(getResources().getText(R.string.app_name) +
                                         " " + BuildConfig.VERSION_NAME);

@@ -20,9 +20,11 @@
  package com.crea_si.eviacam.service;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.TypedValue;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -41,10 +43,21 @@ public class CameraLayerView extends RelativeLayout {
     private boolean mShowDetectionFeedback= true;
 
     /*
-     * camera viewer size
+     * Default camera viewer size in pixels
      */
-    private static final int CAM_SURFACE_WIDTH= 80;
-    private static final int CAM_SURFACE_HEIGHT= 60;
+    private static final int CAM_SURFACE_WIDTH_DEFAULT= 80;
+    private static final int CAM_SURFACE_HEIGHT_DEFAULT= 60;
+
+    /*
+     * This the minimum width the camera viewer will have
+     */
+    private static final int CAM_SURFACE_MIN_WIDTH_DP= 50;
+
+    /*
+     * Computed camera viewer size in pixels
+     */
+    private final int CAM_SURFACE_WIDTH;
+    private final int CAM_SURFACE_HEIGHT;
 
     /*
      * Constants for the detector status
@@ -52,7 +65,8 @@ public class CameraLayerView extends RelativeLayout {
     private static final int BORDER_SIZE= 4;
     private static final int BEGIN_COLOR= 0xffa5151f;
     private static final int END_COLOR= 0xffffffff; //f5afb4;
-    private int mPaintColor= BEGIN_COLOR;
+    private int mPaintColor= END_COLOR;
+    private static final long FADE_TIME= 5000;
 
     // the camera surface view
     private SurfaceView mCameraSurfaceView;
@@ -71,7 +85,6 @@ public class CameraLayerView extends RelativeLayout {
             super(context);
 
             mPaint= new Paint();
-            mPaint.setColor(BEGIN_COLOR);
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(BORDER_SIZE);
         }
@@ -102,6 +115,22 @@ public class CameraLayerView extends RelativeLayout {
     // constructor
     public CameraLayerView(Context context) {
         super(context);
+
+        Resources r = getResources();
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                CAM_SURFACE_MIN_WIDTH_DP, r.getDisplayMetrics());
+        if (px< CAM_SURFACE_WIDTH_DEFAULT) {
+            // Use the default values
+            CAM_SURFACE_WIDTH= CAM_SURFACE_WIDTH_DEFAULT;
+            CAM_SURFACE_HEIGHT= CAM_SURFACE_HEIGHT_DEFAULT;
+        }
+        else {
+            // Use calculated values. Make sure is not too small.
+            CAM_SURFACE_WIDTH= (int) px;
+            CAM_SURFACE_HEIGHT= (int)
+                    ((px * CAM_SURFACE_HEIGHT_DEFAULT) / CAM_SURFACE_WIDTH_DEFAULT);
+        }
+
         mBorderDrawer= new BorderDrawer(context);
         addView(mBorderDrawer);
     }
@@ -128,24 +157,27 @@ public class CameraLayerView extends RelativeLayout {
      *
      * @param countdown a Countdown object
      */
-    public void updateFaceDetectorStatus(Countdown countdown) {
-        int p= countdown.getElapsedPercent();
-
+    public void updateFaceDetectorStatus(FaceDetectionCountdown countdown) {
         /*
-         * Color of the border
+         * Color of the border. Fade BEGIN_COLOR into END_COLOR throughout FADE_TIME
          */
-        int r = (Color.red(BEGIN_COLOR) * (100 - p) + Color.red(END_COLOR) * p) / 100;
-        int g = (Color.green(BEGIN_COLOR) * (100 - p) + Color.green(END_COLOR) * p) / 100;
-        int b = (Color.blue(BEGIN_COLOR) * (100 - p) + Color.blue(END_COLOR) * p) / 100;
+        // Elapsed time since last face detection
+        long elapsed= countdown.getElapsedTime();
+        if (elapsed>= FADE_TIME) elapsed= FADE_TIME;
+        int perc= (int) ((elapsed * 100) / FADE_TIME);
+        int r = (Color.red(BEGIN_COLOR) * (100 - perc) + Color.red(END_COLOR) * perc) / 100;
+        int g = (Color.green(BEGIN_COLOR) * (100 - perc) + Color.green(END_COLOR) * perc) / 100;
+        int b = (Color.blue(BEGIN_COLOR) * (100 - perc) + Color.blue(END_COLOR) * perc) / 100;
         mPaintColor = Color.argb(0xff, r, g, b);
 
         /*
-         * Blinking control
+         * Blinking control. When countdown is disable means that there is no
+         * no auto-off feature, this blinking is not used
          */
-        if (p== 100 || countdown.getRemainingTime()> BLINK_TIMEOUT) {
+        if (countdown.isDisabled() || countdown.getElapsedPercent() == 100 ||
+            countdown.getRemainingTime() > BLINK_TIMEOUT) {
             mBlink.stop();
-        }
-        else {
+        } else {
             mBlink.start();
         }
 
@@ -153,7 +185,7 @@ public class CameraLayerView extends RelativeLayout {
         mBorderDrawer.postInvalidate();
     }
 
-    public void showDetectionFeedback() { mShowDetectionFeedback= true; }
+    public void enableDetectionFeedback() { mShowDetectionFeedback= true; }
 
-    public void hideDetectionFeedback() { mShowDetectionFeedback= false; }
+    public void disableDetectionFeedback() { mShowDetectionFeedback= false; }
 }

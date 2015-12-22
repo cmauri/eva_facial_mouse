@@ -31,54 +31,54 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/camera_viewer"
-        android:id="@+id/textView2"
-        />
+        android:text="@string/keyboard"
+        android:id="@+id/textView3"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/keyboard_remarks"
+        android:id="@+id/textView11"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp">
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/image"
-            android:src="@drawable/camera_viewer_red"/>
-
-        <Space
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/keyboardImage"
+            android:layout_marginRight="15dp"
+            android:layout_gravity="top"
             />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wiz_set_keyboard"
+            android:ellipsize="none"
+            android:scrollHorizontally="false"
+            android:id="@+id/wiz_set_keyboard"
+            android:layout_weight="1"
+            android:layout_marginRight="15dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/camera_viewer_wizard1"
-                android:id="@+id/textView4"/>
-
-            <Space
-                android:layout_width="20dp"
-                android:layout_height="10dp"/>
-
-            <com.crea_si.eviacam.wizard.HtmlTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/camera_viewer_wizard2"
-                android:id="@+id/textView8"/>
-        </LinearLayout>
-
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings"
+            android:id="@+id/keyboardConfigureButton"
+            android:layout_gravity="bottom"/>
     </LinearLayout>
 
 </LinearLayout>

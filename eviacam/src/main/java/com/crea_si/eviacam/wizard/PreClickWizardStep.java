@@ -18,34 +18,43 @@
 */
 package com.crea_si.eviacam.wizard;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class RunWizardStep extends WizardStep {
+public class PreClickWizardStep extends WizardStep {
 
     // You must have an empty constructor for every step
-    public RunWizardStep() {
+    public PreClickWizardStep() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v=  inflater.inflate(R.layout.wizard_step_run, container, false);
-
-        Resources res = getActivity().getResources();
-
-        TextView tv= (TextView) v.findViewById(R.id.textView);
-        tv.setText(String.format(res.getString(R.string.how_to_run),
-                    res.getString(R.string.app_name)));
-
+        View v = inflater.inflate(R.layout.wizard_step_pre_click, container, false);
         return v;
+    }
+
+    @Override
+    public void onEnter() {
+        AccessibilityServiceModeEngine engine =
+                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        engine.disableClick();
+        engine.disableDockPanel();
+        engine.disablePointer();
+        engine.disableScrollButtons();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
     }
 }

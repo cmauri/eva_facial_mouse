@@ -23,10 +23,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.res.Resources;
 
 import com.crea_si.eviacam.R;
 
-import org.opencv.android.BaseLoaderCallback;
+import org.opencv.android.MyBaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.MyCameraBridgeViewBase;
 import org.opencv.android.MyJavaCameraView;
@@ -46,7 +47,7 @@ public class OpenCVInstallHelper {
     private final Listener mListener;
 
     /* Callback for openCV initialization */
-    private final BaseLoaderCallback mLoaderCallback;
+    private final MyBaseLoaderCallback mLoaderCallback;
 
     /* openCV capture & view facility */
     private MyCameraBridgeViewBase mCameraView;
@@ -55,7 +56,7 @@ public class OpenCVInstallHelper {
     public OpenCVInstallHelper(Context c, Listener l) {
         mContext= c;
         mListener= l;
-        mLoaderCallback= new BaseLoaderCallback(c) {
+        mLoaderCallback= new MyBaseLoaderCallback(c) {
             @Override
             public void onManagerConnected(int status) {
                 switch (status) {
@@ -89,18 +90,21 @@ public class OpenCVInstallHelper {
     
     /* Handles the case when openCV installation has been cancelled */
     private void manageOpenCVInstallCancel() {
+        Resources res= mContext.getResources();
         AlertDialog installCancelDlg = new AlertDialog.Builder(mContext).create();
-        installCancelDlg.setTitle(mContext.getText(R.string.installation_cancelled));
-        installCancelDlg.setMessage(mContext.getString(R.string.app_name) + " " +
-                mContext.getText(R.string.needs_opencv_retry));
+        installCancelDlg.setTitle(res.getText(R.string.installation_cancelled));
+        installCancelDlg.setMessage(res.getString(R.string.app_name) + " " +
+                res.getText(R.string.needs_opencv_retry));
         installCancelDlg.setCancelable(false); // This blocks the 'BACK' button
-        installCancelDlg.setButton(AlertDialog.BUTTON_POSITIVE, "Retry", new OnClickListener() {
+        installCancelDlg.setButton(AlertDialog.BUTTON_POSITIVE,
+                res.getText(R.string.retry), new OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 MyOpenCVLoader.initAsync(MyOpenCVLoader.OPENCV_VERSION_2_4_9, 
                                          OpenCVInstallHelper.this.mContext, mLoaderCallback);
             }
         });
-        installCancelDlg.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel", new OnClickListener() {
+        installCancelDlg.setButton(AlertDialog.BUTTON_NEGATIVE,
+                res.getText(android.R.string.cancel), new OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 OpenCVInstallHelper.this.mListener.onOpenCVInstallCancel();
             }

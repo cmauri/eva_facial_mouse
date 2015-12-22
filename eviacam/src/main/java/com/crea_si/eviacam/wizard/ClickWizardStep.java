@@ -18,7 +18,6 @@
 */
 package com.crea_si.eviacam.wizard;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,26 +30,52 @@ import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class LimitationsWizardStep extends WizardStep {
+public class ClickWizardStep extends WizardStep {
+    private boolean mClickDone= false;
+    private boolean mLongClickDone= false;
 
     // You must have an empty constructor for every step
-    public LimitationsWizardStep() {
+    public ClickWizardStep() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.wizard_step_limitations, container, false);
+        View v = inflater.inflate(R.layout.wizard_step_click, container, false);
+
+        final Button b= (Button) v.findViewById(R.id.button);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                b.setText(R.string.click);
+                mClickDone= true;
+
+                if (mClickDone && mLongClickDone) notifyCompleted();
+            }
+        });
+
+        b.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                b.setText(R.string.long_click);
+                mLongClickDone= true;
+                if (mClickDone && mLongClickDone) notifyCompleted();
+                return true;
+            }
+        });
+
+        return v;
     }
 
     @Override
     public void onEnter() {
         AccessibilityServiceModeEngine engine =
                 MainEngine.getInstance().getAccessibilityServiceModeEngine();
-        engine.disableClick();
+        engine.enableClick();
         engine.disableDockPanel();
-        engine.disablePointer();
+        engine.enablePointer();
         engine.disableScrollButtons();
+        engine.start();
     }
 
     @Override

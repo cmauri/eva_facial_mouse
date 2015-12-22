@@ -20,10 +20,16 @@
 package com.crea_si.eviacam.service;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+
+import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.R;
 
 /**
  * Launcher activity
@@ -31,14 +37,48 @@ import android.preference.PreferenceManager;
 
 public class LauncherActivity extends Activity {
 
+    private void openAccessibility() {
+        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        startActivityForResult(intent, 0);
+
+        finish();
+    }
+
+    private void showLauncherHelp (final SharedPreferences sp) {
+        final Resources r= getResources();
+
+        new AlertDialog.Builder(this)
+        .setTitle(r.getText(R.string.app_name))
+        .setMessage(r.getText(R.string.how_to_run))
+        .setPositiveButton(r.getText(android.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        openAccessibility();
+                    }
+                })
+        .setNeutralButton(r.getText(R.string.dont_remember_again),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Preferences.setShowLauncherHelp(sp, false);
+                        openAccessibility();
+                    }
+                })
+        .show();
+    }
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(this);
-        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        startActivityForResult(intent, 0);
-        
-        finish();
+
+        final SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(this);
+        if (Preferences.getShowLauncherHelp(sp)) {
+            showLauncherHelp(sp);
+        }
+        else {
+            openAccessibility();
+        }
     }
 }

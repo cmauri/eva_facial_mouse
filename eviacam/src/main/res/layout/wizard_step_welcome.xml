@@ -19,13 +19,24 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 -->
- <!-- android:accessibilityEventTypes and  android:accessibilityFeedbackType need some
- actual values, otherwise onUnbind and onDestroy are never called -->
-<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged|typeViewScrolled"
-    android:accessibilityFeedbackType="feedbackSpoken"
-    android:accessibilityFlags="flagDefault|flagRequestEnhancedWebAccessibility"
-    android:description="@string/eviacam_service_description"
-    android:settingsActivity="com.crea_si.eviacam.service.MousePreferencesActivity"
-    android:canRetrieveWindowContent="true"
-    android:canRequestEnhancedWebAccessibility="true" />
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+               android:orientation="vertical" android:layout_width="fill_parent"
+               android:layout_height="fill_parent" >
+
+    <ImageView android:id="@+id/splashscreen"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/splash_vertical"
+        android:layout_gravity="center"
+        android:background="@android:color/white"
+        android:layout_weight="1"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/skip_wizard"
+        android:id="@+id/checkBoxSkipWizard"
+        android:layout_weight="0"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+</LinearLayout>

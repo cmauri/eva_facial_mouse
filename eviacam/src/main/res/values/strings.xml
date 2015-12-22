@@ -226,6 +226,6 @@
     <string name="got_it">Got it</string>
     <string name="button">Button</string>
     <string name="how_to_run">To start EVA, go to\n\nSettings > Accessibility > EVA Facial Mouse</string>
-    <string name="dont_remember_again">Don\'t remember again</string>
+    <string name="dont_remember_again">Don\'t remind me again</string>
 
 </resources>

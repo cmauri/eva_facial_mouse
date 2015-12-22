@@ -48,18 +48,18 @@
     <string name="after_two_minutes">after 2 minutes</string>
     <string name="after_five_minutes">after 5 minutes</string>
     <string name="dwell_area">Dwell area</string>
-    <string name="dwell_area_summary">Maximum allowed displacement before restarting the dwell time</string>
+    <string name="dwell_area_summary">Maximum displacement before restarting the dwell time</string>
     <string name="dwell_time">Dwell time</string>
     <string name="dwell_time_summary">Time to wait (deciseconds) before making click</string>
     <string name="motion_smoothing">Motion smoothing</string>
     <string name="motion_smoothing_summary">Tremor reduction filter. 0 disables</string> 
     <string name="motion_threshold">Motion threshold</string>
-    <string name="motion_threshold_summary">Minimum displacement (in pixels) to start moving pointer</string>
+    <string name="motion_threshold_summary">Minimum displacement to start moving pointer</string>
     <string name="sound_on_click">Play sound on click</string>
     <string name="consecutive_clicks">Consecutive clicks</string>
-    <string name="time_without_detection">Stop pointer when face not detected</string>
+    <string name="time_without_detection">Disable EVA when face not detected</string>
     <string name="interface_settings">Interface settings</string>
-    <string name="dock_menu_position">Dock menu position</string>
+    <string name="dock_menu_position">Dock Menu position</string>
     <string name="left">Left</string>
     <string name="right">Right</string>
     <string name="top">Top</string>
@@ -180,28 +180,27 @@
     <string name="scroll_buttons_description">To scroll contents, use the Scroll Buttons</string>
     <string name="navigation_keyboard">Navigation keyboard</string>
     <string name="keyboard">Keyboard</string>
-    <string name="keyboard_remarks">Most standard keyboards do not work with EVA.
-        We provide a basic keyboard that needs to be enabled manually.</string>
+    <string name="keyboard_remarks">Most keyboards don\'t work with EVA. To enable the supplied compatible keyboard:</string>
     <string name="configure">Configure</string>
     <string name="keyboard_not_configured">Keyboard not configured</string>
     <string name="keyboard_not_configured_confirm">Are you sure you want to continue without configuring the keyboard?</string>
     <string name="pointer_speed">Pointer speed</string>
     <string name="pointer_speed_summary">Move your head to move the pointer. Try to reach the whole screen. Adjust speeds if necessary.</string>
     <string name="configuration_settings">Configuration settings</string>
-    <string name="configuration_settings_summary">The speed of the pointer and other settings can be adjusted at any time from\nSettings > Accessibility > EVA Facial Mouse > Settings</string>
+    <string name="configuration_settings_summary">To adjust the speed of the pointer and other settings, go to\nSettings > Accessibility > EVA Facial Mouse > Settings</string>
     <string name="settings">Settings</string>
     <string name="known_limitations">Known limitations</string>
-    <string name="limitations_summary">Due to Android restrictions some features are not currently available, yet.
+    <string name="limitations_summary">Due to Android restrictions, some features are not currently available, yet.
         \n- You can\'t use the camera
         \n- You can\'t take incoming calls in some devices
         \n- Most games don\'t work
-        \n- Applications such as Maps, Earth, Gallery and web browsers (Google Chrome is recommended) work with limitations
-        \n- Scroll Buttons not always work. In such circumstances you could try scrolling using the navigation keyboard (see below)
+        \n- Applications such as Maps, Earth, Gallery and web browsers work with limitations
+        \n- Scroll Buttons not always work (e.g. for web browsers). To scroll in such cases, try using the Navigation Keyboard (see below)
     </string>
     <string name="skip_wizard">Skip this wizard</string>
     <string name="close_wizard_q">Close wizard?</string>
     <string name="eva_not_running">EVA not running</string>
-    <string name="eva_not_running_summary">To run this wizard you need to enable EVA Facial Mouse service</string>
+    <string name="eva_not_running_summary">To run this wizard, you need to enable EVA Facial Mouse service</string>
     <string name="close">Close</string>
     <string name="trying_to_detect_face">Trying to detect face...</string>
     <string name="face_detected">Face detected</string>
@@ -217,8 +216,8 @@
     <string name="full_enable_after">All the functions of EVA will be enabled after this wizard</string>
 
     <!-- Toasts and other messages -->
-    <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. Run EVA Wizard to set it up.</string>
-    <string name="pointer_stopped_toast">EVA stopped %1$s without detecting a face. To enable it again make sure your face is centered inside the camera viewer.</string>
+    <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. To set it up, use the wizard.</string>
+    <string name="pointer_stopped_toast">EVA stopped %1$s without detecting your face. To enable it again, make sure your face is centered inside the camera viewer.</string>
     <string name="navigation_kbd_advice">Use the Navigation Keyboard to scroll the browser contents.</string>
     <string name="context_menu_enabled">Context Menu enabled</string>
     <string name="context_menu_disabled">Context Menu disabled</string>

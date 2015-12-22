@@ -44,18 +44,18 @@
     <string name="after_two_minutes">després de 2 minuts</string>
     <string name="after_five_minutes">després de 5 minuts</string>
     <string name="dwell_area">Àrea del clic per espera</string>
-    <string name="dwell_area_summary">Desplaçament màxim permès abans de reiniciar el temps del clic per espera</string>
+    <string name="dwell_area_summary">Desplaçament màxim abans de reiniciar el temps del clic per espera</string>
     <string name="dwell_time">Temps de clic per espera</string>
     <string name="dwell_time_summary">Temps a esperar (dècimes de segon) abans de fer clic</string>
     <string name="motion_smoothing">Suavitzat del moviment</string>
     <string name="motion_smoothing_summary">Filtre de reducció de tremolor. 0 desactiva</string>
     <string name="motion_threshold">Llindar de moviment</string>
-    <string name="motion_threshold_summary">Desplaçament mínim (en píxels) per començar a moure el punter</string>
+    <string name="motion_threshold_summary">Desplaçament mínim per començar a moure el punter</string>
     <string name="sound_on_click">Reproduir so al fer clic</string>
     <string name="consecutive_clicks">Clics consecutius</string>
-    <string name="time_without_detection">Aturar el punter quan no es detecti el rostre</string>
+    <string name="time_without_detection">Desactivar EVA quan no es detecti el rostre</string>
     <string name="interface_settings">Ajustos de la interfície</string>
-    <string name="dock_menu_position">Posició del menú encastat</string>
+    <string name="dock_menu_position">Posició del Menú Flotant</string>
     <string name="left">Esquerra</string>
     <string name="right">Dreta</string>
     <string name="top">Part superior</string>
@@ -146,34 +146,34 @@
     <string name="positioning_summary">Instal·li el dispositiu enfront de la cara, amb el cap en una posició natural, a uns 30-50cm.\nLa cara completa ha d\'aparèixer dins el visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
     <string name="check">Comprovar</string>
     <string name="configuration_settings">Opcions de configuració</string>
-    <string name="configuration_settings_summary">La velocitat del punter i altres paràmetres es poden ajustar des de\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
+    <string name="configuration_settings_summary">Per configurar la velocitat del punter i altres paràmetres, vagi a\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
     <string name="configuration_wizard">Assistent de configuració</string>
-    <string name="dock_menu">Menú flotant</string>
+    <string name="dock_menu">Menú Flotant</string>
     <string name="dock_menu_summary">El Menú Flotant que apareix en la vora esquerra de la pantalla permet l\'accés ràpid a una sèrie de funcions</string>
     <string name="finish">Finalitzar</string>
     <string name="help">Ajuda</string>
     <string name="home">Inici</string>
     <string name="install">Instal·lar</string>
     <string name="keyboard">Teclat</string>
-    <string name="keyboard_remarks">La majoria de teclats estàndard no funcionen amb EVA. Es proporciona un teclat bàsic que cal activar manualment.</string>
+    <string name="keyboard_remarks">La majoria de teclats no funcionen amb EVA. Per activar el teclat compatible proporcionat:</string>
     <string name="configure">Configurar</string>
     <string name="keyboard_setup">Configuració del teclat</string>
     <string name="known_limitations">Limitacions conegudes</string>
-    <string name="limitations_summary">Degut a restriccions d\'Android algunes funcions no estan encara disponibles.
+    <string name="limitations_summary">Degut a restriccions d\'Android, algunes funcions no estan encara disponibles.
         \n- No es pot utilitzar la càmera
         \n- No es poden agafar trucades en alguns dispositius
         \n- No funciona amb la majoria de jocs
-        \n- Aplicacions com Maps, Earth, Galeria i els navegadors web (es recomana Google Chrome) funcionen amb limitacions
-        \n- Els botons de desplaçament no sempre funcionen. En aquestes circumstàncies podeu provar a fer el desplaçament utilitzant el teclat de navegació (vegi a continuació)
+        \n- Aplicacions com Maps, Earth, Galeria i els navegadors web funcionen amb limitacions
+        \n- Els Botons de Desplaçament no sempre funcionen (p.e. navegadors web). Per fer el desplaçament en aquestes circumstàncies, provi a utilitzar el Teclat de Navegació (vegi a continuació)
     </string>
-    <string name="navigation_keyboard">Teclat de navegació</string>
+    <string name="navigation_keyboard">Teclat de Navegació</string>
     <string name="next">Següent</string>
     <string name="open_notifications">Obrir notificacions</string>
     <string name="open_keyboard">Obrir el teclat</string>
     <string name="prerequisites">Pre-requisits</string>
     <string name="recents">Recents</string>
     <string name="run_this_wizard_at_startup">Executar aquest assistent a l\'inici</string>
-    <string name="scroll_buttons">Botons de desplaçament</string>
+    <string name="scroll_buttons">Botons de Desplaçament</string>
     <string name="scroll_buttons_description">Per desplaçar continguts, utilitzi els Botons de Desplaçament</string>
     <string name="settings">Configuració</string>
     <string name="wiz_set_keyboard">
@@ -205,7 +205,7 @@
     <string name="click_enabled_next">A la pantalla següent s\'activarà el punter amb la funció del clic</string>
     <string name="to_test_click">Per provar el clic, utilitzi el botó següent. Noti que, si fa clic fora del botó, se li ofereixen dues opcions per fer desplaçacament.</string>
     <string name="to_continue_make_click">Abans de continuar, intenti fer un Clic i un Clic Llarg al botó</string>
-    <string name="click_scroll_button_to_continue">Faci clic al botó de desplaçament de la part inferior per continuar</string>
+    <string name="click_scroll_button_to_continue">Faci clic al Botó de Desplaçament de la part inferior per continuar</string>
     <string name="notification_icon">Icona de notificació</string>
     <string name="notification_icon_summary">Per pausar i reprendre EVA (p.e. quan es proporciona assistència), utilitzi la icona de notificació de la part superior.</string>
     <string name="we_finished">Ja hem acabat!</string>
@@ -213,7 +213,7 @@
     <string name="full_enable_after">Totes les funcions d\'EVA s\'activaran al finalitzar aquest assistent</string>
 
     <!-- Toasts -->
-    <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Executi l\'EVA Assistent per activar-lo.</string>
+    <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Per activar-lo, executi l\'assistent de configuració.</string>
     <string name="pointer_stopped_toast">EVA s\'ha aturat %1$s sense detectar el rostre. Per tornar-lo a activar asseguri\'s que el seu rostre apareix dins el visor de càmera.</string>
     <string name="navigation_kbd_advice">Utilitzi el Teclat de Navegació per desplaçar els continguts del navegador web.</string>
     <string name="context_menu_enabled">Menú Contextual activat</string>

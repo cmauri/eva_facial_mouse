@@ -44,18 +44,18 @@
     <string name="after_two_minutes">tras 2 minutos</string>
     <string name="after_five_minutes">tras 5 minutos</string>
     <string name="dwell_area">Área del clic por espera</string>
-    <string name="dwell_area_summary">Desplazamiento máximo permitido antes de reiniciar el tiempo de clic por espera</string>
+    <string name="dwell_area_summary">Desplazamiento máximo antes de reiniciar el tiempo de clic por espera</string>
     <string name="dwell_time">Tiempo de clic por espera</string>
     <string name="dwell_time_summary">Tiempo a esperar (décimas de segundo) antes de hacer clic</string>
     <string name="motion_smoothing">Suavizado del movimiento</string>
     <string name="motion_smoothing_summary">Filtro de reducción de temblor. 0 desactiva</string>
     <string name="motion_threshold">Umbral de movimiento</string>
-    <string name="motion_threshold_summary">Desplazamiento mínimo (en píxeles) para comenzar a mover el puntero</string>
+    <string name="motion_threshold_summary">Desplazamiento mínimo para comenzar a mover el puntero</string>
     <string name="sound_on_click">Reproducir sonido al hacer clic</string>
     <string name="consecutive_clicks">Clics consecutivos</string>
-    <string name="time_without_detection">Detener el puntero cuando no se detecte el rostro</string>
+    <string name="time_without_detection">Desactivar EVA cuando no se detecte el rostro</string>
     <string name="interface_settings">Ajustes de la interfaz</string>
-    <string name="dock_menu_position">Posición del menú flotante</string>
+    <string name="dock_menu_position">Posición del Menú Flotante</string>
     <string name="left">Izquierda</string>
     <string name="right">Derecha</string>
     <string name="top">Parte superior</string>
@@ -87,11 +87,11 @@
     <string name="home_button">Botón de inicio</string>
     <string name="recents_button">Botón recientes</string>
     <string name="notifications_button">Botón de notificación</string>
-    <string name="dock_menu_button">Expandir/replegar menú flotante</string>
+    <string name="dock_menu_button">Expandir/replegar Menú Flotante</string>
     <string name="softkeyboard_button">Abrir teclado</string>
     <string name="scroll_refresh_button">Refrescar los Botones de Desplazamiento</string>
     <string name="toggle_context_menu">Conmutar el Menú Contextual del puntero</string>
-    <string name="toggle_rest_mode">Commutar el Modo Reposo. Para desactivar el clic automático mientras lee o mira un video, por ejemplo.</string>
+    <string name="toggle_rest_mode">Conmutar el Modo Reposo. Para desactivar el clic automático mientras lee o mira un vídeo, por ejemplo.</string>
 
     <!-- Messages for the notification -->
     <string name="running_click_to_pause">Se está ejecutando (clic para pausar)</string>
@@ -148,14 +148,14 @@
     <string name="configuration_settings">Opciones de configuración</string>
     <string name="configuration_settings_summary">La velocidad del puntero y otros parámetros pueden ajustarse desde\nAjustes > Accesibilidad> EVA Facial Mouse > Ajustes</string>
     <string name="configuration_wizard">Asistente de configuración</string>
-    <string name="dock_menu">Menú flotante</string>
-    <string name="dock_menu_summary">El Menú Flotante que aparece en el borde izquierdo de la pantalla permite el acceso rápido a una serie de funciones</string>
+    <string name="dock_menu">Menú Flotante</string>
+    <string name="dock_menu_summary">El Menú Flotante del borde izquierdo de la pantalla permite el acceso rápido a una serie de funciones</string>
     <string name="finish">Finalizar</string>
     <string name="help">Ayuda</string>
     <string name="home">Inicio</string>
     <string name="install">Instalar</string>
     <string name="keyboard">Teclado</string>
-    <string name="keyboard_remarks">La mayoría de teclados estándar no funcionan con EVA. Se proporciona un teclado básico que se debe activar manualmente.</string>
+    <string name="keyboard_remarks">La mayoría de teclados no funcionan con EVA. Para activar el teclado compatible proporcionado:</string>
     <string name="configure">Configurar</string>
     <string name="keyboard_setup">Configuración del teclado</string>
     <string name="known_limitations">Limitaciones conocidas</string>
@@ -164,16 +164,16 @@
         \n- No se pueden coger llamadas en algunos dispositivos
         \n- No funciona con la mayoría de juegos
         \n- Aplicaciones como Maps, Earth, Galería y los navegadores web (recomendamos Google Chrome) funcionan con limitaciones
-        \n- Los botones de desplazamiento no siempre funcionan. En tales circunstancias puede probar a realizar el desplazamiento utilizando el teclado de navegación (véase a continuación)
+        \n- Los Botones de Desplazamiento no siempre funcionan (ej. con los navegadores web). Para hacer el desplazamiento en tales circunstancias, pruebe a utilizar el Teclado de Navegación (véase a continuación)
     </string>
-    <string name="navigation_keyboard">Teclado de navegación</string>
+    <string name="navigation_keyboard">Teclado de Navegación</string>
     <string name="next">Siguiente</string>
     <string name="open_keyboard">Abrir el teclado</string>
     <string name="open_notifications">Abrir notificaciones</string>
     <string name="prerequisites">Pre-requisitos</string>
     <string name="recents">Recientes</string>
     <string name="run_this_wizard_at_startup">Ejecutar este asistente al inicio</string>
-    <string name="scroll_buttons">Botones de desplazamiento</string>
+    <string name="scroll_buttons">Botones de Desplazamiento</string>
     <string name="scroll_buttons_description">Para desplazar contenidos, utilice los Botones de Desplazamiento</string>
 
     <string name="settings">Ajustes</string>
@@ -204,7 +204,7 @@
     <string name="click_enabled_next">En la pantalla siguiente, se activará el puntero con la función del clic</string>
     <string name="to_test_click">Para probar el clic, utilice el botón siguiente.\nNOTA: si hace clic fuera del botón, se le ofrecerán dos opciones para hacer desplazamiento.</string>
     <string name="to_continue_make_click">Antes de continuar, intente hacer un Clic y un Clic Largo al botón</string>
-    <string name="click_scroll_button_to_continue">Haga clic al botón de desplazamiento de la parte inferior para continuar</string>
+    <string name="click_scroll_button_to_continue">Haga clic al Botón de Desplazamiento de la parte inferior para continuar</string>
     <string name="notification_icon">Icono de notificación</string>
     <string name="notification_icon_summary">Para pausar y reanudar EVA (ej. cuando se proporciona asistencia), utilice el icono de notificación de la parte superior.</string>
     <string name="we_finished">¡Hemos finalizado!</string>
@@ -213,7 +213,7 @@
 
     <!-- Toasts -->
     <string name="keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>
-    <string name="pointer_stopped_toast">EVA se ha detenido %1$s sin detectar el rostro. Para volverlo a activar asegurese de que su rostro aparece dentro del visor de cámara.</string>
+    <string name="pointer_stopped_toast">EVA se ha detenido %1$s sin detectar el rostro. Para volverlo a activar, asegúrese de que su rostro aparece dentro del visor de cámara.</string>
     <string name="navigation_kbd_advice">Use el Teclado de Navegación para desplazar los contenidos del navegador web.</string>
     <string name="context_menu_enabled">Menú Contextual activado</string>
     <string name="context_menu_disabled">Menú Contextual desactivado</string>

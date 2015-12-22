@@ -1,3 +1,12 @@
+v1.2
+- Improve wizard (run as part of the service) (usability)
+- Improve OpenCV installation messages (usability)
+- Improve Navigation Keyboard symbols (usability)
+- Fix speed multipliers incorrectly interchanged when physical orientation
+  did not match with screen orientation
+- Remove second launcher icon
+- Other minor fixes and usability improvements
+
 v1.1
 - Add message when pressing some buttons of the dock menu (usability)
 - Fix bug: default action not selected properly

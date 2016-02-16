@@ -37,7 +37,6 @@
     <string name="click_settings">Ajustos del clic</string>
     <string name="detection_settings">Ajustos de detecció</string>
     <string name="never">Mai</string>
-    <string name="after_five_seconds">després de 5 segons</string>
     <string name="after_ten_seconds">després de 10 segons</string>
     <string name="after_thirty_seconds">després de 30 segons</string>
     <string name="after_one_minute">després d\'1 minut</string>
@@ -89,7 +88,6 @@
     <string name="notifications_button">Botó de notificació</string>
     <string name="dock_menu_button">Expandir/replegar Menú Flotant</string>
     <string name="softkeyboard_button">Obrir teclat</string>
-    <string name="scroll_refresh_button">Refrescar el Botons de Desplaçament</string>
     <string name="toggle_context_menu">Commutar el Menú Contextual del punter</string>
     <string name="toggle_rest_mode">Conmutar el Mode Repòs. Per desactivar el clic automàtic mentre llegeix o mira un vídeo, per exemple.</string>
 
@@ -100,9 +98,6 @@
     <!-- OpenCV installation stuff. These allow to compose a message like:
         "Installation cancelled" "EVA"" needs OpenCV manager..."
     -->
-    <string name="installation_cancelled">Instal·lació cancel·lada</string>
-    <string name="needs_opencv_retry">necessita l\'OpenCV manager per funcionar. Reintentar la instal·lació?</string>
-    <string name="opencv_manager_required">OpenCV manager es requereix per executar EVA</string>
     <string name="package_installation_failed">La instal·lació del paquet ha fallat</string>
     <string name="opencv_incompatible">El OpenCV Manager és incompatible amb aquesta app. Intenti actualitzar-lo a través de Google Play</string>
     <string name="opencv_init_error">OpenCV no s\'ha inicialitzat correctament. L\'aplicació es tancarà</string>
@@ -172,7 +167,6 @@
     <string name="open_keyboard">Obrir el teclat</string>
     <string name="prerequisites">Pre-requisits</string>
     <string name="recents">Recents</string>
-    <string name="run_this_wizard_at_startup">Executar aquest assistent a l\'inici</string>
     <string name="scroll_buttons">Botons de Desplaçament</string>
     <string name="scroll_buttons_description">Per desplaçar continguts, utilitzi els Botons de Desplaçament</string>
     <string name="settings">Configuració</string>

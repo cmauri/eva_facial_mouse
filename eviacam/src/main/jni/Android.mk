@@ -2,6 +2,9 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
+OPENCV_CAMERA_MODULES:=off
+OPENCV_INSTALL_MODULES:=on
+
 include $(OPENCV_ANDROID_SDK)/native/jni/OpenCV.mk
 
 LOCAL_MODULE    := visionpipeline

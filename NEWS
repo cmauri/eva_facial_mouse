@@ -1,3 +1,7 @@
+v1.2.1
+- Fix support for devices running arm64 Android version (e.g. Huawei P8)
+  and remove the OpenCV manager dependency
+  
 v1.2
 - Improve wizard (run as part of the service) (usability)
 - Improve OpenCV installation messages (usability)
@@ -40,7 +44,9 @@ v0.98
 
 v0.95beta 
 - Project migrated to Android Studio
-- Add power management: lock power on while interacting. After some time without detecting a face it disables the on-screen pointer, enters in low power mode and allows the device to suspend.
+- Add power management: lock power on while interacting. After some time without
+  detecting a face it disables the on-screen pointer, enters in low power mode
+  and allows the device to suspend.
 - Fix camera viewer orientation and add face detection feedback
 - Fix some non workings keys ('p' and 'z')
 - Fix some scrolling issues (e.g. list views that get stuck)
@@ -97,7 +103,9 @@ Current features:
 - Management of IME (custom IME)
 
 Known limitations:
-- Control elements are not visible through the Accessibility API, for example, web browsing (webview) is quite limited (not all elements are operable, it is not possible to scroll), non-standard controls (e.g. games.)
+- Control elements are not visible through the Accessibility API, for example,
+  web browsing (webview) is quite limited (not all elements are operable, it
+  is not possible to scroll), non-standard controls (e.g. games.)
 - Handling Input Method (IME) Standard
 - Some issues with Play Store
 

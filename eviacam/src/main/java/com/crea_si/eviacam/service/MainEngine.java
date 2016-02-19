@@ -68,8 +68,8 @@ public class MainEngine implements
     // singleton instance
     private static MainEngine sMainEngine = null;
     
-    // openvc has been checked?
-    private static boolean sOpenCVReady= false;
+    // splash screen has been displayed (in the past: openvc has been checked?)
+    private static boolean sSplashDisplayed = false;
 
     // handler to run things on the main thread
     private final Handler mHandler= new Handler();
@@ -186,14 +186,14 @@ public class MainEngine implements
 
 
     /**
-     * Init phase 1: OpenCV detection and install
+     * Init phase 1: splash screen display (formerly used to OpenCV detection and install)
      */
     private void init() {
-        if (sOpenCVReady) init2();
+        if (sSplashDisplayed) init2();
         else {
             /*
-             * Display splash and detect OpenCV installation. The engine from now on waits
-             * until the detection process finishes and initCVReady() is called.
+             * Display splash. The engine from now on waits
+             * until the detection process finishes and splashReady() is called.
              */
             Intent dialogIntent = new Intent(mService, SplashActivity.class);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -201,14 +201,14 @@ public class MainEngine implements
         }
     }
 
-    /** Called from splash activity to notify the openCV is properly installed */
-    public static void initCVReady() {
+    /** Called from splash activity to notify the finished */
+    public static void splashReady() {
         /* Was initialized previously? If so, just do nothing. */
-        if (sOpenCVReady) return;
+        if (sSplashDisplayed) return;
 
         MainEngine ce= MainEngine.sMainEngine;
         if (ce == null) return;
-        sOpenCVReady= true;
+        sSplashDisplayed = true;
 
         ce.init2();
     }

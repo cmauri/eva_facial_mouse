@@ -25,11 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.opencv.android.MyBaseLoaderCallback;
 import org.opencv.android.MyCameraBridgeViewBase;
 import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.MyJavaCameraView;
-import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.MyOpenCVLoader;
 import org.opencv.core.Mat;
@@ -57,9 +55,6 @@ public class CameraListener implements CvCameraViewListener2 {
     // physical orientation of the camera (0, 90, 180, 270)
     private final int mCameraOrientation;
 
-    // callback for camera initialization
-    private final MyBaseLoaderCallback mLoaderCallback;
-    
     /** 
      * Load a resource into a temporary file
      * 
@@ -103,37 +98,6 @@ public class CameraListener implements CvCameraViewListener2 {
     public CameraListener(Context c, FrameProcessor fp) {
         mContext= c;
         mFrameProcessor= fp;
-        mLoaderCallback = new MyBaseLoaderCallback(c) {
-            @Override
-            public void onManagerConnected(int status) {
-                switch (status) {
-                    case LoaderCallbackInterface.SUCCESS:
-                    {
-                        EVIACAM.debug("OpenCV loaded successfully");
-                        
-                        // initialize JNI part
-                        System.loadLibrary("visionpipeline");
-                        
-                        /** Load haarcascade from resources */
-                        try {
-                            File f= resourceToTempFile (mContext, R.raw.haarcascade, "xml");
-                            VisionPipeline.init(f.getAbsolutePath());
-                            f.delete();
-                        }
-                        catch (IOException e) {
-                            EVIACAM.debug("Cannot write haarcascade temp file. Continuing anyway");
-                        }
-
-                        // start camera capture
-                        mCameraView.enableView();
-                    } break;
-                    default:
-                    {
-                        // TODO: manage errors
-                        super.onManagerConnected(status);
-                    } break;
-                }
-            }};
 
         /*
          * The orientation of the camera image. The value is the angle that the camera image needs 
@@ -174,8 +138,33 @@ public class CameraListener implements CvCameraViewListener2 {
     }
     
     public void startCamera() {
-        // Start OpenCV
-        MyOpenCVLoader.initAsync(MyOpenCVLoader.OPENCV_VERSION_2_4_9, mContext, mLoaderCallback);
+        /**
+         * In previous versions we used the OpenCV async helper, but we found
+         * problems with devices running Android arm64 (e.g. Huawei P8) due
+         * to missing OpenCV libraries. To avoid such problems we included the
+         * OpenCV binaries in the App apk
+         */
+        if (!MyOpenCVLoader.initDebug()) {
+            throw new RuntimeException("Cannot initialize OpenCV");
+        }
+
+        EVIACAM.debug("OpenCV loaded successfully");
+
+        // initialize JNI part
+        System.loadLibrary("visionpipeline");
+
+        /** Load haarcascade from resources */
+        try {
+            File f= resourceToTempFile (mContext, R.raw.haarcascade, "xml");
+            VisionPipeline.init(f.getAbsolutePath());
+            f.delete();
+        }
+        catch (IOException e) {
+            EVIACAM.debug("Cannot write haarcascade temp file. Continuing anyway");
+        }
+
+        // start camera capture
+        mCameraView.enableView();
     }
     
     public void stopCamera() {

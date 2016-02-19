@@ -41,7 +41,6 @@
     <string name="click_settings">Click settings</string>
     <string name="detection_settings">Detection settings</string>
     <string name="never">Never</string>
-    <string name="after_five_seconds">after 5 seconds</string>
     <string name="after_ten_seconds">after 10 seconds</string>
     <string name="after_thirty_seconds">after 30 seconds</string>
     <string name="after_one_minute">after 1 minute</string>
@@ -95,7 +94,6 @@
     <string name="notifications_button">Notifications button</string>
     <string name="dock_menu_button">Expand/collapse dock menu</string>
     <string name="softkeyboard_button">Open keyboard</string>
-    <string name="scroll_refresh_button">Refresh Scroll Buttons</string>
     <string name="toggle_context_menu">Toggle pointer Context Menu</string>
     <string name="toggle_rest_mode">Toggle Rest mode. To disable automatic clicks while you read or watch a video, for instance.</string>
 
@@ -106,9 +104,6 @@
     <!-- OpenCV installation stuff. These allow to compose a message like:
         "Installation cancelled" "EVA"" needs OpenCV manager..."
     -->
-    <string name="installation_cancelled">Installation cancelled</string>
-    <string name="needs_opencv_retry"> needs OpenCV Manager to run. Retry installation?</string>
-    <string name="opencv_manager_required">OpenCV Manager is required to run EVA</string>
     <string name="package_installation_failed">Package installation failed</string>
     <string name="opencv_incompatible">OpenCV Manager service is incompatible with this app. Try to update it via Google Play.</string>
     <string name="opencv_init_error">OpenCV was not initialised correctly. Application will be shut down</string>

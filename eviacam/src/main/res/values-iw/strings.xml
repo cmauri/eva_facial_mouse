@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+   <!--Do NOT translate-->
+   <!--Description shown in the accessibility service screen-->
+   <string name="eviacam_service_description">עכבראש הנה תכנית הדמייה להזזת העכבר עם הזזת הראש. התכנית עוקבת אחר הפנים שלך בעזרת המצלמה הקדמית של ההתקן שלך.</string>
+   <!--Label for the preferences screen-->
+   <string name="eviacam_preferences_title">הגדרות עכבראש</string>
+   <!--These are labels and summaries for settings-->
+   <string name="motion_settings">הגדרות תנועה</string>
+   <string name="horizontal">אופקית</string>
+   <string name="horizontal_speed">מהירות אופקית</string>
+   <string name="vertical">אנכית</string>
+   <string name="vertical_speed">מהירות אנכית</string>
+   <string name="acceleration">האצה</string>
+   <string name="acceleration_summary">האצת הסמן. 0 לביטול</string>
+   <string name="click_settings">הגדרות לחיצה</string>
+   <string name="detection_settings">הגדרות זיהוי</string>
+   <string name="never">לעולם לא</string>
+   <string name="after_ten_seconds">לאחר 10 שניות</string>
+   <string name="after_thirty_seconds">לאחר 30 שניות</string>
+   <string name="after_one_minute">לאחר דקה</string>
+   <string name="after_two_minutes">לאחר 2 דקות</string>
+   <string name="after_five_minutes">לאחר 5 דקות</string>
+   <string name="dwell_area">אזור שהיה</string>
+   <string name="dwell_area_summary">תזוזה מרבית בטרם התחלת זמן השהיה</string>
+   <string name="dwell_time">זמן שהיה</string>
+   <string name="dwell_time_summary">הזמן להמתנה (עשרות שניות) בטרם הפעלת לחיצה</string>
+   <string name="motion_smoothing">החלקת תנועה</string>
+   <string name="motion_smoothing_summary">מסנן הפחתת רעד. 0 לביטול</string>
+   <string name="motion_threshold">סף תנועה</string>
+   <string name="motion_threshold_summary">תזוזה מזערית להתחלת הזזת סמן העכבר</string>
+   <string name="sound_on_click">השמעת צליל בעת לחיצה</string>
+   <string name="consecutive_clicks">לחיצות עוקבות</string>
+   <string name="time_without_detection">נטרול עכבראש כאשר הפנים אינן מזוהות</string>
+   <string name="interface_settings">הגדרות מנשק</string>
+   <string name="dock_menu_position">מיקום התפריט המעוגן</string>
+   <string name="left">שמאל</string>
+   <string name="right">ימין</string>
+   <string name="top">למעלה</string>
+   <string name="bottom">למטה</string>
+   <string name="ui_elements_size">גודל פריטי המנשק</string>
+   <string name="xlarge">גדולים במיוחד</string>
+   <string name="large">גדולים</string>
+   <string name="normal">רגילים</string>
+   <string name="small">קטנים</string>
+   <string name="help">עזרה</string>
+   <string name="configuration_wizard">אשף תצורה</string>
+   <string name="version">גרסה</string>
+   <string name="wizard_will_run">האשף יופעל עם ההפעלה הבאה של עכבראש</string>
+   <!--Actions available through the accessibility API-->
+   <string name="click">לחיצה</string>
+   <string name="long_click">לחיצה ארוכה</string>
+   <string name="collapse">צמצום</string>
+   <string name="copy">העתקה</string>
+   <string name="cut">גזירה</string>
+   <string name="dismiss">התעלמות</string>
+   <string name="expand">הרחבה</string>
+   <string name="paste">הדבקה</string>
+   <string name="scroll_backward">גלילה לאחור</string>
+   <string name="scroll_forward">גלילה קדימה</string>
+   <string name="select">בחירה</string>
+   <string name="focus">מיקוד</string>
+   <!--Actions available through the docking panel-->
+   <string name="back_button">כפתור חזרה</string>
+   <string name="home_button">כפתור בית</string>
+   <string name="recents_button">כפתור אחרונים</string>
+   <string name="notifications_button">כפתור התרעות</string>
+   <string name="dock_menu_button">הרחבה/צמצום של התפריט המעוגן</string>
+   <string name="softkeyboard_button">פתיחת מקלדת</string>
+   <string name="toggle_context_menu">החלפת מצב תפריט ההקשר</string>
+   <string name="toggle_rest_mode">החלפת מצב מנוחה. כדי לנטרל לחיצות אוטומטיות בזמן קריאה או צפייה בווידאו למשל.</string>
+   <!--Messages for the notification-->
+   <string name="running_click_to_pause">פעיל (יש ללחוץ כדי להשהות)</string>
+   <string name="stopped_click_to_resume">נעצר (יש ללחוץ כדי להמשיך)</string>
+   <!--OpenCV installation stuff. These allow to compose a message like:
+        "Installation cancelled" "EVA"" needs OpenCV manager..."-->
+   <string name="package_installation_failed">התקנת החבילה נכשלה</string>
+   <string name="opencv_incompatible">שירות ניהול ה־OpenCV אינו תואם ליישום זה. כדאי לנסות לעדכן אותו דרך Google Play.</string>
+   <string name="opencv_init_error">השירות OpenCV לא הופעל כראוי. היישום יכבה.</string>
+   <string name="opencv_installation">התקנת מנהל OpenCV</string>
+   <string name="opencv_installation_summary">עכבראש דורש מנהל OpenCV. האם לנסות להתקין אותו?</string>
+   <string name="opencv_not_ready">ה־OpenCV לא מוכן</string>
+   <string name="opencv_installation_in_progress">ההתקנה מתבצעת. להמתין או לבטל?</string>
+   <string name="wait">להמתין</string>
+   <string name="retry">לנסות שוב</string>
+   <!--Crash report messages (ACRA)-->
+   <string name="crash_toast_text">אופס! עכבראש קרס</string>
+   <string name="crash_dialog_text">אירעה שגיאה בלתי צפויה בעת ניסיון העצירה המאולץ של עכבראש. ניתן לעזור לנו לתקן זאת על ידי שליחת נתוני השגיאה, כל שעליך לעשות הוא ללחוץ על אישור.</string>
+   <string name="crash_dialog_comment_prompt">ניתן להוסיף הערות על הבעיה להלן:</string>
+   <string name="crash_dialog_ok_toast">תודה רבה לך!</string>
+   <!--Slave mode gamepad settings-->
+   <string name="gamepad_settings">הגדרות לוח משחק</string>
+   <string name="gamepad_location">מיקום לוח המשחק</string>
+   <string name="top_left">שמאל למעלה</string>
+   <string name="bottom_left">שמאל למטה</string>
+   <string name="top_center">אמצע למעלה</string>
+   <string name="bottom_center">אמצע למטה</string>
+   <string name="top_right">ימין למעלה</string>
+   <string name="bottom_right">ימין למטה</string>
+   <string name="eviacam_slave_mode_preferences_title">העדפות לעכבראש במצב נשלט</string>
+   <string name="slave_mode_preferences">העדפות מצב נשלט</string>
+   <string name="gamepad_interface_settings">מנשק לוח משחק</string>
+   <string name="gamepad_transparency">שקיפות</string>
+   <string name="gamepad_abs_speed">מהירות מצב מוחלט</string>
+   <string name="gamepad_abs_speed_summary">מהירות בעת שימוש במצב מוחלט</string>
+   <string name="gamepad_rel_sensitivity">רגישות מצב יחסי</string>
+   <string name="gamepad_rel_sensitivity_summary">רגישות בעת השימוש במצב יחסי (ערכים נמוכים מגדירים רגישות גבוהה יותר)</string>
+   <string name="gamepad_preferences">העדפות לוח משחק</string>
+   <string name="mouse_preferences">העדפות עכבר</string>
+   <!--Wizard-->
+   <string name="wizard_icon_name">אשף עכבראש</string>
+   <string name="next">הבא</string>
+   <string name="back">הקודם</string>
+   <string name="finish">סיום</string>
+   <string name="prerequisites">דרישות קדם</string>
+   <string name="install">התקנה</string>
+   <string name="keyboard_setup">הגדרת מקלדת</string>
+   <string name="wiz_set_keyboard"><![CDATA[1. יש לגשת אל: \'הגדרות > שפה וקלט\']]>
+        \n2. להפעיל את \'EVA Keyboard\'
+        \n3. לגעת באפשרות \'בררת מחדל\'
+        \n4. לבחור ב־\'EVA Keyboard\'</string>
+   <string name="wiz_set_keyboard_lollipop"><![CDATA[1. יש לגשת אל: \'הגדרות > שפה וקלט > מקלדת נוכחית > בחירת מקלדות\']]>
+        \n2. להפעיל את \'EVA Keyboard\'
+        \n3. לחזור אחורה
+        \n4. לגעת באפשרות \'מקלדת נוכחית\'
+        \n5. לבחור ב־\'EVA Keyboard\'</string>
+   <string name="check">בדיקה</string>
+   <string name="done">בוצע</string>
+   <string name="positioning">מיקום</string>
+   <string name="positioning_summary">יש לקבע את ההתקן כשהצד הקדמי פונה אל פני המשתמש בתנוחה הטבעית במרחק של 30-50 ס״מ.\nהפנים אמורים להופיע במלואם בתוך המציג כדי שיהיה ניתן לזהות אותם. כשהמצב הזה מתקיים, המסגרת הופכת לאדומה וצלב אדום מופיע על מרכז הפנים.</string>
+   <string name="dock_menu">תפריט מעוגן</string>
+   <string name="dock_menu_summary">התפריט המעוגן לצדו השמאלי של המסך מאפשר גישה פשוטה למגוון תכונות</string>
+   <string name="home">בית</string>
+   <string name="recents">אחרונים</string>
+   <string name="open_notifications">פתיחת התרעות</string>
+   <string name="open_keyboard">פתיחת מקלדת</string>
+   <string name="scroll_buttons">כפתורי גלילה</string>
+   <string name="scroll_buttons_description">כדי לגלול תוכן, יש להשתמש בכפתורי הגלילה</string>
+   <string name="navigation_keyboard">מקלדת ניווט</string>
+   <string name="keyboard">מקלדת</string>
+   <string name="keyboard_remarks">רוב המקלדות לא עובדות עם עכבראש. כדי להפעיל את המקלדת התואמת המסופקת:</string>
+   <string name="configure">הגדרה</string>
+   <string name="keyboard_not_configured">המקלדת אינה מוגדרת</string>
+   <string name="keyboard_not_configured_confirm">האם להמשיך מבלי להגדיר את המקלדת?</string>
+   <string name="pointer_speed">מהירות הסמן</string>
+   <string name="pointer_speed_summary">עליך להניע את ראשך כדי להזיז את הסמן. כעת עליך לנסות להגיע לכל חלק במסך. ניתן להתאים את המהירויות אם יש צורך בכך.</string>
+   <string name="configuration_settings">הגדרות תצורה</string>
+   <string name="configuration_settings_summary">כדי להתאים את מהירות הסמן ואת ההגדרות הנוספות, עליך לגשת אל\nהגדרות &gt; נגישות&gt; EVA Facial Mouse &gt; הגדרות</string>
+   <string name="settings">הגדרות</string>
+   <string name="known_limitations">מגבלות ידועות</string>
+   <string name="limitations_summary">עקב מגבלות במערכת Android, חלק מהתכונות אינן זמינות עדיין.
+        \n- לא ניתן להשתמש במצלמה
+        \n- לא ניתן לקבל שיחות בחלק מההתקנים
+        \n- רוב המשחקים לא עובדים
+        \n- יישומים כגון מפות, Earth, גלריה ודפדפנים עובדים באופן מוגבל
+        \n- כפתורי הגלילה לא תמיד עובדים (למשל בדפדפנים). כדי לגלול במקרים כאלה, כדאי לנסות להשתמש במקלדת הניווט (מידע להלן)</string>
+   <string name="skip_wizard">לדלג על האשף</string>
+   <string name="close_wizard_q">לסגור את האשף?</string>
+   <string name="eva_not_running">עכבראש אינו פעיל</string>
+   <string name="eva_not_running_summary">כדי להפעיל את האשף ראשית עליך להפעיל את השירות EVA Facial Mouse (עכבראש)</string>
+   <string name="close">סגירה</string>
+   <string name="trying_to_detect_face">מתבצע ניסיון לזיהוי הפנים…</string>
+   <string name="face_detected">הפנים זוהו</string>
+   <string name="pre_click_summary">כדי לבצע פעולת לחיצה, עליך לעצור את סמן העכבר במקום המבוקש. לאחר מספר רגעים הלחיצה תופעל אוטומטית. אם הפריט שלהלן מסוגל לבצע יותר מפעולה אחת יופיע תפריט הקשר.</string>
+   <string name="click_enabled_next">במסך הבא, הסמן עם תכונת הלחיצה יופעל</string>
+   <string name="to_test_click">כדי לבחון לחיצה, ניתן להשתמש בכפתור שלהלן. לתשומת לבך: אם הלחיצה תבוצע מחוץ לכפתור יוצעו לך שתי אפשרויות גלילה.</string>
+   <string name="to_continue_make_click">לפני שנמשיך בתהליך, עליך ללחוץ לחיצה אחת קצרה ואחת ארוכה על הכפתור</string>
+   <string name="click_scroll_button_to_continue">יש ללחוץ על כפתור הגלילה שנמצא מימין למטה כדי להמשיך</string>
+   <string name="notification_icon">סמל התרעה</string>
+   <string name="notification_icon_summary">כדי להשהות ולהמשיך את הפעילות של עכבראש (לדוגמה בעת מתן תמיכה), ניתן להשתמש בסמל ההתרעה שלהלן.</string>
+   <string name="we_finished">סיימנו!</string>
+   <string name="run_wizard_again">כדי להפעיל את האשף שוב, עליך לגשת אל \nהגדרות &gt; נגישות &gt; EVA Facial Mouse &gt; הגדרות</string>
+   <string name="full_enable_after">כל התכונות של עכבראש יופעלו לאחר האשף הזה</string>
+   <!--Toasts and other messages-->
+   <string name="keyboard_not_enabled_toast">לא זוהתה מקלדת עכבראש. כדי להגדיר אותה, יש להשתמש באשף.</string>
+   <string name="pointer_stopped_toast">עכבראש עצר את %1$s מבלי לזהות את פניך. כדי להפעיל את השירות שוב, יש לוודא כי הפנים שלך ממורכזות בתוך מציג המצלמה.</string>
+   <string name="navigation_kbd_advice">ניתן להשתמש במקלדת הניווט כדי לגלול בתכני הדפדפן.</string>
+   <string name="context_menu_enabled">תפריט ההקשר פעיל</string>
+   <string name="context_menu_disabled">תפריט ההקשר מנוטרל</string>
+   <string name="rest_mode_enabled">מצב מנוחה פעיל</string>
+   <string name="rest_mode_disabled">מצב מנוחה מנוטרל</string>
+   <string name="got_it">הבנתי</string>
+   <string name="button">כפתור</string>
+   <string name="how_to_run">כדי להפעיל את עכבראש, עליך לגשת אל \n\nהגדרות &gt; נגישות &gt; EVA Facial Mouse</string>
+   <string name="dont_remember_again">לא להזכיר לי שוב</string>
+</resources>

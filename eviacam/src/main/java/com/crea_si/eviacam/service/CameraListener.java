@@ -112,10 +112,13 @@ public class CameraListener implements CvCameraViewListener2 {
          */
         // TODO: display error when no front camera detected
         int cameraOrientation= 0;
+
+
         Camera.CameraInfo cameraInfo= new CameraInfo();
         for (int i= 0; i<  Camera.getNumberOfCameras(); i++) {
             Camera.getCameraInfo (i, cameraInfo);
-            if (cameraInfo.facing== CameraInfo.CAMERA_FACING_FRONT) {
+            // TODO: fix this
+            if (true) { //cameraInfo.facing== CameraInfo.CAMERA_FACING_FRONT) {
                 cameraOrientation= cameraInfo.orientation;
                 EVIACAM.debug("Detected front camera. Orientation: " + cameraOrientation);
             }
@@ -123,7 +126,7 @@ public class CameraListener implements CvCameraViewListener2 {
         mCameraOrientation= cameraOrientation;
     
         // create capture view
-        mCameraView= new MyJavaCameraView(mContext, MyCameraBridgeViewBase.CAMERA_ID_FRONT);
+        mCameraView= new MyJavaCameraView(mContext, MyCameraBridgeViewBase.CAMERA_ID_ANY);
         
         // set CameraBridgeViewBase parameters        
         // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)

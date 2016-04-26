@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
     }
 
     // TODO
@@ -26,6 +26,6 @@ android {
 
 dependencies {
     compile project(':input_method_aidl')
-    compile 'com.android.support:support-v4:22.+'
-    compile files('libs/acra-4.6.2.jar')
+    compile 'com.android.support:support-v4:23.+'
+    compile 'ch.acra:acra:4.8.5'
 }

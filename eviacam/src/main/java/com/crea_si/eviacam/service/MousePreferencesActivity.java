@@ -64,14 +64,21 @@ public class MousePreferencesActivity extends Activity {
      * The settings fragment
      */
     public static class SettingsFragment extends PreferenceFragment {
-        // stored whether the activity has been started in slave mode
-        private final boolean mSlaveMode;
+        // Factory method to pass initial arguments using the bundle
+        public static SettingsFragment newInstance (boolean slaveMode) {
+            SettingsFragment sf= new SettingsFragment();
 
-        public SettingsFragment () {
-            mSlaveMode= false;
+            Bundle args= new Bundle();
+            args.putBoolean("slaveMode", slaveMode);
+            sf.setArguments(args);
+
+            return sf;
         }
 
-        SettingsFragment (boolean slaveMode) { mSlaveMode= slaveMode; }
+        // return whether the fragment has been started in slave mode
+        private boolean getSlaveMode() {
+            return getArguments().getBoolean("slaveMode");
+        }
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +86,9 @@ public class MousePreferencesActivity extends Activity {
 
             setRetainInstance(true);
 
-            if (mSlaveMode) {
+            final boolean slaveMode= getSlaveMode();
+
+            if (slaveMode) {
                 // In slave mode use different preference file
                 getPreferenceManager().setSharedPreferencesName(Preferences.FILE_SLAVE_MODE);
             }
@@ -87,7 +96,7 @@ public class MousePreferencesActivity extends Activity {
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preference_fragment);
 
-            if (mSlaveMode) {
+            if (slaveMode) {
                 /*
                  * Remove preferences not applicable in slave mode
                  */
@@ -138,7 +147,7 @@ public class MousePreferencesActivity extends Activity {
              * Listeners for list preference entries
              */
             ListPreference lp;
-            if (!mSlaveMode) {
+            if (!slaveMode) {
                 lp = (ListPreference) findPreference(Preferences.KEY_DOCKING_PANEL_EDGE);
                 lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
             }
@@ -167,7 +176,7 @@ public class MousePreferencesActivity extends Activity {
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingsFragment(slaveMode))
+                .replace(android.R.id.content, SettingsFragment.newInstance(slaveMode))
                 .commit();
 
         if (slaveMode) {

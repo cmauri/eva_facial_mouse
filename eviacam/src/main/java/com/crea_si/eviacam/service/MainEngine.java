@@ -279,8 +279,14 @@ public class MainEngine implements
         mCameraListener= new CameraListener(mService, this);
         mCameraLayerView.addCameraSurface(mCameraListener.getCameraSurface());
 
+        /* flip the preview when needed */
+        mCameraListener.setPreviewFlip(mCameraListener.getCameraFlip());
+
         // orientation manager
-        OrientationManager.init(mService, mCameraListener.getCameraOrientation());
+        OrientationManager.init(
+                mService,
+                mCameraListener.getCameraFlip(),
+                mCameraListener.getCameraOrientation());
         mOrientationManager= OrientationManager.get();
 
         // Service notification listener

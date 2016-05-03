@@ -41,8 +41,12 @@ public class VisionPipeline {
      * @param rotation rotation (clockwise) in degrees that needs to be applied to the image
      *     before processing it so that the subject appears right.
      *     Valid values: 0, 90, 180, 270.
+     * @param flip flip operation before rotation
+     *     NONE       (0): no flip
+     *     VERTICAL   (1): vertical flip (around X-axis)
+     *     HORIZONTAL (2): horizontal flip (around Y-axis)
      * @param vel is updated with the extracted motion for each axis
      * @return true if face detected in the last frame (or few frames ago)
      */
-    public static native boolean processFrame (long matAddrGr, int rotation, PointF vel);
+    public static native boolean processFrame (long matAddrGr, int flip, int rotation, PointF vel);
 }

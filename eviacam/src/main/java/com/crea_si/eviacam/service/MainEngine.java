@@ -638,7 +638,11 @@ public class MainEngine implements
          */
         mMotion.x= mMotion.y= 0.0f;
         boolean faceDetected=
-                VisionPipeline.processFrame(rgba.getNativeObjAddr(), pictRotation, mMotion);
+                VisionPipeline.processFrame(
+                        rgba.getNativeObjAddr(),
+                        mOrientationManager.getPictureFlip().getValue(),
+                        pictRotation,
+                        mMotion);
 
         /*
          * Check whether need to pause/resume the engine according

@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,80 +20,52 @@
 package com.crea_si.eviacam.service;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.PointF;
-import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 
-import com.crea_si.eviacam.EVIACAM;
-
+/**
+ * Encapsulates the all the orientation related stuff
+ */
 class OrientationManager {
+    // Singleton instance
+    private static OrientationManager sInstance= null;
 
-    private final Context mContext;
+    private final WindowManager mWindowManager;
 
-    // orientation sensors listener. keeps updated the current orientation
-    // of the device (independently of the screen orientation)
-    private PhysicalOrientation mPhysicalOrientation;
-    
-    // orientation of the screen
-    private int mScreenOrientation= 0;
-
-    // whether the frame needs to be flipped before rotating
+    // Whether the captured frame needs to be flipped before rotating (depends on hardware)
     private final FlipDirection mCameraFlip;
 
-    // the orientation of the camera
+    // The physical orientation of the camera (depends on hardware)
     private final int mCameraOrientation;
 
-    // default (natural) device orientation
-    private final int mDeviceNaturalOrientation;
-
-    private static OrientationManager sInstance= null;
+    // Receive notifications from the SensorManager and keep updated the physical
+    // orientation of the device (which is different from the screen orientation)
+    private PhysicalOrientation mPhysicalOrientation;
 
     // constructor
     private OrientationManager(Context c, FlipDirection flip, int cameraOrientation) {
-        mContext= c; 
-
-        // create physical orientation manager
-        mPhysicalOrientation= new PhysicalOrientation(mContext);
-        
-        // enable sensor listener
-        mPhysicalOrientation.enable();
-        
-        mScreenOrientation= getScreenOrientation(mContext);
+        mWindowManager= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
 
         mCameraFlip= flip;
+
         mCameraOrientation= cameraOrientation;
 
-        mDeviceNaturalOrientation= doGetDeviceDefaultOrientation(mContext);
+        // create physical orientation manager and start listening sensors
+        mPhysicalOrientation= new PhysicalOrientation(c);
+        mPhysicalOrientation.enable();
     }
 
-    /**
-     * Get the "natural" orientation of the device
-     *
-     * @return Configuration.ORIENTATION_LANDSCAPE or Configuration.ORIENTATION_PORTRAIT
-     */
-    static private int doGetDeviceDefaultOrientation(Context c) {
-        WindowManager windowManager = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
-
-        Configuration config = c.getResources().getConfiguration();
-
-        int rotation = windowManager.getDefaultDisplay().getRotation();
-
-        if ( ((rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180) &&
-                config.orientation == Configuration.ORIENTATION_LANDSCAPE)
-                || ((rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) &&
-                config.orientation == Configuration.ORIENTATION_PORTRAIT)) {
-            return Configuration.ORIENTATION_LANDSCAPE;
-        } else {
-            return Configuration.ORIENTATION_PORTRAIT;
-        }
+    public void cleanup() {
+        mPhysicalOrientation.disable();
+        sInstance= null;
     }
 
     /**
      * Initialize orientation manager singleton instance
      *
-     * @param c
+     * @param c context
+     * @param flip Whether the captured frame needs to be flipped before rotating
      * @param cameraOrientation
      *  The orientation of the camera image. The value is the angle that the camera image needs
      *  to be rotated clockwise so it shows correctly on the display in its natural orientation.
@@ -115,11 +87,6 @@ class OrientationManager {
         return sInstance;
     }
 
-    public void cleanup() {
-        mPhysicalOrientation.disable();
-        sInstance= null;
-    }
-
     /**
      * Returns the rotation of the screen from its "natural" orientation. 
      * 
@@ -135,10 +102,8 @@ class OrientationManager {
      * 90 degrees clockwise and thus the returned value here will be Surface.ROTATION_90.
      * 
      */
-    static private int getScreenOrientation(Context c) {
-        WindowManager wm= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
-        Display d= wm.getDefaultDisplay();
-        switch (d.getRotation()) {
+    public int getScreenOrientation() {
+        switch (mWindowManager.getDefaultDisplay().getRotation()) {
         case Surface.ROTATION_0: return 0;
         case Surface.ROTATION_90: return 90;
         case Surface.ROTATION_180: return 180;
@@ -149,28 +114,24 @@ class OrientationManager {
     }
 
     /**
-     * Get the "natural" device orientation
-     * @return Configuration.ORIENTATION_LANDSCAPE or Configuration.ORIENTATION_PORTRAIT
-     */
-    public int getDeviceNaturalOrientation() {
-        return mDeviceNaturalOrientation;
-    }
-
-    /**
-     * Get the current (physical) device orientation
+     * (Method removed, comments left for future reference only)
      *
-     * @return 0 degrees when the device is oriented in its natural position, 90 degrees when
-     * its left side is at the top, 180 degrees when it is upside down, and 270 degrees when
-     * its right side is to the top.
+     * In theory, this method is called according to android:configChanges which should be
+     *
+     *     android:configChanges="orientation|screenSize"
+     *
+     * (see: http://developer.android.com/intl/es/guide/topics/manifest/activity-element.html)
+     *
+     * HOWEVER, in our experience this method is not always called when "The screen orientation
+     * has changed — the user has rotated the device.", in particular when you flip the device
+     * (note that screen size does not change). Therefore, we cannot rely on this listener
+     * to keep the screen orientation value up to date and finally we need to query the screen
+     * orientation each time is needed.
      */
-    public int getDeviceCurrentOrientation () {
-        return mPhysicalOrientation.getCurrentOrientation();
-    }
-    
+    /*
     public void onConfigurationChanged(Configuration newConfig) {
         mScreenOrientation= getScreenOrientation(mContext);
-        EVIACAM.debug("Screen rotation changed: " + mScreenOrientation);
-    }
+    }*/
 
     /**
      * Some devices, such as the Lenovo YT3-X50L, have a rotating camera. For those devices
@@ -203,7 +164,7 @@ class OrientationManager {
      */
     private int getDiffRotation () {
         // calculate equivalent physical device rotation for the current screen orientation
-        int equivPhyRotation= 360 - mScreenOrientation;
+        int equivPhyRotation= 360 - getScreenOrientation();
         if (equivPhyRotation== 360) equivPhyRotation= 0;
 
         // when is a mismatch between physical rotation and screen orientation
@@ -221,8 +182,7 @@ class OrientationManager {
      * matches the motion of the pointer on the screen
      */
     public void fixVectorOrientation(PointF motion) {
-        int diffRotation= getDiffRotation();
-        switch (diffRotation) {
+        switch (getDiffRotation()) {
         case 0: 
             // Nothing to be done
             break;

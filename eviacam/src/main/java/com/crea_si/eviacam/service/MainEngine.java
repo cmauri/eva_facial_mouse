@@ -498,11 +498,6 @@ public class MainEngine implements
 
         sMainEngine = null;
     }
-  
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        if (mOrientationManager != null) mOrientationManager.onConfigurationChanged(newConfig);
-    }
 
     @Override
     public void setOperationMode(int mode) {

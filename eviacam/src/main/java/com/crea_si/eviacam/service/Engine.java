@@ -26,5 +26,4 @@ interface Engine {
     boolean start();
     void stop();
     void cleanup();
-    void onConfigurationChanged(Configuration newConfig);
 }

@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.service;
 
 import android.content.Context;
 import android.hardware.SensorManager;
 import android.view.OrientationEventListener;
 
-import com.crea_si.eviacam.EVIACAM;
-
+/**
+ * Class to receive notifications from the SensorManager and keep updated the
+ * physical orientation of the device.
+ *
+ * It translates from a range from 0 to 359 degrees, to a four main orientation
+ * values: 0, 90, 180 and 270. Orientation is 0 degrees when the device is oriented
+ * in its natural position, 90 degrees when its left side is at the top, 180 degrees
+ * when it is upside down, and 270 degrees when its right side is to the top.
+ */
 class PhysicalOrientation extends OrientationEventListener {
     private int mCurrentOrientation = 0;
     
@@ -33,10 +40,10 @@ class PhysicalOrientation extends OrientationEventListener {
     }
     
     /**
-     * translates from degrees to 4 orientations
+     * It translates from a range from 0 to 359 degrees, to a four main orientation
+     * values
      * 
-     * More info:
-     * http://www.androidzeitgeist.com/2013/01/fixing-rotation-camera-picture.html
+     * See: http://www.androidzeitgeist.com/2013/01/fixing-rotation-camera-picture.html
      */
     static private int normalize (int degrees) {
         if (degrees > 315 || degrees <= 45)  return 0;
@@ -55,11 +62,7 @@ class PhysicalOrientation extends OrientationEventListener {
     @Override
     public void onOrientationChanged(int orientation) {
         if (orientation != ORIENTATION_UNKNOWN) {
-            int newOrientation= normalize(orientation);
-            if (newOrientation != mCurrentOrientation) {
-                EVIACAM.debug("onOrientationChanged: " + newOrientation + "Need to rotate: " + (270 - newOrientation));
-            }
-            mCurrentOrientation= newOrientation;
+            mCurrentOrientation= normalize(orientation);
         }
     }
 

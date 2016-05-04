@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@ package com.crea_si.eviacam.service;
 import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentCallbacks;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.crea_si.eviacam.Analytics;
@@ -31,7 +30,6 @@ import com.crea_si.eviacam.EVIACAM;
 /**
  * The Enable Viacam accessibility service
  */
-
 public class TheAccessibilityService extends AccessibilityService implements ComponentCallbacks {
     // reference to the engine
     private AccessibilityServiceModeEngine mEngine;
@@ -144,15 +142,5 @@ public class TheAccessibilityService extends AccessibilityService implements Com
     @Override
     public void onInterrupt() {
         EVIACAM.debug("onInterrupt");
-    }
-
-    /*
-     * Called by the system when the device configuration changes
-     */
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        if (mEngine != null) {
-            mEngine.onConfigurationChanged(newConfig);
-        }
     }
 }

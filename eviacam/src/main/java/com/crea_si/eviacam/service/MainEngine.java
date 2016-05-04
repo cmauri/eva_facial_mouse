@@ -18,6 +18,7 @@
  */
 package com.crea_si.eviacam.service;
 
+import org.opencv.android.CameraException;
 import org.opencv.core.Mat;
 
 import com.crea_si.eviacam.EVIACAM;
@@ -29,8 +30,11 @@ import com.crea_si.eviacam.api.SlaveMode;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -38,6 +42,7 @@ import android.graphics.PointF;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 
 /*
@@ -276,7 +281,24 @@ public class MainEngine implements
         /*
          * camera and machine vision stuff
          */
-        mCameraListener= new CameraListener(mService, this);
+        try {
+            mCameraListener = new CameraListener(mService, this);
+        }
+        catch(CameraException e) {
+            // TODO: throw more camera related exceptions inside MyCameraBridgeViewBase
+            // and manage here accordingly.
+            AlertDialog.Builder adb = new AlertDialog.Builder(mService);
+            adb.setCancelable(false); // This blocks the 'BACK' button
+            adb.setTitle(mService.getText(R.string.app_name));
+            adb.setMessage(e.getMessage());
+            adb.setPositiveButton(mService.getText(android.R.string.ok), null);
+
+            AlertDialog ad= adb.create();
+            ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            ad.show();
+
+            return;  // abort initialization
+        }
         mCameraLayerView.addCameraSurface(mCameraListener.getCameraSurface());
 
         /* flip the preview when needed */

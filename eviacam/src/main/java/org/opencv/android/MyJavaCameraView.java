@@ -66,9 +66,9 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
         super(context, attrs);
     }
 
-    protected boolean initializeCamera(int width, int height) {
+    protected void initializeCamera(int width, int height) throws CameraException {
         Log.d(TAG, "Initialize java camera");
-        boolean result = true;
+
         synchronized (this) {
             mCamera = null;
 
@@ -133,118 +133,120 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                 }
             }
 
-            if (mCamera == null)
-                return false;
+            if (mCamera == null) {
+                throw new CameraException(CameraException.CAMERA_ERROR,
+                        "Camera is not available (in use or does not exist)");
+            }
 
             /* Now set camera parameters */
-            try {
-                Camera.Parameters params = mCamera.getParameters();
-                Log.d(TAG, params.flatten());
+            Camera.Parameters params = mCamera.getParameters();
+            Log.d(TAG, params.flatten());
 
-                Log.d(TAG, "getSupportedPreviewSizes()");
-                List<android.hardware.Camera.Size> sizes = params.getSupportedPreviewSizes();
+            Log.d(TAG, "getSupportedPreviewSizes()");
+            List<android.hardware.Camera.Size> sizes = params.getSupportedPreviewSizes();
 
-                if (sizes != null) {
-                    /* Select the size that fits surface considering maximum size allowed */
-                    Size frameSize = calculateCameraFrameSize(sizes, new JavaCameraSizeAccessor(), mMaxWidth, mMaxHeight);
+            if (sizes != null) {
+                /* Select the size that fits surface considering maximum size allowed */
+                Size frameSize = calculateCameraFrameSize(sizes, new JavaCameraSizeAccessor(), mMaxWidth, mMaxHeight);
 
-                    params.setPreviewFormat(ImageFormat.NV21);
-                    Log.d(TAG, "Set preview size to " + Integer.valueOf((int)frameSize.width) + "x" + Integer.valueOf((int)frameSize.height));
-                    params.setPreviewSize((int)frameSize.width, (int)frameSize.height);
+                params.setPreviewFormat(ImageFormat.NV21);
+                Log.d(TAG, "Set preview size to " + Integer.valueOf((int)frameSize.width) + "x" + Integer.valueOf((int)frameSize.height));
+                params.setPreviewSize((int)frameSize.width, (int)frameSize.height);
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && !android.os.Build.MODEL.equals("GT-I9100"))
-                        params.setRecordingHint(true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && !android.os.Build.MODEL.equals("GT-I9100"))
+                    params.setRecordingHint(true);
 
-                    List<String> FocusModes = params.getSupportedFocusModes();
-                    if (FocusModes != null && FocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))
-                    {
-                        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+                List<String> FocusModes = params.getSupportedFocusModes();
+                if (FocusModes != null && FocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))
+                {
+                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+                }
+
+                /*
+                 * Disable stabilization to save some CPU cycles
+                 */
+                if (params.isVideoStabilizationSupported()) {
+                    params.setVideoStabilization(false);
+                }
+
+                /*
+                 * Tries to set a frame rate higher or equal than 15 fps.
+                 *
+                 * getSupportedPreviewFpsRange always returns a list of supported preview fps ranges with
+                 * at least one element. Every element is an int array of two values - minimum fps and
+                 * maximum fps. The list is sorted from small to large (first by maximum fps and then
+                 * minimum fps).
+                 *
+                 * Nexus 7: the list has only one element (4000,60000)
+                 * Samsung Galaxy Nexus: (15000,15000),(15000,30000),(24000,30000)
+                 */
+                List<int[]> ranges= params.getSupportedPreviewFpsRange ();
+                Log.d(TAG, ranges.toString());
+
+                int winner= ranges.size()-1;
+                int maxLimit= ranges.get(ranges.size()-1)[1];
+
+                for (int i= ranges.size()-2; i>= 0; i--) {
+                    if (ranges.get(i)[1]!= maxLimit || ranges.get(i)[0]< 15000) {
+                        break;
                     }
+                    winner= i;
+                }
+                params.setPreviewFpsRange(ranges.get(winner)[0], ranges.get(winner)[1]);
 
-                    /*
-                     * Disable stabilization to save some CPU cycles
-                     */
-                    if (params.isVideoStabilizationSupported()) {
-                        params.setVideoStabilization(false);
-                    }
+                mCamera.setParameters(params);
+                params = mCamera.getParameters();
 
-                    /*
-                     * Tries to set a frame rate higher or equal than 15 fps.
-                     *
-                     * getSupportedPreviewFpsRange always returns a list of supported preview fps ranges with
-                     * at least one element. Every element is an int array of two values - minimum fps and 
-                     * maximum fps. The list is sorted from small to large (first by maximum fps and then 
-                     * minimum fps).
-                     *
-                     * Nexus 7: the list has only one element (4000,60000)
-                     * Samsung Galaxy Nexus: (15000,15000),(15000,30000),(24000,30000)
-                     */
-                    List<int[]> ranges= params.getSupportedPreviewFpsRange ();
-                    Log.d(TAG, ranges.toString());
+                mFrameWidth = params.getPreviewSize().width;
+                mFrameHeight = params.getPreviewSize().height;
 
-                    int winner= ranges.size()-1;
-                    int maxLimit= ranges.get(ranges.size()-1)[1];
+                if ((getLayoutParams().width == LayoutParams.MATCH_PARENT) && (getLayoutParams().height == LayoutParams.MATCH_PARENT) ||
+                     width != mFrameWidth || height != mFrameHeight)
+                    mScale = Math.min(((float)height)/mFrameHeight, ((float)width)/mFrameWidth);
+                else
+                    mScale = 0;
 
-                    for (int i= ranges.size()-2; i>= 0; i--) {
-                        if (ranges.get(i)[1]!= maxLimit || ranges.get(i)[0]< 15000) {
-                            break;
-                        }
-                        winner= i;
-                    }
-                    params.setPreviewFpsRange(ranges.get(winner)[0], ranges.get(winner)[1]);
+                if (mFpsMeter != null) {
+                    mFpsMeter.setResolution(mFrameWidth, mFrameHeight);
+                }
 
-                    mCamera.setParameters(params);
-                    params = mCamera.getParameters();
+                int size = mFrameWidth * mFrameHeight;
+                size  = size * ImageFormat.getBitsPerPixel(params.getPreviewFormat()) / 8;
+                mBuffer = new byte[size];
 
-                    mFrameWidth = params.getPreviewSize().width;
-                    mFrameHeight = params.getPreviewSize().height;
+                mCamera.addCallbackBuffer(mBuffer);
+                mCamera.setPreviewCallbackWithBuffer(this);
 
-                    if ((getLayoutParams().width == LayoutParams.MATCH_PARENT) && (getLayoutParams().height == LayoutParams.MATCH_PARENT) ||
-                         width != mFrameWidth || height != mFrameHeight)
-                        mScale = Math.min(((float)height)/mFrameHeight, ((float)width)/mFrameWidth);
-                    else
-                        mScale = 0;
+                mFrameChain = new Mat[2];
+                mFrameChain[0] = new Mat(mFrameHeight + (mFrameHeight/2), mFrameWidth, CvType.CV_8UC1);
+                mFrameChain[1] = new Mat(mFrameHeight + (mFrameHeight/2), mFrameWidth, CvType.CV_8UC1);
 
-                    if (mFpsMeter != null) {
-                        mFpsMeter.setResolution(mFrameWidth, mFrameHeight);
-                    }
+                AllocateCache();
 
-                    int size = mFrameWidth * mFrameHeight;
-                    size  = size * ImageFormat.getBitsPerPixel(params.getPreviewFormat()) / 8;
-                    mBuffer = new byte[size];
+                mCameraFrame = new JavaCameraFrame[2];
+                mCameraFrame[0] = new JavaCameraFrame(mFrameChain[0], mFrameWidth, mFrameHeight);
+                mCameraFrame[1] = new JavaCameraFrame(mFrameChain[1], mFrameWidth, mFrameHeight);
 
-                    mCamera.addCallbackBuffer(mBuffer);
-                    mCamera.setPreviewCallbackWithBuffer(this);
-
-                    mFrameChain = new Mat[2];
-                    mFrameChain[0] = new Mat(mFrameHeight + (mFrameHeight/2), mFrameWidth, CvType.CV_8UC1);
-                    mFrameChain[1] = new Mat(mFrameHeight + (mFrameHeight/2), mFrameWidth, CvType.CV_8UC1);
-
-                    AllocateCache();
-
-                    mCameraFrame = new JavaCameraFrame[2];
-                    mCameraFrame[0] = new JavaCameraFrame(mFrameChain[0], mFrameWidth, mFrameHeight);
-                    mCameraFrame[1] = new JavaCameraFrame(mFrameChain[1], mFrameWidth, mFrameHeight);
-
+                try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                         mSurfaceTexture = new SurfaceTexture(MAGIC_TEXTURE_ID);
                         mCamera.setPreviewTexture(mSurfaceTexture);
                     } else
-                       mCamera.setPreviewDisplay(null);
-
-                    /* Finally we are ready to start the preview */
-                    Log.d(TAG, "startPreview");
-                    mCamera.startPreview();
+                        mCamera.setPreviewDisplay(null);
                 }
-                else
-                    result = false;
-            } catch (Exception e) {
-                result = false;
-                e.printStackTrace();
-            }
-        }
+                catch (java.io.IOException e) {
+                    throw new CameraException(CameraException.CAMERA_ERROR,
+                            "IO error while settings camera parameters", e);
+                }
 
-        return result;
+                /* Finally we are ready to start the preview */
+                Log.d(TAG, "startPreview");
+                mCamera.startPreview();
+            }
+            else
+                throw new CameraException(CameraException.CAMERA_ERROR,
+                        "Cannot retrieve sizes");
+        }
     }
 
     protected void releaseCamera() {
@@ -270,15 +272,14 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
     private boolean mCameraFrameReady = false;
 
     @Override
-    protected boolean connectCamera(int width, int height) {
+    protected void connectCamera(int width, int height) throws CameraException {
 
         /* 1. We need to instantiate camera
          * 2. We need to start thread which will be getting frames
          */
         /* First step - initialize camera connection */
         Log.d(TAG, "Connecting to camera");
-        if (!initializeCamera(width, height))
-            return false;
+        initializeCamera(width, height);
 
         mCameraFrameReady = false;
 
@@ -287,8 +288,6 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
         mStopThread = false;
         mThread = new Thread(new CameraWorker());
         mThread.start();
-
-        return true;
     }
 
     @Override

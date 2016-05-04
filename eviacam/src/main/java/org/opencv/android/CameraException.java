@@ -30,5 +30,10 @@ public class CameraException extends java.lang.Exception {
         mProblem= problem;
     }
 
+    public CameraException (int problem, String detailMessage, Throwable throwable) {
+        super(detailMessage, throwable);
+        mProblem= problem;
+    }
+
     public int getProblem() { return mProblem; }
 }

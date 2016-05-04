@@ -2,12 +2,12 @@ package org.opencv.android;
 
 import java.util.List;
 
-import org.opencv.R;
+import org.acra.ACRA;
+
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,10 +17,14 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
+
+import com.crea_si.eviacam.R;
 
 /**
  * This is a basic class, implementing the interaction with Camera and OpenCV library.
@@ -370,19 +374,31 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     // NOTE: The order of bitmap constructor and camera connection is important for android 4.1.x
     // Bitmap must be constructed before surface
     private void onEnterStartedState() {
-        /* Connect camera */
-        if (!connectCamera(getWidth(), getHeight())) {
-            AlertDialog ad = new AlertDialog.Builder(getContext()).create();
-            ad.setCancelable(false); // This blocks the 'BACK' button
-            ad.setMessage("It seems that you device does not support camera (or it is locked). Application will be closed.");
-            ad.setButton(DialogInterface.BUTTON_NEUTRAL,  "OK", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                    ((Activity) getContext()).finish();
-                }
-            });
-            ad.show();
+        /* Connect camera
+         *
+         * Ideally AlertDialog should not be displayed here, would be better to throw an
+         * exception and catch it in a more appropriate location. However, this method
+         * is called as part of an UI update event and thus is not easy to install an
+         * exception handler. Furthermore, in our case this is called from a service and so
+         * we need a TYPE_SYSTEM_ALERT dialog.
+         */
+        try {
+            connectCamera(getWidth(), getHeight());
+        } catch (final CameraException e) {
+            final AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
+            adb.setCancelable(false); // This blocks the 'BACK' button
+            adb.setTitle(getContext().getText(R.string.app_name));
+            adb.setMessage(getContext().getText(R.string.cannot_access_camera));
+            adb.setNeutralButton(getContext().getText(android.R.string.ok), null);
+            adb.setPositiveButton(getContext().getText(R.string.send_report),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            ACRA.getErrorReporter().handleException(e);
+                        }});
 
+            final AlertDialog ad= adb.create();
+            ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            ad.show();
         }
     }
 
@@ -480,8 +496,11 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
      * initialized with the size of the Camera frames that will be delivered to external processor.
      * @param width - the width of this SurfaceView
      * @param height - the height of this SurfaceView
+     * @throws CameraException in case something went wrong
+     *
+     * We changed the original interface to be able to get more information in case of error.
      */
-    protected abstract boolean connectCamera(int width, int height);
+    protected abstract void connectCamera(int width, int height) throws CameraException;
 
     /**
      * Disconnects and release the particular camera object being connected to this surface view.

@@ -218,4 +218,7 @@
     <string name="button">Botó</string>
     <string name="how_to_run">Per executar EVA, vagi a\n\nConfiguració > Accessibilitat > EVA Facial Mouse</string>
     <string name="dont_remember_again">No tornar a recordar</string>
+    <string name="cannot_access_camera">Error en intentar accedir a la càmera, potser està en ús per una altra aplicació.</string>
+    <string name="no_cameras_available">No se ha detectado ninguna cámara</string>
+    <string name="send_report">Enviar informe d\'error</string>
 </resources>

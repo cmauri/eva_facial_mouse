@@ -279,8 +279,14 @@ public class MainEngine implements
         mCameraListener= new CameraListener(mService, this);
         mCameraLayerView.addCameraSurface(mCameraListener.getCameraSurface());
 
+        /* flip the preview when needed */
+        mCameraListener.setPreviewFlip(mCameraListener.getCameraFlip());
+
         // orientation manager
-        OrientationManager.init(mService, mCameraListener.getCameraOrientation());
+        OrientationManager.init(
+                mService,
+                mCameraListener.getCameraFlip(),
+                mCameraListener.getCameraOrientation());
         mOrientationManager= OrientationManager.get();
 
         // Service notification listener
@@ -632,7 +638,11 @@ public class MainEngine implements
          */
         mMotion.x= mMotion.y= 0.0f;
         boolean faceDetected=
-                VisionPipeline.processFrame(rgba.getNativeObjAddr(), pictRotation, mMotion);
+                VisionPipeline.processFrame(
+                        rgba.getNativeObjAddr(),
+                        mOrientationManager.getPictureFlip().getValue(),
+                        pictRotation,
+                        mMotion);
 
         /*
          * Check whether need to pause/resume the engine according

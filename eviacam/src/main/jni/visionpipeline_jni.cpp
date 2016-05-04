@@ -55,7 +55,7 @@ JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_cleanup
 }
 
 JNIEXPORT jboolean JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_processFrame
-	(JNIEnv* env, jobject, jlong addrFrame, jint rotation, jobject jPoint)
+	(JNIEnv* env, jobject, jlong addrFrame, jint flip, jint rotation, jobject jPoint)
 {
 	assert (g_visionPipeline);
 
@@ -63,7 +63,7 @@ JNIEXPORT jboolean JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_proc
 
 	IplImage iplimg = *(cv::Mat*) addrFrame;
 	CIplImage frame(&iplimg);
-	jboolean result= g_visionPipeline->processImage(frame, rotation, xVel, yVel);
+	jboolean result= g_visionPipeline->processImage(frame, flip, rotation, xVel, yVel);
 
 	jclass pointClass = env->GetObjectClass(jPoint);
 	jfieldID jXVelId = env->GetFieldID(pointClass, "x", "F");

@@ -42,6 +42,8 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     private boolean mSurfaceExist;
     private Object mSyncObject = new Object();
     private int mPreviewRotation= 0;
+    public enum FlipDirection { NONE, VERTICAL, HORIZONTAL };
+    private FlipDirection mPreviewFlip= FlipDirection.NONE;
     private boolean mUpdateViewer = true;
     private Paint mPaint= new Paint();
 
@@ -95,6 +97,10 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
 
     public void setPreviewRotation(int rotation) {
         mPreviewRotation= rotation;
+    }
+
+    public void setPreviewFlip(FlipDirection flip) {
+        mPreviewFlip= flip;
     }
 
     public interface CvCameraViewListener {
@@ -393,11 +399,19 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
          * Set rotation matrix
          */
         mMatrix.reset();
+
+        if (mPreviewFlip== FlipDirection.HORIZONTAL) {
+            mMatrix.postScale(-1.0f, 1.0f);
+            mMatrix.postTranslate(canvas.getWidth(), 0.0f);
+        }
+        else if (mPreviewFlip== FlipDirection.VERTICAL) {
+            mMatrix.postScale(1.0f, -1.0f);
+            mMatrix.postTranslate(0.0f, canvas.getHeight());
+        }
         mMatrix.postRotate((float) mPreviewRotation, getWidth() / 2, getHeight() / 2);
         canvas.setMatrix(mMatrix);
 
         canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
-        //Log.d(TAG, "mStretch value: " + mScale);
 
         if (mScale != 0) {
             canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),

@@ -36,6 +36,10 @@ public:
 	* Entry point to process camera frames
 	*
 	* @param image reference to an OpenCV image
+	* @param flip flip operation to perform before rotation
+	*   0: no flip
+	*   1: vertical flip (around X-axis)
+	*   2: horizontal flip (around Y-axis)
 	* @param rotation rotation (clockwise) in degrees that needs to be applied to the image
 	*     before processing it so that the subject appears right.
 	*     Valid values: 0, 90, 180, 270.
@@ -43,7 +47,7 @@ public:
 	* @param yVel updated with motion extracted in the X axis
 	* @return true if face detected in the last frame (or few frames ago)
 	*/
-	bool processImage (CIplImage& image, int rotation, float& xVel, float& yVel);
+	bool processImage (CIplImage& image, int flip, int rotation, float& xVel, float& yVel);
 
 	bool getTrackFace () const { return m_trackFace; }
 	void setTrackFace (bool state) { m_trackFace= state; }

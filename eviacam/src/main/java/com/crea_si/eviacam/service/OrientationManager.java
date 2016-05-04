@@ -39,6 +39,9 @@ class OrientationManager {
     // orientation of the screen
     private int mScreenOrientation= 0;
 
+    // whether the frame needs to be flipped before rotating
+    private final FlipDirection mCameraFlip;
+
     // the orientation of the camera
     private final int mCameraOrientation;
 
@@ -48,7 +51,7 @@ class OrientationManager {
     private static OrientationManager sInstance= null;
 
     // constructor
-    private OrientationManager(Context c, int cameraOrientation) {
+    private OrientationManager(Context c, FlipDirection flip, int cameraOrientation) {
         mContext= c; 
 
         // create physical orientation manager
@@ -58,7 +61,8 @@ class OrientationManager {
         mPhysicalOrientation.enable();
         
         mScreenOrientation= getScreenOrientation(mContext);
-        
+
+        mCameraFlip= flip;
         mCameraOrientation= cameraOrientation;
 
         mDeviceNaturalOrientation= doGetDeviceDefaultOrientation(mContext);
@@ -69,7 +73,7 @@ class OrientationManager {
      *
      * @return Configuration.ORIENTATION_LANDSCAPE or Configuration.ORIENTATION_PORTRAIT
      */
-    static public int doGetDeviceDefaultOrientation(Context c) {
+    static private int doGetDeviceDefaultOrientation(Context c) {
         WindowManager windowManager = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
 
         Configuration config = c.getResources().getConfiguration();
@@ -95,11 +99,11 @@ class OrientationManager {
      *  to be rotated clockwise so it shows correctly on the display in its natural orientation.
      *  It should be 0, 90, 180, or 270.
      */
-    public static void init (Context c, int cameraOrientation) {
+    public static void init (Context c, FlipDirection flip, int cameraOrientation) {
         if (sInstance != null) {
             throw new RuntimeException("OrientationManager already created");
         }
-        sInstance= new OrientationManager(c, cameraOrientation);
+        sInstance= new OrientationManager(c, flip, cameraOrientation);
     }
 
     /**
@@ -169,11 +173,21 @@ class OrientationManager {
     }
 
     /**
-     * Given the physical orientation of the device and the mounting orientation of
-     * the camera returns the rotation (clockwise) in degrees that needs to be applied
-     * to the image so that the subject appears upright
+     * Some devices, such as the Lenovo YT3-X50L, have a rotating camera. For those devices
+     * we need to flip the image before is rotated.
      *
-     * @return
+     * @return FlipDirection reference
+     */
+    public FlipDirection getPictureFlip() {
+        return mCameraFlip;
+    }
+
+    /**
+     * Given the physical orientation of the device and the mounting orientation of
+     * the camera compute rotation.
+     *
+     * @return the rotation (clockwise) in degrees that needs to be applied
+     * to the image so that the subject appears upright
      */
     public int getPictureRotation() {
         int phyRotation = mCameraOrientation - mPhysicalOrientation.getCurrentOrientation();

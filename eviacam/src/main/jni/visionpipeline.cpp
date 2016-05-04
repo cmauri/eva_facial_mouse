@@ -318,8 +318,7 @@ bool VisionPipeline::motionTracker(CIplImage &image, int rotation, float &xVel, 
 	return faceDetected;
 }
 
-
-bool VisionPipeline::processImage (CIplImage& image, int rotation, float& xVel, float& yVel)
+bool VisionPipeline::processImage (CIplImage& image, int flip, int rotation, float& xVel, float& yVel)
 {
 	bool faceDetected= false;
 
@@ -339,21 +338,30 @@ bool VisionPipeline::processImage (CIplImage& image, int rotation, float& xVel, 
 		case 0:
 			bufferReallocation|= allocWorkingSpace(image.Width(), image.Height());
 			cvCvtColor(image.ptr(), m_imgCurr.ptr(), CV_BGR2GRAY);
+			/*
+			    This is the same as:
+			    if (flip== VERTICAL) cvFlip(m_imgCurr.ptr(), NULL, 0);
+            	else if (flip== HORIZONTAL) cvFlip(m_imgCurr.ptr(), NULL, 1);
+            */
+			if (flip) cvFlip(m_imgCurr.ptr(), NULL, flip - 1);
 			break;
 		case 90:
 			bufferReallocation|= allocWorkingSpace(image.Height(), image.Width());
 			cvCvtColor(image.ptr(), m_tmpImg.ptr(), CV_BGR2GRAY);
+			if (flip) cvFlip(m_tmpImg.ptr(), NULL, flip - 1);
 			cvTranspose(m_tmpImg.ptr(), m_imgCurr.ptr());
 			cvFlip(m_imgCurr.ptr(), NULL, 1);
 			break;
 		case 180:
 			bufferReallocation|= allocWorkingSpace(image.Width(), image.Height());
 			cvCvtColor(image.ptr(), m_imgCurr.ptr(), CV_BGR2GRAY);
+			if (flip) cvFlip(m_imgCurr.ptr(), NULL, flip - 1);
 			cvFlip(m_imgCurr.ptr(), NULL, -1);
 			break;
 		case 270:
 			bufferReallocation|= allocWorkingSpace(image.Height(), image.Width());
 			cvCvtColor(image.ptr(), m_tmpImg.ptr(), CV_BGR2GRAY);
+			if (flip) cvFlip(m_tmpImg.ptr(), NULL, flip - 1);
 			cvTranspose(m_tmpImg.ptr(), m_imgCurr.ptr());
 			cvFlip(m_imgCurr.ptr(), NULL, 0);
 			break;

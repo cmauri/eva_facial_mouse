@@ -51,7 +51,12 @@ public class CameraListener implements CvCameraViewListener2 {
     
     // opencv capture&view facility 
     private final MyCameraBridgeViewBase mCameraView;
-    
+
+    // physical rotation of the camera (i.e. whether the frame needs a flip
+    // operation), for instace, this is needed for those devices with rotating
+    // camera such as the Lenovo YT3-X50L)
+    private final FlipDirection mCameraFlip;
+
     // physical orientation of the camera (0, 90, 180, 270)
     private final int mCameraOrientation;
 
@@ -112,18 +117,24 @@ public class CameraListener implements CvCameraViewListener2 {
          */
         // TODO: display error when no front camera detected
         int cameraOrientation= 0;
+
+
         Camera.CameraInfo cameraInfo= new CameraInfo();
         for (int i= 0; i<  Camera.getNumberOfCameras(); i++) {
             Camera.getCameraInfo (i, cameraInfo);
-            if (cameraInfo.facing== CameraInfo.CAMERA_FACING_FRONT) {
+            // TODO: fix this
+            if (true) { //cameraInfo.facing== CameraInfo.CAMERA_FACING_FRONT) {
                 cameraOrientation= cameraInfo.orientation;
                 EVIACAM.debug("Detected front camera. Orientation: " + cameraOrientation);
             }
         }
         mCameraOrientation= cameraOrientation;
+
+        // TODO: try to detect this
+        mCameraFlip= FlipDirection.VERTICAL;
     
         // create capture view
-        mCameraView= new MyJavaCameraView(mContext, MyCameraBridgeViewBase.CAMERA_ID_FRONT);
+        mCameraView= new MyJavaCameraView(mContext, MyCameraBridgeViewBase.CAMERA_ID_ANY);
         
         // set CameraBridgeViewBase parameters        
         // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)
@@ -175,12 +186,34 @@ public class CameraListener implements CvCameraViewListener2 {
         return mCameraView;
     }
 
-    int getCameraOrientation() {
-        return mCameraOrientation;
+    /* Retrieve the physical characteristics of the camera, namely the mounting rotation
+       (i.e. whether the frame needs to be flipped) and orientation (i.e. whether the
+       frame needs to be rotated) */
+    FlipDirection getCameraFlip() { return mCameraFlip; }
+    int getCameraOrientation() { return mCameraOrientation; }
+
+
+    /**
+     * Sets the flip operation to perform to the frame before is applied a rotation
+     *
+     * @param flip FlipDirection.NONE, FlipDirection.VERTICAL or FlipDirection.HORIZONTAL
+     */
+    public void setPreviewFlip(FlipDirection flip) {
+        switch (flip) {
+            case NONE:
+                mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.NONE);
+                break;
+            case VERTICAL:
+                mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.VERTICAL);
+                break;
+            case HORIZONTAL:
+                mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.HORIZONTAL);
+                break;
+        }
     }
 
     /**
-     * Sets the rotation to perfom to the camera image before is displayed
+     * Sets the rotation to perform to the camera image before is displayed
      * in the preview surface
      *
      * @param rotation rotation to perform (clockwise) in degrees
@@ -203,8 +236,8 @@ public class CameraListener implements CvCameraViewListener2 {
         VisionPipeline.cleanup();
     }
      
-    /*
-     * called each time new frame is grabbed 
+    /**
+     * Called each time new frame is captured
      */
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {

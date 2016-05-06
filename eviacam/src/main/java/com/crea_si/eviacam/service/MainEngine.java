@@ -30,13 +30,10 @@ import com.crea_si.eviacam.api.SlaveMode;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 
 import android.accessibilityservice.AccessibilityService;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.os.Handler;
@@ -51,24 +48,41 @@ import android.view.accessibility.AccessibilityEvent;
  */
 public class MainEngine implements
     FrameProcessor, AccessibilityServiceModeEngine, SlaveModeEngine {
-    /*
-     * states of the engine
-     */
-    private static final int STATE_DISABLED= 0;
-    private static final int STATE_STOPPED= 1;
-    private static final int STATE_RUNNING= 2;
-    // Standby is when engine timed out after not detecting a face
-    // for a while. It keeps running trying to detect a face.
-    private static final int STATE_STANDBY = 3;
-    // manually paused
-    private static final int STATE_PAUSED= 4;
 
     /*
-     * modes of operation from the point of view of the service
+     * States of the engine
+     */
+    // not initialised
+    private static final int STATE_DISABLED= 0;
+
+    // initialised but stopped
+    private static final int STATE_STOPPED= 1;
+
+    // running
+    private static final int STATE_RUNNING= 2;
+
+    // paused, capturing frames but not moving the pointer
+    private static final int STATE_PAUSED= 4;
+
+    // similar to paused but capturing at low FPS rate just trying to
+    // find a face (to return to STATE_RUNNING again)
+    private static final int STATE_STANDBY = 3;
+
+    /* current engine state */
+    private int mCurrentState= STATE_DISABLED;
+
+    /*
+     * Modes of operation from the point of view of the service
      * that starts the engine
      */
     private static final int A11Y_SERVICE_MODE= 0;
     private static final int SLAVE_MODE= 1;
+
+    // current engine mode
+    private int mMode= -1;
+
+    // slave mode submode
+    private int mSlaveOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
 
     // singleton instance
     private static MainEngine sMainEngine = null;
@@ -78,15 +92,6 @@ public class MainEngine implements
 
     // handler to run things on the main thread
     private final Handler mHandler= new Handler();
-
-    // current engine state
-    private int mCurrentState= STATE_DISABLED;
-
-    // current engine mode
-    private int mMode= -1;
-
-    // slave mode submode
-    private int mSlaveOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
 
     // reference to the service which started the engine
     private Service mService;
@@ -206,7 +211,7 @@ public class MainEngine implements
         }
     }
 
-    /** Called from splash activity to notify the finished */
+    /** Called from splash activity to notify that finished */
     public static void splashReady() {
         /* Was initialized previously? If so, just do nothing. */
         if (sSplashDisplayed) return;
@@ -219,7 +224,7 @@ public class MainEngine implements
     }
 
     /**
-     * Init phase 2: common initialization stuff
+     * Init phase 2: actual initialization
      */
     private void init2() {
         /*
@@ -285,8 +290,6 @@ public class MainEngine implements
             mCameraListener = new CameraListener(mService, this);
         }
         catch(CameraException e) {
-            // TODO: throw more camera related exceptions inside MyCameraBridgeViewBase
-            // and manage here accordingly.
             AlertDialog.Builder adb = new AlertDialog.Builder(mService);
             adb.setCancelable(false); // This blocks the 'BACK' button
             adb.setTitle(mService.getText(R.string.app_name));

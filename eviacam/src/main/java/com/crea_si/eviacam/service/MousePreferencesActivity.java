@@ -114,7 +114,11 @@ public class MousePreferencesActivity extends Activity {
             wizPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Preferences.setRunTutorial(getPreferenceManager().getSharedPreferences(), true);
+                    // If cannot init preferences just ignore silently
+                    if (Preferences.initForA11yService(getActivity())== null) return true;
+                    Preferences.get().setRunTutorial(true);
+                    Preferences.get().cleanup();
+
                     new AlertDialog.Builder(getActivity())
                             .setMessage(R.string.wizard_will_run)
                             .setPositiveButton(android.R.string.ok, null)

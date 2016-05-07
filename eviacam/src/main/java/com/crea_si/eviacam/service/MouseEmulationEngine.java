@@ -48,8 +48,6 @@ class MouseEmulationEngine implements
     // current state
     private int mState= STATE_STOPPED;
 
-    private final Service mService;
-
     // layer for drawing the pointer and the dwell click feedback
     private PointerLayerView mPointerLayer;
 
@@ -98,7 +96,6 @@ class MouseEmulationEngine implements
         /*
          * Final stuff
          */
-        mService= s;
         mAudioManager= (AudioManager) s.getSystemService(Context.AUDIO_SERVICE);
 
         /*
@@ -122,7 +119,7 @@ class MouseEmulationEngine implements
         /*
          * control stuff
          */
-        mPointerControl= new PointerControl(s, mPointerLayer);
+        mPointerControl= new PointerControl(mPointerLayer);
 
         mDwellClick= new DwellClick(s);
 
@@ -132,14 +129,14 @@ class MouseEmulationEngine implements
         }
 
         // register preference change listener
-        Preferences.getSharedPreferences(s).registerOnSharedPreferenceChangeListener(this);
+        Preferences.get().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
         updateSettings();
     }
 
     private void updateSettings() {
         // get values from shared resources
-        mSoundOnClick= Preferences.getSoundOnClick(mService);
+        mSoundOnClick= Preferences.get().getSoundOnClick();
     }
 
     @Override
@@ -281,7 +278,7 @@ class MouseEmulationEngine implements
 
     @Override
     public void cleanup() {
-        Preferences.getSharedPreferences(mService).unregisterOnSharedPreferenceChangeListener(this);
+        Preferences.get().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
 
         if (mAccessibilityAction!= null) {
             mAccessibilityAction.cleanup();

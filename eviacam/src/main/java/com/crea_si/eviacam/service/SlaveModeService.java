@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.api.GamepadParams;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
@@ -251,6 +252,9 @@ public class SlaveModeService extends Service {
             return null;
         }
 
+        // Already initialized preferences, probably A11Y service running. Deny binding.
+        if (Preferences.initForSlaveService(this) == null) return null;
+
         mSlaveModeEngine= 
             MainEngine.getInstance().initSlaveModeEngine(this);
 
@@ -271,6 +275,10 @@ public class SlaveModeService extends Service {
         if (mSlaveModeEngine != null) {
             mSlaveModeEngine.cleanup();
             mSlaveModeEngine= null;
+        }
+
+        if (Preferences.get() != null) {
+            Preferences.get().cleanup();
         }
         return false;
     }

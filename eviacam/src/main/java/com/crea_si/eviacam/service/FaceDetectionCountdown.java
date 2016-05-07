@@ -41,13 +41,13 @@ class FaceDetectionCountdown extends Countdown
         mContext= c;
 
         // preferences
-        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
 
     public void cleanup() {
-        Preferences.getSharedPreferences(mContext).
+        Preferences.get().getSharedPreferences().
                 unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -59,7 +59,7 @@ class FaceDetectionCountdown extends Countdown
     }
 
     private void updateSettings(SharedPreferences sp) {
-        setTimeToWait(Preferences.getTimeWithoutDetection(sp) * 1000);
+        setTimeToWait(Preferences.get().getTimeWithoutDetection() * 1000);
     }
 
     public boolean isDisabled() {

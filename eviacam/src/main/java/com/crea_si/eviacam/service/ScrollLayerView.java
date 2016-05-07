@@ -78,13 +78,13 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         super(c);
         
         // Preferences
-        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
     
     private synchronized void updateSettings(SharedPreferences sp) {
-        mSizeMultiplier= Preferences.getUIElementsSize(sp);
+        mSizeMultiplier= Preferences.get().getUIElementsSize();
 
         // Force buttons full refresh
         clearScrollAreas();
@@ -92,7 +92,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     }
     
     public void cleanup() {
-        Preferences.getSharedPreferences(this.getContext()).
+        Preferences.get().getSharedPreferences().
             unregisterOnSharedPreferenceChangeListener(this);
     }
     

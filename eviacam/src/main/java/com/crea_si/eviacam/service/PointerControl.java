@@ -53,15 +53,12 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     // view to display the pointer
     private final PointerLayerView mPointerLayerView;
 
-    private final Context mContext;
-
     // constructor
-    public PointerControl(Context c, PointerLayerView pv) {
+    public PointerControl(PointerLayerView pv) {
         mPointerLayerView= pv;
-        mContext= c;
 
         // register preference change listener
-        Preferences.getSharedPreferences(c).registerOnSharedPreferenceChangeListener(this);
+        Preferences.get().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         
         updateSettings();
         
@@ -70,16 +67,16 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     
     private void updateSettings() {
         // get values from shared resources
-        setHorizontalSpeedMultiplier(Preferences.getHorizontalSpeed(mContext));
-        setVerticalSpeedMultiplier(Preferences.getVerticalSpeed(mContext));
-        setAccelerationRamp(Preferences.getAcceleration(mContext));
-        setMotionSmoothing(Preferences.getMotionSmoothing(mContext));
-        mMotionThreshold= Preferences.getMotionThreshold(mContext);
+        setHorizontalSpeedMultiplier(Preferences.get().getHorizontalSpeed());
+        setVerticalSpeedMultiplier(Preferences.get().getVerticalSpeed());
+        setAccelerationRamp(Preferences.get().getAcceleration());
+        setMotionSmoothing(Preferences.get().getMotionSmoothing());
+        mMotionThreshold= Preferences.get().getMotionThreshold();
     }
     
     // clean-up object
     public void cleanup() {
-        Preferences.getSharedPreferences(mContext).unregisterOnSharedPreferenceChangeListener(this);
+        Preferences.get().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
     
     @Override

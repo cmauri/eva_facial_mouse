@@ -26,6 +26,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.crea_si.eviacam.Analytics;
 import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.Preferences;
 
 /**
  * The Enable Viacam accessibility service
@@ -53,15 +54,19 @@ public class TheAccessibilityService extends AccessibilityService implements Com
             return;
         }
 
+        // When preferences are not properly initialized (i.e. is in slave mode)
+        // the call will return null. As is not possible to stop the accessibility
+        // service just take into account an avoid further actions.
+        if (Preferences.initForA11yService(this) == null) return;
+
+        // Init the main engine
         mEngine= MainEngine.getInstance().initAccessibilityServiceModeEngine(this);
 
-        // When the engine is not properly initialized (i.e. is in slave mode)
-        // the above call returns null. As is not possible to stop the accessibility
-        // service just take into account an avoid further actions.
+        // Same rationale than for the preferences
         if (mEngine == null) return;
 
         Analytics.get().trackStartService();
-        //mEngine.start();
+
         mInitialized = true;
     }
 
@@ -74,6 +79,10 @@ public class TheAccessibilityService extends AccessibilityService implements Com
         if (mEngine!= null) {
             mEngine.cleanup();
             mEngine= null;
+        }
+
+        if (Preferences.get() != null) {
+            Preferences.get().cleanup();
         }
 
         mInitialized= false;

@@ -227,31 +227,6 @@ public class MainEngine implements
      * Init phase 2: actual initialization
      */
     private void init2() {
-        /*
-         * Preference related stuff
-         */
-        EViacamApplication app= (EViacamApplication) mService.getApplicationContext();
-
-        // set default configuration values if the service is run for the first time
-        if (mMode == A11Y_SERVICE_MODE) {
-            // If accessibility service use the default preferences
-            PreferenceManager.setDefaultValues(mService, R.xml.preference_fragment, true);
-            // Set the default shared preferences
-            app.setSharedPreferences(PreferenceManager.getDefaultSharedPreferences(mService));
-        }
-        else {
-            // Otherwise use slave mode preferences. We first load default default
-            // preferences and then update with slave mode ones
-            PreferenceManager.setDefaultValues(mService, Preferences.FILE_SLAVE_MODE,
-                                               Context.MODE_PRIVATE, 
-                                               R.xml.preference_fragment, true);
-            PreferenceManager.setDefaultValues(mService, Preferences.FILE_SLAVE_MODE,
-                                               Context.MODE_PRIVATE,
-                                               R.xml.gamepad_preference_fragment, true);
-            // Set the slave mode shared preferences
-            app.setSharedPreferences(mService.getSharedPreferences(Preferences.FILE_SLAVE_MODE,
-                                                                   Context.MODE_PRIVATE));
-        }
 
         /*
          * Power management
@@ -326,7 +301,7 @@ public class MainEngine implements
          * start things when needed
          */
         if (mMode == A11Y_SERVICE_MODE) {
-            if (Preferences.getRunTutorial(mService)) {
+            if (Preferences.get().getRunTutorial()) {
                 Intent dialogIntent = new Intent(mService,
                         com.crea_si.eviacam.wizard.WizardActivity.class);
                 dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -495,9 +470,6 @@ public class MainEngine implements
 
         mPowerManagement.cleanup();
         mPowerManagement = null;
-
-        EViacamApplication app= (EViacamApplication) mService.getApplicationContext();
-        app.setSharedPreferences(null);
 
         sMainEngine = null;
     }
@@ -695,7 +667,7 @@ public class MainEngine implements
                 public void run() {
                     Resources res = mService.getResources();
                     String t = String.format(res.getString(R.string.pointer_stopped_toast),
-                            Preferences.getTimeWithoutDetectionEntryValue(mService));
+                            Preferences.get().getTimeWithoutDetectionEntryValue());
                     EVIACAM.LongToast(mService, t);
 
                     standby();

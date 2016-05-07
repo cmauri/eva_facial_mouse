@@ -85,13 +85,13 @@ public class DockPanelLayerView extends RelativeLayout
         DISABLED_ALPHA= (float) (r.getColor(R.color.disabled_alpha) >> 24) / 255.0f;
         
         // shared preferences
-        SharedPreferences sp= Preferences.getSharedPreferences(context);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
     
     public void cleanup() {
-        SharedPreferences sp= Preferences.getSharedPreferences(getContext());
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
     
@@ -105,7 +105,7 @@ public class DockPanelLayerView extends RelativeLayout
         else if (dockingEdge == EDGE_TOP)    gravity= Gravity.TOP;
         else if (dockingEdge == EDGE_BOTTOM) gravity= Gravity.BOTTOM;
         
-        float size = Preferences.getUIElementsSize(sp);
+        float size = Preferences.get().getUIElementsSize();
         
         if (mDockPanelView != null) {
             removeView(mDockPanelView);

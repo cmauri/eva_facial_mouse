@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ package com.crea_si.eviacam;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.preference.PreferenceManager;
 
 public class Preferences {
     /**
@@ -53,30 +54,55 @@ public class Preferences {
     public static final String KEY_SHOW_LAUNCHER_HELP= "show_launcher_help";
 
     /**
+     * Gamepad locations
+     */
+    public static final int LOCATION_GAMEPAD_TOP_LEFT= 0;
+    public static final int LOCATION_GAMEPAD_BOTTOM_LEFT= 1;
+    public static final int LOCATION_GAMEPAD_TOP_CENTER= 2;
+    public static final int LOCATION_GAMEPAD_BOTTOM_CENTER= 3;
+    public static final int LOCATION_GAMEPAD_TOP_RIGHT= 4;
+    public static final int LOCATION_GAMEPAD_BOTTOM_RIGHT= 5;
+
+    /**
         Run-time constants
      */
-    private static boolean sRuntimeConstantsLoaded= false;
-    private static int AXIS_SPEED_DEFAULT;
-    private static int AXIS_SPEED_MIN;
-    private static int AXIS_SPEED_MAX;
-    private static int ACCELERATION_DEFAULT;
-    private static int ACCELERATION_MIN;
-    private static int ACCELERATION_MAX;
-    private static int MOTION_SMOOTHING_DEFAULT;
-    private static int MOTION_SMOOTHING_MIN;
-    private static int MOTION_SMOOTHING_MAX;
-    private static int MOTION_THRESHOLD_DEFAULT;
-    private static int MOTION_THRESHOLD_MIN;
-    private static int MOTION_THRESHOLD_MAX;
-    private static boolean SOUND_ON_CLICK_DEFAULT;
+    private final int AXIS_SPEED_DEFAULT;
+    private final int AXIS_SPEED_MIN;
+    private final int AXIS_SPEED_MAX;
+    private final int ACCELERATION_DEFAULT;
+    private final int ACCELERATION_MIN;
+    private final int ACCELERATION_MAX;
+    private final int MOTION_SMOOTHING_DEFAULT;
+    private final int MOTION_SMOOTHING_MIN;
+    private final int MOTION_SMOOTHING_MAX;
+    private final int MOTION_THRESHOLD_DEFAULT;
+    private final int MOTION_THRESHOLD_MIN;
+    private final int MOTION_THRESHOLD_MAX;
+    private final boolean SOUND_ON_CLICK_DEFAULT;
+    private String[] TIME_WITHOUT_DETECTION_ENTRIES;
+    private String[] TIME_WITHOUT_DETECTION_VALUES;
 
+    // singleton instance
+    private static Preferences sInstance= null;
 
-    public static SharedPreferences getSharedPreferences(Context c) {
-        return ((EViacamApplication) c.getApplicationContext()).getSharedPreferences();
-    }
+    private final SharedPreferences mSharedPreferences;
 
-    private static void loadRuntimeConstants (Context c) {
-        if (sRuntimeConstantsLoaded) return;
+    // initialization counter, allow for nested initialization/cleanup
+    private int mInitCount= 0;
+
+    // init mode
+    private static int INIT_NONE= 0;
+    private static int INIT_A11Y= 1;
+    private static int INIT_SLAVE_MODE= 2;
+    private int mInitMode= INIT_NONE;
+
+    // constructor
+    private Preferences(Context c, SharedPreferences sp) {
+        mSharedPreferences= sp;
+
+        /*
+         * Read run-time constants
+         */
         final Resources r= c.getResources();
 
         AXIS_SPEED_DEFAULT= r.getInteger(R.integer.axis_speed_default);
@@ -93,159 +119,223 @@ public class Preferences {
         MOTION_THRESHOLD_MAX= r.getInteger(R.integer.motion_threshold_max);
         SOUND_ON_CLICK_DEFAULT= r.getBoolean(R.bool.sound_on_click_default);
 
-        sRuntimeConstantsLoaded= true;
+        TIME_WITHOUT_DETECTION_VALUES= r.getStringArray(R.array.time_without_detection_values);
+        TIME_WITHOUT_DETECTION_ENTRIES= r.getStringArray(R.array.time_without_detection_entries);
+
+        /* Make sure both arrays have the same size */
+        if (TIME_WITHOUT_DETECTION_VALUES.length != TIME_WITHOUT_DETECTION_ENTRIES.length)
+            throw new ExceptionInInitializerError();
     }
 
+    public void cleanup() { if (--mInitCount == 0) sInstance= null; }
+
+    /**
+     * Get current singleton instance
+     *
+     * @return a Preferences instance or null is not initialised
+     */
+    public static Preferences get() { return sInstance; }
+
+    /**
+     * Init preferences for A11Y service
+     *
+     * @param c instance to the accessibility service
+     * @return reference to the Preferences instances or null if cannot be initialised
+     */
+    public static Preferences initForA11yService (Context c) {
+        if (sInstance!= null) {
+            // already initialised
+            if (sInstance.mInitMode != INIT_A11Y) return null;
+        }
+        else {
+            // As accessibility service use the default preferences
+            PreferenceManager.setDefaultValues(c, R.xml.preference_fragment, true);
+            sInstance = new Preferences(c, PreferenceManager.getDefaultSharedPreferences(c));
+            sInstance.mInitMode= INIT_A11Y;
+        }
+
+        ++sInstance.mInitCount;
+
+        return sInstance;
+    }
+
+    /**
+     * Init preferences for slave mode service
+     *
+     * @param c instance of the service
+     * @return reference to the Preferences instances or null if cannot be initialised
+     */
+    public static Preferences initForSlaveService (Context c) {
+        if (sInstance!= null) {
+            // already initialised
+            if (sInstance.mInitMode != INIT_SLAVE_MODE) return null;
+        }
+        else {
+            // Slave mode preferences. We first load default default
+            // preferences and then update with slave mode ones
+            PreferenceManager.setDefaultValues(c, Preferences.FILE_SLAVE_MODE,
+                    Context.MODE_PRIVATE,
+                    R.xml.preference_fragment, true);
+            PreferenceManager.setDefaultValues(c, Preferences.FILE_SLAVE_MODE,
+                    Context.MODE_PRIVATE,
+                    R.xml.gamepad_preference_fragment, true);
+
+            // Set the slave mode shared preferences
+            sInstance = new Preferences(c,
+                    c.getSharedPreferences(Preferences.FILE_SLAVE_MODE, Context.MODE_PRIVATE));
+            sInstance.mInitMode= INIT_SLAVE_MODE;
+        }
+
+        ++sInstance.mInitCount;
+
+        return sInstance;
+    }
+
+    public SharedPreferences getSharedPreferences() {
+        return mSharedPreferences;
+    }
+
+    /**
+     * Constraint a value within a range
+     *
+     * @param v the value
+     * @param min range min value
+     * @param max range max value
+     * @return constrained value
+     */
     private static int constraint (int v, int min, int max) {
         if (v< min) return min;
         if (v> max) return max;
         return v;
     }
 
-    public static int getHorizontalSpeed(Context c) {
-        loadRuntimeConstants(c);
-        int v= getSharedPreferences(c).getInt(Preferences.KEY_HORIZONTAL_SPEED, AXIS_SPEED_DEFAULT);
+    /**
+     * Get horizontal speed value
+     */
+    public int getHorizontalSpeed() {
+        int v= mSharedPreferences.getInt(Preferences.KEY_HORIZONTAL_SPEED, AXIS_SPEED_DEFAULT);
         return constraint (v, AXIS_SPEED_MIN, AXIS_SPEED_MAX);
     }
 
-    public static int setHorizontalSpeed(Context c, int v) {
-        loadRuntimeConstants(c);
+    /**
+     * Save horizontal speed value
+     * @param v value
+     * @return sanitized horizontal speed value
+     */
+    public int setHorizontalSpeed(int v) {
         v= constraint (v, AXIS_SPEED_MIN, AXIS_SPEED_MAX);
-
-        SharedPreferences.Editor spe= getSharedPreferences(c).edit();
+        SharedPreferences.Editor spe= mSharedPreferences.edit();
         spe.putInt(Preferences.KEY_HORIZONTAL_SPEED, v);
         spe.apply();
-
         return v;
     }
 
-    public static int getVerticalSpeed(Context c) {
-        loadRuntimeConstants(c);
-        int v= getSharedPreferences(c).getInt(Preferences.KEY_VERTICAL_SPEED, AXIS_SPEED_DEFAULT);
+    /**
+     * Get vertical speed value
+     */
+    public int getVerticalSpeed() {
+        int v= mSharedPreferences.getInt(Preferences.KEY_VERTICAL_SPEED, AXIS_SPEED_DEFAULT);
         return constraint(v, AXIS_SPEED_MIN, AXIS_SPEED_MAX);
     }
 
-    public static int setVerticalSpeed(Context c, int v) {
-        loadRuntimeConstants(c);
+    /**
+     * Save vertical speed value
+     * @param v value
+     * @return sanitized vertical speed value
+     */
+    public int setVerticalSpeed(int v) {
         v= constraint (v, AXIS_SPEED_MIN, AXIS_SPEED_MAX);
-
-        SharedPreferences.Editor spe= getSharedPreferences(c).edit();
+        SharedPreferences.Editor spe= mSharedPreferences.edit();
         spe.putInt(Preferences.KEY_VERTICAL_SPEED, v);
         spe.apply();
-
         return v;
     }
 
-    public static int getAcceleration(Context c) {
-        loadRuntimeConstants(c);
-        int v= getSharedPreferences(c).getInt(Preferences.KEY_ACCELERATION, ACCELERATION_DEFAULT);
+    public int getAcceleration() {
+        int v= mSharedPreferences.getInt(Preferences.KEY_ACCELERATION, ACCELERATION_DEFAULT);
         return constraint (v, ACCELERATION_MIN, ACCELERATION_MAX);
     }
 
-    public static int getMotionSmoothing(Context c) {
-        loadRuntimeConstants(c);
-        int v= getSharedPreferences(c).getInt(
+    public int getMotionSmoothing() {
+        int v= mSharedPreferences.getInt(
                 Preferences.KEY_MOTION_SMOOTHING, MOTION_SMOOTHING_DEFAULT);
         return constraint (v, MOTION_SMOOTHING_MIN, MOTION_SMOOTHING_MAX);
     }
 
-    public static int getMotionThreshold(Context c) {
-        loadRuntimeConstants(c);
-        int v= getSharedPreferences(c).getInt(
+    public int getMotionThreshold() {
+        int v= mSharedPreferences.getInt(
                 Preferences.KEY_MOTION_THRESHOLD, MOTION_THRESHOLD_DEFAULT);
         return constraint (v, MOTION_THRESHOLD_MIN, MOTION_THRESHOLD_MAX);
     }
 
-    public static boolean getSoundOnClick(Context c) {
-        loadRuntimeConstants(c);
-        return getSharedPreferences(c).getBoolean(
+    public boolean getSoundOnClick() {
+        return mSharedPreferences.getBoolean(
                 Preferences.KEY_SOUND_ON_CLICK, SOUND_ON_CLICK_DEFAULT);
     }
 
-    public static float getUIElementsSize(SharedPreferences sp) {
-        return Float.parseFloat(sp.getString(KEY_UI_ELEMENTS_SIZE, null));
+    public float getUIElementsSize() {
+        return Float.parseFloat(mSharedPreferences.getString(KEY_UI_ELEMENTS_SIZE, null));
     }
 
-    public static int getTimeWithoutDetection(SharedPreferences sp) {
-        return Integer.parseInt(sp.getString(KEY_TIME_WITHOUT_DETECTION, null));
+    public int getTimeWithoutDetection() {
+        return Integer.parseInt(mSharedPreferences.getString(KEY_TIME_WITHOUT_DETECTION, null));
     }
 
-    public static String getTimeWithoutDetectionEntryValue(Context c) {
+    public String getTimeWithoutDetectionEntryValue() {
         // current value
-        int value= getTimeWithoutDetection(getSharedPreferences(c));
+        int value= getTimeWithoutDetection();
 
         // search value in array entries
-        Resources res= c.getResources();
-        String[] entries= res.getStringArray(R.array.time_without_detection_values);
         int pos;
-        for (pos= 0; pos< entries.length; pos++) {
-            if (entries[pos].contentEquals(String.valueOf(value))) break;
+        for (pos= 0; pos< TIME_WITHOUT_DETECTION_VALUES.length; pos++) {
+            if (TIME_WITHOUT_DETECTION_VALUES[pos].contentEquals(String.valueOf(value))) break;
         }
 
-        /*
-         * if found, pick the entry value. inside a try/catch block in case
-         * there is a size mismatch between entries and values arrays
-         */
-        try {
-            if (pos< entries.length) {
-                String[] values= res.getStringArray(R.array.time_without_detection_entries);
-                return values[pos];
-            }
+        // if found, pick the entry value
+        if (pos< TIME_WITHOUT_DETECTION_VALUES.length) {
+            return TIME_WITHOUT_DETECTION_ENTRIES[pos];
         }
-        catch (Exception e) { /* do nothing */ }
 
-        // fallback path, should never happen
-        return String.valueOf(value);
+        // should never happen
+        throw new UnknownError();
     }
 
-    public static boolean getRunTutorial(Context c) {
-        return getSharedPreferences(c).getBoolean(KEY_RUN_TUTORIAL, true);
+    public boolean getRunTutorial() {
+        return mSharedPreferences.getBoolean(KEY_RUN_TUTORIAL, true);
     }
 
-    public static void setRunTutorial(SharedPreferences sp, boolean value) {
-        SharedPreferences.Editor spe= sp.edit();
+    public void setRunTutorial(boolean value) {
+        SharedPreferences.Editor spe= mSharedPreferences.edit();
         spe.putBoolean(KEY_RUN_TUTORIAL, value);
         spe.apply();
     }
 
-    public static void setRunTutorial(Context c, boolean value) {
-        setRunTutorial(getSharedPreferences(c), value);
+    public boolean getShowLauncherHelp () {
+        return mSharedPreferences.getBoolean(KEY_SHOW_LAUNCHER_HELP, true);
     }
 
-    public static boolean getShowLauncherHelp (SharedPreferences sp) {
-        return sp.getBoolean(KEY_SHOW_LAUNCHER_HELP, true);
-    }
-
-    public static void setShowLauncherHelp (SharedPreferences sp, boolean value) {
-        SharedPreferences.Editor spe= sp.edit();
+    public void setShowLauncherHelp (boolean value) {
+        SharedPreferences.Editor spe= mSharedPreferences.edit();
         spe.putBoolean(KEY_SHOW_LAUNCHER_HELP, value);
         spe.apply();
     }
 
-    /**
-     * Gamepad locations
-     */
-    public static final int LOCATION_GAMEPAD_TOP_LEFT= 0;
-    public static final int LOCATION_GAMEPAD_BOTTOM_LEFT= 1;
-    public static final int LOCATION_GAMEPAD_TOP_CENTER= 2;
-    public static final int LOCATION_GAMEPAD_BOTTOM_CENTER= 3;
-    public static final int LOCATION_GAMEPAD_TOP_RIGHT= 4;
-    public static final int LOCATION_GAMEPAD_BOTTOM_RIGHT= 5;
 
-    public static int getGamepadLocation(SharedPreferences sp) {
-        return Integer.parseInt(sp.getString(KEY_GAMEPAD_LOCATION, null));
+
+    public int getGamepadLocation() {
+        return Integer.parseInt(mSharedPreferences.getString(KEY_GAMEPAD_LOCATION, null));
     }
 
-    public static int getGamepadTransparency(SharedPreferences sp) {
-        return Integer.parseInt(sp.getString(KEY_GAMEPAD_TRANSPARENCY, "100"));
+    public int getGamepadTransparency() {
+        return Integer.parseInt(mSharedPreferences.getString(KEY_GAMEPAD_TRANSPARENCY, "100"));
     }
 
-    public static int getGamepadAbsSpeed(SharedPreferences sp) {
-        return sp.getInt(KEY_GAMEPAD_ABS_SPEED, 0);
+    public int getGamepadAbsSpeed() {
+        return mSharedPreferences.getInt(KEY_GAMEPAD_ABS_SPEED, 0);
     }
 
-    public static int getGamepadRelSensitivity(SharedPreferences sp) {
-        return sp.getInt(KEY_GAMEPAD_REL_SENSITIVITY, 0);
+    public int getGamepadRelSensitivity() {
+        return mSharedPreferences.getInt(KEY_GAMEPAD_REL_SENSITIVITY, 0);
     }
  }
  

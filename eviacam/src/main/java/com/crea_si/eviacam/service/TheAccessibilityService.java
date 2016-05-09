@@ -31,9 +31,15 @@ import com.crea_si.eviacam.Preferences;
 /**
  * The Enable Viacam accessibility service
  */
-public class TheAccessibilityService extends AccessibilityService implements ComponentCallbacks {
+public class TheAccessibilityService
+        extends AccessibilityService
+        implements ComponentCallbacks, Engine.OnInitListener {
+
     // reference to the engine
     private AccessibilityServiceModeEngine mEngine;
+
+    // reference to the engine control
+    private EngineControl mEngineControl;
 
     // stores whether it was previously initialized (see comments on init() )
     private boolean mInitialized= false;
@@ -60,14 +66,28 @@ public class TheAccessibilityService extends AccessibilityService implements Com
         if (Preferences.initForA11yService(this) == null) return;
 
         // Init the main engine
-        mEngine= MainEngine.getInstance().initAccessibilityServiceModeEngine(this);
+        mEngine= MainEngine.getAccessibilityServiceModeEngine();
+        mEngine.init(this, this);
+    }
 
-        // Same rationale than for the preferences
-        if (mEngine == null) return;
+    /**
+     * Callback for engine initialization completion
+     * @param status 0 if initialization completed successfully
+     */
+    @Override
+    public void onInit(int status) {
+        if (status != 0) {
+            // Initialization failed
+            // TODO: provide some feedback
+            EVIACAM.debug("Cannot initialize MainEngine in A11Y mode");
+            return;
+        }
 
         Analytics.get().trackStartService();
 
         mInitialized = true;
+
+        mEngineControl= new EngineControl(this, mEngine);
     }
 
     private void cleanup() {
@@ -75,6 +95,11 @@ public class TheAccessibilityService extends AccessibilityService implements Com
         if (!mInitialized) return;
 
         Analytics.get().trackStopService();
+
+        if (mEngineControl!= null) {
+            mEngineControl.cleanup();
+            mEngineControl= null;
+        }
 
         if (mEngine!= null) {
             mEngine.cleanup();
@@ -152,4 +177,6 @@ public class TheAccessibilityService extends AccessibilityService implements Com
     public void onInterrupt() {
         EVIACAM.debug("onInterrupt");
     }
+
+
 }

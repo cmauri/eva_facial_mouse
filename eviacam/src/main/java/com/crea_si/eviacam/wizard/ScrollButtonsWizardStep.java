@@ -44,8 +44,7 @@ public class ScrollButtonsWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine =
-                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
         engine.enableClick();
         engine.disableDockPanel();
         engine.enablePointer();

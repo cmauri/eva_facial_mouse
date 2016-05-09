@@ -53,9 +53,12 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     // view to display the pointer
     private final PointerLayerView mPointerLayerView;
 
+    private final OrientationManager mOrientationManager;
+
     // constructor
-    public PointerControl(PointerLayerView pv) {
+    public PointerControl(PointerLayerView pv, OrientationManager om) {
         mPointerLayerView= pv;
+        mOrientationManager= om;
 
         // register preference change listener
         Preferences.get().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
@@ -219,7 +222,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
                 mCurrMotion.y < mMotionThreshold) mCurrMotion.y= 0.0f;
 
         // apply rotation
-        OrientationManager.get().fixVectorOrientation(mCurrMotion);
+        mOrientationManager.fixVectorOrientation(mCurrMotion);
 
         // update pointer location
         mPointerLocation.x+= mCurrMotion.x;

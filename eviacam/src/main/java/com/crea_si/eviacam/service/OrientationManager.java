@@ -28,8 +28,6 @@ import android.view.WindowManager;
  * Encapsulates the all the orientation related stuff
  */
 class OrientationManager {
-    // Singleton instance
-    private static OrientationManager sInstance= null;
 
     private final WindowManager mWindowManager;
 
@@ -44,7 +42,7 @@ class OrientationManager {
     private PhysicalOrientation mPhysicalOrientation;
 
     // constructor
-    private OrientationManager(Context c, FlipDirection flip, int cameraOrientation) {
+    public OrientationManager(Context c, FlipDirection flip, int cameraOrientation) {
         mWindowManager= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
 
         mCameraFlip= flip;
@@ -57,34 +55,10 @@ class OrientationManager {
     }
 
     public void cleanup() {
-        mPhysicalOrientation.disable();
-        sInstance= null;
-    }
-
-    /**
-     * Initialize orientation manager singleton instance
-     *
-     * @param c context
-     * @param flip Whether the captured frame needs to be flipped before rotating
-     * @param cameraOrientation
-     *  The orientation of the camera image. The value is the angle that the camera image needs
-     *  to be rotated clockwise so it shows correctly on the display in its natural orientation.
-     *  It should be 0, 90, 180, or 270.
-     */
-    public static void init (Context c, FlipDirection flip, int cameraOrientation) {
-        if (sInstance != null) {
-            throw new RuntimeException("OrientationManager already created");
+        if (mPhysicalOrientation!= null) {
+            mPhysicalOrientation.disable();
+            mPhysicalOrientation = null;
         }
-        sInstance= new OrientationManager(c, flip, cameraOrientation);
-    }
-
-    /**
-     * Get instance if already available
-     *
-     * @return instance of null if has not been previously initialized
-     */
-    public static OrientationManager get() {
-        return sInstance;
     }
 
     /**

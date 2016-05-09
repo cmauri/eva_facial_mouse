@@ -91,7 +91,7 @@ class MouseEmulationEngine implements
     private IMouseEventListener mMouseEventListener;
 
     // constructor
-    public MouseEmulationEngine(Service s, OverlayView ov) {
+    public MouseEmulationEngine(Service s, OverlayView ov, OrientationManager om) {
 
         /*
          * Final stuff
@@ -119,7 +119,7 @@ class MouseEmulationEngine implements
         /*
          * control stuff
          */
-        mPointerControl= new PointerControl(mPointerLayer);
+        mPointerControl= new PointerControl(mPointerLayer, om);
 
         mDwellClick= new DwellClick(s);
 

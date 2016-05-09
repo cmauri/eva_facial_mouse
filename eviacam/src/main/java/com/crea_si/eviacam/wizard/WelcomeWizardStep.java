@@ -55,7 +55,7 @@ public class WelcomeWizardStep extends WizardStep {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            WizardUtils.fullStartEngine();
+                            WizardUtils.fullStartEngine(getContext());
                             Preferences.get().setRunTutorial(false);
                             WizardUtils.finishWizard(getActivity());
                         }

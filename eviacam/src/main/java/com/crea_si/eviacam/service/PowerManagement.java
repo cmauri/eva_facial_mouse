@@ -30,7 +30,13 @@ import com.crea_si.eviacam.EVIACAM;
  * Power management stuff
  */
 class PowerManagement extends BroadcastReceiver {
+    interface OnScreenStateChangeListener {
+        void onOnScreenStateChange ();
+    }
+
     private final Context mContext;
+
+    private final OnScreenStateChangeListener mOnScreenStateChangeListener;
 
     // power management lock
     private PowerManager.WakeLock mWakeLook;
@@ -42,8 +48,9 @@ class PowerManagement extends BroadcastReceiver {
     private boolean mScreenOn;
 
     // constructor
-    public PowerManagement(Context c) {
+    public PowerManagement(Context c, OnScreenStateChangeListener l) {
         mContext= c;
+        mOnScreenStateChangeListener= l;
 
         final PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
 
@@ -71,8 +78,12 @@ class PowerManagement extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
             mScreenOn = false;
+
         } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
             mScreenOn = true;
+        }
+        if (mOnScreenStateChangeListener != null) {
+            mOnScreenStateChangeListener.onOnScreenStateChange();
         }
     }
 

@@ -104,8 +104,7 @@ public class SpeedSettingsWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine =
-                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
         engine.disableClick();
         engine.disableDockPanel();
         engine.enablePointer();

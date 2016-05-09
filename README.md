@@ -5,7 +5,7 @@ EVA Facial Mouse allows the user to **control an Android&trade; device by tracki
 Based on the movement of the face captured through the **front camera**, the app allows the user to control a pointer on the screen (i.e., like a mouse), which provides direct access to most elements of the user interface.
 
 [![Video of EVA](https://j.gifs.com/G69oQ7.gif)](https://www.youtube.com/watch?v=ED4EgNoB8hs)<br>
-[See the video (2:30)](https://www.youtube.com/watch?v=ED4EgNoB8hs)
+[Watch the video (2:30)](https://www.youtube.com/watch?v=ED4EgNoB8hs)
 
 ## Quick Start
 [![Android App on Google Play](https://github.com/cmauri/eva_facial_mouse/blob/master/images/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.crea_si.eviacam.service)

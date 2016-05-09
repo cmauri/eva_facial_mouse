@@ -48,19 +48,19 @@ public class GamepadAbs implements OnSharedPreferenceChangeListener {
         mContext= c;
 
         // shared preferences
-        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
     
     public void cleanup() {
-        SharedPreferences sp= Preferences.getSharedPreferences(mContext);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
     
     private void updateSettings(SharedPreferences sp) {
         // get values from shared resources
-        mPointerSpeed= (float) Preferences.getGamepadAbsSpeed(sp) / 100.0f;
+        mPointerSpeed= (float) Preferences.get().getGamepadAbsSpeed() / 100.0f;
     }
     
     @Override

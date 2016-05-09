@@ -67,8 +67,8 @@ public class GamepadEngine implements MotionProcessor {
     private void init() {
         mGamepadAbs= new GamepadAbs(mContext);
         
-        mShakeDetectorH = new ShakeDetector(mContext);
-        mShakeDetectorV = new ShakeDetector(mContext);
+        mShakeDetectorH = new ShakeDetector();
+        mShakeDetectorV = new ShakeDetector();
         
         /*
          * UI stuff 

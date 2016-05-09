@@ -45,15 +45,14 @@ public class FinalWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine =
-                MainEngine.getInstance().getAccessibilityServiceModeEngine();
-        Preferences.setRunTutorial(getActivity(), false);
+        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
+        Preferences.get().setRunTutorial(false);
     }
 
     @Override
     public void onExit(int exitCode) {
         if (exitCode == WizardStep.EXIT_NEXT) {
-            WizardUtils.fullStartEngine();
+            WizardUtils.fullStartEngine(getContext());
             WizardUtils.finishWizard(getActivity());
         }
     }

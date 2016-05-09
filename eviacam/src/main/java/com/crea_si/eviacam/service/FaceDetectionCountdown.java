@@ -18,7 +18,6 @@
  */
 package com.crea_si.eviacam.service;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.crea_si.eviacam.Preferences;
@@ -27,27 +26,27 @@ import com.crea_si.eviacam.Preferences;
  * Manages the time elapsed since last face detection.
  *
  * It is basically a countdown with a preference listener.
+ *
+ * TODO: review this class because is used as a countdown but
+ * also to notify face tracking feedback
  */
 class FaceDetectionCountdown extends Countdown
         implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private final Context mContext;
 
     /**
      * Constructor
-     * @param c the context
      */
-    FaceDetectionCountdown(Context c) {
+    FaceDetectionCountdown() {
         super(0);
-        mContext= c;
 
         // preferences
-        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
 
     public void cleanup() {
-        Preferences.getSharedPreferences(mContext).
+        Preferences.get().getSharedPreferences().
                 unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -59,7 +58,7 @@ class FaceDetectionCountdown extends Countdown
     }
 
     private void updateSettings(SharedPreferences sp) {
-        setTimeToWait(Preferences.getTimeWithoutDetection(sp) * 1000);
+        setTimeToWait(Preferences.get().getTimeWithoutDetection() * 1000);
     }
 
     public boolean isDisabled() {

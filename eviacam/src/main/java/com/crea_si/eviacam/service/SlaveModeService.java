@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.api.GamepadParams;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
@@ -106,7 +107,7 @@ public class SlaveModeService extends Service {
                 @Override
                 public Void call() throws Exception {
                     if (mSlaveModeEngine == null) return null;
-                    mSlaveModeEngine.setOperationMode(mode);
+                    mSlaveModeEngine.setSlaveOperationMode(mode);
                     return null;
                 }
             });
@@ -251,14 +252,16 @@ public class SlaveModeService extends Service {
             return null;
         }
 
-        mSlaveModeEngine= 
-            MainEngine.getInstance().initSlaveModeEngine(this);
+        // Already initialized preferences, probably A11Y service running. Deny binding.
+        if (Preferences.initForSlaveService(this) == null) return null;
 
-        if (mSlaveModeEngine== null) {
+        mSlaveModeEngine= MainEngine.getSlaveModeEngine();
+        if (!mSlaveModeEngine.init(this, null)) {
             /* 
-             * The engine manager returned null, this means that has been
+             * The engine manager initialization failed, this means that has been
              * already started as accessibility service. Deny binding.
              */
+            mSlaveModeEngine= null;
             return null;
         }
 
@@ -271,6 +274,10 @@ public class SlaveModeService extends Service {
         if (mSlaveModeEngine != null) {
             mSlaveModeEngine.cleanup();
             mSlaveModeEngine= null;
+        }
+
+        if (Preferences.get() != null) {
+            Preferences.get().cleanup();
         }
         return false;
     }

@@ -78,13 +78,13 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
         DISABLED_ALPHA= c.getResources().getColor(R.color.disabled_alpha) >> 24;
         
         // preferences
-        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
     
     public void cleanup() {
-        Preferences.getSharedPreferences(this.getContext()).
+        Preferences.get().getSharedPreferences().
             unregisterOnSharedPreferenceChangeListener(this);
     }
     
@@ -97,9 +97,9 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
     }
     
     private void updateSettings(SharedPreferences sp) {
-        float size= Preferences.getUIElementsSize(sp);
+        float size= Preferences.get().getUIElementsSize();
 
-        mAlphaPointer= (255 * Preferences.getGamepadTransparency(sp)) / 100; 
+        mAlphaPointer= (255 * Preferences.get().getGamepadTransparency()) / 100;
         
         // re-scale pointer accordingly
         BitmapDrawable bd = (BitmapDrawable) 

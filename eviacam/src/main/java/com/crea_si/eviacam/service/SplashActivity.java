@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@ import com.crea_si.eviacam.R;
  * Does it here (activity) so that installation dialog could be properly displayed.
  */
 public class SplashActivity extends Activity implements Eula.Listener {
+    public static final String IS_A11Y_SERVICE_PARAM= "isA11yService";
+
     /* Duration of the splash */
     private static final int SPLASH_DISPLAY_LENGTH = 2000;
 
@@ -54,8 +56,13 @@ public class SplashActivity extends Activity implements Eula.Listener {
 
     @Override
     public void onAcceptEula() {
+        // get is splash created from an accessibility service
+        Intent i= SplashActivity.this.getIntent();
+        boolean isA11yService= i.getBooleanExtra(SplashActivity.IS_A11Y_SERVICE_PARAM, true);
+
         if (sSplashShown) {
-            MainEngine.splashReady();
+            // TODO: remove such ugly static method call
+            MainEngine.splashReady(isA11yService);
 
             /**
              * New Handler to close this splash after some seconds.
@@ -76,8 +83,11 @@ public class SplashActivity extends Activity implements Eula.Listener {
              */
             Intent dialogIntent = new Intent(this, SplashActivity.class);
             dialogIntent.addFlags(
-                    Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                            Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                    Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS |
+                    Intent.FLAG_ACTIVITY_NO_HISTORY);
+            dialogIntent.putExtra(IS_A11Y_SERVICE_PARAM, isA11yService);
             startActivity(dialogIntent);
         }
     }

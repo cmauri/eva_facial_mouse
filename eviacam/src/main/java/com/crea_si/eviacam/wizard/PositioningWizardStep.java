@@ -58,8 +58,7 @@ public class PositioningWizardStep extends WizardStep implements Runnable {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine =
-                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
         engine.disableClick();
         engine.disableDockPanel();
         engine.disablePointer();
@@ -70,9 +69,9 @@ public class PositioningWizardStep extends WizardStep implements Runnable {
     @Override
     public void run() {
         final long faceMaxElapsedTime = 1000;
-        final int timeToBlink = 400;    //in milissegunds
+        final int timeToBlink = 400;    // in milliseconds
         final AccessibilityServiceModeEngine engine =
-                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+                MainEngine.getAccessibilityServiceModeEngine();
 
         WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
 

@@ -33,20 +33,17 @@ public class MyNativeCameraView extends MyCameraBridgeViewBase {
     }
 
     @Override
-    protected boolean connectCamera(int width, int height) {
+    protected void connectCamera(int width, int height) throws CameraException {
 
         /* 1. We need to instantiate camera
          * 2. We need to start thread which will be getting frames
          */
         /* First step - initialize camera connection */
-        if (!initializeCamera(width, height))
-            return false;
+        initializeCamera(width, height);
 
         /* now we can start update thread */
         mThread = new Thread(new CameraWorker());
         mThread.start();
-
-        return true;
     }
 
     @Override
@@ -84,7 +81,7 @@ public class MyNativeCameraView extends MyCameraBridgeViewBase {
 
     }
 
-    private boolean initializeCamera(int width, int height) {
+    private void initializeCamera(int width, int height) throws CameraException {
         synchronized (this) {
 
             if (mCameraIndex == -1)
@@ -93,10 +90,12 @@ public class MyNativeCameraView extends MyCameraBridgeViewBase {
                 mCamera = new VideoCapture(Highgui.CV_CAP_ANDROID + mCameraIndex);
 
             if (mCamera == null)
-                return false;
+                throw new CameraException(CameraException.CAMERA_ERROR,
+                        "Camera is not available (in use or does not exist)");
 
             if (mCamera.isOpened() == false)
-                return false;
+                throw new CameraException(CameraException.CAMERA_ERROR,
+                        "Camera is not available (in use or does not exist)");
 
             mFrame = new NativeCameraFrame(mCamera);
 
@@ -125,8 +124,6 @@ public class MyNativeCameraView extends MyCameraBridgeViewBase {
         }
 
         Log.i(TAG, "Selected camera frame size = (" + mFrameWidth + ", " + mFrameHeight + ")");
-
-        return true;
     }
 
     private void releaseCamera() {

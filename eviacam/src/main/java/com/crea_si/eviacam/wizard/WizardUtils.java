@@ -20,12 +20,15 @@ package com.crea_si.eviacam.wizard;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.service.EngineControl;
 import com.crea_si.eviacam.service.MainEngine;
 
 class WizardUtils {
@@ -36,18 +39,20 @@ class WizardUtils {
         a.finish();
     }
 
-    static void fullStartEngine() {
-        AccessibilityServiceModeEngine engine=
-                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+    static void fullStartEngine(Context c) {
+        AccessibilityServiceModeEngine engine= MainEngine.getAccessibilityServiceModeEngine();
         if (engine!= null && engine.isReady()) {
             engine.enableAll();
             engine.start();
+
+            // Notify EngineControl the wizard has finished
+            Intent intent = new Intent(EngineControl.WIZARD_CLOSE_EVENT_NAME);
+            LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
         }
     }
 
     static void checkEngineAndFinishIfNeeded (final Activity a) {
-        AccessibilityServiceModeEngine engine=
-                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        AccessibilityServiceModeEngine engine= MainEngine.getAccessibilityServiceModeEngine();
         if (engine== null || !engine.isReady()) {
             // Engine is not ready anymore
             final Resources res= a.getResources();

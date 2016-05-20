@@ -21,6 +21,7 @@ EVA is intended for those who cannot use a touchscreen. For instance, some peopl
 * Front camera
 * Dual-core processor or higher
 
+See the [list of devices tested with EVA](https://docs.google.com/spreadsheets/d/1gxuIKbw92d9USPT_SvM0iCdWjtnVcx7owJAgwM6Za6w/).
 
 ## Limitations
 

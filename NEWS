@@ -1,3 +1,7 @@
+v1.2.4
+- Fix broken compatibility with Android 6.0+
+- Allow devices with any camera (not only front camera)
+
 v1.2.2
 - Add Hebrew translation (thanks to Yaron Shahrabani)
 - Add support for devices with rotating camera (tested with Lenovo YT3-X50L)

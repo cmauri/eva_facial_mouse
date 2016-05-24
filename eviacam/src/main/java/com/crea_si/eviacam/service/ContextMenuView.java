@@ -56,19 +56,19 @@ class ContextMenuView extends LinearLayout
         setOrientation(LinearLayout.VERTICAL);
 
         // shared preferences
-        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
 
     public void cleanup() {
-        SharedPreferences sp= Preferences.getSharedPreferences(getContext());
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
 
     private void updateSettings(SharedPreferences sp) {
         // get values from shared resources
-        mScale = Preferences.getUIElementsSize(sp);
+        mScale = Preferences.get().getUIElementsSize();
 
         /*
          * scale view according to size selected by the user

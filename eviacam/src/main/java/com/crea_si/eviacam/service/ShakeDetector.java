@@ -41,8 +41,6 @@ public class ShakeDetector implements OnSharedPreferenceChangeListener {
     private static final int BOUNCE= 2;
     private static final int BOUNCE_2= 3;
 
-    private final Context mContext;
-
     // The threshold
     private float mThreshold;
 
@@ -52,17 +50,15 @@ public class ShakeDetector implements OnSharedPreferenceChangeListener {
     // Current state
     private int mCurrentState= NO_SHAKE;
 
-    public ShakeDetector (Context c) {
-        mContext= c;
-
+    public ShakeDetector () {
         // shared preferences
-        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
 
     public void cleanup() {
-        SharedPreferences sp= Preferences.getSharedPreferences(mContext);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -97,7 +93,7 @@ public class ShakeDetector implements OnSharedPreferenceChangeListener {
         final double A= 0.08;
 
         // Get values from shared resources
-        final float x= (float) Preferences.getGamepadRelSensitivity(sp);
+        final float x= (float) Preferences.get().getGamepadRelSensitivity();
 
         // Compute threshold
         mThreshold= (float) (A * Math.exp(x*0.1*Math.log((A+1.0)/A))-A);

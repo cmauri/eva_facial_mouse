@@ -31,14 +31,20 @@ public class Eula {
         void onAcceptEula();
         void onCancelEula();
     }
-    private static String EULA_PREFIX = "eula_";
+    private static final String EULA_PREFIX = "eula_";
+
+    // the EULA_KEY changes every time you increment the version number
+    private static final String EULA_KEY = EULA_PREFIX + BuildConfig.VERSION_CODE;
+
+    static
+    public boolean wasAccepted(final Activity a) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(a);
+        return prefs.getBoolean(EULA_KEY, false);
+    }
 
     static
     public void acceptEula (final Activity a, final Listener l) {
-        // the eulaKey changes every time you increment the version number
-        final String eulaKey = EULA_PREFIX + BuildConfig.VERSION_CODE;
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(a);
-        if (prefs.getBoolean(eulaKey, false)) {
+        if (Eula.wasAccepted(a)) {
             l.onAcceptEula();
             return;
         }
@@ -55,8 +61,9 @@ public class Eula {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     // Mark this version as read.
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(a);
                     SharedPreferences.Editor editor = prefs.edit();
-                    editor.putBoolean(eulaKey, true);
+                    editor.putBoolean(EULA_KEY, true);
                     editor.commit();
                     dialogInterface.dismiss();
                     l.onAcceptEula();

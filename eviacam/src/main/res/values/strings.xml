@@ -222,5 +222,8 @@
     <string name="button">Button</string>
     <string name="how_to_run">To start EVA, go to\n\nSettings > Accessibility > EVA Facial Mouse</string>
     <string name="dont_remember_again">Don\'t remind me again</string>
+    <string name="cannot_access_camera">Error while trying to access the camera, perhaps is in use by another application.</string>
+    <string name="send_report">Send error report</string>
+    <string name="no_cameras_available">Not detected any camera</string>
 
 </resources>

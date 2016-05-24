@@ -11,10 +11,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.front" android:required="true"/>
-    <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera" android:required="true"/>
 
     <application
         android:name=".EViacamApplication"
@@ -34,8 +31,7 @@
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" 
-            android:settingsActivity="com.crea_si.eviacam.service.MousePreferencesActivity" 
-            android:configChanges="orientation|screenSize" >
+            android:settingsActivity="com.crea_si.eviacam.service.MousePreferencesActivity" >
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -123,7 +119,7 @@
         </activity>
 
         <!-- ACRA activity -->
-        <activity android:name="org.acra.CrashReportDialog"
+        <activity android:name="org.acra.dialog.CrashReportDialog"
         android:theme="@android:style/Theme.Dialog"
         android:process=":error_report"
         android:launchMode="singleInstance"

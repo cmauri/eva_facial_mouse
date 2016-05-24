@@ -44,7 +44,7 @@ public class LauncherActivity extends Activity {
         finish();
     }
 
-    private void showLauncherHelp (final SharedPreferences sp) {
+    private void showLauncherHelp () {
         final Resources r= getResources();
 
         new AlertDialog.Builder(this)
@@ -61,7 +61,7 @@ public class LauncherActivity extends Activity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Preferences.setShowLauncherHelp(sp, false);
+                        Preferences.get().setShowLauncherHelp(false);
                         openAccessibility();
                     }
                 })
@@ -69,16 +69,22 @@ public class LauncherActivity extends Activity {
     }
 
     @Override
-    protected void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
+    protected void onStart () {
+        super.onStart();
 
+        if (Preferences.initForA11yService(this) == null) return;
 
-        final SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(this);
-        if (Preferences.getShowLauncherHelp(sp)) {
-            showLauncherHelp(sp);
+        if (Preferences.get().getShowLauncherHelp()) {
+            showLauncherHelp();
         }
         else {
             openAccessibility();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Preferences.get().cleanup();
     }
 }

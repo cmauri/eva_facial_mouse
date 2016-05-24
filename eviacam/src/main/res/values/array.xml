@@ -29,7 +29,7 @@
     <item>@string/after_two_minutes</item>
     <item>@string/after_five_minutes</item>
 </string-array>
-<string-array name="time_without_detection_values">
+<string-array name="time_without_detection_values" translatable="false">
     <item>0</item>
     <item>10</item>
     <item>30</item>
@@ -57,7 +57,7 @@
     <item>@string/large</item>
     <item>@string/xlarge</item>
 </string-array>
-<string-array name="ui_elements_size_values">
+<string-array name="ui_elements_size_values" translatable="false">
     <item>0.8</item>
     <item>1</item>
     <item>1.5</item>
@@ -72,7 +72,7 @@
     <item>@string/top_right</item>
     <item>@string/bottom_right</item>
 </string-array>
-<string-array name="gamepad_location_values">
+<string-array name="gamepad_location_values" translatable="false">
     <item>0</item>
     <item>1</item>
     <item>2</item>
@@ -81,14 +81,14 @@
     <item>5</item>
 </string-array>
 
-<string-array name="gamepad_transparency_entries">
+<string-array name="gamepad_transparency_entries" translatable="false">
     <item>20 &#65285;</item>
     <item>40 &#65285;</item>
     <item>60 &#65285;</item>
     <item>80 &#65285;</item>
     <item>100 &#65285;</item>
 </string-array>
-<string-array name="gamepad_transparency_values">
+<string-array name="gamepad_transparency_values" translatable="false">
     <item>20</item>
     <item>40</item>
     <item>60</item>

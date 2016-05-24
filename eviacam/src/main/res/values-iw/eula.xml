@@ -1,0 +1,54 @@
+<resources>
+    <!-- EULA TODO: translate -->
+    <string name="eula">
+TERMS AND CONDITIONS FOR USING THE APPLICATION EVA FACIAL MOUSE\n
+\n
+These Terms and Conditions regulate the download, access and use of the mobile application "EVA FACIAL MOUSE" (hereinafter the "Application"), which CREA Sistemas Informaticos (hereinafter "CREA") and the Vodafone Spain Foundation (hereinafter "VSF") release to users.\n
+\n
+This version of the application is available for free.\n
+\n
+Access to the Application means that the user has accepted these Terms and Conditions and has totally agreed to them \n
+\n
+1. SCOPE\n
+\n
+The Application aims to help improve physical accessibility for people with difficulties in handling mobile devices and/or Android tablets. The Application provides an alternative method of access (hands-free) for those people who, for whatever reason, cannot make a regular use of mobile devices in order to take advantage and use them on equal terms.\n
+\n
+Some of the groups that can benefit from this project are people with amputations, cerebral palsy, spinal cord injury, muscular dystrophy, multiple sclerosis, amyotrophic lateral sclerosis (ALS) and other diseases or disabilities. Specialised professionals and a test group of users have participated in the designing and development of this Application.\n
+\n
+The application is available to users for their personal use (never business).\n
+\n
+It runs on an Android 4.1 mobile phone or higher equipped with a front camera.\n
+\n
+2. RIGHTS OF INTELLECTUAL PROPERTY.\n
+\n
+CREA and VSF offer software source code under the GPL or LGPL license or under some other open source license. Intellectual property rights are of CREA. VSF exercises exclusive use and the rights to exploit them in any form and in particular the rights of reproduction, distribution, public communication and transformation.\n
+\n
+The third owners of intellectual and industrial property on photographs, logos, and any other symbols or content included in the Application have granted the corresponding authorizations for their reproduction, distribution and making available to the public.\n
+\n
+3. PRIVACY POLICY\n
+\n
+The Application will use Google Analytics as a tool to control use of and the interaction trends. CREA and VSF may use the personal information you provide in a dissociated form (without personal identification) for internal purposes, such as for compiling statistics. The Application may collect, store or accumulate certain non-personal information regarding its use.\n
+\n
+Google Analytics is regulated by the general conditions of Google accessible at http://www.google.com/analytics/terms/ and the Google privacy policies accessible at https://www.google.com/intl/en/policies/privacy/. To proceed with the deactivation of Google Analytics: https://support.google.com/analytics/answer/1009696\n
+\n
+3. VARIOUS\n
+\n
+VSF and CREA reserve the right to edit, update, modify, suspend, remove, or terminate the services provided by the Application, including all or part of its contents, without prior notice and to modify the form or type of access to the Application.\n
+\n
+Possible causes of change can take place due to their adaptation to possible legislative changes and changes in the application itself, as well as those that can derive from code types existing in the matter or due to strategic or corporative reasons.\n
+\n
+4. EXCLUSION OF LIABILITY\n
+\n
+Neither CREA nor VSF will be responsible for the use of the Application by an under-age person, being the download and use of the Application the sole responsibility of the user.\n
+\n
+The Application is provided "as is" without warranty of any kind. CREA and VSF are not responsible for the final quality of the application and or for whether it serves and meets all the objectives. Nevertheless, CREA and VSF agree on the extent of their possibilities to help improve the quality of the Application, but can not guarantee the accuracy or timeliness of its content.\n
+\n
+Responsibility for use of the Application solely relates to the user. Except as expressly stated in these Terms and Conditions, neither CREA nor VSF are responsible for any loss or damage arising in connection with the download or use of the Application, such as those produced as a result of errors, faults or blockages in the system operation of the Application (such as- examples without limitation-: error in the lines of communications, defects in the hardware or application software or failures in the Internet). Similarly, CREA and VSF will not be liable for damages resulting from improper or inappropriate use of the Application by the users.\n
+\n
+5. LEGISLATION AND JURISDICTION\n
+\n
+The user agrees that the applicable law and the competent courts and tribunals to hear the differences arising from the interpretation or application of these clauses are Spanish, and submit, expressly waiving any other jurisdiction, to the courts of Madrid.\n
+\n
+I have read and accept the terms of use of the EVA Facial Mouse Application\n
+    </string>
+</resources>

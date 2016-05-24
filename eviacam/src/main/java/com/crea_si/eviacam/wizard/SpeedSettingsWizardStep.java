@@ -51,13 +51,13 @@ public class SpeedSettingsWizardStep extends WizardStep {
         final TextView hSpeedTextView= (TextView) v.findViewById(R.id.hspeed_textView);
 
         // Current value
-        hSpeedTextView.setText(Integer.toString(Preferences.getHorizontalSpeed(getActivity())));
+        hSpeedTextView.setText(Integer.toString(Preferences.get().getHorizontalSpeed()));
 
         hSpeedMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int val = Preferences.getHorizontalSpeed(getActivity());
-                val = Preferences.setHorizontalSpeed(getActivity(), --val);
+                int val = Preferences.get().getHorizontalSpeed();
+                val = Preferences.get().setHorizontalSpeed(--val);
                 hSpeedTextView.setText(Integer.toString(val));
             }
         });
@@ -65,8 +65,8 @@ public class SpeedSettingsWizardStep extends WizardStep {
         hSpeedPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int val= Preferences.getHorizontalSpeed(getActivity());
-                val= Preferences.setHorizontalSpeed(getActivity(), ++val);
+                int val= Preferences.get().getHorizontalSpeed();
+                val= Preferences.get().setHorizontalSpeed(++val);
                 hSpeedTextView.setText(Integer.toString(val));
             }
         });
@@ -79,13 +79,13 @@ public class SpeedSettingsWizardStep extends WizardStep {
         final TextView vSpeedTextView= (TextView) v.findViewById(R.id.vspeed_textView);
 
         // Current value
-        vSpeedTextView.setText(Integer.toString(Preferences.getVerticalSpeed(getActivity())));
+        vSpeedTextView.setText(Integer.toString(Preferences.get().getVerticalSpeed()));
 
         vSpeedMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int val = Preferences.getVerticalSpeed(getActivity());
-                val = Preferences.setVerticalSpeed(getActivity(), --val);
+                int val = Preferences.get().getVerticalSpeed();
+                val = Preferences.get().setVerticalSpeed(--val);
                 vSpeedTextView.setText(Integer.toString(val));
             }
         });
@@ -93,8 +93,8 @@ public class SpeedSettingsWizardStep extends WizardStep {
         vSpeedPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int val = Preferences.getVerticalSpeed(getActivity());
-                val = Preferences.setVerticalSpeed(getActivity(), ++val);
+                int val = Preferences.get().getVerticalSpeed();
+                val = Preferences.get().setVerticalSpeed(++val);
                 vSpeedTextView.setText(Integer.toString(val));
             }
         });
@@ -104,8 +104,7 @@ public class SpeedSettingsWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine =
-                MainEngine.getInstance().getAccessibilityServiceModeEngine();
+        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
         engine.disableClick();
         engine.disableDockPanel();
         engine.enablePointer();

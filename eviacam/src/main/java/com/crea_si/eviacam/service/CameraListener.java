@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.opencv.android.CameraException;
 import org.opencv.android.MyCameraBridgeViewBase;
 import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.MyJavaCameraView;
@@ -43,15 +44,19 @@ import com.crea_si.eviacam.R;
 
 @SuppressWarnings("deprecation")
 public class CameraListener implements CvCameraViewListener2 {
-
     private final Context mContext;
     
     // callback to process frames
     private final FrameProcessor mFrameProcessor;
     
-    // opencv capture&view facility 
+    // OpenCV capture&view facility
     private final MyCameraBridgeViewBase mCameraView;
-    
+
+    // physical rotation of the camera (i.e. whether the frame needs a flip
+    // operation), for instance, this is needed for those devices with rotating
+    // camera such as the Lenovo YT3-X50L)
+    private final FlipDirection mCameraFlip;
+
     // physical orientation of the camera (0, 90, 180, 270)
     private final int mCameraOrientation;
 
@@ -95,45 +100,79 @@ public class CameraListener implements CvCameraViewListener2 {
     }
 
     // Constructor
-    public CameraListener(Context c, FrameProcessor fp) {
+    public CameraListener(Context c, FrameProcessor fp) throws CameraException {
         mContext= c;
         mFrameProcessor= fp;
 
         /*
-         * The orientation of the camera image. The value is the angle that the camera image needs 
-         * to be rotated clockwise so it shows correctly on the display in its natural orientation. 
+         * For some devices, notably the Lenovo YT3-X50L, have only one camera that can
+         * be rotated to frame the user's face. In this case the camera is reported as
+         * facing back. Therefore, we try to detect all cameras of the device and pick
+         * the facing front one, if any. Otherwise, we pick the first facing back camera
+         * and report that the image needs a vertical flip before fixing the orientation.
+         *
+         * The orientation of the camera is the angle that the camera image needs
+         * to be rotated clockwise so it shows correctly on the display in its natural orientation.
          * It should be 0, 90, 180, or 270.
-         * 
-         * For example, suppose a device has a naturally tall screen. The back-facing camera sensor 
-         * is mounted in landscape. You are looking at the screen. If the top side of the camera 
-         * sensor is aligned with the right edge of the screen in natural orientation, the value 
-         * should be 90. If the top side of a front-facing camera sensor is aligned with the right 
+         *
+         * For example, suppose a device has a naturally tall screen. The back-facing camera sensor
+         * is mounted in landscape. You are looking at the screen. If the top side of the camera
+         * sensor is aligned with the right edge of the screen in natural orientation, the value
+         * should be 90. If the top side of a front-facing camera sensor is aligned with the right
          * of the screen, the value should be 270.
          */
-        // TODO: display error when no front camera detected
-        int cameraOrientation= 0;
+        final int numCameras= Camera.getNumberOfCameras();
+        if (numCameras< 1) {
+            throw new CameraException(
+                    CameraException.NO_CAMERAS_AVAILABLE,
+                    c.getResources().getString(R.string.no_cameras_available));
+        }
+
+        // Pick the best available camera
+        int bestCamera= 0;  // pick the first one if no facing front camera available
         Camera.CameraInfo cameraInfo= new CameraInfo();
-        for (int i= 0; i<  Camera.getNumberOfCameras(); i++) {
+        for (int i= 0; i< numCameras; i++) {
             Camera.getCameraInfo (i, cameraInfo);
             if (cameraInfo.facing== CameraInfo.CAMERA_FACING_FRONT) {
-                cameraOrientation= cameraInfo.orientation;
-                EVIACAM.debug("Detected front camera. Orientation: " + cameraOrientation);
+                bestCamera= i;
+                break;
             }
         }
-        mCameraOrientation= cameraOrientation;
-    
-        // create capture view
-        mCameraView= new MyJavaCameraView(mContext, MyCameraBridgeViewBase.CAMERA_ID_FRONT);
-        
-        // set CameraBridgeViewBase parameters        
-        // TODO: Damn! It seems that for certain resolutions (for instance 320x240 on a Galaxy Nexus)
-        // crashes with a "Callback buffer was too small! error", it works at 352x288
-        
+
+        // Get camera features
+        Camera.getCameraInfo (bestCamera, cameraInfo);
+        FlipDirection flip= FlipDirection.NONE;                // no flip needed by default
+        int cameraId = MyCameraBridgeViewBase.CAMERA_ID_FRONT; // front camera by default
+
+        if (cameraInfo.facing== CameraInfo.CAMERA_FACING_BACK) {
+            // When the best available camera faces back
+            flip= FlipDirection.VERTICAL;
+            cameraId= MyCameraBridgeViewBase.CAMERA_ID_BACK;
+
+            EVIACAM.debug("Back camera detected. Orientation: " + cameraInfo.orientation);
+        }
+        else {
+            EVIACAM.debug("Front camera detected. Orientation: " + cameraInfo.orientation);
+        }
+
+        mCameraOrientation= cameraInfo.orientation;
+        mCameraFlip= flip;
+
+        /**
+         * Create a capture view which carries the responsibilities of
+         * capturing and displaying frames.
+         */
+        mCameraView= new MyJavaCameraView(c, cameraId);
+
+        // We first attempted to work at 320x240, but for some devices such as the
+        // Galaxy Nexus crashes with a "Callback buffer was too small!" error.
+        // However, at 352x288 works for all devices tried so far.
         mCameraView.setMaxFrameSize(352, 288);
-        //mCameraView.enableFpsMeter(); // For testing
+
+        //mCameraView.enableFpsMeter();  // remove comment for testing
+
         mCameraView.setCvCameraViewListener(this);
         
-        // Set View parameters
         mCameraView.setVisibility(SurfaceView.VISIBLE);
     }
     
@@ -175,12 +214,34 @@ public class CameraListener implements CvCameraViewListener2 {
         return mCameraView;
     }
 
-    int getCameraOrientation() {
-        return mCameraOrientation;
+    /* Retrieve the physical characteristics of the camera, namely the mounting rotation
+       (i.e. whether the frame needs to be flipped) and orientation (i.e. whether the
+       frame needs to be rotated) */
+    FlipDirection getCameraFlip() { return mCameraFlip; }
+    int getCameraOrientation() { return mCameraOrientation; }
+
+
+    /**
+     * Sets the flip operation to perform to the frame before is applied a rotation
+     *
+     * @param flip FlipDirection.NONE, FlipDirection.VERTICAL or FlipDirection.HORIZONTAL
+     */
+    public void setPreviewFlip(FlipDirection flip) {
+        switch (flip) {
+            case NONE:
+                mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.NONE);
+                break;
+            case VERTICAL:
+                mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.VERTICAL);
+                break;
+            case HORIZONTAL:
+                mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.HORIZONTAL);
+                break;
+        }
     }
 
     /**
-     * Sets the rotation to perfom to the camera image before is displayed
+     * Sets the rotation to perform to the camera image before is displayed
      * in the preview surface
      *
      * @param rotation rotation to perform (clockwise) in degrees
@@ -203,8 +264,8 @@ public class CameraListener implements CvCameraViewListener2 {
         VisionPipeline.cleanup();
     }
      
-    /*
-     * called each time new frame is grabbed 
+    /**
+     * Called each time new frame is captured
      */
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {

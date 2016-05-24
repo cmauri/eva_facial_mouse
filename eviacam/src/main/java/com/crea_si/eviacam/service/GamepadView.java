@@ -88,13 +88,13 @@ public class GamepadView extends View implements OnSharedPreferenceChangeListene
         setWillNotDraw(false);
 
         // shared preferences
-        SharedPreferences sp= Preferences.getSharedPreferences(c);
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
         updateSettings(sp);
     }
 
     public void cleanup() {
-        SharedPreferences sp= Preferences.getSharedPreferences(getContext());
+        SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
 
@@ -102,7 +102,7 @@ public class GamepadView extends View implements OnSharedPreferenceChangeListene
         /*
          * Gamepad location
          */
-        int l= Preferences.getGamepadLocation(sp);
+        int l= Preferences.get().getGamepadLocation();
 
         if (l== Preferences.LOCATION_GAMEPAD_TOP_LEFT ||
             l== Preferences.LOCATION_GAMEPAD_TOP_CENTER ||
@@ -128,12 +128,12 @@ public class GamepadView extends View implements OnSharedPreferenceChangeListene
         /*
          * Gamepad size
          */
-        mOuterRadiusNorm= Preferences.getUIElementsSize(sp) * OUTER_RADIUS_NORM_DEFAULT;
+        mOuterRadiusNorm= Preferences.get().getUIElementsSize() * OUTER_RADIUS_NORM_DEFAULT;
                 
         /*
          * Gamepad alpha
          */
-        mTransparency= (255 * Preferences.getGamepadTransparency(sp)) / 100;
+        mTransparency= (255 * Preferences.get().getGamepadTransparency()) / 100;
         
         mCacheNeedRefresh= true;
     }

@@ -25,7 +25,7 @@ import com.crea_si.eviacam.api.IMouseEventListener;
  * Interface for slave mode service engine 
  */
 interface SlaveModeEngine extends Engine {
-    void setOperationMode(int mode);
+    void setSlaveOperationMode(int mode);
     boolean registerGamepadListener(IGamepadEventListener l);
     void unregisterGamepadListener();
     boolean registerMouseListener(IMouseEventListener l);

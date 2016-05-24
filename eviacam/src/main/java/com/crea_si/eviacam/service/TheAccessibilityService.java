@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,19 +22,24 @@ package com.crea_si.eviacam.service;
 import android.accessibilityservice.AccessibilityService;
 import android.content.ComponentCallbacks;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.crea_si.eviacam.Analytics;
 import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.Preferences;
 
 /**
  * The Enable Viacam accessibility service
  */
+public class TheAccessibilityService
+        extends AccessibilityService
+        implements ComponentCallbacks, Engine.OnInitListener {
 
-public class TheAccessibilityService extends AccessibilityService implements ComponentCallbacks {
     // reference to the engine
     private AccessibilityServiceModeEngine mEngine;
+
+    // reference to the engine control
+    private EngineControl mEngineControl;
 
     // stores whether it was previously initialized (see comments on init() )
     private boolean mInitialized= false;
@@ -55,16 +60,34 @@ public class TheAccessibilityService extends AccessibilityService implements Com
             return;
         }
 
-        mEngine= MainEngine.getInstance().initAccessibilityServiceModeEngine(this);
-
-        // When the engine is not properly initialized (i.e. is in slave mode)
-        // the above call returns null. As is not possible to stop the accessibility
+        // When preferences are not properly initialized (i.e. is in slave mode)
+        // the call will return null. As is not possible to stop the accessibility
         // service just take into account an avoid further actions.
-        if (mEngine == null) return;
+        if (Preferences.initForA11yService(this) == null) return;
+
+        // Init the main engine
+        mEngine= MainEngine.getAccessibilityServiceModeEngine();
+        mEngine.init(this, this);
+    }
+
+    /**
+     * Callback for engine initialization completion
+     * @param status 0 if initialization completed successfully
+     */
+    @Override
+    public void onInit(int status) {
+        if (status != 0) {
+            // Initialization failed
+            // TODO: provide some feedback
+            EVIACAM.debug("Cannot initialize MainEngine in A11Y mode");
+            return;
+        }
 
         Analytics.get().trackStartService();
-        //mEngine.start();
+
         mInitialized = true;
+
+        mEngineControl= new EngineControl(this, mEngine);
     }
 
     private void cleanup() {
@@ -73,9 +96,18 @@ public class TheAccessibilityService extends AccessibilityService implements Com
 
         Analytics.get().trackStopService();
 
+        if (mEngineControl!= null) {
+            mEngineControl.cleanup();
+            mEngineControl= null;
+        }
+
         if (mEngine!= null) {
             mEngine.cleanup();
             mEngine= null;
+        }
+
+        if (Preferences.get() != null) {
+            Preferences.get().cleanup();
         }
 
         mInitialized= false;
@@ -146,13 +178,5 @@ public class TheAccessibilityService extends AccessibilityService implements Com
         EVIACAM.debug("onInterrupt");
     }
 
-    /*
-     * Called by the system when the device configuration changes
-     */
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        if (mEngine != null) {
-            mEngine.onConfigurationChanged(newConfig);
-        }
-    }
+
 }

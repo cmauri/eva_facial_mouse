@@ -42,10 +42,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
 
     // delegate to measure elapsed time
     private Countdown mCountdown;
-    
-    // reference to shared preferences pool
-    private SharedPreferences mSharedPref;
-    
+
     // current dwell click state
     private State mState= State.RESET;
 
@@ -68,27 +65,25 @@ class DwellClick implements OnSharedPreferenceChangeListener {
         
         mCountdown= new Countdown(DWELL_TIME_DEFAULT);
         
-        // shared preferences
-        mSharedPref = Preferences.getSharedPreferences(c);
-
         // register preference change listener
-        mSharedPref.registerOnSharedPreferenceChangeListener(this);
+        Preferences.get().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         
         updateSettings();
     }
     
     private void updateSettings() {
+        SharedPreferences sp=  Preferences.get().getSharedPreferences();
         // get values from shared resources
-        int dwellTime= mSharedPref.getInt(Preferences.KEY_DWELL_TIME, DWELL_TIME_DEFAULT) * 100;
+        int dwellTime= sp.getInt(Preferences.KEY_DWELL_TIME, DWELL_TIME_DEFAULT) * 100;
         mCountdown.setTimeToWait(dwellTime);
-        int dwellArea= mSharedPref.getInt(Preferences.KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
+        int dwellArea= sp.getInt(Preferences.KEY_DWELL_AREA, DWELL_AREA_DEFAULT);
         mDwellAreaSquared= dwellArea * dwellArea;
-        mConsecutiveClicks = mSharedPref.getBoolean(
+        mConsecutiveClicks = sp.getBoolean(
                 Preferences.KEY_CONSECUTIVE_CLICKS, CONSECUTIVE_CLICKS);
     }
     
     public void cleanup() {
-        mSharedPref.unregisterOnSharedPreferenceChangeListener(this);        
+        Preferences.get().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
     
     @Override

@@ -1,3 +1,13 @@
+v1.2.4
+- Fix broken compatibility with Android 6.0+
+- Allow devices with any camera (not only front camera)
+
+v1.2.2
+- Add Hebrew translation (thanks to Yaron Shahrabani)
+- Add support for devices with rotating camera (tested with Lenovo YT3-X50L)
+- Fix bug for "Disable EVA when face not detected" feature
+- Fix wrong pointer orientation when device rotated too fast
+
 v1.2.1
 - Fix support for devices running arm64 Android version (e.g. Huawei P8)
   and remove the OpenCV manager dependency

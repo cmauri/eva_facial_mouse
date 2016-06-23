@@ -43,4 +43,9 @@
         android:icon="@drawable/icon_ca"
         android:imeSubtypeLocale="ca"
         android:imeSubtypeMode="keyboard" />
+    <subtype
+        android:label="@string/label_subtype_generic"
+        android:icon="@drawable/icon_de"
+        android:imeSubtypeLocale="de"
+        android:imeSubtypeMode="keyboard" />
 </input-method>

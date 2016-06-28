@@ -1,3 +1,6 @@
+v1.2.5
+- Add German translation and keyboard (thanks to Christian Bieder)
+
 v1.2.4
 - Fix broken compatibility with Android 6.0+
 - Allow devices with any camera (not only front camera)

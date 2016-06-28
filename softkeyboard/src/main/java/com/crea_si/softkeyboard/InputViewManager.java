@@ -46,6 +46,7 @@ public class InputViewManager {
     private static final int QWERTY_EN = 1;
     private static final int QWERTY_ES = 2;
     private static final int QWERTY_CA = 3;
+    private static final int QWERTY_DE = 4;
 
     final private InputMethodService mIMEService;
     final private InputMethodManager mInputMethodManager;
@@ -133,6 +134,12 @@ public class InputViewManager {
             if (mCurrentQwertySubtype != QWERTY_CA) {
                 mQwertyKeyboard = new LatinKeyboard(mIMEService, R.xml.qwerty_ca);
                 mCurrentQwertySubtype= QWERTY_CA;
+            }
+        }
+        else if (locale.compareTo("de")== 0) {
+            if (mCurrentQwertySubtype != QWERTY_DE) {
+                mQwertyKeyboard = new LatinKeyboard(mIMEService, R.xml.qwerty_de);
+                mCurrentQwertySubtype= QWERTY_DE;
             }
         }
         else if (mCurrentQwertySubtype != QWERTY_EN) {

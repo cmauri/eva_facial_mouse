@@ -379,6 +379,7 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
             Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
 
             do {
+                boolean hasFrame = false;
                 synchronized (MyJavaCameraView.this) {
                     try {
                         while (!mCameraFrameReady && !mStopThread) {
@@ -387,11 +388,14 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if (mCameraFrameReady)
+                    if (mCameraFrameReady) {
                         mChainIdx = 1 - mChainIdx;
+                        mCameraFrameReady = false;
+                        hasFrame = true;
+                    }
                 }
 
-                if (!mStopThread && mCameraFrameReady) {
+                if (!mStopThread && hasFrame) {
                     mCameraFrameReady = false;
                     if (!mFrameChain[1 - mChainIdx].empty())
                         deliverAndDrawFrame(mCameraFrame[1 - mChainIdx]);

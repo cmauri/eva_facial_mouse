@@ -45,8 +45,12 @@ android {
         jni.srcDirs = [] //disable automatic ndk-build call
     }
 
-    // TODO
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
+
     android {
+        // TODO
         lintOptions {
             abortOnError false
         }

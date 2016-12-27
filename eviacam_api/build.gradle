@@ -9,8 +9,12 @@ android {
         targetSdkVersion 22
     }
 
-    // TODO
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
+
     android {
+        // TODO
         lintOptions {
             abortOnError false
         }

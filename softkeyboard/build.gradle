@@ -9,6 +9,10 @@ android {
         targetSdkVersion 23
     }
 
+    dexOptions {
+        javaMaxHeapSize "2g"
+    }
+
     // TODO
     android {
         lintOptions {

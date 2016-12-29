@@ -234,11 +234,6 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
             mSurfaceExist = false;
             checkCurrentState();
         }
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

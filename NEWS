@@ -1,3 +1,7 @@
+v1.2.6
+- Fix keyboard crash for Samsung devices with Android 6.0.1
+- Fix (hopefully) crash sometimes when closing accessibility service 
+
 v1.2.5
 - Add German translation and keyboard (thanks to Christian Bieder)
 

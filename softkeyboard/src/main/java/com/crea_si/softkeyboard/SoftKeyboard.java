@@ -782,6 +782,10 @@ public class SoftKeyboard extends InputMethodService
         public void updateWacomState(int i) {
             // Just do nothing
         }
+
+        public void unMinimizeSoftInput() {
+            // Just do nothing
+        }
     }
 
     public void swipeRight() {

@@ -122,7 +122,7 @@ android {
 
 
 dependencies {
-    compile project(':openCVLibrary2410')
+    compile project(':opencv')
     compile project(':input_method_aidl')
     compile project(':eviacam_api')
     compile project(':softkeyboard')

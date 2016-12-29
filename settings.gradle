@@ -1,4 +1,4 @@
-include ':openCVLibrary2410'
+include ':opencv'
 include ':eviacam_api'
 include ':input_method_aidl'
 include ':eviacam'

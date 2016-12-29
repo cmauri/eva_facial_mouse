@@ -319,7 +319,6 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
 
     @Override
     public void onPreviewFrame(byte[] frame, Camera arg1) {
-        //Log.d(TAG, "Preview Frame received. Frame size: " + frame.length);
         synchronized (this) {
             mFrameChain[mChainIdx].put(0, 0, frame);
             mCameraFrameReady = true;
@@ -388,7 +387,8 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if (mCameraFrameReady) {
+                    if (mCameraFrameReady)
+                    {
                         mChainIdx = 1 - mChainIdx;
                         mCameraFrameReady = false;
                         hasFrame = true;
@@ -396,7 +396,6 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                 }
 
                 if (!mStopThread && hasFrame) {
-                    mCameraFrameReady = false;
                     if (!mFrameChain[1 - mChainIdx].empty())
                         deliverAndDrawFrame(mCameraFrame[1 - mChainIdx]);
                 }

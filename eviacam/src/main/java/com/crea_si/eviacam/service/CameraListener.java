@@ -30,7 +30,7 @@ import org.opencv.android.MyCameraBridgeViewBase;
 import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.MyJavaCameraView;
 import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewListener2;
-import org.opencv.android.MyOpenCVLoader;
+import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
 import android.content.Context;
@@ -183,7 +183,7 @@ public class CameraListener implements CvCameraViewListener2 {
          * to missing OpenCV libraries. To avoid such problems we included the
          * OpenCV binaries in the App apk
          */
-        if (!MyOpenCVLoader.initDebug()) {
+        if (!OpenCVLoader.initDebug()) {
             throw new RuntimeException("Cannot initialize OpenCV");
         }
 

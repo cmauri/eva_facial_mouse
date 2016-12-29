@@ -6,7 +6,6 @@ import org.acra.ACRA;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -56,7 +55,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     protected int mMaxHeight;
     protected int mMaxWidth;
     protected float mScale = 0;
-    protected int mPreviewFormat = Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGBA;
+    protected int mPreviewFormat = RGBA;
     protected int mCameraIndex = CAMERA_ID_ANY;
     protected boolean mEnabled;
     protected FpsMeter mFpsMeter = null;
@@ -64,6 +63,8 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     public static final int CAMERA_ID_ANY   = -1;
     public static final int CAMERA_ID_BACK  = 99;
     public static final int CAMERA_ID_FRONT = 98;
+    public static final int RGBA = 1;
+    public static final int GRAY = 2;
 
     public MyCameraBridgeViewBase(Context context, int cameraId) {
         super(context);
@@ -169,10 +170,10 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
              Mat result = null;
              switch (mPreviewFormat) {
-                case Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGBA:
+                case RGBA:
                     result = mOldStyleListener.onCameraFrame(inputFrame.rgba());
                     break;
-                case Highgui.CV_CAP_ANDROID_GREY_FRAME:
+                case GRAY:
                     result = mOldStyleListener.onCameraFrame(inputFrame.gray());
                     break;
                 default:
@@ -186,7 +187,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
             mPreviewFormat = format;
         }
 
-        private int mPreviewFormat = Highgui.CV_CAP_ANDROID_COLOR_FRAME_RGBA;
+        private int mPreviewFormat = RGBA;
         private CvCameraViewListener mOldStyleListener;
     };
 

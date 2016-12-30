@@ -1,3 +1,6 @@
+v1.2.7
+- Upgrade to OpenCV 3.1.0 to fix Google Play rejection (libpng)
+
 v1.2.6
 - Fix keyboard crash for Samsung devices with Android 6.0.1
 - Fix (hopefully) crash sometimes when closing accessibility service 

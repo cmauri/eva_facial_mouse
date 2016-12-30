@@ -2,28 +2,22 @@ package org.opencv.android;
 
 import java.util.List;
 
-import org.acra.ACRA;
-
+import org.opencv.R;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Rect;
-
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.WindowManager;
-
-import com.crea_si.eviacam.R;
 
 /**
  * This is a basic class, implementing the interaction with Camera and OpenCV library.
@@ -32,7 +26,7 @@ import com.crea_si.eviacam.R;
  * frame to the screen.
  * The clients shall implement CvCameraViewListener.
  */
-public abstract class MyCameraBridgeViewBase extends SurfaceView implements SurfaceHolder.Callback {
+public abstract class CameraBridgeViewBase extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "CameraBridge";
     private static final int MAX_UNSPECIFIED = -1;
@@ -44,11 +38,6 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     private CvCameraViewListener2 mListener;
     private boolean mSurfaceExist;
     private Object mSyncObject = new Object();
-    private int mPreviewRotation= 0;
-    public enum FlipDirection { NONE, VERTICAL, HORIZONTAL };
-    private FlipDirection mPreviewFlip= FlipDirection.NONE;
-    private boolean mUpdateViewer = true;
-    private Paint mPaint= new Paint();
 
     protected int mFrameWidth;
     protected int mFrameHeight;
@@ -66,7 +55,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     public static final int RGBA = 1;
     public static final int GRAY = 2;
 
-    public MyCameraBridgeViewBase(Context context, int cameraId) {
+    public CameraBridgeViewBase(Context context, int cameraId) {
         super(context);
         mCameraIndex = cameraId;
         getHolder().addCallback(this);
@@ -74,7 +63,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         mMaxHeight = MAX_UNSPECIFIED;
     }
 
-    public MyCameraBridgeViewBase(Context context, AttributeSet attrs) {
+    public CameraBridgeViewBase(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         int count = attrs.getAttributeCount();
@@ -98,14 +87,6 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
      */
     public void setCameraIndex(int cameraIndex) {
         this.mCameraIndex = cameraIndex;
-    }
-
-    public void setPreviewRotation(int rotation) {
-        mPreviewRotation= rotation;
-    }
-
-    public void setPreviewFlip(FlipDirection flip) {
-        mPreviewFlip= flip;
     }
 
     public interface CvCameraViewListener {
@@ -315,6 +296,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
      * Called when mSyncObject lock is held
      */
     private void checkCurrentState() {
+        Log.d(TAG, "call checkCurrentState");
         int targetState;
 
         if (mEnabled && mSurfaceExist && getVisibility() == VISIBLE) {
@@ -332,6 +314,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     }
 
     private void processEnterState(int state) {
+        Log.d(TAG, "call processEnterState: " + state);
         switch(state) {
         case STARTED:
             onEnterStartedState();
@@ -349,6 +332,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     }
 
     private void processExitState(int state) {
+        Log.d(TAG, "call processExitState: " + state);
         switch(state) {
         case STARTED:
             onExitStartedState();
@@ -370,31 +354,20 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     // NOTE: The order of bitmap constructor and camera connection is important for android 4.1.x
     // Bitmap must be constructed before surface
     private void onEnterStartedState() {
-        /* Connect camera
-         *
-         * Ideally AlertDialog should not be displayed here, would be better to throw an
-         * exception and catch it in a more appropriate location. However, this method
-         * is called as part of an UI update event and thus is not easy to install an
-         * exception handler. Furthermore, in our case this is called from a service and so
-         * we need a TYPE_SYSTEM_ALERT dialog.
-         */
-        try {
-            connectCamera(getWidth(), getHeight());
-        } catch (final CameraException e) {
-            final AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
-            adb.setCancelable(false); // This blocks the 'BACK' button
-            adb.setTitle(getContext().getText(R.string.app_name));
-            adb.setMessage(getContext().getText(R.string.cannot_access_camera));
-            adb.setNeutralButton(getContext().getText(android.R.string.ok), null);
-            adb.setPositiveButton(getContext().getText(R.string.send_report),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            ACRA.getErrorReporter().handleException(e);
-                        }});
-
-            final AlertDialog ad= adb.create();
-            ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        Log.d(TAG, "call onEnterStartedState");
+        /* Connect camera */
+        if (!connectCamera(getWidth(), getHeight())) {
+            AlertDialog ad = new AlertDialog.Builder(getContext()).create();
+            ad.setCancelable(false); // This blocks the 'BACK' button
+            ad.setMessage("It seems that you device does not support camera (or it is locked). Application will be closed.");
+            ad.setButton(DialogInterface.BUTTON_NEUTRAL,  "OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    ((Activity) getContext()).finish();
+                }
+            });
             ad.show();
+
         }
     }
 
@@ -404,47 +377,6 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
             mCacheBitmap.recycle();
         }
     }
-
-    private Matrix mMatrix = new Matrix();
-    private void doDrawFrame(Canvas canvas) {
-        /*
-         * Set rotation matrix
-         */
-        mMatrix.reset();
-
-        if (mPreviewFlip== FlipDirection.HORIZONTAL) {
-            mMatrix.postScale(-1.0f, 1.0f);
-            mMatrix.postTranslate(canvas.getWidth(), 0.0f);
-        }
-        else if (mPreviewFlip== FlipDirection.VERTICAL) {
-            mMatrix.postScale(1.0f, -1.0f);
-            mMatrix.postTranslate(0.0f, canvas.getHeight());
-        }
-        mMatrix.postRotate((float) mPreviewRotation, getWidth() / 2, getHeight() / 2);
-        canvas.setMatrix(mMatrix);
-
-        canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
-
-        if (mScale != 0) {
-            canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
-                    new Rect((int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2),
-                            (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2),
-                            (int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2 + mScale*mCacheBitmap.getWidth()),
-                            (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2 + mScale*mCacheBitmap.getHeight())), null);
-        } else {
-            canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
-                    new Rect((canvas.getWidth() - mCacheBitmap.getWidth()) / 2,
-                            (canvas.getHeight() - mCacheBitmap.getHeight()) / 2,
-                            (canvas.getWidth() - mCacheBitmap.getWidth()) / 2 + mCacheBitmap.getWidth(),
-                            (canvas.getHeight() - mCacheBitmap.getHeight()) / 2 + mCacheBitmap.getHeight()), null);
-        }
-
-        if (mFpsMeter != null) {
-            mFpsMeter.measure();
-            mFpsMeter.draw(canvas, 20, 30);
-        }
-    }
-
 
     /**
      * This method shall be called by the subclasses when they have valid
@@ -462,7 +394,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         }
 
         boolean bmpValid = true;
-        if (modified != null && mUpdateViewer) {
+        if (modified != null) {
             try {
                 Utils.matToBitmap(modified, mCacheBitmap);
             } catch(Exception e) {
@@ -476,10 +408,26 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         if (bmpValid && mCacheBitmap != null) {
             Canvas canvas = getHolder().lockCanvas();
             if (canvas != null) {
-                if (mUpdateViewer) doDrawFrame(canvas);
-                else {
-                    // Just draw one pixel
-                    canvas.drawPoint(0, 0, mPaint);
+                canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+                Log.d(TAG, "mStretch value: " + mScale);
+
+                if (mScale != 0) {
+                    canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
+                         new Rect((int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2),
+                         (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2),
+                         (int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2 + mScale*mCacheBitmap.getWidth()),
+                         (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2 + mScale*mCacheBitmap.getHeight())), null);
+                } else {
+                     canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
+                         new Rect((canvas.getWidth() - mCacheBitmap.getWidth()) / 2,
+                         (canvas.getHeight() - mCacheBitmap.getHeight()) / 2,
+                         (canvas.getWidth() - mCacheBitmap.getWidth()) / 2 + mCacheBitmap.getWidth(),
+                         (canvas.getHeight() - mCacheBitmap.getHeight()) / 2 + mCacheBitmap.getHeight()), null);
+                }
+
+                if (mFpsMeter != null) {
+                    mFpsMeter.measure();
+                    mFpsMeter.draw(canvas, 20, 30);
                 }
                 getHolder().unlockCanvasAndPost(canvas);
             }
@@ -492,11 +440,8 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
      * initialized with the size of the Camera frames that will be delivered to external processor.
      * @param width - the width of this SurfaceView
      * @param height - the height of this SurfaceView
-     * @throws CameraException in case something went wrong
-     *
-     * We changed the original interface to be able to get more information in case of error.
      */
-    protected abstract void connectCamera(int width, int height) throws CameraException;
+    protected abstract boolean connectCamera(int width, int height);
 
     /**
      * Disconnects and release the particular camera object being connected to this surface view.
@@ -504,7 +449,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
      */
     protected abstract void disconnectCamera();
 
-    // NOTE: On Android 4.1.x the function must be called before SurfaceTextre constructor!
+    // NOTE: On Android 4.1.x the function must be called before SurfaceTexture constructor!
     protected void AllocateCache()
     {
         mCacheBitmap = Bitmap.createBitmap(mFrameWidth, mFrameHeight, Bitmap.Config.ARGB_8888);
@@ -544,13 +489,5 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         }
 
         return new Size(calcWidth, calcHeight);
-    }
-
-    /**
-     * Enable or disable camera viewer refresh to save CPU cycles
-     * @param v true to enable update, false to disable
-     */
-    public void setUpdateViewer(boolean v) {
-        mUpdateViewer = v;
     }
 }

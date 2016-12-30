@@ -193,7 +193,7 @@ bool VisionPipeline::motionTracker(CIplImage &image, int rotation, float &xVel, 
 		m_corner_count = NUM_CORNERS;
 		cvGoodFeaturesToTrack(m_imgPrev.ptr(), NULL, NULL, m_corners,
 			&m_corner_count, QUALITY_LEVEL, MIN_DISTANTE);
-		CvTermCriteria termcrit = { CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03 };
+		CvTermCriteria termcrit (CV_TERMCRIT_ITER | CV_TERMCRIT_EPS, 20, 0.03);
 		cvFindCornerSubPix(m_imgPrev.ptr(), m_corners, m_corner_count,
 			cvSize(5, 5), cvSize(-1, -1), termcrit);
 		m_imgPrev.ResetROI();

@@ -24,6 +24,7 @@ package com.crea_si.eviacam;
 
 import android.app.Application;
 import android.os.Process;
+import android.util.Log;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
@@ -42,6 +43,8 @@ public class EViacamApplication extends Application {
 
     public void onCreate() {
         super.onCreate();
+
+        Log.d(EVIACAM.TAG, "EVA application started");
 
         Analytics.init(this);
 

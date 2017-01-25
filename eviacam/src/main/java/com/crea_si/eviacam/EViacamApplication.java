@@ -27,11 +27,21 @@ import android.os.Process;
 import android.util.Log;
 
 import org.acra.ACRA;
+import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
 @ReportsCrashes( 
     mailTo = "eva.facial.mouse@gmail.com",
+    customReportContent = {
+            ReportField.APP_VERSION_CODE,
+            ReportField.APP_VERSION_NAME,
+            ReportField.ANDROID_VERSION,
+            ReportField.PHONE_MODEL,
+            ReportField.CUSTOM_DATA,
+            ReportField.STACK_TRACE,
+            ReportField.LOGCAT },
+    logcatArguments = { "-t", "100", "-v", "time" },
     mode = ReportingInteractionMode.DIALOG,
     resToastText = com.crea_si.eviacam.R.string.crash_toast_text,
     resDialogText = com.crea_si.eviacam.R.string.crash_dialog_text,

@@ -547,6 +547,50 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     }
 
     /**
+     * This method has a similar behaviour than calculateCameraFrameSize, but always returns an
+     * existing entry of the list (when not empty) even when this size is higher than the requested
+     * one.
+     * @param supportedSizes
+     * @param maxDesiredWidth
+     * @param maxDesiredHeight
+     * @return optimal frame size
+     */
+    static
+    protected Size calculateBestCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor,
+                                                int maxDesiredWidth, int maxDesiredHeight) {
+        if (supportedSizes.size()== 0)
+            return new Size(0, 0);
+
+        // Pick the minimum size of the list
+        int calcWidth = accessor.getWidth(supportedSizes.get(0));
+        int calcHeight = accessor.getHeight(supportedSizes.get(0));
+        for (Object size : supportedSizes) {
+            int width = accessor.getWidth(size);
+            int height = accessor.getHeight(size);
+
+            if (width< calcWidth && height< calcHeight) {
+                calcWidth= width;
+                calcHeight= height;
+            }
+        }
+
+        // Try to pick the smaller closest size to the desired one
+        for (Object size : supportedSizes) {
+            int width = accessor.getWidth(size);
+            int height = accessor.getHeight(size);
+
+            if (width <= maxDesiredWidth && height <= maxDesiredHeight) {
+                if (width >= calcWidth && height >= calcHeight) {
+                    calcWidth = width;
+                    calcHeight = height;
+                }
+            }
+        }
+
+        return new Size(calcWidth, calcHeight);
+    }
+
+    /**
      * Enable or disable camera viewer refresh to save CPU cycles
      * @param v true to enable update, false to disable
      */

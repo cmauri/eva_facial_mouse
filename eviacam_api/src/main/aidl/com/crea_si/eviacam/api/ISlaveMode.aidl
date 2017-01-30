@@ -15,6 +15,7 @@
  */
 package com.crea_si.eviacam.api;
 
+import com.crea_si.eviacam.api.IReadyEventListener;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.GamepadParams;
@@ -23,6 +24,16 @@ import com.crea_si.eviacam.api.GamepadParams;
  * AIDL main interface for the eviacam slave mode
  */
 interface ISlaveMode {
+    /**
+     * Triggers the initialization of the remote service. The initialization might take
+     * an arbitrary amount of time (logo splash, user conditions agreement, etc.)
+     * This method should be called ONLY ONCE, otherwise the behaviour is undefined.
+     *
+     * @param listener Listener that will be called once the initialization is completed.
+     *                 This parameter is mandatory and cannot be null, in such a case, no
+     *                 initialization will be performed.
+     */
+    void init(in IReadyEventListener listener);
     boolean start();
     void stop();
 

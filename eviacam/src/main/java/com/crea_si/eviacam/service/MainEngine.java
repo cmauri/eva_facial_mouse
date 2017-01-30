@@ -170,10 +170,14 @@ public class MainEngine implements
         MainEngine current= (isA11yService? sAccessibilityServiceModeEngine : sSlaveModeEngine);
 
         /* Was initialized previously? If so, just do nothing. */
-        if (current.mSplashDisplayed) return;
-
-        current.mSplashDisplayed= true;
-        current.init2();
+        if (current.mSplashDisplayed) {
+            final Engine.OnInitListener listener= current.mOnInitListener;
+            if (listener!= null) listener.onInit(0);
+        }
+        else {
+            current.mSplashDisplayed = true;
+            current.init2();
+        }
     }
 
     /**

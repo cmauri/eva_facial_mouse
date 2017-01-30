@@ -1,11 +1,10 @@
 package com.crea_si.eviacam.api_demo;
 
-import com.crea_si.eviacam.api.GamepadParams;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.GamepadButtons;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
-import com.crea_si.eviacam.api.SlaveModeConnection;
+import com.crea_si.eviacam.api.SlaveModeStatusListener;
 
 import android.app.Activity;
 import android.graphics.PointF;
@@ -17,8 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-public class MainActivity extends Activity implements 
-    SlaveModeConnection, IGamepadEventListener, IMouseEventListener {
+public class MainActivity extends Activity implements
+        SlaveModeStatusListener, IGamepadEventListener, IMouseEventListener {
     
     private static final String TAG= "EVIACAM_API_DEMO";
     
@@ -173,9 +172,9 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public void onConnected(SlaveMode connection) {
-        mSlaveMode= connection;
-        
+    public void onReady(SlaveMode sm) {
+        mSlaveMode= sm;
+
         // Uncomment if you wish to start listening to events ASAP
         //if (mSlaveMode!= null) mSlaveMode.registerListener(this);
     }

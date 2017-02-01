@@ -54,14 +54,21 @@ public class GamepadEngine implements MotionProcessor {
     private IGamepadEventListener mPadEventListener;
 
     // operation mode
-    private int mOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
+    private int mOperationMode;
     
     // is paused?
     private boolean isPaused= true;
 
-    public GamepadEngine(Context c, OverlayView ov) {
+    /***
+     * Constructor for the gamepad based engine
+     * @param c context
+     * @param ov overlay layout
+     * @param mode initial operating mode
+     */
+    public GamepadEngine(Context c, OverlayView ov, int mode) {
         mContext= c;
         mOverlayView= ov;
+        mOperationMode= mode;
     }
 
     private void init() {
@@ -73,7 +80,7 @@ public class GamepadEngine implements MotionProcessor {
         /*
          * UI stuff 
          */
-        mGamepadView= new GamepadView(mContext);
+        mGamepadView= new GamepadView(mContext, mOperationMode);
 
         mOverlayView.addFullScreenLayer(mGamepadView);
 
@@ -84,8 +91,8 @@ public class GamepadEngine implements MotionProcessor {
 
     @Override
     public void stop() {
-        mGamepadView.setVisibility(View.INVISIBLE);
-        mPointerLayer.setVisibility(View.INVISIBLE);
+        if (mGamepadView!= null) mGamepadView.setVisibility(View.INVISIBLE);
+        if (mPointerLayer!= null) mPointerLayer.setVisibility(View.INVISIBLE);
         isPaused= true;
     }
 

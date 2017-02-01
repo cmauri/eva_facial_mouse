@@ -145,16 +145,20 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
             Log.d(TAG, "getSupportedPreviewSizes()");
             List<android.hardware.Camera.Size> sizes = params.getSupportedPreviewSizes();
 
-            if (sizes != null) {
+            if (sizes != null && sizes.size()> 0) {
                 /* Select the size that fits surface considering maximum size allowed */
-                Size frameSize = calculateCameraFrameSize(sizes, new JavaCameraSizeAccessor(), mMaxWidth, mMaxHeight);
+                Size frameSize = calculateBestCameraFrameSize(sizes, new JavaCameraSizeAccessor(), mMaxWidth, mMaxHeight);
 
                 params.setPreviewFormat(ImageFormat.NV21);
                 Log.d(TAG, "Set preview size to " + Integer.valueOf((int)frameSize.width) + "x" + Integer.valueOf((int)frameSize.height));
                 params.setPreviewSize((int)frameSize.width, (int)frameSize.height);
 
+                mCamera.setParameters(params);
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && !android.os.Build.MODEL.equals("GT-I9100"))
                     params.setRecordingHint(true);
+
+                mCamera.setParameters(params);
 
                 List<String> FocusModes = params.getSupportedFocusModes();
                 if (FocusModes != null && FocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))
@@ -162,12 +166,16 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                     params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
                 }
 
+                mCamera.setParameters(params);
+
                 /*
                  * Disable stabilization to save some CPU cycles
                  */
                 if (params.isVideoStabilizationSupported()) {
                     params.setVideoStabilization(false);
                 }
+
+                mCamera.setParameters(params);
 
                 /*
                  * Tries to set a frame rate higher or equal than 15 fps.

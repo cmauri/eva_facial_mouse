@@ -79,10 +79,11 @@ public class GamepadView extends View implements OnSharedPreferenceChangeListene
     private int mHighlightedButton= GamepadButtons.PAD_NONE;
 
     // Current operation mode
-    private int mOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
+    private int mOperationMode;
 
-    public GamepadView(Context c) {
+    public GamepadView(Context c, int mode) {
         super(c);
+        mOperationMode= mode;
 
         mPaintBox = new Paint();
         setWillNotDraw(false);

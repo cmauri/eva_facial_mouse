@@ -29,7 +29,7 @@ import android.view.MotionEvent;
  * 
  * TODO: improve service security
  */
-public class SlaveMode implements ServiceConnection {
+public class SlaveMode implements ServiceConnection, IReadyEventListener {
     /**
      * In slave mode there several possibilities when started
      */
@@ -49,7 +49,7 @@ public class SlaveMode implements ServiceConnection {
             REMOTE_PACKAGE + ".MousePreferencesActivity";
     
     private final Context mContext;
-    private final SlaveModeConnection mSlaveModeConnection;
+    private final SlaveModeStatusListener mSlaveModeStatusListener;
     
     // binder (proxy) with the remote input method service
     private ISlaveMode mSlaveMode;
@@ -60,8 +60,11 @@ public class SlaveMode implements ServiceConnection {
      * @param c context
      * @param callback which will receive the instance of a SlaveMode class
      */
-    public static void connect(Context c, SlaveModeConnection callback) {
+    public static void connect(Context c, SlaveModeStatusListener callback) {
         Log.d(TAG, "Attempt to bind to EViacam API");
+
+        if (callback== null) throw new NullPointerException();
+
         Intent intent= new Intent(REMOTE_SERVICE);
         intent.setPackage(REMOTE_PACKAGE);
         try {
@@ -82,9 +85,9 @@ public class SlaveMode implements ServiceConnection {
         mSlaveMode = null;
     }
 
-    private SlaveMode (Context c, SlaveModeConnection callback) {
+    private SlaveMode (Context c, SlaveModeStatusListener callback) {
         mContext= c;
-        mSlaveModeConnection= callback;
+        mSlaveModeStatusListener = callback;
     }
     
     @Override
@@ -94,7 +97,22 @@ public class SlaveMode implements ServiceConnection {
         // interact with the service.
         Log.d(TAG, "EViacam API:onServiceConnected: " + name.toString());
         mSlaveMode = ISlaveMode.Stub.asInterface(service);
-        mSlaveModeConnection.onConnected(this);
+        try {
+            mSlaveMode.init(new IReadyEventListenerWrapper(this));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onReadyEvent(boolean ready) throws RemoteException {
+        if (!ready) {
+            // Not ready, something went wrong, disconnect
+            disconnect();
+        }
+        else if (mSlaveModeStatusListener!= null) {
+            mSlaveModeStatusListener.onReady(this);
+        }
     }
 
     @Override
@@ -103,7 +121,7 @@ public class SlaveMode implements ServiceConnection {
         // unexpectedly disconnected -- that is, its process crashed.
         Log.d(TAG, "EViacam API:onServiceDisconnected");
         mContext.unbindService(this);
-        mSlaveModeConnection.onDisconnected();
+        mSlaveModeStatusListener.onDisconnected();
         mSlaveMode = null;
     }
     
@@ -141,6 +159,7 @@ public class SlaveMode implements ServiceConnection {
      */
     public void setOperationMode(int mode) {
         try {
+            if (mode< MOUSE || mode> GAMEPAD_RELATIVE) return;
             mSlaveMode.setOperationMode(mode);
         } catch (RemoteException e) {
             Log.d(TAG, "SlaveMode.setOperationMode: exception: " + e.getMessage());
@@ -209,6 +228,7 @@ public class SlaveMode implements ServiceConnection {
     public static void openSettingsActivity(Context c) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_PREFERENCE_ACTIVITY));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
     
@@ -218,6 +238,7 @@ public class SlaveMode implements ServiceConnection {
     public static void openGamepadSettingsActivity(Context c) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_GAMEPAD_PREFERENCE_ACTIVITY));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
 
@@ -229,6 +250,11 @@ public class SlaveMode implements ServiceConnection {
         intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_MOUSE_PREFERENCE_ACTIVITY));
         intent.putExtra("slave_mode", true);
         c.startActivity(intent);
+    }
+
+    @Override
+    public IBinder asBinder() {
+        return null;
     }
 
     /*
@@ -257,6 +283,21 @@ public class SlaveMode implements ServiceConnection {
             Log.d(TAG, "SlaveMode.getGamepadParams: exception: " + e.getMessage());
         }
     }*/
+
+    /*
+     * Stub implementation for ready event listener
+     */
+    private class IReadyEventListenerWrapper extends IReadyEventListener.Stub {
+        private final IReadyEventListener mListener;
+        public IReadyEventListenerWrapper(IReadyEventListener l) {
+            mListener= l;
+        }
+
+        @Override
+        public void onReadyEvent(boolean ready) throws RemoteException {
+            mListener.onReadyEvent(ready);
+        }
+    }
 
     /*
      * Stub implementation for gamepad event listener

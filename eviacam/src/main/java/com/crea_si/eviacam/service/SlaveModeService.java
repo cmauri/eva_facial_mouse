@@ -29,6 +29,7 @@ import com.crea_si.eviacam.api.GamepadParams;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.ISlaveMode;
+import com.crea_si.eviacam.api.IReadyEventListener;
 
 import android.app.Service;
 import android.content.Intent;
@@ -42,17 +43,81 @@ import android.os.RemoteException;
  * TODO: improve security
  */
 
-public class SlaveModeService extends Service {
+public class SlaveModeService extends Service implements Engine.OnInitListener {
     // handler used to forward calls to the main thread 
     private final Handler mMainThreadHandler= new Handler();
 
     // reference to the engine to which incoming calls will be delegated
     private SlaveModeEngine mSlaveModeEngine;
 
+    // Reference to notify when the service is ready to start receiving commands
+    private IReadyEventListener mOnReadyListener;
+
     // binder stub, receives remote requests on a secondary thread
     private final ISlaveMode.Stub mBinder= new ISlaveMode.Stub() {
+        /**
+         * Triggers the initialization of the remote service. The initialization might take
+         * an arbitrary amount of time (logo splash, user conditions agreement, etc.)
+         * This method should be called ONLY ONCE, otherwise the behaviour is undefined.
+         *
+         * @param listener Listener that will be called once the initialization is completed.
+         *                 This parameter is mandatory and cannot be null, in such a case, no
+         *                 initialization will be performed.
+         */
+        @Override
+        public void init(final IReadyEventListener listener) throws RemoteException {
+            EVIACAM.debug("SlaveModeService.init: enter. Listener:" + listener);
+            // No listener, just does not continue
+            if (listener== null) return;
+
+            Runnable r= new Runnable() {
+                @Override
+                public void run() {
+                    EVIACAM.debug("SlaveModeService.init: runnable: enter");
+                    /* No engine, initialization failed */
+                    if (mSlaveModeEngine== null) {
+                        try {
+                            listener.onReadyEvent(false);
+                        } catch (RemoteException e) {
+                            // Nothing to do
+                        }
+                        return;
+                    }
+
+                    /* Already initialized, just run the callback */
+                    if (mSlaveModeEngine.getState() != Engine.STATE_DISABLED) {
+                        try {
+                            listener.onReadyEvent(true);
+                        } catch (RemoteException e) {
+                            // Nothing to do
+                        }
+                        return;
+                    }
+
+                    /* Start the initialization sequence */
+                    mOnReadyListener= listener;
+                    if (!mSlaveModeEngine.init(SlaveModeService.this, SlaveModeService.this)) {
+                        /*
+                         * The engine manager initialization failed, this means that has been
+                         * already started as accessibility service. Deny binding.
+                        */
+                        try {
+                            listener.onReadyEvent(false);
+                        } catch (RemoteException e) {
+                            // Nothing to do
+                        }
+                    }
+                    EVIACAM.debug("SlaveModeService.init: runnable: finish");
+                }
+            };
+            EVIACAM.debug("SlaveModeService.init: before main thread post");
+            mMainThreadHandler.post(r);
+            EVIACAM.debug("SlaveModeService.init: finish");
+        }
+
         @Override
         public boolean start() throws RemoteException {
+            EVIACAM.debug("SlaveModeService.start: enter");
             FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
@@ -78,6 +143,7 @@ public class SlaveModeService extends Service {
 
         @Override
         public void stop() throws RemoteException {
+            EVIACAM.debug("SlaveModeService.stop: enter");
             FutureTask<Void> futureResult = new FutureTask<Void>(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
@@ -238,6 +304,19 @@ public class SlaveModeService extends Service {
         }
     };
 
+    private void cleanup() {
+        if (mSlaveModeEngine != null) {
+            mSlaveModeEngine.cleanup();
+            mSlaveModeEngine= null;
+        }
+
+        mOnReadyListener= null;
+
+        if (Preferences.get() != null) {
+            Preferences.get().cleanup();
+        }
+    }
+
     @Override
     public void onCreate () {
         EVIACAM.debug("SlaveModeService: onCreate");
@@ -246,7 +325,7 @@ public class SlaveModeService extends Service {
     /** When binding to the service, we return an interface to the client */
     @Override
     public IBinder onBind(Intent intent) {
-        EVIACAM.debug("SlaveModeService: onBind");
+        EVIACAM.debug("SlaveModeService.onBind: enter");
         if (mSlaveModeEngine!= null) {
             // Another client is connected. Do not allow.
             return null;
@@ -256,14 +335,9 @@ public class SlaveModeService extends Service {
         if (Preferences.initForSlaveService(this) == null) return null;
 
         mSlaveModeEngine= MainEngine.getSlaveModeEngine();
-        if (!mSlaveModeEngine.init(this, null)) {
-            /* 
-             * The engine manager initialization failed, this means that has been
-             * already started as accessibility service. Deny binding.
-             */
-            mSlaveModeEngine= null;
-            return null;
-        }
+        if (mSlaveModeEngine== null) return null;
+
+        EVIACAM.debug("SlaveModeService.onBind: success");
 
         return mBinder;
     }
@@ -271,19 +345,33 @@ public class SlaveModeService extends Service {
     @Override
     public boolean onUnbind (Intent intent) {
         EVIACAM.debug("SlaveModeService: onUnbind");
-        if (mSlaveModeEngine != null) {
-            mSlaveModeEngine.cleanup();
-            mSlaveModeEngine= null;
-        }
-
-        if (Preferences.get() != null) {
-            Preferences.get().cleanup();
-        }
+        cleanup();
         return false;
     }
 
     @Override
     public void onDestroy () {
         EVIACAM.debug("SlaveModeService: onDestroy");
+        cleanup();
     }
- }
+
+    /* Called when the engine finishes the initialization sequence */
+    @Override
+    public void onInit(int status) {
+        EVIACAM.debug("SlaveModeService.onInit(status= " + status + ")");
+        IReadyEventListener listener= mOnReadyListener;
+        if (listener== null) return;
+
+        try {
+            if (mSlaveModeEngine != null && status == 0) {
+                // Initialization completed successfully
+                listener.onReadyEvent(true);
+            } else {
+                listener.onReadyEvent(false);
+            }
+        }
+        catch (RemoteException e) {
+            EVIACAM.debug("SlaveModeService: onInitException: " + e.getMessage());
+        }
+    }
+}

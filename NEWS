@@ -1,3 +1,9 @@
+v1.2.8
+- Fix crash "java.lang.RuntimeException: setParameters failed".
+  Tested with EZee-Tab10Q16-S but should work with other devices as well.
+- Fix camera issues with Samsung View 18" SM-T670
+- Do not ask for overlay permission twice for Android 6.0 and higher
+
 v1.2.7
 - Upgrade to OpenCV 3.1.0 to fix Google Play rejection (libpng)
 

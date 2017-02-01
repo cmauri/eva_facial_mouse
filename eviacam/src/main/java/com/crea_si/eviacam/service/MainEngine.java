@@ -149,8 +149,10 @@ public class MainEngine implements
         mService= s;
         mOnInitListener= l;
 
-        // Show splash screen if not already shown. It was used for OpenCV detection
-        // and install, the engine waits until the splash finishes
+        /* Show splash screen if not already shown. The splash screen is also used to
+           request the user the required permissions to run this software.
+           In the past, it was also used for OpenCV detection and installation.
+           The engine initialization waits until the splash finishes. */
         if (mSplashDisplayed) return init2();
         else {
             Intent dialogIntent = new Intent(mService, SplashActivity.class);
@@ -170,10 +172,14 @@ public class MainEngine implements
         MainEngine current= (isA11yService? sAccessibilityServiceModeEngine : sSlaveModeEngine);
 
         /* Was initialized previously? If so, just do nothing. */
-        if (current.mSplashDisplayed) return;
-
-        current.mSplashDisplayed= true;
-        current.init2();
+        if (current.mSplashDisplayed) {
+            final Engine.OnInitListener listener= current.mOnInitListener;
+            if (listener!= null) listener.onInit(0);
+        }
+        else {
+            current.mSplashDisplayed = true;
+            current.init2();
+        }
     }
 
     /**
@@ -206,6 +212,8 @@ public class MainEngine implements
             ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
             ad.show();
 
+            if (mOnInitListener!= null) mOnInitListener.onInit(-1);
+
             return false;  // abort initialization
         }
         mCameraLayerView.addCameraSurface(mCameraListener.getCameraSurface());
@@ -231,9 +239,23 @@ public class MainEngine implements
             /*
              * Init in slave mode. Instantiate both gamepad and mouse emulation.
              */
-            mMotionProcessor= mGamepadEngine= new GamepadEngine(mService, mOverlayView);
+
+            // Set valid mode for gamepad engine
+            final int mode= (mSlaveOperationMode!= SlaveMode.MOUSE?
+                    mSlaveOperationMode : SlaveMode.GAMEPAD_ABSOLUTE);
+
+            // Create specific engines
+            mGamepadEngine= new GamepadEngine(mService, mOverlayView, mode);
             mMouseEmulationEngine=
                     new MouseEmulationEngine(mService, mOverlayView, mOrientationManager);
+
+            // Select enabled engine
+            if (mSlaveOperationMode== SlaveMode.MOUSE) {
+                mMotionProcessor= mMouseEmulationEngine;
+            }
+            else {
+                mMotionProcessor= mGamepadEngine;
+            }
         }
 
         mCurrentState= STATE_STOPPED;

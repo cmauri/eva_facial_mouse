@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,13 @@
 package com.crea_si.eviacam.api;
 
 /**
- * Interface for listening connection and disconnection events from 
- * eviacam service in slave mode
+ * Interface for listening the status of the slave mode service
  */
-public interface SlaveModeConnection {
-    void onConnected(SlaveMode connection);
+public interface SlaveModeStatusListener {
+    /***
+     * Called when the remote EVA service is connected and ready
+     * @param sm reference to the service facade or null if null if something went wrong
+     */
+    void onReady(SlaveMode sm);
     void onDisconnected();
 }

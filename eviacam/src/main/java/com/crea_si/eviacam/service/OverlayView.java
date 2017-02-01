@@ -27,6 +27,10 @@ import android.graphics.PixelFormat;
 
 import com.crea_si.eviacam.EVIACAM;
 
+/***
+ * Root relative layout which is overlaid over the entire screen of the device an to which
+ * other views can be added.
+ */
 public class OverlayView extends RelativeLayout {
 
     OverlayView(Context c) {

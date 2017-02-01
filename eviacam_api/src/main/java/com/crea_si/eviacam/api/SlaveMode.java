@@ -159,6 +159,7 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
      */
     public void setOperationMode(int mode) {
         try {
+            if (mode< MOUSE || mode> GAMEPAD_RELATIVE) return;
             mSlaveMode.setOperationMode(mode);
         } catch (RemoteException e) {
             Log.d(TAG, "SlaveMode.setOperationMode: exception: " + e.getMessage());
@@ -227,6 +228,7 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
     public static void openSettingsActivity(Context c) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_PREFERENCE_ACTIVITY));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
     
@@ -236,6 +238,7 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
     public static void openGamepadSettingsActivity(Context c) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_GAMEPAD_PREFERENCE_ACTIVITY));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
 

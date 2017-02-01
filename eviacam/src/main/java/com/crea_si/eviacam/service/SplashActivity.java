@@ -52,6 +52,8 @@ public class SplashActivity extends Activity
     /* Duration of the splash */
     private static final int SPLASH_DISPLAY_LENGTH = 2000;
 
+    private boolean mIsPaused = true;
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -73,7 +75,14 @@ public class SplashActivity extends Activity
     @Override
     protected void onResume() {
         super.onResume();
+        mIsPaused= false;
         if (!isSecondRun()) checkRequisites();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mIsPaused= true;
     }
 
     /**
@@ -156,8 +165,6 @@ public class SplashActivity extends Activity
             return false;
         }
 
-
-
         return true;
     }
 
@@ -179,7 +186,7 @@ public class SplashActivity extends Activity
                 finish();
             }
             else {
-                checkRequisites();
+                if (!mIsPaused) checkRequisites();
             }
         }
     }
@@ -192,7 +199,7 @@ public class SplashActivity extends Activity
                 finish();
             }
             else {
-                checkRequisites();
+                if (!mIsPaused) checkRequisites();
             }
         }
     }

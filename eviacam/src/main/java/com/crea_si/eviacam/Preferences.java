@@ -127,7 +127,11 @@ public class Preferences {
             throw new ExceptionInInitializerError();
     }
 
-    public void cleanup() { if (--mInitCount == 0) sInstance= null; }
+    public void cleanup() {
+        if (mInitCount> 0) {
+            if (--mInitCount == 0) sInstance= null;
+        }
+    }
 
     /**
      * Get current singleton instance

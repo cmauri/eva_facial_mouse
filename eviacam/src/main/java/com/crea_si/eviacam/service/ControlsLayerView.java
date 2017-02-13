@@ -51,6 +51,10 @@ public class ControlsLayerView extends RelativeLayout {
         this.post(new Runnable() {
             @Override
             public void run() {
+                // TODO: provide more insights why this happens
+                // Fix intermittent crash
+                if (mContextMenuView== null) return;
+
                 if (actions == 0) {
                     mContextMenuView.setVisibility(View.GONE);
                     setBackgroundColor(0);

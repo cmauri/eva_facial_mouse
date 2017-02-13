@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.crea_si.eviacam.Eula;
 import com.crea_si.eviacam.R;
@@ -41,8 +42,10 @@ import com.crea_si.eviacam.R;
 public class SplashActivity extends Activity
         implements Eula.Listener, ActivityCompat.OnRequestPermissionsResultCallback {
 
+    /* Intent filter for termination notification */
+    public static final String FINISHED_INTENT_FILTER = "SplashActivity_finished";
+
     /* Parameters for the intents of this activity */
-    public static final String IS_A11Y_SERVICE_PARAM= "isA11yService";
     private static final String IS_SECOND_RUN_PARAM = "isSecondRun";
 
     /* Request codes for permission request callback */
@@ -95,16 +98,6 @@ public class SplashActivity extends Activity
         return i.getBooleanExtra(SplashActivity.IS_SECOND_RUN_PARAM, false);
     }
 
-    /**
-     * Was initiated from the accessibility service?
-     *
-     * @return
-     */
-    private boolean isA11YService() {
-        Intent i= SplashActivity.this.getIntent();
-        return i.getBooleanExtra(SplashActivity.IS_A11Y_SERVICE_PARAM, false);
-    }
-
     private void checkRequisites() {
         if (!Eula.wasAccepted(this)) {
             Eula.acceptEula(this, this);
@@ -112,9 +105,9 @@ public class SplashActivity extends Activity
         }
 
         if (checkPermissions()) {
-            // If all permissions granted resume service initialization
-            // TODO: remove such ugly static method call
-            MainEngine.splashReady(isA11YService());
+            /* If all permissions granted notify that this activity is finished */
+            Intent notificationIntent= new Intent(FINISHED_INTENT_FILTER);
+            LocalBroadcastManager.getInstance(this).sendBroadcast(notificationIntent);
 
             /**
              * Restart this activity so that it does not show up in recents
@@ -126,7 +119,6 @@ public class SplashActivity extends Activity
                             Intent.FLAG_ACTIVITY_CLEAR_TASK |
                             Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS |
                             Intent.FLAG_ACTIVITY_NO_HISTORY);
-            dialogIntent.putExtra(IS_A11Y_SERVICE_PARAM, isA11YService());
             dialogIntent.putExtra(IS_SECOND_RUN_PARAM, true);
             startActivity(dialogIntent);
         }

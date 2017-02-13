@@ -21,6 +21,7 @@ package com.crea_si.eviacam.service;
 import org.opencv.android.CameraException;
 import org.opencv.core.Mat;
 
+import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
@@ -28,8 +29,12 @@ import com.crea_si.eviacam.api.IGamepadEventListener;
 
 import android.app.AlertDialog;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PointF;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
@@ -155,32 +160,33 @@ public class MainEngine implements
            The engine initialization waits until the splash finishes. */
         if (mSplashDisplayed) return init2();
         else {
+            /* Register receiver for splash finished */
+            LocalBroadcastManager.getInstance(s).registerReceiver(
+                    onSplashReady,
+                    new IntentFilter(SplashActivity.FINISHED_INTENT_FILTER));
+
+            /* Start splash activity */
             Intent dialogIntent = new Intent(mService, SplashActivity.class);
-            dialogIntent.putExtra(
-                    SplashActivity.IS_A11Y_SERVICE_PARAM,
-                    (mMode == A11Y_SERVICE_MODE));
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mService.startActivity(dialogIntent);
             return true;
         }
     }
 
-    /** Called from splash activity to notify that finished */
-    public static void splashReady(boolean isA11yService) {
+    /* Received which is called when the splash activity finishes */
+    private BroadcastReceiver onSplashReady= new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            EVIACAM.debug("onSplashReady: onReceive: called");
+            /* Unregister receiver */
+            LocalBroadcastManager.getInstance(mService).unregisterReceiver(onSplashReady);
 
-        // Recover which instance started the splash screen
-        MainEngine current= (isA11yService? sAccessibilityServiceModeEngine : sSlaveModeEngine);
-
-        /* Was initialized previously? If so, just do nothing. */
-        if (current.mSplashDisplayed) {
-            final Engine.OnInitListener listener= current.mOnInitListener;
-            if (listener!= null) listener.onInit(0);
+            /* Resume initialization */
+            if (mOnInitListener!= null) mOnInitListener.onInit(0);
+            mSplashDisplayed = true;
+            init2();
         }
-        else {
-            current.mSplashDisplayed = true;
-            current.init2();
-        }
-    }
+    };
 
     /**
      * Init phase 2: actual initialization

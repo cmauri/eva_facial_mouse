@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -44,11 +43,14 @@ public class ScrollButtonsWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
-        engine.enableClick();
-        engine.disableDockPanel();
-        engine.enablePointer();
-        engine.enableScrollButtons();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine!= null) {
+            engine.enableClick();
+            engine.disableDockPanel();
+            engine.enablePointer();
+            engine.enableScrollButtons();
+        }
     }
 
     @Override

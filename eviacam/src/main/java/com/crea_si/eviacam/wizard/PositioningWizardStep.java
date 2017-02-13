@@ -27,7 +27,6 @@ import android.widget.TextView;
 
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -58,22 +57,25 @@ public class PositioningWizardStep extends WizardStep implements Runnable {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
-        engine.disableClick();
-        engine.disableDockPanel();
-        engine.disablePointer();
-        engine.disableScrollButtons();
-        engine.start();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine!= null) {
+            engine.disableClick();
+            engine.disableDockPanel();
+            engine.disablePointer();
+            engine.disableScrollButtons();
+            engine.start();
+        }
     }
 
     @Override
     public void run() {
         final long faceMaxElapsedTime = 1000;
         final int timeToBlink = 400;    // in milliseconds
-        final AccessibilityServiceModeEngine engine =
-                MainEngine.getAccessibilityServiceModeEngine();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
 
-        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine== null) return;
 
         while (engine.getFaceDetectionElapsedTime() == 0 ||
                engine.getFaceDetectionElapsedTime() > faceMaxElapsedTime) {

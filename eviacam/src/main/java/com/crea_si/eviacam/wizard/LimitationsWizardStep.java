@@ -18,16 +18,13 @@
 */
 package com.crea_si.eviacam.wizard;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -45,11 +42,14 @@ public class LimitationsWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
-        engine.disableClick();
-        engine.disableDockPanel();
-        engine.disablePointer();
-        engine.disableScrollButtons();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine!= null) {
+            engine.disableClick();
+            engine.disableDockPanel();
+            engine.disablePointer();
+            engine.disableScrollButtons();
+        }
     }
 
     @Override

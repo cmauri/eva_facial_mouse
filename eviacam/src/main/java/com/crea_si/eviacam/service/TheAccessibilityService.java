@@ -66,8 +66,13 @@ public class TheAccessibilityService
         if (Preferences.initForA11yService(this) == null) return;
 
         // Init the main engine
-        mEngine= MainEngine.getAccessibilityServiceModeEngine();
-        mEngine.init(this, this);
+        mEngine= EngineSelector.getAccessibilityServiceModeEngine();
+        if (mEngine== null) {
+            EVIACAM.debug("Cannot initialize MainEngine in A11Y mode");
+        }
+        else {
+            mEngine.init(this, this);
+        }
     }
 
     /**
@@ -109,6 +114,8 @@ public class TheAccessibilityService
         if (Preferences.get() != null) {
             Preferences.get().cleanup();
         }
+
+        EngineSelector.releaseAccessibilityServiceModeEngine();
 
         mInitialized= false;
     }

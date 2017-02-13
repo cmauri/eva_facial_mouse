@@ -49,22 +49,11 @@ public class MainEngine implements
     /* current engine state */
     private int mCurrentState= STATE_DISABLED;
 
-    /*
-     * Modes of operation from the point of view of the service
-     * that starts the engine
-     */
-    private static final int A11Y_SERVICE_MODE= 0;
-    private static final int SLAVE_MODE= 1;
-
     // current engine mode
     private final int mMode;
 
     // slave mode submode
     private int mSlaveOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
-
-    // singleton instances
-    private static MainEngine sAccessibilityServiceModeEngine = null;
-    private static MainEngine sSlaveModeEngine = null;
 
     // splash screen has been displayed (in the past: openvc has been checked?)
     private boolean mSplashDisplayed = false;
@@ -100,34 +89,8 @@ public class MainEngine implements
     // Last time a face has been detected
     private long mLastFaceDetectionTimeStamp;
 
-    private MainEngine(int mode) {
+    MainEngine(int mode) {
         mMode= mode;
-    }
-
-    /**
-     * Get an instance to the current accessibility mode engine
-     *
-     * @return a reference to the engine interface or null if not available
-     */
-    public static AccessibilityServiceModeEngine getAccessibilityServiceModeEngine() {
-        if (sAccessibilityServiceModeEngine == null) {
-            sAccessibilityServiceModeEngine= new MainEngine(A11Y_SERVICE_MODE);
-        }
-
-        return sAccessibilityServiceModeEngine;
-    }
-
-    /**
-     * Get an instance to the current accessibility mode engine
-     *
-     * @return a reference to the engine interface or null if not available
-     */
-    public static SlaveModeEngine getSlaveModeEngine() {
-        if (sSlaveModeEngine == null) {
-            sSlaveModeEngine= new MainEngine(SLAVE_MODE);
-        }
-
-        return sSlaveModeEngine;
     }
 
     @Override
@@ -137,6 +100,7 @@ public class MainEngine implements
             throw new IllegalStateException();
         }
 
+        /*
         final Engine other;
         if (mMode == A11Y_SERVICE_MODE) other= sSlaveModeEngine;
         else if (mMode == SLAVE_MODE) other= sAccessibilityServiceModeEngine;
@@ -146,7 +110,7 @@ public class MainEngine implements
             // Engine started in the other working mode. Abort init.
             if (l!= null) l.onInit(-1);
             return false;
-        }
+        }*/
 
         /**
          * Proceed with initialization. Store service and listener
@@ -236,7 +200,7 @@ public class MainEngine implements
         /*
          * Create specific engine
          */
-        if (mMode == A11Y_SERVICE_MODE) {
+        if (mMode == 0) { // A11Y_SERVICE_MODE == 0
             // Init as accessibility service in mouse emulation mode
             mMotionProcessor= mMouseEmulationEngine=
                     new MouseEmulationEngine(mService, mOverlayView, mOrientationManager);
@@ -396,7 +360,7 @@ public class MainEngine implements
 
     @Override
     public void setSlaveOperationMode(int mode) {
-        if (mMode != SLAVE_MODE) throw new IllegalStateException();
+        //if (mMode != SLAVE_MODE) throw new IllegalStateException();
 
         if (mSlaveOperationMode== mode) return;
 
@@ -486,7 +450,7 @@ public class MainEngine implements
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (mMouseEmulationEngine!= null && mMode == A11Y_SERVICE_MODE) {
+        if (mMouseEmulationEngine!= null) { // && mMode == A11Y_SERVICE_MODE) {
             mMouseEmulationEngine.onAccessibilityEvent(event);
         }
     }

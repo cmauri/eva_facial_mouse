@@ -310,6 +310,8 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
             mSlaveModeEngine= null;
         }
 
+        EngineSelector.releaseSlaveModeEngine();
+
         mOnReadyListener= null;
 
         if (Preferences.get() != null) {
@@ -334,7 +336,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
         // Already initialized preferences, probably A11Y service running. Deny binding.
         if (Preferences.initForSlaveService(this) == null) return null;
 
-        mSlaveModeEngine= MainEngine.getSlaveModeEngine();
+        mSlaveModeEngine= EngineSelector.getSlaveModeEngine();
         if (mSlaveModeEngine== null) return null;
 
         EVIACAM.debug("SlaveModeService.onBind: success");

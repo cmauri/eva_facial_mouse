@@ -25,8 +25,6 @@ import android.view.ViewGroup;
 
 import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -45,7 +43,7 @@ public class FinalWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
+        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
         Preferences.get().setRunTutorial(false);
     }
 

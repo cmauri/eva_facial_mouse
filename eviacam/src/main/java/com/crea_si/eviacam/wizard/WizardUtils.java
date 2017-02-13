@@ -29,7 +29,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
 import com.crea_si.eviacam.service.EngineControl;
-import com.crea_si.eviacam.service.MainEngine;
+import com.crea_si.eviacam.service.EngineSelector;
 
 class WizardUtils {
     static void finishWizard(Activity a) {
@@ -40,7 +40,7 @@ class WizardUtils {
     }
 
     static void fullStartEngine(Context c) {
-        AccessibilityServiceModeEngine engine= MainEngine.getAccessibilityServiceModeEngine();
+        AccessibilityServiceModeEngine engine= EngineSelector.getAccessibilityServiceModeEngine();
         if (engine!= null && engine.isReady()) {
             engine.enableAll();
             engine.start();
@@ -51,8 +51,8 @@ class WizardUtils {
         }
     }
 
-    static void checkEngineAndFinishIfNeeded (final Activity a) {
-        AccessibilityServiceModeEngine engine= MainEngine.getAccessibilityServiceModeEngine();
+    static AccessibilityServiceModeEngine checkEngineAndFinishIfNeeded (final Activity a) {
+        AccessibilityServiceModeEngine engine= EngineSelector.getAccessibilityServiceModeEngine();
         if (engine== null || !engine.isReady()) {
             // Engine is not ready anymore
             final Resources res= a.getResources();
@@ -69,6 +69,10 @@ class WizardUtils {
                         }
                     });
             ad.show();
+
+            return null;
         }
+
+        return engine;
     }
 }

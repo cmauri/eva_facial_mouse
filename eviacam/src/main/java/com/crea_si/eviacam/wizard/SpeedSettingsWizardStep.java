@@ -28,7 +28,6 @@ import android.widget.TextView;
 import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -104,10 +103,13 @@ public class SpeedSettingsWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
-        engine.disableClick();
-        engine.disableDockPanel();
-        engine.enablePointer();
-        engine.disableScrollButtons();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine!= null) {
+            engine.disableClick();
+            engine.disableDockPanel();
+            engine.enablePointer();
+            engine.disableScrollButtons();
+        }
     }
 }

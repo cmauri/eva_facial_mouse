@@ -29,13 +29,9 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Resources;
 
 import android.os.Handler;
-
-import android.support.v4.content.LocalBroadcastManager;
-
 
 /**
  * Control the main engine when running in A11Y mode
@@ -46,8 +42,6 @@ import android.support.v4.content.LocalBroadcastManager;
  */
 public class AccessibilityServiceModeEngineImpl
         implements Engine.OnFinishProcessFrame, PowerManagement.OnScreenStateChangeListener {
-
-    public static final String WIZARD_CLOSE_EVENT_NAME= "wizard-closed-event";
 
     // handler to run things on the main thread
     private final Handler mHandler= new Handler();
@@ -80,28 +74,9 @@ public class AccessibilityServiceModeEngineImpl
         // Service notification
         mServiceNotification= new ServiceNotification(as, mServiceNotificationReceiver);
         mServiceNotification.init();
-
-        // Start wizard or the full engine
-        if (Preferences.get().getRunTutorial()) {
-            // register notification receiver
-            LocalBroadcastManager.getInstance(as).registerReceiver(
-                    this.mFinishWizardReceiver,
-                    new IntentFilter(WIZARD_CLOSE_EVENT_NAME));
-
-            Intent dialogIntent = new Intent(as, com.crea_si.eviacam.wizard.WizardActivity.class);
-            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            as.startActivity(dialogIntent);
-        }
-        else start();
     }
 
-    // Receiver listener for the event triggered when the wizard is finished
-    private final BroadcastReceiver mFinishWizardReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            start();
-        }
-    };
+
 
     // Receiver listener for the service notification
     private final BroadcastReceiver mServiceNotificationReceiver = new BroadcastReceiver() {
@@ -123,8 +98,7 @@ public class AccessibilityServiceModeEngineImpl
     };
 
     public void cleanup() {
-        LocalBroadcastManager.getInstance(mAccessibilityService).unregisterReceiver(
-                mFinishWizardReceiver);
+
 
         mEngine.cleanup();
 

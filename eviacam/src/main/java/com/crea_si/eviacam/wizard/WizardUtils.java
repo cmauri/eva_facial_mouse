@@ -31,7 +31,9 @@ import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngineImpl;
 import com.crea_si.eviacam.service.EngineSelector;
 
-class WizardUtils {
+public class WizardUtils {
+    public static final String WIZARD_CLOSE_EVENT_NAME= "wizard-closed-event";
+
     static void finishWizard(Activity a) {
         a.startActivity(new Intent(a, WizardActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -46,7 +48,7 @@ class WizardUtils {
             engine.start();
 
             // Notify AccessibilityServiceModeEngineImpl the wizard has finished
-            Intent intent = new Intent(AccessibilityServiceModeEngineImpl.WIZARD_CLOSE_EVENT_NAME);
+            Intent intent = new Intent(WIZARD_CLOSE_EVENT_NAME);
             LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
         }
     }

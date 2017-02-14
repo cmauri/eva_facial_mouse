@@ -20,13 +20,18 @@
 package com.crea_si.eviacam.service;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.crea_si.eviacam.Analytics;
 import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.wizard.WizardUtils;
 
 /**
  * The Enable Viacam accessibility service
@@ -96,12 +101,39 @@ public class TheAccessibilityService
         /* TODO: remove AccessibilityServiceModeEngineImpl */
         mEngineControl= new AccessibilityServiceModeEngineImpl(this, mEngine);
 
+        /* Start wizard or the full engine */
+        if (Preferences.get().getRunTutorial()) {
+            // register notification receiver
+            LocalBroadcastManager.getInstance(this).registerReceiver(
+                    this.mFinishWizardReceiver,
+                    new IntentFilter(WizardUtils.WIZARD_CLOSE_EVENT_NAME));
+
+            Intent dialogIntent = new Intent(this, com.crea_si.eviacam.wizard.WizardActivity.class);
+            dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            this.startActivity(dialogIntent);
+        }
+        else mEngine.start();
+
         mInitialized = true;
     }
+
+    /**
+     * Receiver listener for the event triggered when the wizard is finished
+     */
+    private final BroadcastReceiver mFinishWizardReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mEngine!= null) {
+                mEngine.start();
+            }
+        }
+    };
 
     private void cleanup() {
         // TODO: handle exceptions properly
         if (!mInitialized) return;
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mFinishWizardReceiver);
 
         Analytics.get().trackStopService();
 

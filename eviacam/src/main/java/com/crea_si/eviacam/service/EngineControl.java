@@ -40,7 +40,7 @@ import android.support.v4.content.LocalBroadcastManager;
 /**
  * Control the main engine when running in A11Y mode
  *
- * TODO: implement as derived class of MainEngine (which can be renamed as
+ * TODO: implement as derived class of CoreEngine (which can be renamed as
  * CoreEngine) and add a EngineFactory class to provide the right instance
  * being this one for the accessibility service
  */

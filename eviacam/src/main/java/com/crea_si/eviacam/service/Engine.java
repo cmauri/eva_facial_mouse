@@ -46,11 +46,11 @@ interface Engine {
 
     /**
      * Interface definition of a callback to be invoked indicating the completion
-     * of the MainEngine initialization.
+     * of the Engine initialization.
      */
     interface OnInitListener {
         /**
-         * Called to signal the completion of the MainEngine initialization.
+         * Called to signal the completion of the Engine initialization.
          *
          * @param status 0 if initialization completed successfully
          */

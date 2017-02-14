@@ -72,7 +72,7 @@ public class TheAccessibilityService
         /* Init the main engine */
         mEngine= EngineSelector.getAccessibilityServiceModeEngine();
         if (mEngine== null) {
-            EVIACAM.debug("Cannot initialize MainEngine in A11Y mode");
+            EVIACAM.debug("Cannot initialize CoreEngine in A11Y mode");
         }
         else {
             mEngine.init(this, this);
@@ -87,7 +87,7 @@ public class TheAccessibilityService
     public void onInit(int status) {
         if (status != 0) {
             // Initialization failed. TODO: provide some feedback
-            EVIACAM.debug("Cannot initialize MainEngine in A11Y mode");
+            EVIACAM.debug("Cannot initialize CoreEngine in A11Y mode");
             return;
         }
 

@@ -43,7 +43,7 @@ import android.view.accessibility.AccessibilityEvent;
  * Provides the specific engine according to the intended
  * kind of use (i.e. as accessibility service or slave mode)
  */
-public class MainEngine implements
+public class CoreEngine implements
     FrameProcessor, AccessibilityServiceModeEngine, SlaveModeEngine {
 
     /* current engine state */
@@ -89,7 +89,7 @@ public class MainEngine implements
     // Last time a face has been detected
     private long mLastFaceDetectionTimeStamp;
 
-    MainEngine(int mode) {
+    CoreEngine(int mode) {
         mMode= mode;
     }
 

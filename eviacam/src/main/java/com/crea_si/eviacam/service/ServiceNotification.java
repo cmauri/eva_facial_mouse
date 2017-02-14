@@ -54,7 +54,7 @@ public class ServiceNotification {
 
     private int mAction= NOTIFICATION_ACTION_NONE;
 
-    private boolean mEnabled= false;
+    private boolean mInitDone = false;
 
     /**
      * Constructor
@@ -65,29 +65,22 @@ public class ServiceNotification {
     public ServiceNotification(Service s, BroadcastReceiver bc) {
         mService = s;
         mBroadcastReceiver = bc;
-        
-        /*
-         * register notification receiver
-         */
+    }
+
+    public void init() {
+        if (mInitDone) return;
+
+        /* register notification receiver */
         IntentFilter iFilter = new IntentFilter(NOTIFICATION_FILTER_ACTION);
-        s.registerReceiver(bc, iFilter);
-    }
-
-    public void cleanup() {
-        disable();
-        mService.unregisterReceiver(mBroadcastReceiver);
-    }
-
-    public void enable() {
-        if (mEnabled) return;
+        mService.registerReceiver(mBroadcastReceiver, iFilter);
 
         updateNotification();
 
-        mEnabled= true;
+        mInitDone = true;
     }
 
-    public void disable() {
-        if (!mEnabled) return;
+    public void cleanup() {
+        if (!mInitDone) return;
 
         // Remove as foreground service
         mService.stopForeground(true);
@@ -97,11 +90,15 @@ public class ServiceNotification {
                 (NotificationManager) mService.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(NOTIFICATION_ID);
 
-        mEnabled= false;
+        mService.unregisterReceiver(mBroadcastReceiver);
+
+        mInitDone = false;
     }
 
+    /**
+     * Create and register the notification as foreground service
+     */
     private void updateNotification () {
-        // Create and register the notification
         Notification noti = createNotification(mService, mAction);
         NotificationManager notificationManager =
                 (NotificationManager) mService.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -109,7 +106,6 @@ public class ServiceNotification {
 
         // Register as foreground service
         mService.startForeground(ServiceNotification.NOTIFICATION_ID, noti);
-
     }
 
     /**
@@ -126,6 +122,12 @@ public class ServiceNotification {
         updateNotification ();
     }
 
+    /**
+     * Create the notification
+     * @param c context
+     * @param action code of the action
+     * @return return notification object
+     */
     private static Notification createNotification(Context c, int action) {
         // notification initialization
         Intent intent = new Intent(NOTIFICATION_FILTER_ACTION);

@@ -79,7 +79,7 @@ public class EngineControl
 
         // Service notification
         mServiceNotification= new ServiceNotification(as, mServiceNotificationReceiver);
-        mServiceNotification.enable();
+        mServiceNotification.init();
 
         // Start wizard or the full engine
         if (Preferences.get().getRunTutorial()) {

@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,10 @@ public class TheAccessibilityService
     // stores whether it was previously initialized (see comments on init() )
     private boolean mInitialized= false;
 
+    /**
+     * Start the initialization sequence of the accessibility service.
+     * When the startup process is finished onInit is called
+     */
     private void init() {
         /* TODO  
          * Check if service has been already started. 
@@ -60,12 +64,12 @@ public class TheAccessibilityService
             return;
         }
 
-        // When preferences are not properly initialized (i.e. is in slave mode)
-        // the call will return null. As is not possible to stop the accessibility
-        // service just take into account an avoid further actions.
+        /* When preferences are not properly initialized (i.e. is in slave mode)
+           the call will return null. As is not possible to stop the accessibility
+           service just take into account an avoid further actions. */
         if (Preferences.initForA11yService(this) == null) return;
 
-        // Init the main engine
+        /* Init the main engine */
         mEngine= EngineSelector.getAccessibilityServiceModeEngine();
         if (mEngine== null) {
             EVIACAM.debug("Cannot initialize MainEngine in A11Y mode");
@@ -82,17 +86,17 @@ public class TheAccessibilityService
     @Override
     public void onInit(int status) {
         if (status != 0) {
-            // Initialization failed
-            // TODO: provide some feedback
+            // Initialization failed. TODO: provide some feedback
             EVIACAM.debug("Cannot initialize MainEngine in A11Y mode");
             return;
         }
 
         Analytics.get().trackStartService();
 
-        mInitialized = true;
-
+        /* TODO: remove EngineControl */
         mEngineControl= new EngineControl(this, mEngine);
+
+        mInitialized = true;
     }
 
     private void cleanup() {
@@ -111,11 +115,11 @@ public class TheAccessibilityService
             mEngine= null;
         }
 
+        EngineSelector.releaseAccessibilityServiceModeEngine();
+
         if (Preferences.get() != null) {
             Preferences.get().cleanup();
         }
-
-        EngineSelector.releaseAccessibilityServiceModeEngine();
 
         mInitialized= false;
     }
@@ -184,6 +188,5 @@ public class TheAccessibilityService
     public void onInterrupt() {
         EVIACAM.debug("onInterrupt");
     }
-
 
 }

@@ -44,7 +44,7 @@ import android.support.v4.content.LocalBroadcastManager;
  * CoreEngine) and add a EngineFactory class to provide the right instance
  * being this one for the accessibility service
  */
-public class EngineControl
+public class AccessibilityServiceModeEngineImpl
         implements Engine.OnFinishProcessFrame, PowerManagement.OnScreenStateChangeListener {
 
     public static final String WIZARD_CLOSE_EVENT_NAME= "wizard-closed-event";
@@ -69,7 +69,7 @@ public class EngineControl
     private int mSaveState= -1;
 
 
-    public EngineControl(AccessibilityService as, Engine e) {
+    public AccessibilityServiceModeEngineImpl(AccessibilityService as, Engine e) {
         mAccessibilityService= as;
         mEngine= e;
 

@@ -39,7 +39,7 @@ public class TheAccessibilityService
     private AccessibilityServiceModeEngine mEngine;
 
     // reference to the engine control
-    private EngineControl mEngineControl;
+    private AccessibilityServiceModeEngineImpl mEngineControl;
 
     // stores whether it was previously initialized (see comments on init() )
     private boolean mInitialized= false;
@@ -93,8 +93,8 @@ public class TheAccessibilityService
 
         Analytics.get().trackStartService();
 
-        /* TODO: remove EngineControl */
-        mEngineControl= new EngineControl(this, mEngine);
+        /* TODO: remove AccessibilityServiceModeEngineImpl */
+        mEngineControl= new AccessibilityServiceModeEngineImpl(this, mEngine);
 
         mInitialized = true;
     }

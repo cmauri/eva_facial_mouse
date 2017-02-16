@@ -56,12 +56,11 @@ class AccessibilityServiceModeEngineImpl extends CoreEngine
     private int mSaveState= -1;
 
     // reference to the engine when running as mouse emulation
-    private MouseEmulationEngine mMouseEmulationEngine;
+    private MouseEmulation mMouseEmulation;
 
     @Override
     protected void onInit(Service service) {
-        mMouseEmulationEngine=
-                new MouseEmulationEngine(service, getOverlayView(), getOrientationManager());
+        mMouseEmulation = new MouseEmulation(service, getOverlayView(), getOrientationManager());
 
         mPowerManagement = new PowerManagement(service, this);
 
@@ -84,9 +83,9 @@ class AccessibilityServiceModeEngineImpl extends CoreEngine
             mPowerManagement = null;
         }
 
-        if (mMouseEmulationEngine!= null) {
-            mMouseEmulationEngine.cleanup();
-            mMouseEmulationEngine= null;
+        if (mMouseEmulation != null) {
+            mMouseEmulation.cleanup();
+            mMouseEmulation = null;
         }
     }
 
@@ -116,7 +115,7 @@ class AccessibilityServiceModeEngineImpl extends CoreEngine
 
         mFaceDetectionCountdown.start();
 
-        mMouseEmulationEngine.start();
+        mMouseEmulation.start();
 
         return true;
     }
@@ -126,14 +125,14 @@ class AccessibilityServiceModeEngineImpl extends CoreEngine
         mPowerManagement.unlockFullPower();
         mPowerManagement.setSleepEnabled(false);
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_NONE);
-        mMouseEmulationEngine.stop();
+        mMouseEmulation.stop();
     }
 
     @Override
     protected void onPause() {
         mPowerManagement.unlockFullPower();
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_RESUME);
-        mMouseEmulationEngine.stop();
+        mMouseEmulation.stop();
     }
 
     @Override
@@ -141,7 +140,7 @@ class AccessibilityServiceModeEngineImpl extends CoreEngine
         mPowerManagement.unlockFullPower();
         mPowerManagement.setSleepEnabled(true);   // Enable sleep call
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_RESUME);
-        mMouseEmulationEngine.stop();
+        mMouseEmulation.stop();
 
         Service s= getService();
         if (s!= null) {
@@ -163,7 +162,7 @@ class AccessibilityServiceModeEngineImpl extends CoreEngine
 
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_PAUSE);
 
-        mMouseEmulationEngine.start();
+        mMouseEmulation.start();
     }
 
     /**
@@ -190,7 +189,7 @@ class AccessibilityServiceModeEngineImpl extends CoreEngine
     @Override
     protected void onFrame(PointF motion, boolean faceDetected, int state) {
         if (getState() == STATE_RUNNING) {
-            mMouseEmulationEngine.processMotion(motion);
+            mMouseEmulation.processMotion(motion);
         }
 
         // States to be managed: RUNNING, PAUSED, STANDBY
@@ -235,42 +234,42 @@ class AccessibilityServiceModeEngineImpl extends CoreEngine
 
     @Override
     public void enablePointer() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enablePointer();
+        if (mMouseEmulation != null) mMouseEmulation.enablePointer();
     }
 
     @Override
     public void disablePointer() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disablePointer();
+        if (mMouseEmulation != null) mMouseEmulation.disablePointer();
     }
 
     @Override
     public void enableClick() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableClick();
+        if (mMouseEmulation != null) mMouseEmulation.enableClick();
     }
 
     @Override
     public void disableClick() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableClick();
+        if (mMouseEmulation != null) mMouseEmulation.disableClick();
     }
 
     @Override
     public void enableDockPanel() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableDockPanel();
+        if (mMouseEmulation != null) mMouseEmulation.enableDockPanel();
     }
 
     @Override
     public void disableDockPanel() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableDockPanel();
+        if (mMouseEmulation != null) mMouseEmulation.disableDockPanel();
     }
 
     @Override
     public void enableScrollButtons() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableScrollButtons();
+        if (mMouseEmulation != null) mMouseEmulation.enableScrollButtons();
     }
 
     @Override
     public void disableScrollButtons() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableScrollButtons();
+        if (mMouseEmulation != null) mMouseEmulation.disableScrollButtons();
     }
 
     @Override
@@ -283,8 +282,8 @@ class AccessibilityServiceModeEngineImpl extends CoreEngine
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (mMouseEmulationEngine!= null) {
-            mMouseEmulationEngine.onAccessibilityEvent(event);
+        if (mMouseEmulation != null) {
+            mMouseEmulation.onAccessibilityEvent(event);
         }
     }
 }

@@ -30,7 +30,7 @@ class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
     private int mSlaveOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
 
     /* reference to the motion processor for mouse emulation */
-    private MouseEmulationEngine mMouseEmulationEngine;
+    private MouseEmulation mMouseEmulation;
 
     /* reference to the motion processor for gamepad emulation */
     private GamepadEngine mGamepadEngine;
@@ -51,12 +51,12 @@ class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
 
         // Create specific engines
         mGamepadEngine= new GamepadEngine(service, getOverlayView(), mode);
-        mMouseEmulationEngine=
-                new MouseEmulationEngine(service, getOverlayView(), getOrientationManager());
+        mMouseEmulation =
+                new MouseEmulation(service, getOverlayView(), getOrientationManager());
 
         // Select enabled engine
         if (mSlaveOperationMode== SlaveMode.MOUSE) {
-            mCurrentMotionProcessor = mMouseEmulationEngine;
+            mCurrentMotionProcessor = mMouseEmulation;
         }
         else {
             mCurrentMotionProcessor = mGamepadEngine;
@@ -65,9 +65,9 @@ class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
 
     @Override
     protected void onCleanup() {
-        if (mMouseEmulationEngine!= null) {
-            mMouseEmulationEngine.cleanup();
-            mMouseEmulationEngine= null;
+        if (mMouseEmulation != null) {
+            mMouseEmulation.cleanup();
+            mMouseEmulation = null;
         }
         if (mGamepadEngine!= null) {
             mGamepadEngine.cleanup();
@@ -82,12 +82,12 @@ class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
 
         // Pause old motion processor & switch to new
         if (mSlaveOperationMode== SlaveMode.MOUSE) {
-            mMouseEmulationEngine.stop();
+            mMouseEmulation.stop();
             mCurrentMotionProcessor = mGamepadEngine;
         }
         else if (mode== SlaveMode.MOUSE){
             mGamepadEngine.stop();
-            mCurrentMotionProcessor = mMouseEmulationEngine;
+            mCurrentMotionProcessor = mMouseEmulation;
         }
 
         mSlaveOperationMode= mode;
@@ -138,12 +138,12 @@ class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
 
     @Override
     public boolean registerMouseListener(IMouseEventListener l) {
-        return mMouseEmulationEngine.registerListener(l);
+        return mMouseEmulation.registerListener(l);
     }
 
     @Override
     public void unregisterMouseListener() {
-        mMouseEmulationEngine.unregisterListener();
+        mMouseEmulation.unregisterListener();
     }
 
     @Override

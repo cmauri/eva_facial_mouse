@@ -36,7 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-class MouseEmulationEngine implements
+class MouseEmulation implements
         MotionProcessor,
         SharedPreferences.OnSharedPreferenceChangeListener {
     /*
@@ -91,7 +91,7 @@ class MouseEmulationEngine implements
     private IMouseEventListener mMouseEventListener;
 
     // constructor
-    public MouseEmulationEngine(Service s, OverlayView ov, OrientationManager om) {
+    public MouseEmulation(Service s, OverlayView ov, OrientationManager om) {
 
         /*
          * Final stuff
@@ -395,7 +395,7 @@ class MouseEmulationEngine implements
     public void processMotion(PointF motion) {
         if (mState != STATE_RUNNING) return;
 
-        // If pointer nor enabled just refresh scrolling buttons and exit
+        // If pointer not enabled just refresh scrolling buttons and exit
         if (!mPointerEnabled) {
             if (mAccessibilityAction != null) {
                 mAccessibilityAction.refresh();

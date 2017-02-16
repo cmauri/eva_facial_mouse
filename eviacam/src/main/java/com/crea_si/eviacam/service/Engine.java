@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,33 +58,13 @@ interface Engine {
     }
 
     /**
-     * Interface definition of a callback to be invoked indicating the completion
-     * of the processing of a camera frame
-     */
-    interface OnFinishProcessFrame {
-        /**
-         *  Called to signal the completion of the processing of a camera frame
-         *
-         *  @param faceDetected whether a face has been detected
-         *  NOTE: called from a secondary thread
-         */
-        void onOnFinishProcessFrame(boolean faceDetected);
-    }
-
-    /**
-     * Set the listener for the completion of the processing of a camera frame
-     * @param l the listener reference or null to disable
-     */
-    void setOnFinishProcessFrame (OnFinishProcessFrame l);
-
-    /**
-     * Try to init the engine
+     * Engine initialization
      *
      * @s service to be used as context for the engine
      * @param l listener to be called when initialization finished
-     * @return true if the first stage of the initialization went fine
-     *         TODO: this is a hack for the slave mode and does not guarantee
-     *         that the full initialization completes properly
+     * @return true if, at least, the first stage of the initialization went fine
+     *         to know when the initialization is complete and everything went fine
+     *         need to register a OnInitListener
      */
     boolean init(Service s, OnInitListener l);
 
@@ -127,6 +107,13 @@ interface Engine {
      *         STATE_DISABLED, STATE_STOPPED, STATE_RUNNING, STATE_PAUSED, STATE_STANDBY
      */
     int getState();
+
+    /**
+     * Return whether the engine is ready (not in STATE_DISABLED)
+     *
+     * @return
+     */
+    boolean isReady();
 
     /**
      * Return elapsed time since last face detection

@@ -43,9 +43,6 @@ public class TheAccessibilityService
     // reference to the engine
     private AccessibilityServiceModeEngine mEngine;
 
-    // reference to the engine control
-    private AccessibilityServiceModeEngineImpl mEngineControl;
-
     // stores whether it was previously initialized (see comments on init() )
     private boolean mInitialized= false;
 
@@ -98,9 +95,6 @@ public class TheAccessibilityService
 
         Analytics.get().trackStartService();
 
-        /* TODO: remove AccessibilityServiceModeEngineImpl */
-        mEngineControl= new AccessibilityServiceModeEngineImpl(this, mEngine);
-
         /* Start wizard or the full engine */
         if (Preferences.get().getRunTutorial()) {
             // register notification receiver
@@ -136,11 +130,6 @@ public class TheAccessibilityService
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mFinishWizardReceiver);
 
         Analytics.get().trackStopService();
-
-        if (mEngineControl!= null) {
-            mEngineControl.cleanup();
-            mEngineControl= null;
-        }
 
         if (mEngine!= null) {
             mEngine.cleanup();
@@ -220,5 +209,4 @@ public class TheAccessibilityService
     public void onInterrupt() {
         EVIACAM.debug("onInterrupt");
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,6 @@ import org.opencv.core.Mat;
 
 import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.api.IMouseEventListener;
-import com.crea_si.eviacam.api.SlaveMode;
-import com.crea_si.eviacam.api.IGamepadEventListener;
 
 import android.app.AlertDialog;
 import android.app.Service;
@@ -37,61 +34,105 @@ import android.graphics.PointF;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.accessibility.AccessibilityEvent;
 
-/*
- * Provides the specific engine according to the intended
- * kind of use (i.e. as accessibility service or slave mode)
+/**
+ * Provides an abstract implementation for the Engine interface. The class is in charge of:
+ *
+ * - engine initialization and state management
+ * - camera and image processing to detect face and track motion
+ * - UI: main overlay and camera viewer
+ *
  */
-public class CoreEngine implements
-    FrameProcessor, AccessibilityServiceModeEngine, SlaveModeEngine {
+abstract class CoreEngine implements Engine, FrameProcessor {
 
     /* current engine state */
     private int mCurrentState= STATE_DISABLED;
+    @Override
+    public int getState() {
+        return mCurrentState;
+    }
 
-    // current engine mode
-    private final int mMode;
-
-    // slave mode submode
-    private int mSlaveOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
-
-    // splash screen has been displayed (in the past: openvc has been checked?)
+    /* splash screen has been displayed? */
     private boolean mSplashDisplayed = false;
 
+    /* listener to notify when the initialization is done */
     private OnInitListener mOnInitListener;
 
-    private OnFinishProcessFrame mOnFinishProcessFrame;
-
-    // reference to the service which started the engine
+    /* reference to the service which started the engine */
     private Service mService;
+    protected Service getService() { return mService; }
 
-    // reference to the specific engine (motion processor)
-    private MotionProcessor mMotionProcessor;
-
-    // reference to the engine when running as mouse emulation
-    private MouseEmulationEngine mMouseEmulationEngine;
-
-    // reference to the engine for gamepad emulation
-    private GamepadEngine mGamepadEngine;
-
-    // root overlay view
+    /* root overlay view */
     private OverlayView mOverlayView;
+    protected OverlayView getOverlayView() { return mOverlayView; }
 
-    // the camera viewer
+    /* the camera viewer */
     private CameraLayerView mCameraLayerView;
 
-    // object in charge of capturing & processing frames
+    /* object in charge of capturing & processing frames */
     private CameraListener mCameraListener;
 
-    // object which encapsulates rotation and orientation logic
+    /* object which encapsulates rotation and orientation logic */
     private OrientationManager mOrientationManager;
+    protected OrientationManager getOrientationManager() { return mOrientationManager; }
 
-    // Last time a face has been detected
+    /* Last time a face has been detected */
     private long mLastFaceDetectionTimeStamp;
 
-    CoreEngine(int mode) {
-        mMode= mode;
-    }
+
+    /* Abstract methods to be implemented by derived classes */
+
+    /**
+     * Called just before the initialization is finished
+     *
+     * @param service service which started the engine
+     */
+    protected abstract void onInit(Service service);
+
+    /**
+     * Called at the beginning of the cleanup sequence
+     */
+    protected abstract void onCleanup();
+
+    /**
+     * Called at the beginning of the start sequence
+     *
+     * @return should return false when something went wrong to abort start sequence
+     */
+    protected abstract boolean onStart();
+
+    /**
+     * Called at the end of the stop sequence
+     */
+    protected abstract void onStop();
+
+    /**
+     * Called at the end of the pause sequence
+     */
+    protected abstract void onPause();
+
+    /**
+     * Called at the end of the standby sequence
+     */
+    protected abstract void onStandby();
+
+    /**
+     * Called at the beginning of the resume sequence
+     */
+    protected abstract void onResume();
+
+    /**
+     * Called each time a frame is processed and the engine is in one of these states:
+     *     STATE_RUNNING, STATE_PAUSED or STATE_STANDBY
+     *
+     * @param motion motion vector, could be (0, 0) if motion not detected or the engine is
+     *               paused or in standby mode
+     * @param faceDetected whether or not a face was detected for the last frame, note
+     *                     not all frames are checked for the face detection algorithm
+     * @param state current state of the engine
+     */
+    protected abstract void onFrame(PointF motion, boolean faceDetected, int state);
+
 
     @Override
     public boolean init(Service s, OnInitListener l) {
@@ -100,21 +141,7 @@ public class CoreEngine implements
             throw new IllegalStateException();
         }
 
-        /*
-        final Engine other;
-        if (mMode == A11Y_SERVICE_MODE) other= sSlaveModeEngine;
-        else if (mMode == SLAVE_MODE) other= sAccessibilityServiceModeEngine;
-        else throw new IllegalStateException();
-
-        if (other!= null && other.getState() != STATE_DISABLED) {
-            // Engine started in the other working mode. Abort init.
-            if (l!= null) l.onInit(-1);
-            return false;
-        }*/
-
-        /**
-         * Proceed with initialization. Store service and listener
-         */
+        /* Proceed with initialization. Store service and listener */
         mService= s;
         mOnInitListener= l;
 
@@ -133,15 +160,17 @@ public class CoreEngine implements
             Intent dialogIntent = new Intent(mService, SplashActivity.class);
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mService.startActivity(dialogIntent);
+
             return true;
         }
     }
 
-    /* Received which is called when the splash activity finishes */
+    /* Receiver which is called when the splash activity finishes */
     private BroadcastReceiver onSplashReady= new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             EVIACAM.debug("onSplashReady: onReceive: called");
+
             /* Unregister receiver */
             LocalBroadcastManager.getInstance(mService).unregisterReceiver(onSplashReady);
 
@@ -197,36 +226,8 @@ public class CoreEngine implements
                 mCameraListener.getCameraFlip(),
                 mCameraListener.getCameraOrientation());
 
-        /*
-         * Create specific engine
-         */
-        if (mMode == 0) { // A11Y_SERVICE_MODE == 0
-            // Init as accessibility service in mouse emulation mode
-            mMotionProcessor= mMouseEmulationEngine=
-                    new MouseEmulationEngine(mService, mOverlayView, mOrientationManager);
-        }
-        else {
-            /*
-             * Init in slave mode. Instantiate both gamepad and mouse emulation.
-             */
-
-            // Set valid mode for gamepad engine
-            final int mode= (mSlaveOperationMode!= SlaveMode.MOUSE?
-                    mSlaveOperationMode : SlaveMode.GAMEPAD_ABSOLUTE);
-
-            // Create specific engines
-            mGamepadEngine= new GamepadEngine(mService, mOverlayView, mode);
-            mMouseEmulationEngine=
-                    new MouseEmulationEngine(mService, mOverlayView, mOrientationManager);
-
-            // Select enabled engine
-            if (mSlaveOperationMode== SlaveMode.MOUSE) {
-                mMotionProcessor= mMouseEmulationEngine;
-            }
-            else {
-                mMotionProcessor= mGamepadEngine;
-            }
-        }
+        // initialize specific motion processor(s)
+        onInit(mService);
 
         mCurrentState= STATE_STOPPED;
 
@@ -249,11 +250,11 @@ public class CoreEngine implements
             resume();
         }
 
-        /*
-         * At this point means that (mCurrentState== STATE_STOPPED)
-         */
+        /* At this point means that (mCurrentState== STATE_STOPPED) */
 
-        // show GUI elements
+        if (!onStart()) return false;
+
+        /* show GUI elements */
         mOverlayView.requestLayout();
         mOverlayView.setVisibility(View.VISIBLE);
 
@@ -261,9 +262,6 @@ public class CoreEngine implements
         
         // start processing frames
         mCameraListener.startCamera();
-
-        // start sub-engine
-        mMotionProcessor.start();
 
         mCurrentState= STATE_RUNNING;
 
@@ -281,7 +279,8 @@ public class CoreEngine implements
          * If STATE_RUNNING or STATE_STANDBY
          */
         mCameraLayerView.disableDetectionFeedback();
-        if (mMotionProcessor!= null) mMotionProcessor.stop();
+
+        onPause();
 
         mCurrentState= STATE_PAUSED;
     }
@@ -297,7 +296,8 @@ public class CoreEngine implements
          * If STATE_RUNNING or STATE_PAUSED
          */
         mCameraLayerView.disableDetectionFeedback();
-        if (mMotionProcessor!= null) mMotionProcessor.stop();
+
+        onStandby();
 
         mCurrentState= STATE_STANDBY;
     }
@@ -306,11 +306,10 @@ public class CoreEngine implements
     public void resume() {
         if (mCurrentState != STATE_PAUSED && mCurrentState!= STATE_STANDBY) return;
 
+        onResume();
+
         //mCameraListener.setUpdateViewer(true);
         mCameraLayerView.enableDetectionFeedback();
-
-        // resume specific engine
-        if (mMotionProcessor!= null) mMotionProcessor.start();
 
         // make sure that UI changes during pause (e.g. docking panel edge) are applied
         mOverlayView.requestLayout();
@@ -324,7 +323,8 @@ public class CoreEngine implements
 
         mCameraListener.stopCamera();
         mOverlayView.setVisibility(View.INVISIBLE);
-        if (mMotionProcessor!= null) mMotionProcessor.stop();
+
+        onStop();
 
         mCurrentState= STATE_STOPPED;
     }
@@ -335,15 +335,12 @@ public class CoreEngine implements
 
         stop();
 
+        onCleanup();
+
         mCameraListener= null;
 
         mOrientationManager.cleanup();
         mOrientationManager= null;
-
-        mMotionProcessor.cleanup();
-        mMotionProcessor= null;
-        mMouseEmulationEngine= null;
-        mGamepadEngine= null;
 
         mCameraLayerView= null;
 
@@ -354,79 +351,8 @@ public class CoreEngine implements
     }
 
     @Override
-    public int getState() {
-        return mCurrentState;
-    }
-
-    @Override
-    public void setSlaveOperationMode(int mode) {
-        //if (mMode != SLAVE_MODE) throw new IllegalStateException();
-
-        if (mSlaveOperationMode== mode) return;
-
-        // Pause old engine & switch to new
-        if (mSlaveOperationMode== SlaveMode.MOUSE) {
-            mMouseEmulationEngine.stop();
-            mMotionProcessor= mGamepadEngine;
-        }
-        else if (mode== SlaveMode.MOUSE){
-            mGamepadEngine.stop();
-            mMotionProcessor= mMouseEmulationEngine;
-        }
-
-        mSlaveOperationMode= mode;
-
-        if (mode!= SlaveMode.MOUSE) {
-            mGamepadEngine.setOperationMode(mode);
-        }
-
-        // Resume engine if needed
-        if (mCurrentState == STATE_RUNNING) mMotionProcessor.start();
-    }
-
-    @Override
     public boolean isReady() {
         return (mCurrentState != STATE_DISABLED);
-    }
-
-    @Override
-    public void enablePointer() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enablePointer();
-    }
-
-    @Override
-    public void disablePointer() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disablePointer();
-    }
-
-    @Override
-    public void enableClick() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableClick();
-    }
-
-    @Override
-    public void disableClick() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableClick();
-    }
-
-    @Override
-    public void enableDockPanel() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableDockPanel();
-    }
-
-    @Override
-    public void disableDockPanel() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableDockPanel();
-    }
-
-    @Override
-    public void enableScrollButtons() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.enableScrollButtons();
-    }
-
-    @Override
-    public void disableScrollButtons() {
-        if (mMouseEmulationEngine != null) mMouseEmulationEngine.disableScrollButtons();
     }
 
     @Override
@@ -440,52 +366,14 @@ public class CoreEngine implements
         mCameraLayerView.updateFaceDetectorStatus(fdc);
     }
 
-    @Override
-    public void enableAll() {
-        enablePointer();
-        enableClick();
-        enableDockPanel();
-        enableScrollButtons();
-    }
-
-    @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (mMouseEmulationEngine!= null) { // && mMode == A11Y_SERVICE_MODE) {
-            mMouseEmulationEngine.onAccessibilityEvent(event);
-        }
-    }
-
-    @Override
-    public boolean registerGamepadListener(IGamepadEventListener l) {
-        return mGamepadEngine.registerListener(l);
-    }
-
-    @Override
-    public void unregisterGamepadListener() {
-        mGamepadEngine.unregisterListener();
-    }
-
-    @Override
-    public boolean registerMouseListener(IMouseEventListener l) {
-        return mMouseEmulationEngine.registerListener(l);
-    }
-
-    @Override
-    public void setOnFinishProcessFrame(OnFinishProcessFrame l) {
-        mOnFinishProcessFrame= l;
-    }
-
-    @Override
-    public void unregisterMouseListener() {
-        mMouseEmulationEngine.unregisterListener();
-    }
+    // avoid creating a new PointF for each frame
+    private PointF mMotion= new PointF(0, 0);
 
     /**
      * Process incoming camera frames (called from a secondary thread)
      *
      * @param rgba opencv matrix with the captured image
      */
-    PointF mMotion= new PointF(0, 0); // avoid creating a new PointF for each frame
     @Override
     public void processFrame(Mat rgba) {
         // For these states do nothing
@@ -511,21 +399,12 @@ public class CoreEngine implements
 
         if (faceDetected) mLastFaceDetectionTimeStamp= System.currentTimeMillis();
 
-        if (mCurrentState == STATE_RUNNING) {
-            // TODO: slave mode feedback
-            //mCameraLayerView.updateFaceDetectorStatus(mFaceDetectionCountdown);
+        // TODO
+        //mCameraLayerView.updateFaceDetectorStatus(mFaceDetectionCountdown);
 
-            // compensate mirror effect
-            mMotion.x = -mMotion.x;
+        // compensate mirror effect
+        mMotion.x = -mMotion.x;
 
-            // process motion on specific engine
-            mMotionProcessor.processMotion(mMotion);
-        }
-
-        // Nothing when (mCurrentState == STATE_PAUSED || mCurrentState== STATE_STANDBY)
-
-        if (mOnFinishProcessFrame != null) {
-            mOnFinishProcessFrame.onOnFinishProcessFrame(faceDetected);
-        }
+        onFrame(mMotion, faceDetected, mCurrentState);
     }
 }

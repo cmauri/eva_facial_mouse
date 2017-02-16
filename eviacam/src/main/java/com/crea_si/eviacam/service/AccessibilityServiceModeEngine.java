@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,42 @@ package com.crea_si.eviacam.service;
 
 import android.view.accessibility.AccessibilityEvent;
 
+/**
+ * Interface for the engine in accessibility service mode
+ */
 public interface AccessibilityServiceModeEngine extends Engine {
-    boolean isReady();
+    /**
+     * Enable/disable on-screen pointer
+     */
     void enablePointer();
     void disablePointer();
+
+    /**
+     * Enable/disable dwell based click action
+     */
     void enableClick();
     void disableClick();
+
+    /**
+     * Show/hide the docking menu panel
+     */
     void enableDockPanel();
     void disableDockPanel();
+
+    /**
+     * Enable/disable scroll buttons
+     */
     void enableScrollButtons();
     void disableScrollButtons();
+
+    /**
+     * Enable all above elements
+     */
     void enableAll();
+
+    /**
+     * Method to route the accessibility events received by the accessibility service
+     * @param event the accessibility event
+     */
     void onAccessibilityEvent(AccessibilityEvent event);
 }

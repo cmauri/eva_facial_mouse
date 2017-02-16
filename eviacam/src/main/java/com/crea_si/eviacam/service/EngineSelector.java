@@ -36,8 +36,8 @@ public class EngineSelector {
     private static final int SLAVE_MODE= 1;
 
     /* singleton instances */
-    private static CoreEngine sAccessibilityServiceModeEngine = null;
-    private static CoreEngine sSlaveModeEngine = null;
+    private static AccessibilityServiceModeEngine sAccessibilityServiceModeEngine = null;
+    private static SlaveModeEngineImpl sSlaveModeEngine = null;
 
     /* mode in use */
     private static int mModeInUse= NONE_MODE;
@@ -53,7 +53,7 @@ public class EngineSelector {
         mModeInUse= A11Y_SERVICE_MODE;
 
         if (sAccessibilityServiceModeEngine == null) {
-            sAccessibilityServiceModeEngine= new CoreEngine(A11Y_SERVICE_MODE);
+            sAccessibilityServiceModeEngine= new AccessibilityServiceModeEngineImpl();
         }
 
         return sAccessibilityServiceModeEngine;
@@ -77,7 +77,7 @@ public class EngineSelector {
         mModeInUse= SLAVE_MODE;
 
         if (sSlaveModeEngine == null) {
-            sSlaveModeEngine= new CoreEngine(SLAVE_MODE);
+            sSlaveModeEngine= new SlaveModeEngineImpl();
         }
 
         return sSlaveModeEngine;

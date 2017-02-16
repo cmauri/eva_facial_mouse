@@ -28,7 +28,7 @@ import android.graphics.PointF;
 import android.os.RemoteException;
 import android.view.View;
 
-public class GamepadEngine implements MotionProcessor {
+public class Gamepad implements MotionProcessor {
     // time in ms after which the direction highlight is switched off
     private static final int TIME_OFF_MS= 100;
 
@@ -65,7 +65,7 @@ public class GamepadEngine implements MotionProcessor {
      * @param ov overlay layout
      * @param mode initial operating mode
      */
-    public GamepadEngine(Context c, OverlayView ov, int mode) {
+    public Gamepad(Context c, OverlayView ov, int mode) {
         mContext= c;
         mOverlayView= ov;
         mOperationMode= mode;

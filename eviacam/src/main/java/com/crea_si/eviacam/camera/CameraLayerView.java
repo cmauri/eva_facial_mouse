@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.camera;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -29,17 +28,23 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.crea_si.eviacam.service.FaceDetectionCountdown;
+
+/**
+ *  IU for the camera viewer
+ *  TODO: consider implementing the border drawer via decorator pattern
+ */
 public class CameraLayerView extends RelativeLayout {
     // remaining time below which need to start blinking (in milliseconds)
     private static final int BLINK_TIMEOUT= 3200;
 
-    // (half) period of the blinking
-    private static final int BLINK_INTERVAL = 400;
+    // duration of the blinking
+    private static final int BLINKER_DURATION = 400;
 
     // blinking management
-    private final Blink mBlink= new Blink(BLINK_INTERVAL);
+    private final Blinker mBlinker = new Blinker(BLINKER_DURATION);
 
-    // show detection feeback?
+    // show detection feedback?
     private boolean mShowDetectionFeedback= true;
 
     /*
@@ -73,7 +78,7 @@ public class CameraLayerView extends RelativeLayout {
 
     private final View mBorderDrawer;
 
-    /*
+    /**
      * Class to draw the border. Done this way so that
      * only this view needs to be invalidated
      */
@@ -98,7 +103,7 @@ public class CameraLayerView extends RelativeLayout {
                 float x= mCameraSurfaceView.getX();
                 float y= mCameraSurfaceView.getY();
 
-                if (mBlink.getState())
+                if (mBlinker.getState())
                     mPaint.setColor(mPaintColor);
                 else
                     mPaint.setColor(Color.BLACK);
@@ -112,7 +117,10 @@ public class CameraLayerView extends RelativeLayout {
         }
     }
 
-    // constructor
+    /**
+     * Constructor
+     * @param context context
+     */
     public CameraLayerView(Context context) {
         super(context);
 
@@ -176,9 +184,9 @@ public class CameraLayerView extends RelativeLayout {
          */
         if (countdown.isDisabled() || countdown.getElapsedPercent() == 100 ||
             countdown.getRemainingTime() > BLINK_TIMEOUT) {
-            mBlink.stop();
+            mBlinker.stop();
         } else {
-            mBlink.start();
+            mBlinker.start();
         }
 
         // redraw. called from a secondary thread

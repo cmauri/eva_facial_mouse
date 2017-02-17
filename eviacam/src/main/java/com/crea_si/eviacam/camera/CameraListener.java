@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.camera;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,6 +40,7 @@ import android.view.SurfaceView;
 
 import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.service.VisionPipeline;
 
 
 @SuppressWarnings("deprecation")
@@ -51,14 +52,21 @@ public class CameraListener implements CvCameraViewListener2 {
     
     // OpenCV capture&view facility
     private final MyCameraBridgeViewBase mCameraView;
+    public SurfaceView getCameraSurface(){
+        return mCameraView;
+    }
 
-    // physical rotation of the camera (i.e. whether the frame needs a flip
-    // operation), for instance, this is needed for those devices with rotating
-    // camera such as the Lenovo YT3-X50L)
+    /*
+       Physical mounting rotation of the camera (i.e. whether the frame needs a flip
+       operation). For instance, this is needed for those devices with rotating
+       camera such as the Lenovo YT3-X50L)
+     */
     private final FlipDirection mCameraFlip;
+    public FlipDirection getCameraFlip() { return mCameraFlip; }
 
     // physical orientation of the camera (0, 90, 180, 270)
     private final int mCameraOrientation;
+    public int getCameraOrientation() { return mCameraOrientation; }
 
     /** 
      * Load a resource into a temporary file
@@ -71,7 +79,7 @@ public class CameraListener implements CvCameraViewListener2 {
      */
     private static File resourceToTempFile (Context c, int rid, String suffix) 
             throws IOException {
-        InputStream is= null;
+        InputStream is;
         OutputStream os= null;
         File outFile = null;
         
@@ -86,14 +94,25 @@ public class CameraListener implements CvCameraViewListener2 {
             }
         } catch (IOException e) {
             if (outFile != null) {
+                //noinspection ResultOfMethodCallIgnored
                 outFile.delete();
                 outFile= null;
             }
             throw e;
         }
         finally {
-            if (is != null) is.close();
-            if (os != null) os.close();
+            try {
+                if (is != null) is.close();
+            }
+            catch (IOException e) {
+                // Do nothing
+            }
+            try {
+                if (os != null) os.close();
+            }
+            catch (IOException e) {
+                // Do nothing
+            }
         }
 
         return outFile;
@@ -158,7 +177,7 @@ public class CameraListener implements CvCameraViewListener2 {
         mCameraOrientation= cameraInfo.orientation;
         mCameraFlip= flip;
 
-        /**
+        /*
          * Create a capture view which carries the responsibilities of
          * capturing and displaying frames.
          */
@@ -196,6 +215,7 @@ public class CameraListener implements CvCameraViewListener2 {
         try {
             File f= resourceToTempFile (mContext, R.raw.haarcascade, "xml");
             VisionPipeline.init(f.getAbsolutePath());
+            //noinspection ResultOfMethodCallIgnored
             f.delete();
         }
         catch (IOException e) {
@@ -209,17 +229,6 @@ public class CameraListener implements CvCameraViewListener2 {
     public void stopCamera() {
         mCameraView.disableView();
     }
-
-    SurfaceView getCameraSurface(){
-        return mCameraView;
-    }
-
-    /* Retrieve the physical characteristics of the camera, namely the mounting rotation
-       (i.e. whether the frame needs to be flipped) and orientation (i.e. whether the
-       frame needs to be rotated) */
-    FlipDirection getCameraFlip() { return mCameraFlip; }
-    int getCameraOrientation() { return mCameraOrientation; }
-
 
     /**
      * Sets the flip operation to perform to the frame before is applied a rotation

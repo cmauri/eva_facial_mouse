@@ -23,6 +23,9 @@ import org.opencv.core.Mat;
 
 import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.camera.CameraLayerView;
+import com.crea_si.eviacam.camera.CameraListener;
+import com.crea_si.eviacam.camera.FrameProcessor;
 
 import android.app.AlertDialog;
 import android.app.Service;

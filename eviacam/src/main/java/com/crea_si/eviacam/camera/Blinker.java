@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,30 +16,48 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.camera;
 
-public class Blink {
-    private final long mPeriod;
+/**
+ * Implements a time based blinker with equal duration for the ON/OFF states
+ */
+class Blinker {
+    // Duration of the ON/OFF state
+    private final long mDuration;
+
+    // Time when the blinker was been started (0 means stopped)
     private long mStartTime= 0;
 
-    Blink(int period) {
-        mPeriod= period;
+    /**
+     * Constructor
+     *
+     * @param duration duration of the blinker
+     */
+    Blinker(int duration) {
+        mDuration = duration;
     }
 
     /**
-     * Start. Do nothing if already started.
+     * Start the blinker. Do nothing if already started.
      */
-    public void start() {
+    void start() {
         if (mStartTime!= 0) return;
         mStartTime= System.currentTimeMillis();
     }
 
-    public void stop() {
+    /**
+     * Stop the blinker
+     */
+    void stop() {
         mStartTime= 0;
     }
 
-    public boolean getState() {
-        if (mStartTime== 0) return true;
-        return (((System.currentTimeMillis() - mStartTime) / mPeriod) & 1) == 0;
+    /**
+     * Get the current state of the blinker
+     *
+     * @return true means ON state, false means OFF or disabled
+     */
+    boolean getState() {
+        return mStartTime == 0 || (((System.currentTimeMillis() - mStartTime) / mDuration) & 1)== 0;
     }
 }

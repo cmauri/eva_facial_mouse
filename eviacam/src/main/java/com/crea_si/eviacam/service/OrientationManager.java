@@ -24,6 +24,8 @@ import android.graphics.PointF;
 import android.view.Surface;
 import android.view.WindowManager;
 
+import com.crea_si.eviacam.camera.FlipDirection;
+
 /**
  * Encapsulates the all the orientation related stuff
  */

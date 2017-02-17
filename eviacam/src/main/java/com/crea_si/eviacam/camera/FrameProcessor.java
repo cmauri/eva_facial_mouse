@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.camera;
 
 import org.opencv.core.Mat;
 
-interface FrameProcessor {
+/**
+ * Interface to implement a callback each time a camera frame is captured
+ */
+public interface FrameProcessor {
+    /**
+     * Process a captured frame
+     *
+     * @param rgba captured frame
+     */
     void processFrame(Mat rgba);
 }

@@ -30,7 +30,7 @@ import com.crea_si.eviacam.Preferences;
  * TODO: review this class because is used as a countdown but
  * also to notify face tracking feedback
  */
-class FaceDetectionCountdown extends Countdown
+public class FaceDetectionCountdown extends Countdown
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     /**

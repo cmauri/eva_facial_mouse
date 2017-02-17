@@ -17,12 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.slavemode;
 
 import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.api.GamepadButtons;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.PointF;
@@ -35,22 +34,18 @@ import android.graphics.PointF;
  * circumference. 
  */
 
-public class GamepadAbs implements OnSharedPreferenceChangeListener {
-    private final Context mContext;
-
+class GamepadAbs implements OnSharedPreferenceChangeListener {
     // Current pointer position
     private PointF mPointerLocation= new PointF(0, 0);
 
     // Speed multiplier for the pointer control
     private float mPointerSpeed= 0.05f;
 
-    public GamepadAbs(Context c) {
-        mContext= c;
-
+    GamepadAbs() {
         // shared preferences
         SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
-        updateSettings(sp);
+        updateSettings();
     }
     
     public void cleanup() {
@@ -58,7 +53,7 @@ public class GamepadAbs implements OnSharedPreferenceChangeListener {
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
     
-    private void updateSettings(SharedPreferences sp) {
+    private void updateSettings() {
         // get values from shared resources
         mPointerSpeed= (float) Preferences.get().getGamepadAbsSpeed() / 100.0f;
     }
@@ -66,7 +61,7 @@ public class GamepadAbs implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
         if (key.equals(Preferences.KEY_GAMEPAD_ABS_SPEED)) {
-            updateSettings(sp);
+            updateSettings();
         }
     }
 
@@ -77,7 +72,7 @@ public class GamepadAbs implements OnSharedPreferenceChangeListener {
      * @param motion motion vector
      * @return the sector (i.e. button) in which the pointer is
      */
-    public int updateMotion (PointF motion) {
+    int updateMotion (PointF motion) {
         mPointerLocation.x+= motion.x * mPointerSpeed;
         mPointerLocation.y+= motion.y * mPointerSpeed;
 
@@ -117,7 +112,7 @@ public class GamepadAbs implements OnSharedPreferenceChangeListener {
      *
      * @return reference to the point 
      */
-    public PointF getPointerLocationNorm() {
+    PointF getPointerLocationNorm() {
         return mPointerLocation;
     }
 }

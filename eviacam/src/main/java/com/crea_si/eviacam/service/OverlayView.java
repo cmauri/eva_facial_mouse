@@ -88,7 +88,7 @@ public class OverlayView extends RelativeLayout {
         EVIACAM.debug("finish destroyOverlay");
     }
     
-    void addFullScreenLayer (View v) {
+    public void addFullScreenLayer (View v) {
         RelativeLayout.LayoutParams lp= new RelativeLayout.LayoutParams(this.getWidth(), this.getHeight());
         lp.width= RelativeLayout.LayoutParams.MATCH_PARENT;
         lp.height= RelativeLayout.LayoutParams.MATCH_PARENT;

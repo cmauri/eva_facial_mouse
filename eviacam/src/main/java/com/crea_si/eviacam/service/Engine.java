@@ -24,7 +24,7 @@ import android.app.Service;
 /**
  * Interface for the engine
  */
-interface Engine {
+public interface Engine {
     /*
      * States of the engine
      */

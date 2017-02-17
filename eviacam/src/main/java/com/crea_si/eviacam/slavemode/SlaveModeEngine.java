@@ -16,15 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.slavemode;
 
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
+import com.crea_si.eviacam.service.Engine;
 
 /**
  * Interface for slave mode service engine 
  */
-interface SlaveModeEngine extends Engine {
+public interface SlaveModeEngine extends Engine {
     void setSlaveOperationMode(int mode);
     boolean registerGamepadListener(IGamepadEventListener l);
     void unregisterGamepadListener();

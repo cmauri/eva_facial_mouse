@@ -18,6 +18,9 @@
  */
 package com.crea_si.eviacam.service;
 
+import com.crea_si.eviacam.slavemode.SlaveModeEngine;
+import com.crea_si.eviacam.slavemode.SlaveModeEngineImpl;
+
 /**
  * Class which allows to select among of the available engine modes. Currently:
  *   * Accessibility service mode: this is the main mode for EVA and can only be started from

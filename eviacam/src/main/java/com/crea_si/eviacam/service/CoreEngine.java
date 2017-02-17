@@ -43,7 +43,7 @@ import android.view.WindowManager;
  * - UI: main overlay and camera viewer
  *
  */
-abstract class CoreEngine implements Engine, FrameProcessor {
+public abstract class CoreEngine implements Engine, FrameProcessor {
 
     /* current engine state */
     private int mCurrentState= STATE_DISABLED;

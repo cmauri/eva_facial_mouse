@@ -36,7 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
-class MouseEmulation implements
+public class MouseEmulation implements
         MotionProcessor,
         SharedPreferences.OnSharedPreferenceChangeListener {
     /*

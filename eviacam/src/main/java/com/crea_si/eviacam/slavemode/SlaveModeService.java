@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.slavemode;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -30,6 +30,8 @@ import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.ISlaveMode;
 import com.crea_si.eviacam.api.IReadyEventListener;
+import com.crea_si.eviacam.service.Engine;
+import com.crea_si.eviacam.service.EngineSelector;
 
 import android.app.Service;
 import android.content.Intent;
@@ -118,11 +120,10 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
         @Override
         public boolean start() throws RemoteException {
             EVIACAM.debug("SlaveModeService.start: enter");
-            FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
+            FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
-                    if (mSlaveModeEngine == null) return false;
-                    return mSlaveModeEngine.start();
+                    return mSlaveModeEngine != null && mSlaveModeEngine.start();
                 }
             });
 
@@ -132,11 +133,8 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 // this block until the result is calculated
                 return futureResult.get();
             } 
-            catch (ExecutionException e) {
+            catch (ExecutionException | InterruptedException e) {
                 EVIACAM.debug("SlaveModeService: exception: " + e.getMessage());
-            } 
-            catch (InterruptedException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
             }
             return false;
         }
@@ -144,7 +142,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
         @Override
         public void stop() throws RemoteException {
             EVIACAM.debug("SlaveModeService.stop: enter");
-            FutureTask<Void> futureResult = new FutureTask<Void>(new Callable<Void>() {
+            FutureTask<Void> futureResult = new FutureTask<>(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
                     if (mSlaveModeEngine == null) return null;
@@ -159,17 +157,14 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 // this block until the result is calculated
                 futureResult.get();
             } 
-            catch (ExecutionException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
-            } 
-            catch (InterruptedException e) {
+            catch (ExecutionException | InterruptedException e) {
                 EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
             }
         }
 
         @Override
         public void setOperationMode(final int mode) throws RemoteException {
-            FutureTask<Void> futureResult = new FutureTask<Void>(new Callable<Void>() {
+            FutureTask<Void> futureResult = new FutureTask<>(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
                     if (mSlaveModeEngine == null) return null;
@@ -184,10 +179,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 // this block until the result is calculated
                 futureResult.get();
             } 
-            catch (ExecutionException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
-            } 
-            catch (InterruptedException e) {
+            catch (ExecutionException | InterruptedException e) {
                 EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
             }
         }
@@ -197,15 +189,15 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 throws RemoteException {
             EVIACAM.debug("SlaveModeService.registerGamepadListener");
             
-            FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
+            FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     // TODO: if an exception is thrown, calling code always receive
                     // a RemoteException, it would be better to provide more information
                     // on the caller. See here:
                     // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
-                    if (mSlaveModeEngine== null) return false;
-                    return mSlaveModeEngine.registerGamepadListener(arg0);
+                    return mSlaveModeEngine != null &&
+                           mSlaveModeEngine.registerGamepadListener(arg0);
                 }
             });
 
@@ -215,10 +207,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 // this block until the result is calculated
                 return futureResult.get();
             } 
-            catch (ExecutionException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
-            } 
-            catch (InterruptedException e) {
+            catch (ExecutionException | InterruptedException e) {
                 EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
             }
             return false;
@@ -243,15 +232,14 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 throws RemoteException {
             EVIACAM.debug("SlaveModeService.registerMouseListener");
             
-            FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
+            FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     // TODO: if an exception is thrown, calling code always receive
                     // a RemoteException, it would be better to provide more information
                     // on the caller. See here:
                     // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
-                    if (mSlaveModeEngine== null) return false;
-                    return mSlaveModeEngine.registerMouseListener(arg0);
+                    return mSlaveModeEngine != null && mSlaveModeEngine.registerMouseListener(arg0);
                 }
             });
 
@@ -261,10 +249,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 // this block until the result is calculated
                 return futureResult.get();
             } 
-            catch (ExecutionException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
-            } 
-            catch (InterruptedException e) {
+            catch (ExecutionException | InterruptedException e) {
                 EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
             }
             return false;

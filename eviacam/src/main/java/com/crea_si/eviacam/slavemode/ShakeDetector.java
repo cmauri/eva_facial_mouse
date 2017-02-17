@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.slavemode;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
@@ -32,7 +31,7 @@ import com.crea_si.eviacam.Preferences;
  * value is larger than a specified threshold. After that filters
  * out motion in the opposite direction (i.e. bounce).  
  */
-public class ShakeDetector implements OnSharedPreferenceChangeListener {
+class ShakeDetector implements OnSharedPreferenceChangeListener {
     /*
      * States of the detector
      */
@@ -50,11 +49,11 @@ public class ShakeDetector implements OnSharedPreferenceChangeListener {
     // Current state
     private int mCurrentState= NO_SHAKE;
 
-    public ShakeDetector () {
+    ShakeDetector () {
         // shared preferences
         SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
-        updateSettings(sp);
+        updateSettings();
     }
 
     public void cleanup() {
@@ -62,7 +61,7 @@ public class ShakeDetector implements OnSharedPreferenceChangeListener {
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void updateSettings(SharedPreferences sp) {
+    private void updateSettings() {
         /*
          * The following function is used:
          * 
@@ -102,7 +101,7 @@ public class ShakeDetector implements OnSharedPreferenceChangeListener {
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
         if (key.equals(Preferences.KEY_GAMEPAD_REL_SENSITIVITY)) {
-            updateSettings(sp);
+            updateSettings();
         }
     }
     

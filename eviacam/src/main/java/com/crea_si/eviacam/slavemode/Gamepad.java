@@ -16,12 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.slavemode;
 
 import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.api.GamepadButtons;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
+import com.crea_si.eviacam.service.MotionProcessor;
+import com.crea_si.eviacam.service.OverlayView;
+import com.crea_si.eviacam.service.PointerLayerView;
 
 import android.content.Context;
 import android.graphics.PointF;
@@ -72,7 +75,7 @@ public class Gamepad implements MotionProcessor {
     }
 
     private void init() {
-        mGamepadAbs= new GamepadAbs(mContext);
+        mGamepadAbs= new GamepadAbs();
         
         mShakeDetectorH = new ShakeDetector();
         mShakeDetectorV = new ShakeDetector();
@@ -136,7 +139,7 @@ public class Gamepad implements MotionProcessor {
         }
     }
 
-    public boolean registerListener(IGamepadEventListener l) {
+    boolean registerListener(IGamepadEventListener l) {
         if (mPadEventListener== null) {
             mPadEventListener= l;
             return true;
@@ -144,11 +147,11 @@ public class Gamepad implements MotionProcessor {
         return false;
     }
 
-    public void unregisterListener() {
+    void unregisterListener() {
         mPadEventListener= null;
     }
     
-    public void setOperationMode(int mode) {
+    void setOperationMode(int mode) {
         if (mOperationMode== mode) return;
 
         if (mode== SlaveMode.GAMEPAD_ABSOLUTE && !isPaused) {

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.slavemode;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -38,7 +38,7 @@ public class GamepadPreferencesActivity extends Activity {
 
         private final ListPreference mListPreference;
 
-        public ListPreferenceUpdate(ListPreference lp) {
+        ListPreferenceUpdate(ListPreference lp) {
             mListPreference = lp;
         }
 

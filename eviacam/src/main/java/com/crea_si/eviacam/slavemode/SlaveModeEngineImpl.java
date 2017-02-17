@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.slavemode;
 
 import android.app.Service;
 import android.graphics.PointF;
@@ -24,8 +24,11 @@ import android.graphics.PointF;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
+import com.crea_si.eviacam.service.CoreEngine;
+import com.crea_si.eviacam.service.MotionProcessor;
+import com.crea_si.eviacam.service.MouseEmulation;
 
-class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
+public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
     /* slave mode operation mode */
     private int mSlaveOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
 

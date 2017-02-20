@@ -41,6 +41,7 @@ import android.view.SurfaceView;
 import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.VisionPipeline;
+import com.crea_si.eviacam.util.FlipDirection;
 
 
 @SuppressWarnings("deprecation")

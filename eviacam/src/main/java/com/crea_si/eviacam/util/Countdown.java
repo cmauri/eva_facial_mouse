@@ -17,17 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
-
-import android.annotation.SuppressLint;
+package com.crea_si.eviacam.util;
 
 /**
  * Time based countdown.
  *
  * Precision of milliseconds.
  */
-@SuppressLint("Assert")
-class Countdown {
+public class Countdown {
     // last stored value of the millis counter
     private long mLastTimeStamp;
 
@@ -38,7 +35,7 @@ class Countdown {
      * Constructor
      * @param timeToWait time of the countdown in milliseconds
      */
-    Countdown (long timeToWait) {
+    public Countdown (long timeToWait) {
         setTimeToWait (timeToWait);
         reset();
     }
@@ -63,7 +60,7 @@ class Countdown {
      * @param timeToWait time of the countdown in milliseconds
      */
     public void setTimeToWait (long timeToWait) {
-        assert(timeToWait>= 0);
+        if (timeToWait < 0) throw new AssertionError();
         mTimeToWait= timeToWait;
     }
 

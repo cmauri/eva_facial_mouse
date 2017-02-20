@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.util;
 
 import android.content.Context;
 import android.hardware.SensorManager;
@@ -32,7 +32,7 @@ import android.view.OrientationEventListener;
  * in its natural position, 90 degrees when its left side is at the top, 180 degrees
  * when it is upside down, and 270 degrees when its right side is to the top.
  */
-class PhysicalOrientation extends OrientationEventListener {
+public class PhysicalOrientation extends OrientationEventListener {
     private int mCurrentOrientation = 0;
     
     public PhysicalOrientation(Context context) {

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.util;
 
 import android.graphics.Point;
 import android.view.View;
@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 
 import com.crea_si.eviacam.EVIACAM;
 
-class ViewUtils {
+public class ViewUtils {
     /**
      * Determines if given point is inside view
      * @param p - coordinates of point 
@@ -35,17 +35,16 @@ class ViewUtils {
      */
     public static boolean isPointInsideView(Point p, View view, float scale) {
         if (view == null) return false;
-        
+
         int[] location= new int[2];
-        
+
         view.getLocationOnScreen(location);
-        
+
         if (p.x< location[0] || p.y< location[1]) return false;
 
-        if (location[0] + view.getWidth() * scale < p.x ||
-            location[1] + view.getHeight() * scale < p.y) return false;
-   
-        return true;
+        return !(location[0] + view.getWidth() * scale < p.x ||
+                location[1] + view.getHeight() * scale < p.y);
+
     }
 
     /**
@@ -85,8 +84,9 @@ class ViewUtils {
         return null;
     }
     
-    /*
-     * for debugging
+    /**
+     * Dump view group hierarchy for debugging
+     * @param v view
      */
     public static void dumpViewGroupHierarchy (View v) {
         if (v == null) return;

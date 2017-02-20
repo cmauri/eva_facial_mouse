@@ -22,7 +22,7 @@
 // https://github.com/TonicArtos/Otago-Linguistics-Experiments/blob/master/SPRE/src/com/michaelnovakjr/numberpicker/NumberPickerPreference.java
 // https://gist.github.com/thom-nic/959884
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;

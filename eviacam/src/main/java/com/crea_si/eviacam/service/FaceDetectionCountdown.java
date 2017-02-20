@@ -21,6 +21,7 @@ package com.crea_si.eviacam.service;
 import android.content.SharedPreferences;
 
 import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.util.Countdown;
 
 /**
  * Manages the time elapsed since last face detection.

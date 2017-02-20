@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.crea_si.eviacam.service.FaceDetectionCountdown;
+import com.crea_si.eviacam.util.Blinker;
 
 /**
  *  IU for the camera viewer

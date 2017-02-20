@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.crea_si.eviacam.util;
 
- package com.crea_si.eviacam.service;
-
+import java.lang.ref.WeakReference;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,16 +27,34 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
-
+/**
+ * Intermittent toast message
+ */
 public class HeartBeat {
     private final Timer mTimer;
-    private final Context mContext;
-    private final String mMessage;
-    
-    public HeartBeat(Context context, String msg) {
-        mContext= context;
+    private final Handler mToastHandler;
+
+    /* Declare handler as static inner class to avoid memory leaks. See:
+        http://www.androiddesignpatterns.com/2013/01/inner-class-handler-memory-leak.html
+     */
+    private static class HeartBeatHandler extends Handler {
+        private final WeakReference<Context> mContext;
+        private final String mMessage;
+
+        HeartBeatHandler(Context c, String msg) {
+            mContext= new WeakReference<>(c);
+            mMessage= msg;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Toast.makeText(mContext.get(), mMessage, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public HeartBeat(final Context context, String msg) {
         mTimer= new Timer();
-        mMessage= msg;
+        mToastHandler = new HeartBeatHandler(context, msg);
     }
     
     public void start() {
@@ -49,15 +67,7 @@ public class HeartBeat {
     
     private class mainTask extends TimerTask {
         public void run() {
-            toastHandler.sendEmptyMessage(0);
+            mToastHandler.sendEmptyMessage(0);
         }
     }
-
-    private final Handler toastHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Toast.makeText(
-                    mContext, mMessage, Toast.LENGTH_SHORT).show();
-        }
-    };
 }

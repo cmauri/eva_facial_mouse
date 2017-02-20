@@ -27,7 +27,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crea_si.eviacam.service.HeartBeat;
+import com.crea_si.eviacam.util.HeartBeat;
 
 /***
  * Constants and common stuff 
@@ -43,7 +43,7 @@ public class EVIACAM {
     
     private static HeartBeat sHeartBeat;
 
-    public static final Handler sHandler= new Handler();
+    private static final Handler sHandler= new Handler();
     
     public static void debugInit(Context c) {
         if (!ATTACH_DEBUGGER) return;

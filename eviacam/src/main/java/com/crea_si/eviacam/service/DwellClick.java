@@ -27,6 +27,7 @@ import android.graphics.PointF;
 
 import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.util.Countdown;
 
 class DwellClick implements OnSharedPreferenceChangeListener {
     /**

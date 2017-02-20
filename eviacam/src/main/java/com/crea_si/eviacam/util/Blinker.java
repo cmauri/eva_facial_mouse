@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.camera;
+package com.crea_si.eviacam.util;
 
 /**
  * Implements a time based blinker with equal duration for the ON/OFF states
  */
-class Blinker {
+public class Blinker {
     // Duration of the ON/OFF state
     private final long mDuration;
 
@@ -33,14 +33,14 @@ class Blinker {
      *
      * @param duration duration of the blinker
      */
-    Blinker(int duration) {
+    public Blinker(int duration) {
         mDuration = duration;
     }
 
     /**
      * Start the blinker. Do nothing if already started.
      */
-    void start() {
+    public void start() {
         if (mStartTime!= 0) return;
         mStartTime= System.currentTimeMillis();
     }
@@ -48,7 +48,7 @@ class Blinker {
     /**
      * Stop the blinker
      */
-    void stop() {
+    public void stop() {
         mStartTime= 0;
     }
 
@@ -57,7 +57,7 @@ class Blinker {
      *
      * @return true means ON state, false means OFF or disabled
      */
-    boolean getState() {
+    public boolean getState() {
         return mStartTime == 0 || (((System.currentTimeMillis() - mStartTime) / mDuration) & 1)== 0;
     }
 }

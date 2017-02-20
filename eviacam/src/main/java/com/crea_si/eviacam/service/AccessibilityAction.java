@@ -36,6 +36,7 @@ import android.view.accessibility.AccessibilityWindowInfo;
 
 import com.crea_si.eviacam.EVIACAM;
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.util.AccessibilityNodeDebug;
 
  /**
  * Manages actions relative to the Android accessibility API 

@@ -40,6 +40,7 @@ import android.widget.RelativeLayout;
 
 import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.util.ViewUtils;
 
 public class DockPanelLayerView extends RelativeLayout 
     implements OnSharedPreferenceChangeListener {

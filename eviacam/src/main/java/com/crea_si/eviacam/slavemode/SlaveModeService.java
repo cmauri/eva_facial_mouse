@@ -23,15 +23,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
-import com.crea_si.eviacam.EVIACAM;
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.common.EVIACAM;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.api.GamepadParams;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.ISlaveMode;
 import com.crea_si.eviacam.api.IReadyEventListener;
-import com.crea_si.eviacam.service.Engine;
-import com.crea_si.eviacam.service.EngineSelector;
+import com.crea_si.eviacam.common.Engine;
+import com.crea_si.eviacam.EngineSelector;
 
 import android.app.Service;
 import android.content.Intent;

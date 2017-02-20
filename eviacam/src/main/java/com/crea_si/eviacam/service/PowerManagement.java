@@ -24,7 +24,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.PowerManager;
 
-import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.common.EVIACAM;
 
 /**
  * Power management stuff

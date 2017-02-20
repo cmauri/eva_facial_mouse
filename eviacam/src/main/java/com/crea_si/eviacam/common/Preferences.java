@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam;
+package com.crea_si.eviacam.common;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+
+import com.crea_si.eviacam.R;
 
 public class Preferences {
     /**
@@ -50,8 +52,8 @@ public class Preferences {
     public static final String KEY_GAMEPAD_TRANSPARENCY= "gamepad_transparency";
     public static final String KEY_GAMEPAD_ABS_SPEED= "gamepad_abs_speed";
     public static final String KEY_GAMEPAD_REL_SENSITIVITY= "gamepad_rel_sensitivity";
-    public static final String KEY_RUN_TUTORIAL= "run_tutorial";
-    public static final String KEY_SHOW_LAUNCHER_HELP= "show_launcher_help";
+    private static final String KEY_RUN_TUTORIAL= "run_tutorial";
+    private static final String KEY_SHOW_LAUNCHER_HELP= "show_launcher_help";
 
     /**
      * Gamepad locations
@@ -91,9 +93,9 @@ public class Preferences {
     private int mInitCount= 0;
 
     // init mode
-    private static int INIT_NONE= 0;
-    private static int INIT_A11Y= 1;
-    private static int INIT_SLAVE_MODE= 2;
+    private static final int INIT_NONE= 0;
+    private static final int INIT_A11Y= 1;
+    private static final int INIT_SLAVE_MODE= 2;
     private int mInitMode= INIT_NONE;
 
     // constructor

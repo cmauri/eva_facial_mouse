@@ -17,7 +17,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
 
     <application
-        android:name=".EViacamApplication"
+        android:name=".common.EViacamApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -46,7 +46,7 @@
 
         <!-- Enable Viacam main (mouse) preferences -->
         <activity
-            android:name=".service.MousePreferencesActivity"
+            android:name=".common.MousePreferencesActivity"
             android:label="@string/eviacam_preferences_title"
             android:launchMode="singleTop"
             android:taskAffinity="com.crea_si.eviacam.SettingsAffinity"
@@ -59,7 +59,7 @@
         
         <!-- Splash screen -->
         <activity
-            android:name=".service.SplashActivity"
+            android:name=".common.SplashActivity"
             android:exported="false"
             android:noHistory="false"
             android:excludeFromRecents="false"
@@ -68,7 +68,7 @@
         
         <!-- Launcher activity -->
         <activity
-            android:name=".service.LauncherActivity"
+            android:name=".common.LauncherActivity"
             android:label="@string/app_name"
             android:noHistory="true"
             android:excludeFromRecents="true" >
@@ -130,7 +130,7 @@
         android:finishOnTaskLaunch="true" />
 
         <!-- TechInfo activity -->
-        <activity android:name=".service.TechInfoActivity"
+        <activity android:name=".common.TechInfoActivity"
                   android:exported="false" />
 
         <!--

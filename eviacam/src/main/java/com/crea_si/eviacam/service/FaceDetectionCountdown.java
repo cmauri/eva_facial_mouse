@@ -20,7 +20,7 @@ package com.crea_si.eviacam.service;
 
 import android.content.SharedPreferences;
 
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.util.Countdown;
 
 /**

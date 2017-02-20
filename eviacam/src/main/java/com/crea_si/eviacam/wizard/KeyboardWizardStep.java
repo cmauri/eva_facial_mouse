@@ -30,7 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.InputMethodAction;
+import com.crea_si.eviacam.common.InputMethodAction;
 import com.crea_si.eviacam.R;
 
 import org.codepond.wizardroid.WizardStep;

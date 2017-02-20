@@ -26,7 +26,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.Preference.OnPreferenceChangeListener;
 
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 
 /**

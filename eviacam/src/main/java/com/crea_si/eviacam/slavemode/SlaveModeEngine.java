@@ -20,7 +20,7 @@ package com.crea_si.eviacam.slavemode;
 
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
-import com.crea_si.eviacam.service.Engine;
+import com.crea_si.eviacam.common.Engine;
 
 /**
  * Interface for slave mode service engine 

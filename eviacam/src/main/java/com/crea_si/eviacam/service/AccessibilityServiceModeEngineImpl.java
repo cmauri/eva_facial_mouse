@@ -18,8 +18,11 @@
  */
 package com.crea_si.eviacam.service;
 
-import com.crea_si.eviacam.EVIACAM;
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.common.CoreEngine;
+import com.crea_si.eviacam.common.EVIACAM;
+import com.crea_si.eviacam.common.Engine;
+import com.crea_si.eviacam.common.MouseEmulation;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 
 import android.app.Service;
@@ -35,7 +38,7 @@ import android.view.accessibility.AccessibilityEvent;
  * Engine implementation for the accessibility service which provides
  * a mouse emulation motion processor
  */
-class AccessibilityServiceModeEngineImpl extends CoreEngine
+public class AccessibilityServiceModeEngineImpl extends CoreEngine
         implements PowerManagement.OnScreenStateChangeListener,
         AccessibilityServiceModeEngine {
 

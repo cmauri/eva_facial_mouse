@@ -18,13 +18,13 @@
  */
 package com.crea_si.eviacam.slavemode;
 
-import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.api.GamepadButtons;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
-import com.crea_si.eviacam.service.MotionProcessor;
-import com.crea_si.eviacam.service.OverlayView;
-import com.crea_si.eviacam.service.PointerLayerView;
+import com.crea_si.eviacam.common.MotionProcessor;
+import com.crea_si.eviacam.common.OverlayView;
+import com.crea_si.eviacam.common.PointerLayerView;
 
 import android.content.Context;
 import android.graphics.PointF;

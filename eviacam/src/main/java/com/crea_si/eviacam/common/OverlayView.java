@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- package com.crea_si.eviacam.service;
+ package com.crea_si.eviacam.common;
 
 import android.content.Context;
 import android.view.View;
@@ -25,7 +25,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.graphics.PixelFormat;
 
-import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.common.EVIACAM;
 
 /***
  * Root relative layout which is overlaid over the entire screen of the device an to which

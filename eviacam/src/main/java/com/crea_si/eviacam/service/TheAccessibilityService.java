@@ -28,9 +28,11 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.accessibility.AccessibilityEvent;
 
-import com.crea_si.eviacam.Analytics;
-import com.crea_si.eviacam.EVIACAM;
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.EngineSelector;
+import com.crea_si.eviacam.common.Analytics;
+import com.crea_si.eviacam.common.EVIACAM;
+import com.crea_si.eviacam.common.Engine;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.wizard.WizardUtils;
 
 /**

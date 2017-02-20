@@ -23,7 +23,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 
 /**

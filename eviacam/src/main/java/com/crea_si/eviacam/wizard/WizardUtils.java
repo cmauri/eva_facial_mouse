@@ -28,7 +28,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.EngineSelector;
+import com.crea_si.eviacam.EngineSelector;
 
 public class WizardUtils {
     public static final String WIZARD_CLOSE_EVENT_NAME= "wizard-closed-event";

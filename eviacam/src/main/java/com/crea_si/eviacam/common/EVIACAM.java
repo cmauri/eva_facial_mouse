@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam;
+package com.crea_si.eviacam.common;
 
 import android.content.Context;
 import android.os.Handler;
@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.util.HeartBeat;
 
 /***

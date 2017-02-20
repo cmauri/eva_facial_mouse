@@ -19,7 +19,7 @@
 
 package com.crea_si.eviacam.slavemode;
 
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.api.GamepadButtons;
 
 import android.content.SharedPreferences;

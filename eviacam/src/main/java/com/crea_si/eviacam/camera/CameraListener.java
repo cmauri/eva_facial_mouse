@@ -38,9 +38,9 @@ import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.view.SurfaceView;
 
-import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.VisionPipeline;
+import com.crea_si.eviacam.common.VisionPipeline;
 import com.crea_si.eviacam.util.FlipDirection;
 
 

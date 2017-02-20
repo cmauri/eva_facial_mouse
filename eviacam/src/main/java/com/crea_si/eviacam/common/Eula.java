@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam;
+package com.crea_si.eviacam.common;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +25,12 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.crea_si.eviacam.BuildConfig;
+import com.crea_si.eviacam.R;
+
+/**
+ * Utilities to check if EULA has been accepted and display it
+ */
 public class Eula {
 
     public interface Listener {

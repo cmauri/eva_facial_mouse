@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.common;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -32,7 +32,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.crea_si.eviacam.Eula;
 import com.crea_si.eviacam.R;
 
 /**

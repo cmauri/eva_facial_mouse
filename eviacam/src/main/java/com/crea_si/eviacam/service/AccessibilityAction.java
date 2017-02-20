@@ -34,15 +34,17 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
-import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.common.DockPanelLayerView;
+import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.common.InputMethodAction;
 import com.crea_si.eviacam.util.AccessibilityNodeDebug;
 
  /**
  * Manages actions relative to the Android accessibility API 
  */
 
-class AccessibilityAction {
+public class AccessibilityAction {
 
     // delay after which an accessibility event is processed
     private static final long SCROLLING_SCAN_RUN_DELAY= 700;

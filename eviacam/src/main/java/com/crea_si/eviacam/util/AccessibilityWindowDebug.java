@@ -25,7 +25,7 @@ import android.os.Build;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
-import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.common.EVIACAM;
 
 /**
  * Debugging code for AccessibilityWindowInfo (API +21)

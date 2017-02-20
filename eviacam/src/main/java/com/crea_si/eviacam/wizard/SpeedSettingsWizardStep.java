@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
 

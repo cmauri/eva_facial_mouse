@@ -24,9 +24,9 @@ import android.graphics.PointF;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
-import com.crea_si.eviacam.service.CoreEngine;
-import com.crea_si.eviacam.service.MotionProcessor;
-import com.crea_si.eviacam.service.MouseEmulation;
+import com.crea_si.eviacam.common.CoreEngine;
+import com.crea_si.eviacam.common.MotionProcessor;
+import com.crea_si.eviacam.common.MouseEmulation;
 
 public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
     /* slave mode operation mode */

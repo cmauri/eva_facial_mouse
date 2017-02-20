@@ -22,7 +22,7 @@ package com.crea_si.eviacam.slavemode;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.common.Preferences;
 
 /**
  * Detect (face) shakes 

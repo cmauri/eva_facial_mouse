@@ -23,7 +23,7 @@ import android.graphics.Point;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.common.EVIACAM;
 
 public class ViewUtils {
     /**

@@ -16,8 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam;
 
+import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.service.AccessibilityServiceModeEngineImpl;
 import com.crea_si.eviacam.slavemode.SlaveModeEngine;
 import com.crea_si.eviacam.slavemode.SlaveModeEngineImpl;
 

@@ -22,7 +22,7 @@ package com.crea_si.eviacam.util;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.crea_si.eviacam.EVIACAM;
+import com.crea_si.eviacam.common.EVIACAM;
 
 public class AccessibilityNodeDebug {
     static 

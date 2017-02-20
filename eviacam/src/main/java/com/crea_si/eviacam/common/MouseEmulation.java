@@ -16,11 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.common;
 
-import com.crea_si.eviacam.EVIACAM;
-import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.api.IMouseEventListener;
+import com.crea_si.eviacam.service.AccessibilityAction;
+import com.crea_si.eviacam.service.ControlsLayerView;
+import com.crea_si.eviacam.service.ScrollLayerView;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;

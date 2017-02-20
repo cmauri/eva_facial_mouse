@@ -21,6 +21,8 @@ package com.crea_si.eviacam.service;
 
 import android.view.accessibility.AccessibilityEvent;
 
+import com.crea_si.eviacam.common.Engine;
+
 /**
  * Interface for the engine in accessibility service mode
  */

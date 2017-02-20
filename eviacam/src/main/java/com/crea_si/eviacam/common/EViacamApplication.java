@@ -20,7 +20,7 @@
  * Support to catch unexpected exceptions
  * TODO: disable/halt service after an error
  */
-package com.crea_si.eviacam;
+package com.crea_si.eviacam.common;
 
 import android.app.Application;
 import android.os.Process;

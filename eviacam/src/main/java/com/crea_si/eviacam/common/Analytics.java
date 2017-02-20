@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam;
+package com.crea_si.eviacam.common;
 
 import android.content.Context;
 
+import com.crea_si.eviacam.BuildConfig;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -35,14 +36,10 @@ public class Analytics {
     /* Singleton instance */
     private static Analytics sInstance;
 
-    private final Context mContext;
-    private final GoogleAnalytics mAnalytics;
-
     /*
         Trackers
      */
     private final Tracker mServiceTracker;
-    private final Tracker mUITracker;
 
     /* Used to compute time between events */
     private long mStartTime;
@@ -78,11 +75,9 @@ public class Analytics {
 
     /* Constructor */
     private Analytics(Context c) {
-        mContext= c;
-
-        mAnalytics= GoogleAnalytics.getInstance(c);
-        mAnalytics.setDryRun(false);
-        mAnalytics.setLocalDispatchPeriod((BuildConfig.DEBUG ? 15 : 1800));
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(c);
+        analytics.setDryRun(false);
+        analytics.setLocalDispatchPeriod((BuildConfig.DEBUG ? 15 : 1800));
 
         /* Uncomment to avoid sending hits to analytics in debug mode */
         //if (BuildConfig.DEBUG) { mAnalytics.setAppOptOut(true); }
@@ -91,15 +86,15 @@ public class Analytics {
         /*
          *  UI auto activity tracker
          */
-        mUITracker = mAnalytics.newTracker(TRACKING_ID);
-        mUITracker.enableExceptionReporting(false);
-        mUITracker.enableAdvertisingIdCollection(false);
-        mUITracker.enableAutoActivityTracking(true);
+        Tracker tracker = analytics.newTracker(TRACKING_ID);
+        tracker.enableExceptionReporting(false);
+        tracker.enableAdvertisingIdCollection(false);
+        tracker.enableAutoActivityTracking(true);
 
         /*
          *  Service tracker
          */
-        mServiceTracker = mAnalytics.newTracker(TRACKING_ID);
+        mServiceTracker = analytics.newTracker(TRACKING_ID);
         mServiceTracker.enableExceptionReporting(true);
         mServiceTracker.enableAdvertisingIdCollection(false);
         mServiceTracker.enableAutoActivityTracking(false);

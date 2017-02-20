@@ -17,12 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.common;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -31,7 +30,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 
 import com.crea_si.eviacam.BuildConfig;
-import com.crea_si.eviacam.Preferences;
 import com.crea_si.eviacam.R;
 
 /**

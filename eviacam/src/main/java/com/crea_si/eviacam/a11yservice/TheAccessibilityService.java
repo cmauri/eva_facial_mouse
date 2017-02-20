@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.a11yservice;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.BroadcastReceiver;

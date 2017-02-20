@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.a11yservice;
 
 import com.crea_si.eviacam.common.CoreEngine;
 import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.common.Engine;
+import com.crea_si.eviacam.common.FaceDetectionCountdown;
 import com.crea_si.eviacam.common.MouseEmulation;
+import com.crea_si.eviacam.common.PowerManagement;
 import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 

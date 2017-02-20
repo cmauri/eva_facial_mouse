@@ -18,8 +18,8 @@
  */
 package com.crea_si.eviacam;
 
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngineImpl;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngineImpl;
 import com.crea_si.eviacam.slavemode.SlaveModeEngine;
 import com.crea_si.eviacam.slavemode.SlaveModeEngineImpl;
 

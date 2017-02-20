@@ -27,7 +27,7 @@ import android.content.res.Resources;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
 import com.crea_si.eviacam.EngineSelector;
 
 public class WizardUtils {

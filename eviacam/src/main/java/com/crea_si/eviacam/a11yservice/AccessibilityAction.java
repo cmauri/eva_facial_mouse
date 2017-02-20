@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.a11yservice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -441,7 +441,7 @@ public class AccessibilityAction {
         refreshScrollingButtons();
     }
 
-    Runnable mRefreshScrollingRunnable = new Runnable() {
+    private Runnable mRefreshScrollingRunnable = new Runnable() {
         List<AccessibilityNodeInfo> scrollableNodes = new ArrayList<>();
 
         @Override
@@ -535,7 +535,7 @@ public class AccessibilityAction {
      */
     private static class RecursionInfo {
         final public Point p;
-        final public Rect tmp= new Rect();
+        final Rect tmp= new Rect();
         final public int actions;
         
         RecursionInfo (Point p, int actions) {

@@ -19,9 +19,9 @@
 package com.crea_si.eviacam.common;
 
 import com.crea_si.eviacam.api.IMouseEventListener;
-import com.crea_si.eviacam.service.AccessibilityAction;
-import com.crea_si.eviacam.service.ControlsLayerView;
-import com.crea_si.eviacam.service.ScrollLayerView;
+import com.crea_si.eviacam.a11yservice.AccessibilityAction;
+import com.crea_si.eviacam.a11yservice.ControlsLayerView;
+import com.crea_si.eviacam.a11yservice.ScrollLayerView;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;

@@ -25,7 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
 
 import org.codepond.wizardroid.WizardStep;
 

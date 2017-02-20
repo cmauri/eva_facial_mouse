@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.a11yservice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +41,12 @@ import com.crea_si.eviacam.util.ViewUtils;
 
 /**
  * Layer to draw scrolling buttons
- *  
  */
 public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenceChangeListener {
     
     /** */
     public class NodeAction {
-        public AccessibilityNodeInfo node;
+        AccessibilityNodeInfo node;
         public int actions;
         
         NodeAction(AccessibilityNodeInfo n, int a) {
@@ -58,9 +57,9 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     
     /** Class to store button with a NodeAction */
     private class ButtonNodeAction {
-        public AccessibilityNodeInfo node;
-        public ImageButton buttonForward;
-        public ImageButton buttonBackward;
+        AccessibilityNodeInfo node;
+        ImageButton buttonForward;
+        ImageButton buttonBackward;
     }
     
     /** Button size in device pixels */
@@ -72,7 +71,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     private float mSizeMultiplier = 1.0f;
     
     // scroll areas
-    private List<ButtonNodeAction> mScrollAreas = new ArrayList<ButtonNodeAction>();
+    private List<ButtonNodeAction> mScrollAreas = new ArrayList<>();
     private int mScrollAreasCount = 0;
     
     public ScrollLayerView(Context c) {
@@ -81,10 +80,10 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         // Preferences
         SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
-        updateSettings(sp);
+        updateSettings();
     }
     
-    private synchronized void updateSettings(SharedPreferences sp) {
+    private synchronized void updateSettings() {
         mSizeMultiplier= Preferences.get().getUIElementsSize();
 
         // Force buttons full refresh
@@ -100,7 +99,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
         if (key.equals(Preferences.KEY_UI_ELEMENTS_SIZE)) {
-            updateSettings(sp);
+            updateSettings();
         }
     }
 

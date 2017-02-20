@@ -29,7 +29,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
 import com.crea_si.eviacam.common.InputMethodAction;
 import com.crea_si.eviacam.R;
 

@@ -25,8 +25,6 @@ import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.camera.CameraLayerView;
 import com.crea_si.eviacam.camera.CameraListener;
 import com.crea_si.eviacam.camera.FrameProcessor;
-import com.crea_si.eviacam.service.FaceDetectionCountdown;
-import com.crea_si.eviacam.common.OrientationManager;
 
 import android.app.AlertDialog;
 import android.app.Service;

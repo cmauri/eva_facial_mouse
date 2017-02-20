@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.common;
 
 import android.content.SharedPreferences;
 
-import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.util.Countdown;
 
 /**
@@ -37,13 +36,13 @@ public class FaceDetectionCountdown extends Countdown
     /**
      * Constructor
      */
-    FaceDetectionCountdown() {
+    public FaceDetectionCountdown() {
         super(0);
 
         // preferences
         SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
-        updateSettings(sp);
+        updateSettings();
     }
 
     public void cleanup() {
@@ -54,11 +53,11 @@ public class FaceDetectionCountdown extends Countdown
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
         if (key.equals(Preferences.KEY_TIME_WITHOUT_DETECTION)) {
-            updateSettings(sp);
+            updateSettings();
         }
     }
 
-    private void updateSettings(SharedPreferences sp) {
+    private void updateSettings() {
         setTimeToWait(Preferences.get().getTimeWithoutDetection() * 1000);
     }
 

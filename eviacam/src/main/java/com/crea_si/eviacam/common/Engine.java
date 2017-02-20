@@ -21,8 +21,6 @@ package com.crea_si.eviacam.common;
 
 import android.app.Service;
 
-import com.crea_si.eviacam.service.FaceDetectionCountdown;
-
 /**
  * Interface for the engine
  */

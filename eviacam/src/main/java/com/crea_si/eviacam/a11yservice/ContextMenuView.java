@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.a11yservice;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ class ContextMenuView extends LinearLayout
     private int mActionsMask= 0;
     
     // references to actions and buttons pairs
-    private List<ActionButton> mActionButtons= new ArrayList<ActionButton>();
+    private List<ActionButton> mActionButtons= new ArrayList<>();
 
     // Buttons scale factor
     private float mScale = 1.0f;
@@ -59,7 +59,7 @@ class ContextMenuView extends LinearLayout
         // shared preferences
         SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
-        updateSettings(sp);
+        updateSettings();
     }
 
     public void cleanup() {
@@ -67,7 +67,7 @@ class ContextMenuView extends LinearLayout
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void updateSettings(SharedPreferences sp) {
+    private void updateSettings() {
         // get values from shared resources
         mScale = Preferences.get().getUIElementsSize();
 
@@ -86,7 +86,7 @@ class ContextMenuView extends LinearLayout
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
                                           String key) {
         if (key.equals(Preferences.KEY_UI_ELEMENTS_SIZE)) {
-            updateSettings(sharedPreferences);
+            updateSettings();
         }
     }
     

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.crea_si.eviacam.service;
+package com.crea_si.eviacam.a11yservice;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,20 +33,20 @@ import com.crea_si.eviacam.R;
 /**
  * Manage pause/resume notifications
  */
-public class ServiceNotification {
+class ServiceNotification {
     /**
      * Type of notification to display
      */
-    public static final int NOTIFICATION_ACTION_NONE = 0;
-    public static final int NOTIFICATION_ACTION_PAUSE = 1;
-    public static final int NOTIFICATION_ACTION_RESUME = 2;
+    static final int NOTIFICATION_ACTION_NONE = 0;
+    static final int NOTIFICATION_ACTION_PAUSE = 1;
+    static final int NOTIFICATION_ACTION_RESUME = 2;
 
     /*
      * constants for notifications
      */
-    public static final int NOTIFICATION_ID = 1;
-    public static final String NOTIFICATION_FILTER_ACTION = "ENABLE_DISABLE_EVIACAM";
-    public static final String NOTIFICATION_ACTION_NAME = "action";
+    private static final int NOTIFICATION_ID = 1;
+    private static final String NOTIFICATION_FILTER_ACTION = "ENABLE_DISABLE_EVIACAM";
+    static final String NOTIFICATION_ACTION_NAME = "action";
 
     private final Service mService;
 
@@ -62,7 +62,7 @@ public class ServiceNotification {
      * @param s  service
      * @param bc broadcast receiver which will be called when the notification is tapped
      */
-    public ServiceNotification(Service s, BroadcastReceiver bc) {
+    ServiceNotification(Service s, BroadcastReceiver bc) {
         mService = s;
         mBroadcastReceiver = bc;
     }

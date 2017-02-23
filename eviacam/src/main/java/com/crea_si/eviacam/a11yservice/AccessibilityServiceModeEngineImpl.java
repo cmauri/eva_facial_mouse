@@ -27,6 +27,7 @@ import com.crea_si.eviacam.common.PowerManagement;
 import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 
+import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -51,6 +52,12 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
     // TODO: move to the base class???
     private final FaceDetectionCountdown mFaceDetectionCountdown = new FaceDetectionCountdown();
 
+    // object which decides what to do with a new click
+    private ClickDispatcher mClickDispatcher;
+
+    // mouse emulation subsystem
+    private MouseEmulation mMouseEmulation;
+
     // power management stuff
     private PowerManagement mPowerManagement;
 
@@ -60,18 +67,22 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
     // state before switching screen off
     private int mSaveState= -1;
 
-    // reference to the engine when running as mouse emulation
-    private MouseEmulation mMouseEmulation;
-
     @Override
     protected void onInit(Service service) {
-        mMouseEmulation = new MouseEmulation(service, getOverlayView(), getOrientationManager());
+        mClickDispatcher= new ClickDispatcher((AccessibilityService) service, getOverlayView());
+
+        /* mouse emulation subsystem, should be the last one to add visible layers
+           so that the pointer is drawn on top of everything else */
+        mMouseEmulation = new MouseEmulation(service, getOverlayView(),
+                getOrientationManager(), mClickDispatcher);
 
         mPowerManagement = new PowerManagement(service, this);
 
         // Service notification
         mServiceNotification= new ServiceNotification(service, mServiceNotificationReceiver);
         mServiceNotification.init();
+
+        mSaveState= getState();
     }
 
     @Override
@@ -91,6 +102,11 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
         if (mMouseEmulation != null) {
             mMouseEmulation.cleanup();
             mMouseEmulation = null;
+        }
+
+        if (mClickDispatcher!= null) {
+            mClickDispatcher.cleanup();
+            mClickDispatcher= null;
         }
     }
 
@@ -112,15 +128,13 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
     };
 
     @Override
-    protected boolean onStart() {
+    protected final boolean onStart() {
         mPowerManagement.lockFullPower();         // Screen always on
         mPowerManagement.setSleepEnabled(true);   // Enable sleep call
-
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_PAUSE);
-
         mFaceDetectionCountdown.start();
-
         mMouseEmulation.start();
+        mClickDispatcher.start();
 
         return true;
     }
@@ -131,6 +145,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
         mPowerManagement.setSleepEnabled(false);
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_NONE);
         mMouseEmulation.stop();
+        mClickDispatcher.stop();
     }
 
     @Override
@@ -138,6 +153,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
         mPowerManagement.unlockFullPower();
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_RESUME);
         mMouseEmulation.stop();
+        mClickDispatcher.stop();
     }
 
     @Override
@@ -146,6 +162,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
         mPowerManagement.setSleepEnabled(true);   // Enable sleep call
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_RESUME);
         mMouseEmulation.stop();
+        mClickDispatcher.stop();
 
         Service s= getService();
         if (s!= null) {
@@ -159,19 +176,11 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
 
     @Override
     protected void onResume() {
-        mPowerManagement.lockFullPower();
-
-        mFaceDetectionCountdown.start();
-
-        mPowerManagement.setSleepEnabled(true);   // Enable sleep call
-
-        mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_PAUSE);
-
-        mMouseEmulation.start();
+        onStart();
     }
 
     /**
-     * Called when screen goes on or off
+     * Called when screen goes ON or OFF
      */
     @Override
     public void onOnScreenStateChange() {
@@ -191,13 +200,25 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
         }
     }
 
+    /**
+     * Called for each processed camera frame
+     *
+     * @param motion motion vector, could be (0, 0) if motion not detected or the engine is
+     *               paused or in standby mode
+     * @param faceDetected whether or not a face was detected for the last frame, note
+     *                     not all frames are checked for the face detection algorithm
+     * @param state current state of the engine
+     *
+     * NOTE: called from a secondary thread
+     */
     @Override
     protected void onFrame(PointF motion, boolean faceDetected, int state) {
         if (getState() == STATE_RUNNING) {
             mMouseEmulation.processMotion(motion);
+            mClickDispatcher.refresh();
         }
 
-        // States to be managed: RUNNING, PAUSED, STANDBY
+        // States to be managed below: RUNNING, PAUSED, STANDBY
 
         if (faceDetected) mFaceDetectionCountdown.start();
 
@@ -237,6 +258,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
         updateFaceDetectorStatus(mFaceDetectionCountdown);
     }
 
+
     @Override
     public void enablePointer() {
         if (mMouseEmulation != null) mMouseEmulation.enablePointer();
@@ -245,6 +267,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
     @Override
     public void disablePointer() {
         if (mMouseEmulation != null) mMouseEmulation.disablePointer();
+        if (mClickDispatcher!= null) mClickDispatcher.reset();
     }
 
     @Override
@@ -255,26 +278,27 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
     @Override
     public void disableClick() {
         if (mMouseEmulation != null) mMouseEmulation.disableClick();
+        if (mClickDispatcher!= null) mClickDispatcher.reset();
     }
 
     @Override
     public void enableDockPanel() {
-        if (mMouseEmulation != null) mMouseEmulation.enableDockPanel();
+        if (mClickDispatcher!= null) mClickDispatcher.enableDockPanel();
     }
 
     @Override
     public void disableDockPanel() {
-        if (mMouseEmulation != null) mMouseEmulation.disableDockPanel();
+        if (mClickDispatcher!= null) mClickDispatcher.disableDockPanel();
     }
 
     @Override
     public void enableScrollButtons() {
-        if (mMouseEmulation != null) mMouseEmulation.enableScrollButtons();
+        if (mClickDispatcher!= null) mClickDispatcher.enableScrollButtons();
     }
 
     @Override
     public void disableScrollButtons() {
-        if (mMouseEmulation != null) mMouseEmulation.disableScrollButtons();
+        if (mClickDispatcher!= null) mClickDispatcher.disableScrollButtons();
     }
 
     @Override
@@ -287,8 +311,8 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (mMouseEmulation != null) {
-            mMouseEmulation.onAccessibilityEvent(event);
+        if (mClickDispatcher != null) {
+            mClickDispatcher.onAccessibilityEvent(event);
         }
     }
 }

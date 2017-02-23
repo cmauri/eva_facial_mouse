@@ -56,7 +56,7 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
 
     // Class to open mouse preferences activity
     private static final String MOUSE_PREFERENCE_ACTIVITY_CLS =
-            "com.crea_si.eviacam.service.MousePreferencesActivity";
+            "com.crea_si.eviacam.common.MousePreferencesActivity";
     
     private final Context mContext;
     private final SlaveModeStatusListener mSlaveModeStatusListener;

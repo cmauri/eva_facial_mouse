@@ -40,7 +40,7 @@
             <intent 
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="com.crea_si.eviacam.service" 
-                android:targetClass="com.crea_si.eviacam.service.MousePreferencesActivity"
+                android:targetClass="com.crea_si.eviacam.common.MousePreferencesActivity"
                 android:data="slave_mode" />
         </PreferenceScreen>
 

@@ -19,45 +19,54 @@
 package com.crea_si.eviacam.slavemode;
 
 import android.app.Service;
+import android.graphics.Point;
 import android.graphics.PointF;
+import android.os.RemoteException;
+import android.os.SystemClock;
+import android.view.InputDevice;
+import android.view.MotionEvent;
 
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
+import com.crea_si.eviacam.common.MouseEmulationCallbacks;
 import com.crea_si.eviacam.common.CoreEngine;
+import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.common.MotionProcessor;
 import com.crea_si.eviacam.common.MouseEmulation;
 
-public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
-    /* slave mode operation mode */
+public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, MouseEmulationCallbacks {
+    // slave mode operation mode
     private int mSlaveOperationMode= SlaveMode.GAMEPAD_ABSOLUTE;
 
-    /* reference to the motion processor for mouse emulation */
+    // mouse emulation subsystem
     private MouseEmulation mMouseEmulation;
 
-    /* reference to the motion processor for gamepad emulation */
+    // gamepad emulation subsystem
     private Gamepad mGamepad;
 
-    /* generic reference to the current motion processor */
+    // reference to the current motion processor (could be mouse or gamepad)
     private MotionProcessor mCurrentMotionProcessor;
 
+    // reference to the listener for mouse events
+    private IMouseEventListener mMouseEventListener;
 
     @Override
     protected void onInit(Service service) {
         /*
-         * Init in slave mode. Instantiate both gamepad and mouse emulation.
+         * Init slave mode. Instantiate both gamepad and mouse emulator
          */
 
-        // Set valid mode for gamepad engine
+        // Set initial valid mode for gamepad engine
         final int mode= (mSlaveOperationMode!= SlaveMode.MOUSE?
                 mSlaveOperationMode : SlaveMode.GAMEPAD_ABSOLUTE);
 
-        // Create specific engines
+        // Create specific emulation subsystems
         mGamepad = new Gamepad(service, getOverlayView(), mode);
         mMouseEmulation =
-                new MouseEmulation(service, getOverlayView(), getOrientationManager());
+                new MouseEmulation(service, getOverlayView(), getOrientationManager(), this);
 
-        // Select enabled engine
+        // Select currently enabled subsystem
         if (mSlaveOperationMode== SlaveMode.MOUSE) {
             mCurrentMotionProcessor = mMouseEmulation;
         }
@@ -77,13 +86,14 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
             mGamepad = null;
         }
         mCurrentMotionProcessor= null;
+        mMouseEventListener= null;
     }
 
     @Override
     public void setSlaveOperationMode(int mode) {
         if (mSlaveOperationMode== mode) return;
 
-        // Pause old motion processor & switch to new
+        // Pause old motion processor & switch to new one
         if (mSlaveOperationMode== SlaveMode.MOUSE) {
             mMouseEmulation.stop();
             mCurrentMotionProcessor = mGamepad;
@@ -141,14 +151,87 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
 
     @Override
     public boolean registerMouseListener(IMouseEventListener l) {
-        return mMouseEmulation.registerListener(l);
+        if (mMouseEventListener== null) {
+            mMouseEventListener= l;
+            return true;
+        }
+        return false;
     }
 
     @Override
     public void unregisterMouseListener() {
-        mMouseEmulation.unregisterListener();
+        mMouseEventListener= null;
     }
 
+    /*
+     * Last values for checkAndSendMouseEvents
+     */
+    private Point mLastPos= new Point();
+    private boolean mLastClicked= false;
+
+    /**
+     * Send mouse events when needed
+     *
+     * @param pos pointer location in screen coordinates
+     * @param clicked true if click performed
+     */
+    private void checkAndSendMouseEvents(Point pos, boolean clicked) {
+        final float DEFAULT_SIZE = 1.0f;
+        final int DEFAULT_META_STATE = 0;
+        final float DEFAULT_PRECISION_X = 1.0f;
+        final float DEFAULT_PRECISION_Y = 1.0f;
+        final int DEFAULT_DEVICE_ID = 0;
+        final int DEFAULT_EDGE_FLAGS = 0;
+
+        // Check and generate events
+        IMouseEventListener l= mMouseEventListener;
+        if (l== null) return;
+
+        try {
+            long now = SystemClock.uptimeMillis();
+
+            if (!pos.equals(mLastPos)) {
+                MotionEvent event = MotionEvent.obtain(now, now, MotionEvent.ACTION_MOVE,
+                        pos.x, pos.y, 0.0f, DEFAULT_SIZE, DEFAULT_META_STATE,
+                        DEFAULT_PRECISION_X, DEFAULT_PRECISION_Y, DEFAULT_DEVICE_ID,
+                        DEFAULT_EDGE_FLAGS);
+                event.setSource(InputDevice.SOURCE_CLASS_POINTER);
+                l.onMouseEvent(event);
+            }
+            if (mLastClicked && !clicked) {
+                MotionEvent event = MotionEvent.obtain(now, now, MotionEvent.ACTION_UP,
+                        pos.x, pos.y, 0.0f, DEFAULT_SIZE, DEFAULT_META_STATE,
+                        DEFAULT_PRECISION_X, DEFAULT_PRECISION_Y, DEFAULT_DEVICE_ID,
+                        DEFAULT_EDGE_FLAGS);
+                event.setSource(InputDevice.SOURCE_CLASS_POINTER);
+                l.onMouseEvent(event);
+            }
+            else if (!mLastClicked && clicked) {
+                MotionEvent event = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN,
+                        pos.x, pos.y, 0.0f, DEFAULT_SIZE, DEFAULT_META_STATE,
+                        DEFAULT_PRECISION_X, DEFAULT_PRECISION_Y, DEFAULT_DEVICE_ID,
+                        DEFAULT_EDGE_FLAGS);
+                event.setSource(InputDevice.SOURCE_CLASS_POINTER);
+                l.onMouseEvent(event);
+            }
+        }
+        catch (RemoteException e) {
+            // Just log it and go on
+            EVIACAM.debug("RemoteException while sending mouse event");
+        }
+        mLastPos.set(pos.x, pos.y);
+        mLastClicked= clicked;
+    }
+
+    /**
+     * Process motion events
+     *
+     * @param motion motion vector, could be (0, 0) if motion not detected or the engine is
+     *               paused or in standby mode
+     * @param faceDetected whether or not a face was detected for the last frame, note
+     *                     not all frames are checked for the face detection algorithm
+     * @param state current state of the engine
+     */
     @Override
     protected void onFrame(PointF motion, boolean faceDetected, int state) {
         if (mCurrentMotionProcessor!= null) {
@@ -156,5 +239,31 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine {
                 mCurrentMotionProcessor.processMotion(motion);
             }
         }
+    }
+
+    // Avoid creating a new Point for each onMouseEvent call
+    private Point mPointInt= new Point();
+
+    /**
+     * Process mouse pointer events
+     *
+     * @param location location of the pointer is screen coordinates
+     * @param click true when click generated
+     */
+    @Override
+    public void onMouseEvent(PointF location, boolean click) {
+        mPointInt.x= (int) location.x;
+        mPointInt.y= (int) location.y;
+        checkAndSendMouseEvents(mPointInt, click);
+    }
+
+    /**
+     *
+     * @param location location of the pointer is screen coordinates
+     * @return always true
+     */
+    @Override
+    public boolean isClickable(PointF location) {
+        return true;
     }
 }

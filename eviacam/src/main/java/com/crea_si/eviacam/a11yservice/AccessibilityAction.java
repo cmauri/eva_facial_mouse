@@ -109,10 +109,10 @@ public class AccessibilityAction {
     private boolean mScrollingScanEnabled= true;
 
     // time stamp at which scrolling scan need to execute
-    private long mRunScrollingScanTStamp = 0;
+    private volatile long mRunScrollingScanTStamp = 0;
     
     // is set to true when scrolling scan needs to be run
-    private boolean mNeedToRunScrollingScan = false;
+    private volatile boolean mNeedToRunScrollingScan = false;
 
     // the current node tree contains a web view?
     private boolean mContainsWebView = false;
@@ -155,7 +155,10 @@ public class AccessibilityAction {
         mInputMethodAction.cleanup();
     }
 
-    public void enableScrollingScan () { mScrollingScanEnabled= true; }
+    public void enableScrollingScan () {
+        mScrollingScanEnabled= true;
+        mNeedToRunScrollingScan= true;
+    }
     public void disableScrollingScan () { mScrollingScanEnabled= false; }
 
     /** Manages global actions, return false if action not generated */

@@ -48,7 +48,7 @@ import android.view.WindowManager;
 public abstract class CoreEngine implements Engine, FrameProcessor {
 
     /* current engine state */
-    private int mCurrentState= STATE_DISABLED;
+    private volatile int mCurrentState= STATE_DISABLED;
     @Override
     public int getState() {
         return mCurrentState;
@@ -79,7 +79,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
     protected OrientationManager getOrientationManager() { return mOrientationManager; }
 
     /* Last time a face has been detected */
-    private long mLastFaceDetectionTimeStamp;
+    private volatile long mLastFaceDetectionTimeStamp;
 
 
     /* Abstract methods to be implemented by derived classes */

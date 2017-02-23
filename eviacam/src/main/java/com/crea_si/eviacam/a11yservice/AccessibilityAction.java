@@ -82,7 +82,7 @@ public class AccessibilityAction {
     private final AccessibilityService mAccessibilityService;
 
     // layer view for context menu
-    private final ControlsLayerView mControlsLayerView;
+    private final ContextMenuLayerView mContextMenuLayerView;
     
     // layer view for docking panel
     private final DockPanelLayerView mDockPanelLayerView;
@@ -120,10 +120,10 @@ public class AccessibilityAction {
     // navigation keyboard advice shown?
     private boolean mNavigationKeyboardAdviceShown= false;
 
-    public AccessibilityAction (AccessibilityService as, ControlsLayerView cv, 
+    public AccessibilityAction (AccessibilityService as, ContextMenuLayerView cv,
                                 DockPanelLayerView dplv, ScrollLayerView slv) {
         mAccessibilityService= as;
-        mControlsLayerView= cv;
+        mContextMenuLayerView = cv;
         mDockPanelLayerView= dplv;
         mScrollLayerView= slv;
         
@@ -134,7 +134,7 @@ public class AccessibilityAction {
         // populate actions to view & compute action mask
         int full_action_mask= 0;
         for (ActionLabel al : mActionLabels) {
-            mControlsLayerView.populateContextMenu(al.action, al.labelId);
+            mContextMenuLayerView.populateContextMenu(al.action, al.labelId);
             full_action_mask|= al.action;
         }
 
@@ -148,7 +148,7 @@ public class AccessibilityAction {
     }
 
     private Context getContext() {
-        return mControlsLayerView.getContext();
+        return mContextMenuLayerView.getContext();
     }
     
     public void cleanup () {
@@ -275,7 +275,7 @@ public class AccessibilityAction {
      */
     public void reset () {
         if (mContextMenuOpen) {
-            mControlsLayerView.hideContextMenu();
+            mContextMenuLayerView.hideContextMenu();
             mContextMenuOpen= false;
         }
     }
@@ -314,8 +314,8 @@ public class AccessibilityAction {
     public void performAction (Point pInt) {
         if (mContextMenuOpen) {
             /** When context menu open only check it */
-            int action= mControlsLayerView.testClick(pInt);
-            mControlsLayerView.hideContextMenu();
+            int action= mContextMenuLayerView.testClick(pInt);
+            mContextMenuLayerView.hideContextMenu();
             mContextMenuOpen= false;
             performActionOnNode(mNode, action);
         }
@@ -410,7 +410,7 @@ public class AccessibilityAction {
             if (Integer.bitCount(availableActions)> 1) {
                 /* Multiple actions available, need to show the context menu? */
                 if (mDockPanelLayerView.getContextMenuEnabled()) {
-                    mControlsLayerView.showContextMenu(pInt, availableActions);
+                    mContextMenuLayerView.showContextMenu(pInt, availableActions);
                     mContextMenuOpen = true;
                     mNode = node;
                 }

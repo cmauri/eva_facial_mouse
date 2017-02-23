@@ -31,6 +31,9 @@ import android.widget.LinearLayout;
 import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.util.ViewUtils;
 
+/**
+ * Buttons view for the pointer contextual menu
+ */
 class ContextMenuView extends LinearLayout
         implements SharedPreferences.OnSharedPreferenceChangeListener {
     
@@ -52,7 +55,7 @@ class ContextMenuView extends LinearLayout
     // Buttons scale factor
     private float mScale = 1.0f;
     
-    public ContextMenuView(Context c) {
+    ContextMenuView(Context c) {
         super(c);
         setOrientation(LinearLayout.VERTICAL);
 
@@ -62,7 +65,7 @@ class ContextMenuView extends LinearLayout
         updateSettings();
     }
 
-    public void cleanup() {
+    void cleanup() {
         SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
@@ -94,7 +97,7 @@ class ContextMenuView extends LinearLayout
      * create button, make invisible (gone), add to layout and store in 
      * collection for further reference 
      */
-    public void populateAction (int action, int labelId) {
+    void populateAction (int action, int labelId) {
         Button b= new Button(getContext());
         b.setText(getResources().getString(labelId));
         b.setVisibility(View.GONE);
@@ -122,7 +125,7 @@ class ContextMenuView extends LinearLayout
         mActionsMask= actions;
     }
 
-    public int testClick (Point p)  {
+    int testClick (Point p)  {
         if (!ViewUtils.isPointInsideView(p, this, mScale)) return 0;
 
         for (ActionButton ab : mActionButtons) {
@@ -135,11 +138,11 @@ class ContextMenuView extends LinearLayout
         return 0;
     }
 
-    public int getMeasuredWidthScaled() {
+    int getMeasuredWidthScaled() {
         return (int) (getMeasuredWidth() * mScale);
     }
 
-    public int getMeasuredHeightScaled() {
+    int getMeasuredHeightScaled() {
         return (int) (getMeasuredHeight() * mScale);
     }
 }

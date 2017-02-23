@@ -54,7 +54,7 @@ class ClickDispatcher implements MouseEmulationCallbacks,
     private boolean mScrollEnabled= true;
 
     // layer for drawing the pointer context menus
-    private ControlsLayerView mContextMenuView;
+    private ContextMenuLayerView mContextMenuView;
 
     // whether to play a sound when action performed
     private volatile boolean mSoundOnClick;
@@ -77,7 +77,7 @@ class ClickDispatcher implements MouseEmulationCallbacks,
         ov.addFullScreenLayer(mScrollLayerView);
 
         /* context menu view */
-        mContextMenuView = new ControlsLayerView(s);
+        mContextMenuView = new ContextMenuLayerView(s);
         mContextMenuView.setVisibility(View.INVISIBLE);
         ov.addFullScreenLayer(mContextMenuView);
 

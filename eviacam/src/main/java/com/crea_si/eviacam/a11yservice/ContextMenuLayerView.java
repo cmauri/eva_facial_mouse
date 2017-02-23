@@ -23,11 +23,14 @@ import android.graphics.Point;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-public class ControlsLayerView extends RelativeLayout {
+/**
+ * Fullscreen view for the pointer contextual (pop up) menu
+ */
+public class ContextMenuLayerView extends RelativeLayout {
     // view of the pointer context menu 
     private ContextMenuView mContextMenuView;
         
-    public ControlsLayerView(Context context) {
+    public ContextMenuLayerView(Context context) {
         super(context);
         
         // create and add buttons. initially these are hidden.

@@ -28,7 +28,7 @@ extern "C" {
 
 eviacam::VisionPipeline* g_visionPipeline= NULL;
 
-JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_init
+JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_common_VisionPipeline_init
 	(JNIEnv* env, jobject, jstring jCascadeName)
 {
 	LOGD ("init called");
@@ -42,7 +42,7 @@ JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_init
 	env->ReleaseStringUTFChars(jCascadeName, cascadeName);
 }
 
-JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_cleanup
+JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_common_VisionPipeline_cleanup
 	(JNIEnv*, jobject)
 {
 	LOGD ("cleanup called");
@@ -54,7 +54,7 @@ JNIEXPORT void JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_cleanup
 	g_visionPipeline= NULL;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_crea_1si_eviacam_service_VisionPipeline_processFrame
+JNIEXPORT jboolean JNICALL Java_com_crea_1si_eviacam_common_VisionPipeline_processFrame
 	(JNIEnv* env, jobject, jlong addrFrame, jint flip, jint rotation, jobject jPoint)
 {
 	assert (g_visionPipeline);

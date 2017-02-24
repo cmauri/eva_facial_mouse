@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -268,38 +268,11 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
     }
 
     /*
-     * Get configuration parameters for gamepad
-     */
-    /*
-    public GamepadParams getGamepadParams() {
-        if (mSlaveMode== null) return null;
-        try {
-            return mSlaveMode.getGamepadParams();
-        } catch (RemoteException e) {
-            Log.d(TAG, "SlaveMode.getGamepadParams: exception: " + e.getMessage());
-        }
-        return null;
-    }*/
-
-    /*
-     * Set configuration parameters for gamepad
-     */
-    /*
-    public void setGamepadParams(GamepadParams p) {
-        if (mSlaveMode== null) return;
-        try {
-            mSlaveMode.setGamepadParams(p);
-        } catch (RemoteException e) {
-            Log.d(TAG, "SlaveMode.getGamepadParams: exception: " + e.getMessage());
-        }
-    }*/
-
-    /*
      * Stub implementation for ready event listener
      */
     private class IReadyEventListenerWrapper extends IReadyEventListener.Stub {
         private final IReadyEventListener mListener;
-        public IReadyEventListenerWrapper(IReadyEventListener l) {
+        IReadyEventListenerWrapper(IReadyEventListener l) {
             mListener= l;
         }
 
@@ -314,7 +287,7 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
      */
     private class IGamepadEventListenerWrapper extends IGamepadEventListener.Stub {
         private final IGamepadEventListener mListener;
-        public IGamepadEventListenerWrapper(IGamepadEventListener l) {
+        IGamepadEventListenerWrapper(IGamepadEventListener l) {
             mListener= l;
         }
         
@@ -334,7 +307,7 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
      */
     private class IMouseEventListenerWrapper extends IMouseEventListener.Stub {
         private final IMouseEventListener mListener;
-        public IMouseEventListenerWrapper(IMouseEventListener l) {
+        IMouseEventListenerWrapper(IMouseEventListener l) {
             mListener= l;
         }
 

@@ -25,7 +25,6 @@ import java.util.concurrent.FutureTask;
 
 import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.common.Preferences;
-import com.crea_si.eviacam.api.GamepadParams;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.ISlaveMode;
@@ -267,25 +266,6 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 }
             };
             mMainThreadHandler.post(r);
-        }
-
-        // DEBUG
-        GamepadParams mParams;
-        @Override
-        public GamepadParams getGamepadParams() throws RemoteException {
-            // DEBUG
-            if (mParams== null) {
-                mParams= new GamepadParams();
-                mParams.mData= 20;
-            }
-            return mParams;
-        }
-
-        @Override
-        public void setGamepadParams(GamepadParams params) throws RemoteException {
-            // DEBUG
-            EVIACAM.debug("GamepadParams.mData: " + params.mData);
-            mParams.mData= params.mData;
         }
     };
 

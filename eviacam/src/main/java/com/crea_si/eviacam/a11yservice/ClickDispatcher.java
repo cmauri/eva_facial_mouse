@@ -207,6 +207,15 @@ class ClickDispatcher implements MouseEmulationCallbacks,
         }
     }
 
+    /**
+     * Get if view state for rest mode
+     *
+     * @return true if view state is in rest mode
+     */
+    public boolean getRestModeEnabled () {
+        return mDockPanelView.getRestModeEnabled();
+    }
+
     void onAccessibilityEvent(AccessibilityEvent event) {
         if (mAccessibilityAction != null) mAccessibilityAction.onAccessibilityEvent(event);
     }

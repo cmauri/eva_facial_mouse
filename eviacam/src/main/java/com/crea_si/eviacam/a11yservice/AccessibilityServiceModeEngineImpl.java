@@ -216,6 +216,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
         if (getState() == STATE_RUNNING) {
             mMouseEmulation.processMotion(motion);
             mClickDispatcher.refresh();
+            mMouseEmulation.setRestMode(mClickDispatcher.getRestModeEnabled());
         }
 
         // States to be managed below: RUNNING, PAUSED, STANDBY

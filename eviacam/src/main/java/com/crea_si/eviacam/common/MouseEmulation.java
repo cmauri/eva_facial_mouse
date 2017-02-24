@@ -52,8 +52,7 @@ public class MouseEmulation implements MotionProcessor {
 
     // resting mode
     private volatile boolean mRestingModeEnabled= false;
-    public void enableRestingMode() { mRestingModeEnabled= true; }
-    public void disableRestingMode() { mRestingModeEnabled= false; }
+    public void setRestMode(boolean enabled) { mRestingModeEnabled= enabled; }
 
     /**
      * Constructor

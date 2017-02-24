@@ -26,6 +26,6 @@
     android:accessibilityFeedbackType="feedbackSpoken"
     android:accessibilityFlags="flagDefault|flagRequestEnhancedWebAccessibility"
     android:description="@string/eviacam_service_description"
-    android:settingsActivity="com.crea_si.eviacam.service.MousePreferencesActivity"
+    android:settingsActivity="com.crea_si.eviacam.common.MousePreferencesActivity"
     android:canRetrieveWindowContent="true"
     android:canRequestEnhancedWebAccessibility="true" />

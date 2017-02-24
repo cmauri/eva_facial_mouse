@@ -24,7 +24,7 @@
 
     <PreferenceCategory android:title="@string/motion_settings">
 
-       <com.crea_si.eviacam.service.NumberPickerPreference           
+       <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="horizontal_speed"
             android:title="@string/horizontal_speed"
             android:dialogMessage="@string/horizontal_speed"
@@ -32,7 +32,7 @@
             app:minValue="@integer/axis_speed_min"
             app:maxValue="@integer/axis_speed_max"
         />
-       <com.crea_si.eviacam.service.NumberPickerPreference           
+       <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="vertical_speed"
             android:title="@string/vertical_speed"
             android:dialogMessage="@string/vertical_speed"
@@ -41,7 +41,7 @@
             app:maxValue="@integer/axis_speed_max"
         />
        
-       <com.crea_si.eviacam.service.NumberPickerPreference           
+       <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="acceleration"
             android:title="@string/acceleration"
             android:dialogMessage="@string/acceleration_summary" 
@@ -51,7 +51,7 @@
             app:maxValue="@integer/acceleration_max"
         />
        
-       <com.crea_si.eviacam.service.NumberPickerPreference           
+       <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="motion_smoothing"
             android:title="@string/motion_smoothing"
             android:dialogMessage="@string/motion_smoothing_summary" 
@@ -61,7 +61,7 @@
             app:maxValue="@integer/motion_smoothing_max"
         />
        
-       <com.crea_si.eviacam.service.NumberPickerPreference           
+       <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="motion_threshold"
             android:title="@string/motion_threshold"
             android:dialogMessage="@string/motion_threshold_summary" 
@@ -75,7 +75,7 @@
     
     <PreferenceCategory android:title="@string/click_settings">
 
-        <com.crea_si.eviacam.service.NumberPickerPreference           
+        <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="dwell_time"
             android:title="@string/dwell_time"
             android:dialogMessage="@string/dwell_time_summary" 
@@ -85,7 +85,7 @@
             app:maxValue="@integer/dwell_time_max"
         />
         
-        <com.crea_si.eviacam.service.NumberPickerPreference           
+        <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="dwell_area"
             android:title="@string/dwell_area"
             android:dialogMessage="@string/dwell_area_summary" 

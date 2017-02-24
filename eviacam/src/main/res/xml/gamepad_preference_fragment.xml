@@ -24,7 +24,7 @@
 
     <PreferenceCategory android:title="@string/gamepad_interface_settings">
       
-        <com.crea_si.eviacam.service.NumberPickerPreference
+        <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="gamepad_abs_speed"
             android:title="@string/gamepad_abs_speed"
             android:summary="@string/gamepad_abs_speed_summary"
@@ -33,7 +33,7 @@
             app:maxValue="@integer/gamepad_abs_speed_max"
         />
          
-        <com.crea_si.eviacam.service.NumberPickerPreference
+        <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="gamepad_rel_sensitivity"
             android:title="@string/gamepad_rel_sensitivity"
             android:summary="@string/gamepad_rel_sensitivity_summary"

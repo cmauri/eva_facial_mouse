@@ -24,7 +24,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.view.View;
 
-import com.crea_si.eviacam.service.InputMethodAction;
+import com.crea_si.eviacam.common.InputMethodAction;
 import com.crea_si.eviacam.R;
 
 import org.codepond.wizardroid.WizardFlow;

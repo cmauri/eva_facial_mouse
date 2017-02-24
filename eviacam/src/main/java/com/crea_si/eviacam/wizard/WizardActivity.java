@@ -21,7 +21,7 @@ package com.crea_si.eviacam.wizard;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
-import com.crea_si.eviacam.Eula;
+import com.crea_si.eviacam.common.Eula;
 import com.crea_si.eviacam.R;
 
 public class WizardActivity extends FragmentActivity implements Eula.Listener {

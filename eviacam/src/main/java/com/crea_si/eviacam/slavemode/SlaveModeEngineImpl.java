@@ -25,10 +25,12 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.view.InputDevice;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
+import com.crea_si.eviacam.common.DockPanelLayerView;
 import com.crea_si.eviacam.common.MouseEmulationCallbacks;
 import com.crea_si.eviacam.common.CoreEngine;
 import com.crea_si.eviacam.common.EVIACAM;
@@ -48,6 +50,9 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
     // reference to the current motion processor (could be mouse or gamepad)
     private MotionProcessor mCurrentMotionProcessor;
 
+    // layer for drawing the docking panel
+    private DockPanelLayerView mDockPanelView;
+
     // reference to the listener for mouse events
     private IMouseEventListener mMouseEventListener;
 
@@ -60,6 +65,11 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
         // Set initial valid mode for gamepad engine
         final int mode= (mSlaveOperationMode!= SlaveMode.MOUSE?
                 mSlaveOperationMode : SlaveMode.GAMEPAD_ABSOLUTE);
+
+        /* dockable menu view */
+        mDockPanelView= new DockPanelLayerView(service);
+        mDockPanelView.setVisibility(View.INVISIBLE);
+        getOverlayView().addFullScreenLayer(mDockPanelView);
 
         // Create specific emulation subsystems
         mGamepad = new Gamepad(service, getOverlayView(), mode);
@@ -81,10 +91,17 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
             mMouseEmulation.cleanup();
             mMouseEmulation = null;
         }
+
         if (mGamepad != null) {
             mGamepad.cleanup();
             mGamepad = null;
         }
+
+        if (mDockPanelView!= null) {
+            mDockPanelView.cleanup();
+            mDockPanelView= null;
+        }
+
         mCurrentMotionProcessor= null;
         mMouseEventListener= null;
     }
@@ -96,10 +113,12 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
         // Pause old motion processor & switch to new one
         if (mSlaveOperationMode== SlaveMode.MOUSE) {
             mMouseEmulation.stop();
+            mDockPanelView.setVisibility(View.INVISIBLE);
             mCurrentMotionProcessor = mGamepad;
         }
         else if (mode== SlaveMode.MOUSE){
             mGamepad.stop();
+            mDockPanelView.setVisibility(View.VISIBLE);
             mCurrentMotionProcessor = mMouseEmulation;
         }
 
@@ -115,28 +134,38 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
 
     @Override
     protected boolean onStart() {
-        if (mCurrentMotionProcessor!= null) mCurrentMotionProcessor.start();
+        if (mCurrentMotionProcessor!= null) {
+            if (mSlaveOperationMode== SlaveMode.MOUSE) {
+                mDockPanelView.setVisibility(View.VISIBLE);
+            }
+            mCurrentMotionProcessor.start();
+        }
         return true;
     }
 
     @Override
     protected void onStop() {
-        if (mCurrentMotionProcessor!= null) mCurrentMotionProcessor.stop();
+        if (mCurrentMotionProcessor!= null) {
+            if (mSlaveOperationMode== SlaveMode.MOUSE) {
+                mDockPanelView.setVisibility(View.INVISIBLE);
+            }
+            mCurrentMotionProcessor.stop();
+        }
     }
 
     @Override
     protected void onPause() {
-        if (mCurrentMotionProcessor!= null) mCurrentMotionProcessor.stop();
+        onStop();
     }
 
     @Override
-    protected void onStandby() {
-        if (mCurrentMotionProcessor!= null) mCurrentMotionProcessor.stop();
+    protected void onStandby()  {
+        onStop();
     }
 
     @Override
-    protected void onResume() {
-        if (mCurrentMotionProcessor!= null) mCurrentMotionProcessor.start();
+    protected void onResume()  {
+        onStart();
     }
 
     @Override

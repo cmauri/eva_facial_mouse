@@ -32,7 +32,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.graphics.PointF;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.WindowManager;
@@ -45,7 +47,16 @@ import android.view.WindowManager;
  * - UI: main overlay and camera viewer
  *
  */
-public abstract class CoreEngine implements Engine, FrameProcessor {
+public abstract class CoreEngine implements Engine, FrameProcessor,
+        PowerManagement.OnScreenStateChangeListener {
+    // stores when the last detection of a face occurred
+    private final FaceDetectionCountdown mFaceDetectionCountdown = new FaceDetectionCountdown();
+
+    // handler to run things on the main thread
+    private final Handler mHandler= new Handler();
+
+    // power management stuff
+    private PowerManagement mPowerManagement;
 
     /* current engine state */
     private volatile int mCurrentState= STATE_DISABLED;
@@ -53,6 +64,9 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
     public int getState() {
         return mCurrentState;
     }
+
+    // state before switching screen off
+    private int mSaveState= -1;
 
     /* splash screen has been displayed? */
     private boolean mSplashDisplayed = false;
@@ -80,7 +94,6 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
 
     /* Last time a face has been detected */
     private volatile long mLastFaceDetectionTimeStamp;
-
 
     /* Abstract methods to be implemented by derived classes */
 
@@ -144,6 +157,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
         }
 
         /* Proceed with initialization. Store service and listener */
+        mPowerManagement = new PowerManagement(s, this);
         mService= s;
         mOnInitListener= l;
 
@@ -233,6 +247,8 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
 
         mCurrentState= STATE_STOPPED;
 
+        mSaveState= mCurrentState;
+
         // Notify successful initialization
         if (mOnInitListener!= null) mOnInitListener.onInit(0);
 
@@ -255,6 +271,11 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
         /* At this point means that (mCurrentState== STATE_STOPPED) */
 
         if (!onStart()) return false;
+
+        mFaceDetectionCountdown.start();
+
+        mPowerManagement.lockFullPower();         // Screen always on
+        mPowerManagement.setSleepEnabled(true);   // Enable sleep call
 
         /* show GUI elements */
         mOverlayView.requestLayout();
@@ -282,6 +303,8 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
          */
         mCameraLayerView.disableDetectionFeedback();
 
+        mPowerManagement.unlockFullPower();
+
         onPause();
 
         mCurrentState= STATE_PAUSED;
@@ -299,6 +322,18 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
          */
         mCameraLayerView.disableDetectionFeedback();
 
+        mPowerManagement.unlockFullPower();
+        mPowerManagement.setSleepEnabled(true);   // Enable sleep call
+
+        Service s= getService();
+        if (s!= null) {
+            Resources res = s.getResources();
+            String t = String.format(
+                    res.getString(R.string.pointer_stopped_toast),
+                    Preferences.get().getTimeWithoutDetectionEntryValue());
+            EVIACAM.LongToast(s, t);
+        }
+
         onStandby();
 
         mCurrentState= STATE_STANDBY;
@@ -313,6 +348,11 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
         //mCameraListener.setUpdateViewer(true);
         mCameraLayerView.enableDetectionFeedback();
 
+        mPowerManagement.lockFullPower();         // Screen always on
+        mPowerManagement.setSleepEnabled(true);   // Enable sleep call
+
+        mFaceDetectionCountdown.start();
+
         // make sure that UI changes during pause (e.g. docking panel edge) are applied
         mOverlayView.requestLayout();
 
@@ -325,6 +365,9 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
 
         mCameraListener.stopCamera();
         mOverlayView.setVisibility(View.INVISIBLE);
+
+        mPowerManagement.unlockFullPower();
+        mPowerManagement.setSleepEnabled(false);
 
         onStop();
 
@@ -348,8 +391,13 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
 
         mOverlayView.cleanup();
         mOverlayView= null;
-        
+
+        mPowerManagement.cleanup();
+        mPowerManagement = null;
+
         mCurrentState= STATE_DISABLED;
+
+        mFaceDetectionCountdown.cleanup();
     }
 
     @Override
@@ -367,6 +415,28 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
     public void updateFaceDetectorStatus(FaceDetectionCountdown fdc) {
         mCameraLayerView.updateFaceDetectorStatus(fdc);
     }
+
+    /**
+     * Called when screen goes ON or OFF
+     */
+    @Override
+    public void onOnScreenStateChange() {
+        if (mPowerManagement.getScreenOn()) {
+            // Screen switched on
+            if (mSaveState == Engine.STATE_RUNNING ||
+                    mSaveState == Engine.STATE_STANDBY) start();
+            else if (mSaveState == Engine.STATE_PAUSED) {
+                start();
+                pause();
+            }
+        }
+        else {
+            // Screen switched off
+            mSaveState= getState();
+            if (mSaveState!= Engine.STATE_STANDBY) stop();
+        }
+    }
+
 
     // avoid creating a new PointF for each frame
     private PointF mMotion= new PointF(0, 0);
@@ -401,12 +471,48 @@ public abstract class CoreEngine implements Engine, FrameProcessor {
 
         if (faceDetected) mLastFaceDetectionTimeStamp= System.currentTimeMillis();
 
-        // TODO
-        //mCameraLayerView.updateFaceDetectorStatus(mFaceDetectionCountdown);
-
         // compensate mirror effect
         mMotion.x = -mMotion.x;
 
         onFrame(mMotion, faceDetected, mCurrentState);
+
+        // States to be managed below: RUNNING, PAUSED, STANDBY
+
+        if (faceDetected) mFaceDetectionCountdown.start();
+
+        if (mCurrentState == STATE_STANDBY) {
+            if (faceDetected) {
+                // "Awake" from standby state
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() { resume(); } }
+                );
+                /* Yield CPU to the main thread so that it has the opportunity
+                 * to run and change the engine state before this thread continue
+                 * running.
+                 * Remarks: tried Thread.yield() without success
+                 */
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) { /* do nothing */ }
+            }
+            else {
+                // In standby reduce CPU cycles by sleeping but only if screen went off
+                if (!mPowerManagement.getScreenOn()) mPowerManagement.sleep();
+            }
+        }
+        else if (mCurrentState == STATE_RUNNING) {
+            if (mFaceDetectionCountdown.hasFinished() && !mFaceDetectionCountdown.isDisabled()) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        standby();
+                    }
+                });
+            }
+        }
+
+        // Nothing more to do (state == Engine.STATE_PAUSED)
+        updateFaceDetectorStatus(mFaceDetectionCountdown);
     }
 }

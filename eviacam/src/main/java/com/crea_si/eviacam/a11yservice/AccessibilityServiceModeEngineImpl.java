@@ -20,21 +20,14 @@ package com.crea_si.eviacam.a11yservice;
 
 import com.crea_si.eviacam.common.CoreEngine;
 import com.crea_si.eviacam.common.EVIACAM;
-import com.crea_si.eviacam.common.Engine;
-import com.crea_si.eviacam.common.FaceDetectionCountdown;
 import com.crea_si.eviacam.common.MouseEmulation;
-import com.crea_si.eviacam.common.PowerManagement;
-import com.crea_si.eviacam.common.Preferences;
-import com.crea_si.eviacam.R;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.PointF;
-import android.os.Handler;
 import android.view.accessibility.AccessibilityEvent;
 
 /**
@@ -42,15 +35,7 @@ import android.view.accessibility.AccessibilityEvent;
  * a mouse emulation motion processor
  */
 public class AccessibilityServiceModeEngineImpl extends CoreEngine
-        implements PowerManagement.OnScreenStateChangeListener,
-        AccessibilityServiceModeEngine {
-
-    // handler to run things on the main thread
-    private final Handler mHandler= new Handler();
-
-    // stores when the last detection of a face occurred
-    // TODO: move to the base class???
-    private final FaceDetectionCountdown mFaceDetectionCountdown = new FaceDetectionCountdown();
+        implements AccessibilityServiceModeEngine {
 
     // object which decides what to do with a new click
     private ClickDispatcher mClickDispatcher;
@@ -58,14 +43,8 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
     // mouse emulation subsystem
     private MouseEmulation mMouseEmulation;
 
-    // power management stuff
-    private PowerManagement mPowerManagement;
-
     // reference to the notification management stuff
     private ServiceNotification mServiceNotification;
-
-    // state before switching screen off
-    private int mSaveState= -1;
 
     @Override
     protected void onInit(Service service) {
@@ -76,27 +55,16 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
         mMouseEmulation = new MouseEmulation(service, getOverlayView(),
                 getOrientationManager(), mClickDispatcher);
 
-        mPowerManagement = new PowerManagement(service, this);
-
         // Service notification
         mServiceNotification= new ServiceNotification(service, mServiceNotificationReceiver);
         mServiceNotification.init();
-
-        mSaveState= getState();
     }
 
     @Override
     protected void onCleanup() {
-        mFaceDetectionCountdown.cleanup();
-
         if (mServiceNotification!= null) {
             mServiceNotification.cleanup();
             mServiceNotification= null;
-        }
-
-        if (mPowerManagement!= null) {
-            mPowerManagement.cleanup();
-            mPowerManagement = null;
         }
 
         if (mMouseEmulation != null) {
@@ -129,10 +97,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
 
     @Override
     protected final boolean onStart() {
-        mPowerManagement.lockFullPower();         // Screen always on
-        mPowerManagement.setSleepEnabled(true);   // Enable sleep call
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_PAUSE);
-        mFaceDetectionCountdown.start();
         mMouseEmulation.start();
         mClickDispatcher.start();
 
@@ -141,8 +106,6 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
 
     @Override
     protected void onStop() {
-        mPowerManagement.unlockFullPower();
-        mPowerManagement.setSleepEnabled(false);
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_NONE);
         mMouseEmulation.stop();
         mClickDispatcher.stop();
@@ -150,7 +113,6 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
 
     @Override
     protected void onPause() {
-        mPowerManagement.unlockFullPower();
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_RESUME);
         mMouseEmulation.stop();
         mClickDispatcher.stop();
@@ -158,46 +120,14 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
 
     @Override
     protected void onStandby() {
-        mPowerManagement.unlockFullPower();
-        mPowerManagement.setSleepEnabled(true);   // Enable sleep call
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_RESUME);
         mMouseEmulation.stop();
         mClickDispatcher.stop();
-
-        Service s= getService();
-        if (s!= null) {
-            Resources res = s.getResources();
-            String t = String.format(
-                    res.getString(R.string.pointer_stopped_toast),
-                    Preferences.get().getTimeWithoutDetectionEntryValue());
-            EVIACAM.LongToast(s, t);
-        }
     }
 
     @Override
     protected void onResume() {
         onStart();
-    }
-
-    /**
-     * Called when screen goes ON or OFF
-     */
-    @Override
-    public void onOnScreenStateChange() {
-        if (mPowerManagement.getScreenOn()) {
-            // Screen switched on
-            if (mSaveState == Engine.STATE_RUNNING ||
-                mSaveState == Engine.STATE_STANDBY) start();
-            else if (mSaveState == Engine.STATE_PAUSED) {
-                start();
-                pause();
-            }
-        }
-        else {
-            // Screen switched off
-            mSaveState= getState();
-            if (mSaveState!= Engine.STATE_STANDBY) stop();
-        }
     }
 
     /**
@@ -218,47 +148,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
             mClickDispatcher.refresh();
             mMouseEmulation.setRestMode(mClickDispatcher.getRestModeEnabled());
         }
-
-        // States to be managed below: RUNNING, PAUSED, STANDBY
-
-        if (faceDetected) mFaceDetectionCountdown.start();
-
-        if (state == Engine.STATE_STANDBY) {
-            if (faceDetected) {
-                // "Awake" from standby state
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() { resume(); } }
-                );
-                /* Yield CPU to the main thread so that it has the opportunity
-                 * to run and change the engine state before this thread continue
-                 * running.
-                 * Remarks: tried Thread.yield() without success
-                 */
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) { /* do nothing */ }
-            }
-            else {
-                // In standby reduce CPU cycles by sleeping but only if screen went off
-                if (!mPowerManagement.getScreenOn()) mPowerManagement.sleep();
-            }
-        }
-        else if (state == Engine.STATE_RUNNING) {
-            if (mFaceDetectionCountdown.hasFinished() && !mFaceDetectionCountdown.isDisabled()) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        standby();
-                    }
-                });
-            }
-        }
-
-        // Nothing more to do (state == Engine.STATE_PAUSED)
-        updateFaceDetectorStatus(mFaceDetectionCountdown);
     }
-
 
     @Override
     public void enablePointer() {

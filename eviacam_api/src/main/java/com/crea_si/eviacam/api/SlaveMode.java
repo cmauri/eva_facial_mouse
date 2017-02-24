@@ -231,6 +231,34 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
             Log.d(TAG, "SlaveMode.unregisterMouseListener: exception: " + e.getMessage());
         }
     }
+
+    /**
+     * Register the listener for menu events
+     *
+     * @param listener the listener
+     * @return true if registration succeeded, false otherwise
+     */
+    public boolean registerDockPanelListener(IDockPanelEventListener listener) {
+        if (mSlaveMode== null) return false;
+        try {
+            return mSlaveMode.registerDockPanelListener(new IDockPanelListenerWrapper(listener));
+        } catch (RemoteException e) {
+            Log.d(TAG, "SlaveMode.registerDockPanelListener: exception: " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Unregister the listener for mouse events (if any)
+     */
+    public void unregisterDockPanelListener() {
+        if (mSlaveMode== null) return;
+        try {
+            mSlaveMode.unregisterDockPanelListener();
+        } catch (RemoteException e) {
+            Log.d(TAG, "SlaveMode.nregisterDockPanelListener: exception: " + e.getMessage());
+        }
+    }
     
     /**
      * Open the root preferences activity for the slave mode
@@ -314,6 +342,21 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
         @Override
         public void onMouseEvent(MotionEvent e) throws RemoteException {
             mListener.onMouseEvent(e);
+        }
+    }
+
+    /*
+     * Stub implementation for mouse event listener
+     */
+    private class IDockPanelListenerWrapper extends IDockPanelEventListener.Stub {
+        private final IDockPanelEventListener mListener;
+        IDockPanelListenerWrapper(IDockPanelEventListener l) {
+            mListener= l;
+        }
+
+        @Override
+        public void onDockMenuOption (int option) throws RemoteException {
+            mListener.onDockMenuOption(option);
         }
     }
 }

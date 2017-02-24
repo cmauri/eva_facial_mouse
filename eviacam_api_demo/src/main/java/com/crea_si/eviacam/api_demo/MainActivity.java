@@ -1,5 +1,6 @@
 package com.crea_si.eviacam.api_demo;
 
+import com.crea_si.eviacam.api.IDockPanelEventListener;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.GamepadButtons;
 import com.crea_si.eviacam.api.IMouseEventListener;
@@ -17,7 +18,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 
 public class MainActivity extends Activity implements
-        SlaveModeStatusListener, IGamepadEventListener, IMouseEventListener {
+        SlaveModeStatusListener, IGamepadEventListener,
+        IMouseEventListener, IDockPanelEventListener {
     
     private static final String TAG= "EVIACAM_API_DEMO";
     
@@ -63,12 +65,14 @@ public class MainActivity extends Activity implements
             if (mSlaveMode!= null) {
                 mSlaveMode.registerGamepadListener(this);
                 mSlaveMode.registerMouseListener(this);
+                mSlaveMode.registerDockPanelListener(this);
             }
         }
         else if (id == R.id.action_unregister_events) {
             if (mSlaveMode!= null) {
                 mSlaveMode.unregisterGamepadListener();
                 mSlaveMode.unregisterMouseListener();
+                mSlaveMode.unregisterDockPanelListener();
             }
         }
         else if (id == R.id.action_gamepad_abs_mode) {
@@ -169,6 +173,11 @@ public class MainActivity extends Activity implements
             Log.d(TAG, "Clack!");
         }
         event.recycle();
+    }
+
+    @Override
+    public void onDockMenuOption(int option) {
+        Log.d(TAG, "Menu option:" + option);
     }
 
     @Override

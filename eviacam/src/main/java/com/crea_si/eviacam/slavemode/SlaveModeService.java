@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+import com.crea_si.eviacam.api.IDockPanelEventListener;
 import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.api.IGamepadEventListener;
@@ -263,6 +264,48 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 @Override
                 public void run() {
                     mSlaveModeEngine.unregisterMouseListener();
+                }
+            };
+            mMainThreadHandler.post(r);
+        }
+
+        @Override
+        public boolean registerDockPanelListener(final IDockPanelEventListener arg0)
+                throws RemoteException {
+            EVIACAM.debug("SlaveModeService.registerDockPanelistener");
+
+            FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    // TODO: if an exception is thrown, calling code always receive
+                    // a RemoteException, it would be better to provide more information
+                    // on the caller. See here:
+                    // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
+                    return mSlaveModeEngine != null && mSlaveModeEngine.registerDockPanelListener(arg0);
+                }
+            });
+
+            mMainThreadHandler.post(futureResult);
+
+            try {
+                // this block until the result is calculated
+                return futureResult.get();
+            }
+            catch (ExecutionException | InterruptedException e) {
+                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage());
+            }
+            return false;
+        }
+
+        @Override
+        public void unregisterDockPanelListener() throws RemoteException {
+            EVIACAM.debug("SlaveModeService.unregisterDockMenuListener");
+            if (mSlaveModeEngine == null) return;
+
+            Runnable r= new Runnable() {
+                @Override
+                public void run() {
+                    mSlaveModeEngine.unregisterDockPanelListener();
                 }
             };
             mMainThreadHandler.post(r);

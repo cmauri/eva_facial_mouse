@@ -27,8 +27,10 @@ import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
+import com.crea_si.eviacam.api.IDockPanelEventListener;
 import com.crea_si.eviacam.api.SlaveMode;
 import com.crea_si.eviacam.common.DockPanelLayerView;
 import com.crea_si.eviacam.common.MouseEmulationCallbacks;
@@ -51,10 +53,13 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
     private MotionProcessor mCurrentMotionProcessor;
 
     // layer for drawing the docking panel
-    private DockPanelLayerView mDockPanelView;
+    private DockPanelLayerView mDockPanelLayerView;
 
     // reference to the listener for mouse events
     private IMouseEventListener mMouseEventListener;
+
+    // reference to the listener for menu events
+    private IDockPanelEventListener mDockPanelEventListener;
 
     @Override
     protected void onInit(Service service) {
@@ -67,9 +72,9 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
                 mSlaveOperationMode : SlaveMode.GAMEPAD_ABSOLUTE);
 
         /* dockable menu view */
-        mDockPanelView= new DockPanelLayerView(service);
-        mDockPanelView.setVisibility(View.INVISIBLE);
-        getOverlayView().addFullScreenLayer(mDockPanelView);
+        mDockPanelLayerView = new DockPanelLayerView(service);
+        mDockPanelLayerView.setVisibility(View.INVISIBLE);
+        getOverlayView().addFullScreenLayer(mDockPanelLayerView);
 
         // Create specific emulation subsystems
         mGamepad = new Gamepad(service, getOverlayView(), mode);
@@ -97,9 +102,9 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
             mGamepad = null;
         }
 
-        if (mDockPanelView!= null) {
-            mDockPanelView.cleanup();
-            mDockPanelView= null;
+        if (mDockPanelLayerView != null) {
+            mDockPanelLayerView.cleanup();
+            mDockPanelLayerView = null;
         }
 
         mCurrentMotionProcessor= null;
@@ -113,12 +118,12 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
         // Pause old motion processor & switch to new one
         if (mSlaveOperationMode== SlaveMode.MOUSE) {
             mMouseEmulation.stop();
-            mDockPanelView.setVisibility(View.INVISIBLE);
+            mDockPanelLayerView.setVisibility(View.INVISIBLE);
             mCurrentMotionProcessor = mGamepad;
         }
         else if (mode== SlaveMode.MOUSE){
             mGamepad.stop();
-            mDockPanelView.setVisibility(View.VISIBLE);
+            mDockPanelLayerView.setVisibility(View.VISIBLE);
             mCurrentMotionProcessor = mMouseEmulation;
         }
 
@@ -136,7 +141,7 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
     protected boolean onStart() {
         if (mCurrentMotionProcessor!= null) {
             if (mSlaveOperationMode== SlaveMode.MOUSE) {
-                mDockPanelView.setVisibility(View.VISIBLE);
+                mDockPanelLayerView.setVisibility(View.VISIBLE);
             }
             mCurrentMotionProcessor.start();
         }
@@ -147,7 +152,7 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
     protected void onStop() {
         if (mCurrentMotionProcessor!= null) {
             if (mSlaveOperationMode== SlaveMode.MOUSE) {
-                mDockPanelView.setVisibility(View.INVISIBLE);
+                mDockPanelLayerView.setVisibility(View.INVISIBLE);
             }
             mCurrentMotionProcessor.stop();
         }
@@ -182,6 +187,20 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
     public boolean registerMouseListener(IMouseEventListener l) {
         if (mMouseEventListener== null) {
             mMouseEventListener= l;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void unregisterDockPanelListener() {
+        mDockPanelEventListener= null;
+    }
+
+    @Override
+    public boolean registerDockPanelListener(IDockPanelEventListener l) {
+        if (mDockPanelEventListener== null) {
+            mDockPanelEventListener= l;
             return true;
         }
         return false;
@@ -283,7 +302,61 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
     public void onMouseEvent(PointF location, boolean click) {
         mPointInt.x= (int) location.x;
         mPointInt.y= (int) location.y;
-        checkAndSendMouseEvents(mPointInt, click);
+
+        if (!click) {
+            // No click, send event and finish
+            checkAndSendMouseEvents(mPointInt, false);
+            return;
+        }
+
+        /* Click on the dock panel? */
+        int idDockPanelAction= mDockPanelLayerView.getViewIdBelowPoint(mPointInt);
+        if (idDockPanelAction == View.NO_ID) {
+            // No, send regular click event and finish
+            checkAndSendMouseEvents(mPointInt, true);
+            return;
+        }
+
+        /*
+         * Process click on dock menu
+         */
+        // Process action by the view
+        mDockPanelLayerView.performClick(idDockPanelAction);
+
+        /* Translate menu entry to option code */
+        int option= 0;
+        switch (idDockPanelAction) {
+            case R.id.back_button:
+                option= IDockPanelEventListener.BACK;
+                break;
+            case R.id.home_button:
+                option= IDockPanelEventListener.HOME;
+                break;
+            case R.id.recents_button:
+                option= IDockPanelEventListener.RECENTS;
+                break;
+            case R.id.notifications_button:
+                option= IDockPanelEventListener.NOTIFICATIONS;
+                break;
+            case R.id.softkeyboard_button:
+                option= IDockPanelEventListener.KEYBOARD;
+                break;
+            case R.id.toggle_context_menu:
+                option= IDockPanelEventListener.CONTEXT_MENU;
+                break;
+            case R.id.toggle_rest_mode:
+                option= IDockPanelEventListener.REST_MODE;
+                break;
+        }
+
+        IDockPanelEventListener l= mDockPanelEventListener;
+        if (l!= null && option!= 0) {
+            try {
+                l.onDockMenuOption(option);
+            } catch (RemoteException e) {
+                // Just ignore exception if any
+            }
+        }
     }
 
     /**

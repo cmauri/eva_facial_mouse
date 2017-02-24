@@ -18,6 +18,7 @@
  */
 package com.crea_si.eviacam.slavemode;
 
+import com.crea_si.eviacam.api.IDockPanelEventListener;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
 import com.crea_si.eviacam.common.Engine;
@@ -31,4 +32,6 @@ public interface SlaveModeEngine extends Engine {
     void unregisterGamepadListener();
     boolean registerMouseListener(IMouseEventListener l);
     void unregisterMouseListener();
+    void unregisterDockPanelListener();
+    boolean registerDockPanelListener(IDockPanelEventListener l);
 }

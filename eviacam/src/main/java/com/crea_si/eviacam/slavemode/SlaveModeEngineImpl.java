@@ -303,6 +303,8 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
         mPointInt.x= (int) location.x;
         mPointInt.y= (int) location.y;
 
+        mMouseEmulation.setRestMode(mDockPanelLayerView.getRestModeEnabled());
+
         if (!click) {
             // No click, send event and finish
             checkAndSendMouseEvents(mPointInt, false);
@@ -366,6 +368,12 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
      */
     @Override
     public boolean isClickable(PointF location) {
-        return true;
+        if (!mDockPanelLayerView.getRestModeEnabled()) return true;
+
+        mPointInt.x= (int) location.x;
+        mPointInt.y= (int) location.y;
+
+        // Rest mode, only specific button in the dock panel works
+        return (mDockPanelLayerView.getViewIdBelowPoint(mPointInt) == R.id.toggle_rest_mode);
     }
 }

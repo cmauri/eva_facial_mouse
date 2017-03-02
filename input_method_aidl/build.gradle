@@ -9,6 +9,12 @@ android {
         targetSdkVersion 22
     }
 
+    sourceSets {
+        main {
+            aidl.srcDirs = ['src/main/aidl']
+        }
+    }
+
     dexOptions {
         javaMaxHeapSize "2g"
     }

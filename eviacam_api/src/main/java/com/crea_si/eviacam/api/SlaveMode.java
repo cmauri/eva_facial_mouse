@@ -287,6 +287,7 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(APP_PACKAGE_NAME, MOUSE_PREFERENCE_ACTIVITY_CLS));
         intent.putExtra("slave_mode", true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
 

@@ -708,6 +708,8 @@ public class SoftKeyboard extends InputMethodService
      * Needs to be static because is called from an external service
      */
     public static void toggleIME() {
+        if (sInstance == null) return;
+
         if (!sInstance.mReadyForInput) openIME();
         else closeIME();
     }

@@ -142,6 +142,7 @@
         <service
             android:name="com.crea_si.softkeyboard.SoftKeyboard"
             android:label="@string/ime_name"
+            android:process=":softkeyboard"
             android:permission="android.permission.BIND_INPUT_METHOD">
 
             <intent-filter>
@@ -156,7 +157,8 @@
         <!-- IME Preferences activity -->
         <activity
             android:name="com.crea_si.softkeyboard.ImePreferences"
-            android:label="@string/settings_name">
+            android:label="@string/settings_name"
+            android:process=":softkeyboard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
@@ -166,6 +168,7 @@
         <service
             android:name="com.crea_si.softkeyboard.RemoteBinderService"
             android:label="IME messenger service"
+            android:process=":softkeyboard"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.crea_si.softkeyboard.RemoteBinderService" />

@@ -49,7 +49,7 @@
         <activity
             android:name=".common.MousePreferencesActivity"
             android:label="@string/eviacam_preferences_title"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:taskAffinity="com.crea_si.eviacam.SettingsAffinity"
             tools:ignore="ExportedActivity" >
             <intent-filter>
@@ -106,7 +106,7 @@
         <activity
             android:name=".slavemode.SlaveModePreferencesActivity"
             android:label="@string/eviacam_slave_mode_preferences_title"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:taskAffinity="com.crea_si.eviacam.SettingsAffinity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -118,7 +118,7 @@
             android:name=".slavemode.GamepadPreferencesActivity"
             android:label="@string/gamepad_preferences"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:taskAffinity="com.crea_si.eviacam.SettingsAffinity" >
         </activity>
 

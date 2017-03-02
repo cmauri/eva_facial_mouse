@@ -24,12 +24,17 @@ package com.crea_si.eviacam.common;
 
 import android.app.Application;
 import android.os.Process;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import org.acra.util.IOUtils;
+
+import java.io.FileInputStream;
+import java.io.IOException;
 
 @ReportsCrashes( 
     mailTo = "eva.facial.mouse@gmail.com",
@@ -49,22 +54,40 @@ import org.acra.annotation.ReportsCrashes;
     resDialogOkToast = com.crea_si.eviacam.R.string.crash_dialog_ok_toast
 )
 
+
 public class EViacamApplication extends Application {
 
+    @SuppressWarnings("StatementWithEmptyBody")
     public void onCreate() {
         super.onCreate();
 
+        String processName= getCurrentProcessName();
+        Log.d(EVIACAM.TAG, "EViacamApplication: EVA Facial Mouse started. Process: " + processName);
+
         ACRA.init(this);
+
+        /* Check in which process the application is started */
         if (ACRA.isACRASenderServiceProcess()) {
-            Log.d(EVIACAM.TAG, "EViacamApplication: starting ACRA crash report");
-            return;
+            /* ACRA crash report. Nothing else to do */
         }
+        else if (processName!= null && processName.endsWith(":softkeyboard")) {
+            /* Softkeyboard started. Nothing else to do */
+        }
+        else {
+            /* EVA service started */
+            Analytics.init(this);
 
-        Log.d(EVIACAM.TAG, "EViacamApplication: EVA application started");
+            // Raise priority to improve responsiveness
+            Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
+        }
+    }
 
-        Analytics.init(this);
-
-        // Raise priority to improve responsiveness
-        Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
+    @Nullable
+    private static String getCurrentProcessName() {
+        try {
+            return IOUtils.streamToString(new FileInputStream("/proc/self/cmdline")).trim();
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

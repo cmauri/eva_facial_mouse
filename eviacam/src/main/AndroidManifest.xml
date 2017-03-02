@@ -122,14 +122,6 @@
             android:taskAffinity="com.crea_si.eviacam.SettingsAffinity" >
         </activity>
 
-        <!-- ACRA activity -->
-        <activity android:name="org.acra.dialog.CrashReportDialog"
-        android:theme="@android:style/Theme.Dialog"
-        android:process=":error_report"
-        android:launchMode="singleInstance"
-        android:excludeFromRecents="true"
-        android:finishOnTaskLaunch="true" />
-
         <!-- TechInfo activity -->
         <activity android:name=".common.TechInfoActivity"
                   android:exported="false" />

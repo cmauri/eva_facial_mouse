@@ -128,6 +128,6 @@ dependencies {
     compile project(':softkeyboard')
     compile 'com.android.support:support-v4:23.+'
     compile 'com.google.android.gms:play-services-analytics:8.3.0'
-    compile 'ch.acra:acra:4.8.5'
+    compile 'ch.acra:acra:4.9.2'
     compile project(':WizarDroid:wizardroid')
 }

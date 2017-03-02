@@ -54,13 +54,17 @@ public class EViacamApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Log.d(EVIACAM.TAG, "EVA application started");
+        ACRA.init(this);
+        if (ACRA.isACRASenderServiceProcess()) {
+            Log.d(EVIACAM.TAG, "EViacamApplication: starting ACRA crash report");
+            return;
+        }
+
+        Log.d(EVIACAM.TAG, "EViacamApplication: EVA application started");
 
         Analytics.init(this);
 
         // Raise priority to improve responsiveness
         Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
-
-        ACRA.init(this);
     }
 }

@@ -64,13 +64,18 @@ public class EViacamApplication extends Application {
         String processName= getCurrentProcessName();
         Log.d(EVIACAM.TAG, "EViacamApplication: EVA Facial Mouse started. Process: " + processName);
 
+        /**
+         *  Check in which process the application is started
+         */
+
+        if (processName!= null && processName.endsWith(":acra")) {
+            /* ACRA crash report. Nothing else to do */
+            return;
+        }
+
         ACRA.init(this);
 
-        /* Check in which process the application is started */
-        if (ACRA.isACRASenderServiceProcess()) {
-            /* ACRA crash report. Nothing else to do */
-        }
-        else if (processName!= null && processName.endsWith(":softkeyboard")) {
+        if (processName!= null && processName.endsWith(":softkeyboard")) {
             /* Softkeyboard started. Nothing else to do */
         }
         else {

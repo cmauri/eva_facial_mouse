@@ -62,12 +62,40 @@ class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
         Class<?> cls= ex.getClass();
         EVIACAM.debug("Uncaught exception:" + cls.getName());
 
-        if (cls.isAssignableFrom(NullPointerException.class)) {
-            EVIACAM.debug("Is a NullPointerException");
+        /* Suppress spurious IllegalArgumentException at
+           android.view.Surface.nativeUnlockCanvasAndPost */
+        if (cls.isAssignableFrom(IllegalArgumentException.class)) {
+            StackTraceElement[] stackTrace= ex.getStackTrace();
+            StackTraceElement stackTraceElem= null;
+            if (stackTrace!= null && stackTrace.length> 0) {
+                stackTraceElem= stackTrace[0];
+            }
+
+            String className= null;
+            if (stackTraceElem!= null) {
+                className= stackTraceElem.getClassName();
+            }
+
+            if (className!= null && className.equals("android.view.Surface")) {
+                EVIACAM.debug("Uncaught exception filtered");
+                endApplication();
+                return;
+            }
         }
 
+        /* Call default exception handler (if any) */
         if (mDefaultExceptionHandler!= null) {
             mDefaultExceptionHandler.uncaughtException(thread, ex);
         }
     }
+
+    /**
+     * Finish the application
+     */
+    private static void endApplication() {
+        // TODO: yes, this is ugly but works
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(-1);
+    }
 }
+

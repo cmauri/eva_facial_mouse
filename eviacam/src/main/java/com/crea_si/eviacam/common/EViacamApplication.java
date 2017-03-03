@@ -16,10 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * Support to catch unexpected exceptions
- * TODO: disable/halt service after an error
- */
 package com.crea_si.eviacam.common;
 
 import android.app.Application;
@@ -36,57 +32,78 @@ import org.acra.util.IOUtils;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-@ReportsCrashes( 
-    mailTo = "eva.facial.mouse@gmail.com",
-    customReportContent = {
-            ReportField.APP_VERSION_CODE,
-            ReportField.APP_VERSION_NAME,
-            ReportField.ANDROID_VERSION,
-            ReportField.PHONE_MODEL,
-            ReportField.CUSTOM_DATA,
-            ReportField.STACK_TRACE,
-            ReportField.LOGCAT },
-    logcatArguments = { "-t", "100", "-v", "time" },
-    mode = ReportingInteractionMode.DIALOG,
-    resToastText = com.crea_si.eviacam.R.string.crash_toast_text,
-    resDialogText = com.crea_si.eviacam.R.string.crash_dialog_text,
-    resDialogCommentPrompt = com.crea_si.eviacam.R.string.crash_dialog_comment_prompt,
-    resDialogOkToast = com.crea_si.eviacam.R.string.crash_dialog_ok_toast
+/**
+ * Annotation for ACRA
+ */
+@ReportsCrashes(
+        mailTo = "eva.facial.mouse@gmail.com",
+        customReportContent = {
+                ReportField.APP_VERSION_CODE,
+                ReportField.APP_VERSION_NAME,
+                ReportField.ANDROID_VERSION,
+                ReportField.PHONE_MODEL,
+                ReportField.CUSTOM_DATA,
+                ReportField.STACK_TRACE,
+                ReportField.LOGCAT },
+        logcatArguments = { "-t", "100", "-v", "time" },
+        mode = ReportingInteractionMode.DIALOG,
+        resToastText = com.crea_si.eviacam.R.string.crash_toast_text,
+        resDialogText = com.crea_si.eviacam.R.string.crash_dialog_text,
+        resDialogCommentPrompt = com.crea_si.eviacam.R.string.crash_dialog_comment_prompt,
+        resDialogOkToast = com.crea_si.eviacam.R.string.crash_dialog_ok_toast
 )
 
-
+/**
+ * Customized application class
+ */
+@SuppressWarnings("FieldCanBeLocal")
 public class EViacamApplication extends Application {
 
-    @SuppressWarnings("StatementWithEmptyBody")
+    /* Names of the process that are part of the application.
+       The main process has no specific name */
+    private static String ACRA_PROC = ":acra";
+    private static String SOFTKEYBOARD_PROC = ":softkeyboard";
+
     public void onCreate() {
         super.onCreate();
 
+        /* Get the name of the process in which this Application instance is started */
         String processName= getCurrentProcessName();
-        Log.d(EVIACAM.TAG, "EViacamApplication: EVA Facial Mouse started. Process: " + processName);
+        Log.d(EVIACAM.TAG, "Application EVA Facial Mouse started. Process: " + processName);
 
-        /**
-         *  Check in which process the application is started
-         */
-
-        if (processName!= null && processName.endsWith(":acra")) {
-            /* ACRA crash report. Nothing else to do */
+        if (processName!= null && processName.endsWith(ACRA_PROC)) {
+            /* ACRA crash report process. Nothing else to do */
             return;
         }
 
+        /*
+         * Regular application start up. Register uncaught exception handlers. First the one
+         * provided by ACRA and after that our own handler. In case of uncaught exception our
+         * handler is called first so that it can filter some exceptions.
+         */
         ACRA.init(this);
+        UncaughtExceptionHandler.init();
 
-        if (processName!= null && processName.endsWith(":softkeyboard")) {
+        if (processName!= null && processName.endsWith(SOFTKEYBOARD_PROC)) {
             /* Softkeyboard started. Nothing else to do */
+            return;
         }
-        else {
-            /* EVA service started */
-            Analytics.init(this);
 
-            // Raise priority to improve responsiveness
-            Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
-        }
+        /*
+         * EVA service regular start up
+         */
+
+        Analytics.init(this);
+
+        // Raise priority to improve responsiveness
+        Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
     }
 
+    /**
+     * Retrieve the current process name
+     *
+     * @return process name, can be null
+     */
     @Nullable
     private static String getCurrentProcessName() {
         try {

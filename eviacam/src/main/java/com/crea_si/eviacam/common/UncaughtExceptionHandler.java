@@ -19,6 +19,7 @@
 
 package com.crea_si.eviacam.common;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -30,9 +31,10 @@ import android.support.annotation.Nullable;
 class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
     private final Thread.UncaughtExceptionHandler mDefaultExceptionHandler;
+    private final Context mContext;
 
-    static public void init() {
-        new UncaughtExceptionHandler();
+    static public void init(@NonNull Context c) {
+        new UncaughtExceptionHandler(c);
     }
 
     /**
@@ -40,7 +42,8 @@ class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
      *
      * Try to install a uncaught exception handler.
      */
-    private UncaughtExceptionHandler() {
+    private UncaughtExceptionHandler(@NonNull Context c) {
+        mContext= c;
         Thread.UncaughtExceptionHandler defaultExceptionHandler=
                 Thread.getDefaultUncaughtExceptionHandler();
 
@@ -56,7 +59,6 @@ class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
         }
     }
 
-
     @Override
     public void uncaughtException(@Nullable Thread thread, @NonNull Throwable ex) {
         Class<?> cls= ex.getClass();
@@ -64,7 +66,7 @@ class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 
         /* Suppress spurious IllegalArgumentException at
            android.view.Surface.nativeUnlockCanvasAndPost */
-        if (cls.isAssignableFrom(IllegalArgumentException.class)) {
+        if (EVIACAM.isMainProcess() && cls.isAssignableFrom(IllegalArgumentException.class)) {
             StackTraceElement[] stackTrace= ex.getStackTrace();
             StackTraceElement stackTraceElem= null;
             if (stackTrace!= null && stackTrace.length> 0) {
@@ -81,6 +83,10 @@ class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
                 endApplication();
                 return;
             }
+        }
+
+        if (EVIACAM.isMainProcess()) {
+            CrashRegister.recordCrash(mContext);
         }
 
         /* Call default exception handler (if any) */

@@ -20,17 +20,12 @@ package com.crea_si.eviacam.common;
 
 import android.app.Application;
 import android.os.Process;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
-import org.acra.util.IOUtils;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 
 /**
  * Annotation for ACRA
@@ -56,23 +51,16 @@ import java.io.IOException;
 /**
  * Customized application class
  */
-@SuppressWarnings("FieldCanBeLocal")
 public class EViacamApplication extends Application {
-
-    /* Names of the process that are part of the application.
-       The main process has no specific name */
-    private static String ACRA_PROC = ":acra";
-    private static String SOFTKEYBOARD_PROC = ":softkeyboard";
 
     public void onCreate() {
         super.onCreate();
 
-        /* Get the name of the process in which this Application instance is started */
-        String processName= getCurrentProcessName();
-        Log.d(EVIACAM.TAG, "Application EVA Facial Mouse started. Process: " + processName);
+        Log.d(EVIACAM.TAG, "Application EVA Facial Mouse started");
 
-        if (processName!= null && processName.endsWith(ACRA_PROC)) {
+        if (EVIACAM.isACRAProcess()) {
             /* ACRA crash report process. Nothing else to do */
+            Log.d(EVIACAM.TAG, "ACRA crash report process");
             return;
         }
 
@@ -82,34 +70,21 @@ public class EViacamApplication extends Application {
          * handler is called first so that it can filter some exceptions.
          */
         ACRA.init(this);
-        UncaughtExceptionHandler.init();
+        UncaughtExceptionHandler.init(this);
 
-        if (processName!= null && processName.endsWith(SOFTKEYBOARD_PROC)) {
+        if (EVIACAM.isSoftkeyboardProcess()) {
             /* Softkeyboard started. Nothing else to do */
+            Log.d(EVIACAM.TAG, "Softkeyboard crash report process");
             return;
         }
 
         /*
-         * EVA service regular start up
+         * EVA service regular start up (main process)
          */
 
         Analytics.init(this);
 
         // Raise priority to improve responsiveness
         Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_DISPLAY);
-    }
-
-    /**
-     * Retrieve the current process name
-     *
-     * @return process name, can be null
-     */
-    @Nullable
-    private static String getCurrentProcessName() {
-        try {
-            return IOUtils.streamToString(new FileInputStream("/proc/self/cmdline")).trim();
-        } catch (IOException e) {
-            return null;
-        }
     }
 }

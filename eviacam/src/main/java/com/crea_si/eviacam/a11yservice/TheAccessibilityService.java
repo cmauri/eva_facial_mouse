@@ -30,6 +30,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.crea_si.eviacam.EngineSelector;
 import com.crea_si.eviacam.common.Analytics;
+import com.crea_si.eviacam.common.CrashRegister;
 import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.common.Engine;
 import com.crea_si.eviacam.common.Preferences;
@@ -53,18 +54,15 @@ public class TheAccessibilityService
      * When the startup process is finished onInit is called
      */
     private void init() {
-        if (LockFile.exists(this)) {
+        if (CrashRegister.crashedRecently(this)) {
             /**
-             * Lock file exists, the service did not clean up properly, (i.e. it crashed)
              * Abort initialization to avoid several crash messages in a row.
              * The user will need to restart the accessibility service manually.
              */
-            EVIACAM.debug("lock file exists. Aborting initialization and removing lock file");
-            LockFile.delete(this);
+            EVIACAM.debug("Recent crash detected. Aborting initialization.");
+            CrashRegister.clearCrash(this);
             return;
         }
-
-        LockFile.create(this);
 
         /* TODO  
          * Check if service has been already started. 
@@ -140,8 +138,6 @@ public class TheAccessibilityService
 
     private void cleanup() {
         // TODO: handle exceptions properly
-        LockFile.delete(this);
-
         if (!mInitialized) return;
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mFinishWizardReceiver);

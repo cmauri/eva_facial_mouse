@@ -31,17 +31,20 @@ import org.acra.annotation.ReportsCrashes;
  * Annotation for ACRA
  */
 @ReportsCrashes(
-        mailTo = "eva.facial.mouse@gmail.com",
+        formUri = "http://eva.crea-si.com/submit.php",
+        mode = ReportingInteractionMode.TOAST,
         customReportContent = {
                 ReportField.APP_VERSION_CODE,
                 ReportField.APP_VERSION_NAME,
                 ReportField.ANDROID_VERSION,
+                ReportField.PACKAGE_NAME,
+                ReportField.REPORT_ID,
+                ReportField.BUILD,
                 ReportField.PHONE_MODEL,
                 ReportField.CUSTOM_DATA,
                 ReportField.STACK_TRACE,
                 ReportField.LOGCAT },
-        logcatArguments = { "-t", "100", "-v", "time" },
-        mode = ReportingInteractionMode.DIALOG,
+        logcatArguments = { "-t", "50", "-v", "time" },
         resToastText = com.crea_si.eviacam.R.string.crash_toast_text,
         resDialogText = com.crea_si.eviacam.R.string.crash_dialog_text,
         resDialogCommentPrompt = com.crea_si.eviacam.R.string.crash_dialog_comment_prompt,

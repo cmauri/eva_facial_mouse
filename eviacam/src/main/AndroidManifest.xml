@@ -161,7 +161,7 @@
             android:name="com.crea_si.softkeyboard.RemoteBinderService"
             android:label="IME messenger service"
             android:process=":softkeyboard"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.crea_si.softkeyboard.RemoteBinderService" />
             </intent-filter>

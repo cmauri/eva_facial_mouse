@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.crea_si.softkeyboard;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import com.crea_si.input_method_aidl.IClickableIME;
@@ -32,10 +31,7 @@ import org.acra.ACRA;
 
 /**
  * Listens to and dispatches remote requests
- *
- * TODO: improve security
  */
-
 public class RemoteBinderService extends Service {
 
     // handler used to forward calls to the main thread 

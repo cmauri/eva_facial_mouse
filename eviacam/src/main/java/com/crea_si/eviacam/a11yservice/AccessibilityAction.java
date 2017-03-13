@@ -449,7 +449,7 @@ public class AccessibilityAction {
 
         @Override
         public void run() {
-            EVIACAM.debug("Scanning for scrollables");
+            //EVIACAM.debug("Scanning for scrollables");
             mScrollLayerView.clearScrollAreas();
 
             if (mScrollingScanEnabled && !mDockPanelLayerView.getRestModeEnabled()) {
@@ -491,11 +491,11 @@ public class AccessibilityAction {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         switch (event.getEventType()) {
         case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-            EVIACAM.debug("WINDOW_STATE_CHANGED");
+            //EVIACAM.debug("WINDOW_STATE_CHANGED");
             break;
 
         case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
-            EVIACAM.debug("WINDOW_CONTENT_CHANGED");
+            //EVIACAM.debug("WINDOW_CONTENT_CHANGED");
 
             // If contains a WebView stop processing
             if (mContainsWebView) return;
@@ -504,19 +504,19 @@ public class AccessibilityAction {
                 switch (event.getContentChangeTypes ()) {
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_CONTENT_DESCRIPTION:
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_TEXT:
-                    EVIACAM.debug("WINDOW_CONTENT_TEXT|CONTENT_DESC_CHANGED: IGNORED");
+                    //EVIACAM.debug("WINDOW_CONTENT_TEXT|CONTENT_DESC_CHANGED: IGNORED");
                     return;  // just ignore these events
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE:
-                    EVIACAM.debug("WINDOW_CONTENT_CHANGED_SUBTREE");
+                    //EVIACAM.debug("WINDOW_CONTENT_CHANGED_SUBTREE");
                     break;
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED:
-                    EVIACAM.debug("WINDOW_CONTENT_CHANGED_UNDEFINED");
+                    //EVIACAM.debug("WINDOW_CONTENT_CHANGED_UNDEFINED");
                 }
             }
             break;
 
         case AccessibilityEvent.TYPE_VIEW_SCROLLED:
-            EVIACAM.debug("VIEW_SCROLLED");
+            //EVIACAM.debug("VIEW_SCROLLED");
 
             // If contains a WebView stop processing
             if (mContainsWebView) return;

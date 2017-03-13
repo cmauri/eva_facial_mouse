@@ -28,6 +28,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import org.acra.ACRA;
+
 /**
  * Listens to and dispatches remote requests
  *
@@ -44,7 +46,7 @@ public class RemoteBinderService extends Service {
         @Override
         public boolean click(int x, int y) throws RemoteException {
             // pass the control to the main thread to facilitate implementation of the IME
-            EVIACAMSOFTKBD.debug("RemoteBinderService: click"); 
+            EVIACAMSOFTKBD.debug("RemoteBinderService: click");
             return click_main_thread(x, y);
         }
 
@@ -53,9 +55,9 @@ public class RemoteBinderService extends Service {
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAMSOFTKBD.debug("RemoteBinderService: openIME"); 
-                    SoftKeyboard.openIME();                    
-                }                
+                    EVIACAMSOFTKBD.debug("RemoteBinderService: openIME");
+                    SoftKeyboard.openIME();
+                }
             };
             mMainThreadHandler.post(r);
         }
@@ -87,14 +89,18 @@ public class RemoteBinderService extends Service {
 
     /** Calls click on the main thread and waits for the result */
     private boolean click_main_thread(final int x, final int y) {
-        FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
+        FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                // TODO: if an exception is thrown, calling code always receive
-                // a RemoteException, it would be better to provide more information
-                // on the caller. See here:
-                // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
-                return SoftKeyboard.click(x, y);
+                try {
+                    return SoftKeyboard.click(x, y);
+                }
+                catch(Exception e) {
+                    /* In case of exception, return that the operation
+                       did not work and report the error */
+                    ACRA.getErrorReporter().handleException(e);
+                    return false;
+                }
             }
         });
 
@@ -104,11 +110,8 @@ public class RemoteBinderService extends Service {
             // this block until the result is calculated
             return futureResult.get();
         } 
-        catch (ExecutionException e) {
-            EVIACAMSOFTKBD.debug("RemoteBinderService: exception: " + e.getMessage()); 
-        } 
-        catch (InterruptedException e) {
-            EVIACAMSOFTKBD.debug("RemoteBinderService: exception: " + e.getMessage()); 
+        catch (Exception e) {
+            ACRA.getErrorReporter().handleException(e);
         }
         return false;
     }

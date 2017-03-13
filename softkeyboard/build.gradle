@@ -31,4 +31,5 @@ android {
 dependencies {
     compile project(':input_method_aidl')
     compile 'com.android.support:support-v4:23.+'
+    compile 'ch.acra:acra:4.9.2'
 }

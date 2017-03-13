@@ -54,8 +54,7 @@ public class ContextMenuLayerView extends RelativeLayout {
         this.post(new Runnable() {
             @Override
             public void run() {
-                // TODO: provide more insights why this happens
-                // Fix intermittent crash
+                // Prevent crash due to a race condition on closing
                 if (mContextMenuView== null) return;
 
                 if (actions == 0) {

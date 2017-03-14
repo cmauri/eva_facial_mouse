@@ -77,7 +77,7 @@ public class EViacamApplication extends Application {
 
         if (EVIACAM.isSoftkeyboardProcess()) {
             /* Softkeyboard started. Nothing else to do */
-            Log.d(EVIACAM.TAG, "Softkeyboard crash report process");
+            Log.d(EVIACAM.TAG, "Softkeyboard process");
             return;
         }
 

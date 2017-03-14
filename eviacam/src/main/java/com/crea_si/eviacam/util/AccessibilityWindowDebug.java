@@ -22,6 +22,7 @@ import java.util.List;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
@@ -30,11 +31,12 @@ import com.crea_si.eviacam.common.EVIACAM;
 /**
  * Debugging code for AccessibilityWindowInfo (API +21)
  */
+@SuppressWarnings("unused")
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class AccessibilityWindowDebug {
     static
     public void displayFullWindowTree (List<AccessibilityWindowInfo> l) {
-        EVIACAM.debug("Accessibility window tree dump:");
+        Log.d(EVIACAM.TAG, "Accessibility window tree dump:");
         int i= 1;
                 
         for (AccessibilityWindowInfo w : l) {
@@ -43,7 +45,7 @@ class AccessibilityWindowDebug {
     }
     
     static private void displayFullWindowTree0 (AccessibilityWindowInfo win, String prefix) {
-        EVIACAM.debug(prefix + " " + win.toString());
+        Log.d(EVIACAM.TAG, prefix + " " + win.toString());
 
         // has nodes?
         AccessibilityNodeInfo node= win.getRoot();

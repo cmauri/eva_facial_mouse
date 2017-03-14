@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 /**
@@ -90,7 +91,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
                 resume();
             } else {
                 // ignore intent
-                EVIACAM.debug("Got unknown intent");
+                Log.i(EVIACAM.TAG, "mServiceNotificationReceiver: Got unknown intent");
             }
         }
     };

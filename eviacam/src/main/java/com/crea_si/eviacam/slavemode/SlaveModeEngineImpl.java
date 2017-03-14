@@ -23,6 +23,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
@@ -265,7 +266,7 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
         }
         catch (RemoteException e) {
             // Just log it and go on
-            EVIACAM.debug("RemoteException while sending mouse event");
+            Log.e(EVIACAM.TAG, "RemoteException while sending mouse event");
         }
         mLastPos.set(pos.x, pos.y);
         mLastClicked= clicked;

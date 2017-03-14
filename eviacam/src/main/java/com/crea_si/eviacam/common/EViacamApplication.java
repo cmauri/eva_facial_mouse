@@ -59,11 +59,11 @@ public class EViacamApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        Log.d(EVIACAM.TAG, "Application EVA Facial Mouse started");
+        Log.i(EVIACAM.TAG, "Application EVA Facial Mouse started");
 
         if (EVIACAM.isACRAProcess()) {
             /* ACRA crash report process. Nothing else to do */
-            Log.d(EVIACAM.TAG, "ACRA crash report process");
+            Log.i(EVIACAM.TAG, "ACRA crash report process");
             return;
         }
 
@@ -77,7 +77,7 @@ public class EViacamApplication extends Application {
 
         if (EVIACAM.isSoftkeyboardProcess()) {
             /* Softkeyboard started. Nothing else to do */
-            Log.d(EVIACAM.TAG, "Softkeyboard process");
+            Log.i(EVIACAM.TAG, "Softkeyboard process");
             return;
         }
 

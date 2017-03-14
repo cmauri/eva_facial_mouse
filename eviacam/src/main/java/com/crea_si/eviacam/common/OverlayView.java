@@ -20,6 +20,7 @@
  package com.crea_si.eviacam.common;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -85,7 +86,7 @@ public class OverlayView extends RelativeLayout {
         WindowManager wm= (WindowManager) this.getContext().getSystemService(Context.WINDOW_SERVICE);
         wm.removeViewImmediate(this);
 
-        EVIACAM.debug("finish destroyOverlay");
+        Log.i(EVIACAM.TAG, "OverlayView: finish destroyOverlay");
     }
     
     public void addFullScreenLayer (View v) {

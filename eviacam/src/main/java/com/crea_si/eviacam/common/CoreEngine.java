@@ -21,6 +21,7 @@ package com.crea_si.eviacam.common;
 import org.opencv.android.CameraException;
 import org.opencv.core.Mat;
 
+import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.camera.CameraLayerView;
 import com.crea_si.eviacam.camera.CameraListener;
@@ -36,6 +37,7 @@ import android.content.res.Resources;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -185,7 +187,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
     private BroadcastReceiver onSplashReady= new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            EVIACAM.debug("onSplashReady: onReceive: called");
+            if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onSplashReady: onReceive: called");
 
             /* Unregister receiver */
             LocalBroadcastManager.getInstance(mService).unregisterReceiver(onSplashReady);

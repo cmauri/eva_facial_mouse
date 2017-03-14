@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import org.opencv.core.Mat;
 import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
+import android.util.Log;
 import android.view.SurfaceView;
 
 import com.crea_si.eviacam.common.EVIACAM;
@@ -68,6 +69,9 @@ public class CameraListener implements CvCameraViewListener2 {
     // physical orientation of the camera (0, 90, 180, 270)
     private final int mCameraOrientation;
     public int getCameraOrientation() { return mCameraOrientation; }
+
+    // captured frames count
+    private int mCapuredFrames;
 
     /** 
      * Load a resource into a temporary file
@@ -169,10 +173,10 @@ public class CameraListener implements CvCameraViewListener2 {
             flip= FlipDirection.VERTICAL;
             cameraId= MyCameraBridgeViewBase.CAMERA_ID_BACK;
 
-            EVIACAM.debug("Back camera detected. Orientation: " + cameraInfo.orientation);
+            Log.i(EVIACAM.TAG, "Back camera detected. Orientation: " + cameraInfo.orientation);
         }
         else {
-            EVIACAM.debug("Front camera detected. Orientation: " + cameraInfo.orientation);
+            Log.i(EVIACAM.TAG, "Front camera detected. Orientation: " + cameraInfo.orientation);
         }
 
         mCameraOrientation= cameraInfo.orientation;
@@ -207,7 +211,7 @@ public class CameraListener implements CvCameraViewListener2 {
             throw new RuntimeException("Cannot initialize OpenCV");
         }
 
-        EVIACAM.debug("OpenCV loaded successfully");
+        Log.i(EVIACAM.TAG, "OpenCV loaded successfully");
 
         // initialize JNI part
         System.loadLibrary("visionpipeline");
@@ -220,7 +224,7 @@ public class CameraListener implements CvCameraViewListener2 {
             f.delete();
         }
         catch (IOException e) {
-            EVIACAM.debug("Cannot write haarcascade temp file. Continuing anyway");
+            Log.e(EVIACAM.TAG, "Cannot write haarcascade temp file. Continuing anyway");
         }
 
         // start camera capture
@@ -263,22 +267,29 @@ public class CameraListener implements CvCameraViewListener2 {
 
     @Override
     public void onCameraViewStarted(int width, int height) {
-        EVIACAM.debug("onCameraViewStarted");
+        Log.i(EVIACAM.TAG, "onCameraViewStarted");
     }
 
     @Override
     public void onCameraViewStopped() {
-        EVIACAM.debug("onCameraViewStopped");
+        Log.i(EVIACAM.TAG, "onCameraViewStopped. Frame count:" + mCapuredFrames);
         
         // finish JNI part
         VisionPipeline.cleanup();
     }
-     
+
     /**
      * Called each time new frame is captured
      */
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
+        mCapuredFrames++;
+        if (mCapuredFrames< 100) {
+            if ((mCapuredFrames % 10) == 0) {
+                Log.i(EVIACAM.TAG, "onCameraFrame. Frame count:" + mCapuredFrames);
+            }
+        }
+
         Mat rgba = inputFrame.rgba();
         
         mFrameProcessor.processFrame(rgba);

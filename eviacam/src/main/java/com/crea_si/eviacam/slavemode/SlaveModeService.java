@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
+import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.api.IDockPanelEventListener;
 import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.common.Preferences;
@@ -38,6 +39,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 /**
  * EViacam slave mode service entry point
@@ -68,14 +70,14 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
          */
         @Override
         public void init(final IReadyEventListener listener) throws RemoteException {
-            EVIACAM.debug("SlaveModeService.init: enter. Listener:" + listener);
+            Log.i(EVIACAM.TAG, "SlaveModeService.init: enter. Listener:" + listener);
             // No listener, just does not continue
             if (listener== null) return;
 
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAM.debug("SlaveModeService.init: runnable: enter");
+                    if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService.init: runnable: enter");
                     /* No engine, initialization failed */
                     if (mSlaveModeEngine== null) {
                         try {
@@ -109,17 +111,15 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                             // Nothing to do
                         }
                     }
-                    EVIACAM.debug("SlaveModeService.init: runnable: finish");
+                    if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService.init: runnable: finish");
                 }
             };
-            EVIACAM.debug("SlaveModeService.init: before main thread post");
             mMainThreadHandler.post(r);
-            EVIACAM.debug("SlaveModeService.init: finish");
         }
 
         @Override
         public boolean start() throws RemoteException {
-            EVIACAM.debug("SlaveModeService.start: enter");
+            Log.i(EVIACAM.TAG, "SlaveModeService.start");
             FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
@@ -134,14 +134,14 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 return futureResult.get();
             } 
             catch (ExecutionException | InterruptedException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage());
+                Log.e(EVIACAM.TAG, "SlaveModeService: exception: " + e.getMessage());
             }
             return false;
         }
 
         @Override
         public void stop() throws RemoteException {
-            EVIACAM.debug("SlaveModeService.stop: enter");
+            Log.i(EVIACAM.TAG, "SlaveModeService.stop");
             FutureTask<Void> futureResult = new FutureTask<>(new Callable<Void>() {
                 @Override
                 public Void call() throws Exception {
@@ -158,7 +158,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 futureResult.get();
             } 
             catch (ExecutionException | InterruptedException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+                Log.e(EVIACAM.TAG, "SlaveModeService: exception: " + e.getMessage());
             }
         }
 
@@ -180,15 +180,15 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 futureResult.get();
             } 
             catch (ExecutionException | InterruptedException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+                Log.e(EVIACAM.TAG, "SlaveModeService: exception: " + e.getMessage());
             }
         }
         
         @Override
         public boolean registerGamepadListener(final IGamepadEventListener arg0)
                 throws RemoteException {
-            EVIACAM.debug("SlaveModeService.registerGamepadListener");
-            
+            if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService.registerGamepadListener");
+
             FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
@@ -208,14 +208,14 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 return futureResult.get();
             } 
             catch (ExecutionException | InterruptedException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+                Log.e(EVIACAM.TAG, "SlaveModeService: exception: " + e.getMessage());
             }
             return false;
         }
 
         @Override
         public void unregisterGamepadListener() throws RemoteException {
-            EVIACAM.debug("SlaveModeService.unregisterGamepadListener");
+            if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService.unregisterGamepadListener");
             if (mSlaveModeEngine == null) return;
 
             Runnable r= new Runnable() {
@@ -230,7 +230,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
         @Override
         public boolean registerMouseListener(final IMouseEventListener arg0)
                 throws RemoteException {
-            EVIACAM.debug("SlaveModeService.registerMouseListener");
+            if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService.registerMouseListener");
             
             FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
                 @Override
@@ -250,14 +250,14 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 return futureResult.get();
             } 
             catch (ExecutionException | InterruptedException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage()); 
+                Log.e(EVIACAM.TAG, "SlaveModeService: exception: " + e.getMessage());
             }
             return false;
         }
 
         @Override
         public void unregisterMouseListener() throws RemoteException {
-            EVIACAM.debug("SlaveModeService.unregisterGamepadListener");
+            if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService.unregisterMouseListener");
             if (mSlaveModeEngine == null) return;
 
             Runnable r= new Runnable() {
@@ -272,7 +272,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
         @Override
         public boolean registerDockPanelListener(final IDockPanelEventListener arg0)
                 throws RemoteException {
-            EVIACAM.debug("SlaveModeService.registerDockPanelistener");
+            if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService.registerDockPanelistener");
 
             FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
                 @Override
@@ -292,14 +292,14 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
                 return futureResult.get();
             }
             catch (ExecutionException | InterruptedException e) {
-                EVIACAM.debug("SlaveModeService: exception: " + e.getMessage());
+                Log.e(EVIACAM.TAG, "SlaveModeService: exception: " + e.getMessage());
             }
             return false;
         }
 
         @Override
         public void unregisterDockPanelListener() throws RemoteException {
-            EVIACAM.debug("SlaveModeService.unregisterDockMenuListener");
+            if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService.unregisterDockMenuListener");
             if (mSlaveModeEngine == null) return;
 
             Runnable r= new Runnable() {
@@ -329,13 +329,13 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
 
     @Override
     public void onCreate () {
-        EVIACAM.debug("SlaveModeService: onCreate");
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService: onCreate");
     }
 
     /** When binding to the service, we return an interface to the client */
     @Override
     public IBinder onBind(Intent intent) {
-        EVIACAM.debug("SlaveModeService.onBind: enter");
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService.onBind: enter");
         if (mSlaveModeEngine!= null) {
             // Another client is connected. Do not allow.
             return null;
@@ -347,28 +347,26 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
         mSlaveModeEngine= EngineSelector.getSlaveModeEngine();
         if (mSlaveModeEngine== null) return null;
 
-        EVIACAM.debug("SlaveModeService.onBind: success");
-
         return mBinder;
     }
 
     @Override
     public boolean onUnbind (Intent intent) {
-        EVIACAM.debug("SlaveModeService: onUnbind");
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService: onUnbind");
         cleanup();
         return false;
     }
 
     @Override
     public void onDestroy () {
-        EVIACAM.debug("SlaveModeService: onDestroy");
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "SlaveModeService: onDestroy");
         cleanup();
     }
 
     /* Called when the engine finishes the initialization sequence */
     @Override
     public void onInit(int status) {
-        EVIACAM.debug("SlaveModeService.onInit(status= " + status + ")");
+        Log.i(EVIACAM.TAG, "SlaveModeService.onInit(status= " + status + ")");
         IReadyEventListener listener= mOnReadyListener;
         if (listener== null) return;
 
@@ -381,7 +379,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
             }
         }
         catch (RemoteException e) {
-            EVIACAM.debug("SlaveModeService: onInitException: " + e.getMessage());
+            Log.e(EVIACAM.TAG, "SlaveModeService: onInitException: " + e.getMessage());
         }
     }
 }

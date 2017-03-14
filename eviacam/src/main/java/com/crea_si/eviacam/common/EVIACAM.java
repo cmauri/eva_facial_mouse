@@ -80,11 +80,6 @@ public class EVIACAM {
         sHeartBeat= null;
     }
     
-    public static void debug(String message) {
-        if (!DEBUG_MESSAGES) return;
-        Log.d(TAG, message);
-    }
-
     private static void doToast (Context c, CharSequence t, int duration) {
         final Toast toast = Toast.makeText(c, t, duration);
         ViewGroup group = (ViewGroup) toast.getView();
@@ -142,7 +137,7 @@ public class EVIACAM {
      */
     private static void setCurrentProcess() {
         String processName= getCurrentProcessName();
-        Log.d(EVIACAM.TAG, "Current process:" + processName);
+        Log.i(EVIACAM.TAG, "Current process:" + processName);
 
         if (processName== null) return;
 

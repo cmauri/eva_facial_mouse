@@ -29,11 +29,13 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
+import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.common.DockPanelLayerView;
 import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.R;
@@ -402,8 +404,8 @@ public class AccessibilityAction {
             
             if (node == null) return;
 
-            EVIACAM.debug("Actionable node found: (" + pInt.x + ", " + pInt.y + ")." +
-                    AccessibilityNodeDebug.getNodeInfo(node));
+            if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "Actionable node found: (" + pInt.x + ", " +
+                    pInt.y + ")." + AccessibilityNodeDebug.getNodeInfo(node));
             
             int availableActions= FULL_ACTION_MASK & node.getActions();
             
@@ -524,7 +526,7 @@ public class AccessibilityAction {
             break;
 
         default:
-            EVIACAM.debug("UNKNOWN EVENT: IGNORED");
+            if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "UNKNOWN EVENT: IGNORED");
             return;
         }
 

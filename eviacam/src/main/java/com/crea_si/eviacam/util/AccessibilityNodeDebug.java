@@ -20,6 +20,7 @@
 package com.crea_si.eviacam.util;
 
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.crea_si.eviacam.common.EVIACAM;
@@ -128,9 +129,10 @@ public class AccessibilityNodeDebug {
         return result;
     }
     
+    @SuppressWarnings("unused")
     static
     public void displayFullTree (AccessibilityNodeInfo node) {
-        EVIACAM.debug("Accessibility tree dump:");
+        Log.d(EVIACAM.TAG, "Accessibility tree dump:");
         
         displayFullTree0(node, "1");
     }
@@ -138,7 +140,7 @@ public class AccessibilityNodeDebug {
     static void displayFullTree0 (AccessibilityNodeInfo node, String prefix) {
         if (node == null) return;
 
-        EVIACAM.debug(prefix + " " + getNodeInfo(node));
+        Log.d(EVIACAM.TAG, prefix + " " + getNodeInfo(node));
         
         // propagate calls to children
         for (int i= 0; i< node.getChildCount(); i++) {

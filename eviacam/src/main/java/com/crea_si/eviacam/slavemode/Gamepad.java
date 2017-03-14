@@ -29,6 +29,7 @@ import com.crea_si.eviacam.common.PointerLayerView;
 import android.content.Context;
 import android.graphics.PointF;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.View;
 
 public class Gamepad implements MotionProcessor {
@@ -199,7 +200,7 @@ public class Gamepad implements MotionProcessor {
                 }
                 catch (RemoteException e) {
                     // Just log it and go on
-                    EVIACAM.debug("RemoteException while sending gamepad event");
+                    Log.e(EVIACAM.TAG, "RemoteException while sending gamepad event");
                 }
             }
             mLastPressedButton= button;

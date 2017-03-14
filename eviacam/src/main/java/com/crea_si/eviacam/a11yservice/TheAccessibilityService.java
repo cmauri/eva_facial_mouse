@@ -26,8 +26,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
+import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.EngineSelector;
 import com.crea_si.eviacam.common.Analytics;
 import com.crea_si.eviacam.common.CrashRegister;
@@ -59,7 +61,7 @@ public class TheAccessibilityService
              * Abort initialization to avoid several crash messages in a row.
              * The user will need to restart the accessibility service manually.
              */
-            EVIACAM.debug("Recent crash detected. Aborting initialization.");
+            Log.w(EVIACAM.TAG, "Recent crash detected. Aborting initialization.");
             CrashRegister.clearCrash(this);
             return;
         }
@@ -75,7 +77,7 @@ public class TheAccessibilityService
          * called-when-running-on-emulator
          */
         if (mInitialized) {
-            EVIACAM.debug("ALREADY RUNNING");
+            Log.w(EVIACAM.TAG, "Accessibility service already running! Stop here.");
             return;
         }
 
@@ -87,7 +89,7 @@ public class TheAccessibilityService
         /* Init the main engine */
         mEngine= EngineSelector.getAccessibilityServiceModeEngine();
         if (mEngine== null) {
-            EVIACAM.debug("Cannot initialize CoreEngine in A11Y mode");
+            Log.e(EVIACAM.TAG, "Cannot initialize CoreEngine in A11Y mode");
         }
         else {
             mEngine.init(this, this);
@@ -102,7 +104,7 @@ public class TheAccessibilityService
     public void onInit(int status) {
         if (status != 0) {
             // Initialization failed. TODO: provide some feedback
-            EVIACAM.debug("Cannot initialize CoreEngine in A11Y mode");
+            Log.e(EVIACAM.TAG, "Cannot initialize CoreEngine in A11Y mode");
             return;
         }
 
@@ -164,7 +166,7 @@ public class TheAccessibilityService
     @Override
     public void onCreate() {
         super.onCreate();
-        EVIACAM.debug("onCreate");
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onCreate");
     }
 
     /**
@@ -172,7 +174,7 @@ public class TheAccessibilityService
      */
     @Override
     public void onServiceConnected() {
-        EVIACAM.debug("onServiceConnected");
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onServiceConnected");
         init();
     }
 
@@ -185,7 +187,7 @@ public class TheAccessibilityService
          * which might be related with the spurious crashes when switching
          * off the accessibility service. Tested on Nexus 7 Android 5.1.1
          */
-        EVIACAM.debug("onUnbind");
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onUnbind");
         cleanup();
         return false;
     }
@@ -196,7 +198,7 @@ public class TheAccessibilityService
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EVIACAM.debug("onDestroy");
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onDestroy");
         cleanup();
     }
 
@@ -220,6 +222,6 @@ public class TheAccessibilityService
      */
     @Override
     public void onInterrupt() {
-        EVIACAM.debug("onInterrupt");
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onInterrupt");
     }
 }

@@ -20,6 +20,7 @@
 package com.crea_si.eviacam.util;
 
 import android.graphics.Point;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -36,15 +37,13 @@ public class ViewUtils {
     public static boolean isPointInsideView(Point p, View view, float scale) {
         if (view == null) return false;
 
-        int[] location= new int[2];
+        int[] location = new int[2];
 
         view.getLocationOnScreen(location);
 
-        if (p.x< location[0] || p.y< location[1]) return false;
-
-        return !(location[0] + view.getWidth() * scale < p.x ||
-                location[1] + view.getHeight() * scale < p.y);
-
+        return !(p.x < location[0] || p.y < location[1]) &&
+                !(location[0] + view.getWidth() * scale < p.x ||
+                  location[1] + view.getHeight() * scale < p.y);
     }
 
     /**
@@ -88,15 +87,16 @@ public class ViewUtils {
      * Dump view group hierarchy for debugging
      * @param v view
      */
+    @SuppressWarnings({"WeakerAccess", "unused"})
     public static void dumpViewGroupHierarchy (View v) {
         if (v == null) return;
         
         
         if (v.getId() == View.NO_ID) {
-            EVIACAM.debug("Processing NO_ID View: " + v.toString());
+            Log.d(EVIACAM.TAG, "Processing NO_ID View: " + v.toString());
         }
         else {
-            EVIACAM.debug("Processing (id:" + v.getId() + ") " + v.toString());
+            Log.d(EVIACAM.TAG, "Processing (id:" + v.getId() + ") " + v.toString());
         }
         
         if (!(v instanceof ViewGroup)) return; 

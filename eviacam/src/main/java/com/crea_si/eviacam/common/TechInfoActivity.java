@@ -1,7 +1,7 @@
 /*
 * Enable Viacam for Android, a camera based mouse emulator
 *
-* Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+* Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,7 +31,58 @@ import android.widget.Toast;
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class TechInfoActivity extends Activity {
+
+    /**
+     * Read the last max_tail_lines from the logcat
+     * @param max_tail_lines max lines or 0 if all
+     * @return string with the logcat output
+     */
+    private String readLogcat(int max_tail_lines) {
+        StringBuilder log= new StringBuilder();
+
+        try {
+            int skip_lines= 0;
+            if (max_tail_lines> 0) {
+                int line_count= 0;
+
+                // Need to count lines first
+                Process process = Runtime.getRuntime().exec("logcat -d");
+                BufferedReader bufferedReader = new BufferedReader(
+                        new InputStreamReader(process.getInputStream()));
+
+                while (bufferedReader.readLine() != null) {
+                    line_count++;
+                }
+
+                if (line_count> max_tail_lines) {
+                    skip_lines= line_count - max_tail_lines;
+                }
+            }
+
+            Process process = Runtime.getRuntime().exec("logcat -d");
+            BufferedReader bufferedReader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (skip_lines> 0) {
+                    skip_lines--;
+                }
+                else {
+                    log.append(line).append("\n");
+                }
+            }
+        }
+        catch (IOException ignored) {
+        }
+
+        return log.toString();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +90,8 @@ public class TechInfoActivity extends Activity {
         setContentView(R.layout.activity_tech_info);
 
         TextView tv= (TextView) findViewById(R.id.tech_info_text);
-        String info= new String();
+        tv.setMovementMethod(new ScrollingMovementMethod());
+        String info= "";
 
         info+= getResources().getText(R.string.app_name) + " " + BuildConfig.VERSION_NAME;
         info+= "\nVERSION_CODE: " + BuildConfig.VERSION_CODE;
@@ -58,6 +111,7 @@ public class TechInfoActivity extends Activity {
         info+= "\nHARDWARE: " + Build.HARDWARE;
         info+= "\nPRODUCT: " + Build.PRODUCT;
         info+= "\nBOARD: " + Build.BOARD;
+        info+= "\nLOGCAT:\n" + readLogcat(150);
 
         //info+= "\nSERIAL: " + Build.SERIAL;
         //info+= "\nDISPLAY: " + Build.DISPLAY;

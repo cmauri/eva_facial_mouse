@@ -26,6 +26,7 @@ import android.os.IBinder;
 import android.os.ResultReceiver;
 import android.text.InputType;
 import android.text.method.MetaKeyKeyListener;
+import android.util.Log;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
@@ -76,7 +77,7 @@ public class SoftKeyboard extends InputMethodService
      */
     @Override 
     public void onCreate() {
-        EVIACAMSOFTKBD.debug("SoftKeyboard: onCreate");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "SoftKeyboard: onCreate");
         super.onCreate();
         
         sInstance= this;
@@ -248,7 +249,7 @@ public class SoftKeyboard extends InputMethodService
      */
     @Override
     public void onDestroy() {
-        EVIACAMSOFTKBD.debug("SoftKeyboard: onDestroy");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "SoftKeyboard: onDestroy");
         sInstance= null;
         super.onDestroy();
     }

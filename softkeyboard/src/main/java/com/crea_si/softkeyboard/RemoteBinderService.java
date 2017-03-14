@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 import org.acra.ACRA;
 
@@ -42,7 +43,7 @@ public class RemoteBinderService extends Service {
         @Override
         public boolean click(int x, int y) throws RemoteException {
             // pass the control to the main thread to facilitate implementation of the IME
-            EVIACAMSOFTKBD.debug("RemoteBinderService: click");
+            if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: click");
             return click_main_thread(x, y);
         }
 
@@ -51,7 +52,7 @@ public class RemoteBinderService extends Service {
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAMSOFTKBD.debug("RemoteBinderService: openIME");
+                    if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: openIME");
                     SoftKeyboard.openIME();
                 }
             };
@@ -63,7 +64,7 @@ public class RemoteBinderService extends Service {
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAMSOFTKBD.debug("RemoteBinderService: closeIME");
+                    if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: closeIME");
                     SoftKeyboard.closeIME();
                 }
             };
@@ -75,7 +76,7 @@ public class RemoteBinderService extends Service {
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAMSOFTKBD.debug("RemoteBinderService: closeIME");
+                    if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: closeIME");
                     SoftKeyboard.toggleIME();
                 }
             };
@@ -114,25 +115,25 @@ public class RemoteBinderService extends Service {
 
     @Override
     public void onCreate () {
-        EVIACAMSOFTKBD.debug("RemoteBinderService: onCreate");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: onCreate");
         mMainThreadHandler= new Handler();
     }
 
     /** When binding to the service, we return an interface to the client */
     @Override
     public IBinder onBind(Intent intent) {
-        EVIACAMSOFTKBD.debug("RemoteBinderService: onBind");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: onBind");
         return mBinder;
     }
 
     @Override
     public boolean onUnbind (Intent intent) {
-        EVIACAMSOFTKBD.debug("RemoteBinderService: onUnbind");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: onUnbind");
         return false;
     }
 
     @Override
     public void onDestroy () {
-        EVIACAMSOFTKBD.debug("RemoteBinderService: onDestroy");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: onDestroy");
     }
  }

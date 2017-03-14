@@ -1,11 +1,9 @@
 package com.crea_si.softkeyboard;
 
-import android.util.Log;
-
 /***
  * Constants and common stuff
  */
-public class EVIACAMSOFTKBD {
+class EVIACAMSOFTKBD {
     public static final String TAG = EVIACAMSOFTKBD.class.getSimpleName();
 
     private static final boolean DEBUG = BuildConfig.DEBUG;
@@ -17,14 +15,5 @@ public class EVIACAMSOFTKBD {
     public static void debugInit() {
         if (!ATTACH_DEBUGGER) return;
         android.os.Debug.waitForDebugger();
-    }
-
-    public static void debug(String message) {
-        if (!DEBUG_MESSAGES) return;
-        Log.d(TAG, message);
-    }
-
-    public static void warning(String message) {
-        Log.w(TAG, message);
     }
 }

@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.crea_si.eviacam.R;
 
@@ -131,7 +132,10 @@ public class Preferences {
 
     public void cleanup() {
         if (mInitCount> 0) {
-            if (--mInitCount == 0) sInstance= null;
+            if (--mInitCount == 0) {
+                Log.i(EVIACAM.TAG, "Preferences: cleanup");
+                sInstance= null;
+            }
         }
     }
 
@@ -154,6 +158,8 @@ public class Preferences {
             if (sInstance.mInitMode != INIT_A11Y) return null;
         }
         else {
+            Log.i(EVIACAM.TAG, "Preferences: initForA11yService");
+
             // As accessibility service use the default preferences
             PreferenceManager.setDefaultValues(c, R.xml.preference_fragment, true);
             sInstance = new Preferences(c, PreferenceManager.getDefaultSharedPreferences(c));
@@ -177,6 +183,8 @@ public class Preferences {
             if (sInstance.mInitMode != INIT_SLAVE_MODE) return null;
         }
         else {
+            Log.i(EVIACAM.TAG, "Preferences: initForSlaveService");
+
             // Slave mode preferences. We first load default default
             // preferences and then update with slave mode ones
             PreferenceManager.setDefaultValues(c, Preferences.FILE_SLAVE_MODE,

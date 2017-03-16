@@ -245,29 +245,29 @@ public class AccessibilityAction {
     private void performActionOnNode(AccessibilityNodeInfo node, int action) {
         if (action == 0) return;
         
-        /**
-         * Focus the node.
-         * 
-         * REMARKS: tried to see whether it solved the problem with the icon panel of WhatsApp.
-         * but it did not work (see comments in AccessibilityAction.performAction method). We 
-         * leave here because it seems reasonable to focus the node on which the action is performed
-         *
-         * EDIT: focus only EditText elements, focusing arbitrary widgets cause scrolling issues
-         */
-        // node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
+        /*
+          Focus the node.
 
+          REMARKS: tried to see whether it solved the problem with the icon panel of WhatsApp.
+          but it did not work (see comments in AccessibilityAction.performAction method). We
+          leave here because it seems reasonable to focus the node on which the action is performed
+
+          EDIT: focus only EditText elements, focusing arbitrary widgets cause scrolling issues
+         */
         // TODO: currently only checks for EditText instances, check with EditText subclasses
+        CharSequence clsName;
         if ((action & AccessibilityNodeInfo.ACTION_CLICK) != 0 &&
-                node.getClassName().toString().equalsIgnoreCase("android.widget.EditText")) {
+                ((clsName= node.getClassName())!= null) &&
+                clsName.toString().equalsIgnoreCase("android.widget.EditText")) {
             node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
             mInputMethodAction.openIME();
         }
-        
-        /**
-         * Here we tried to check whether for Kitkat and higher versions canOpenPopup() allows
-         * to know if the node will actually open a popup and thus IME could be hidden. However
-         * after some test with menu options with popups it seems that this function always
-         *  return false.
+
+        /*
+          Here we tried to check whether for Kitkat and higher versions canOpenPopup() allows
+          to know if the node will actually open a popup and thus IME could be hidden. However
+          after some test with menu options with popups it seems that this function always
+          return false.
          */
         node.performAction(action);
     }

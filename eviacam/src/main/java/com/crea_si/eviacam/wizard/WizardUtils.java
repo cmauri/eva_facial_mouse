@@ -30,6 +30,8 @@ import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
 import com.crea_si.eviacam.EngineSelector;
 
+import org.acra.ACRA;
+
 public class WizardUtils {
     public static final String WIZARD_CLOSE_EVENT_NAME= "wizard-closed-event";
 
@@ -55,21 +57,30 @@ public class WizardUtils {
     static AccessibilityServiceModeEngine checkEngineAndFinishIfNeeded (final Activity a) {
         AccessibilityServiceModeEngine engine= EngineSelector.getAccessibilityServiceModeEngine();
         if (engine== null || !engine.isReady()) {
-            // Engine is not ready anymore
-            final Resources res= a.getResources();
-            AlertDialog ad = new AlertDialog.Builder(a).create();
-            ad.setCancelable(false); // This blocks the 'BACK' button
-            ad.setTitle(res.getText(R.string.eva_not_running));
-            ad.setMessage(res.getText(R.string.eva_not_running_summary));
-            ad.setButton(
-                    DialogInterface.BUTTON_NEUTRAL, res.getText(R.string.close),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finishWizard(a);
-                        }
-                    });
-            ad.show();
+            /* Engine is not ready anymore */
+
+            /* TODO: The try/catch block is a workaround to avoid RuntimeException:
+            * Can't create handler inside thread that has not called Looper.prepare() */
+            try {
+                final Resources res = a.getResources();
+                AlertDialog ad = new AlertDialog.Builder(a).create();
+                ad.setCancelable(false); // This blocks the 'BACK' button
+                ad.setTitle(res.getText(R.string.eva_not_running));
+                ad.setMessage(res.getText(R.string.eva_not_running_summary));
+                ad.setButton(
+                        DialogInterface.BUTTON_NEUTRAL, res.getText(R.string.close),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finishWizard(a);
+                            }
+                        });
+                ad.show();
+            }
+            catch (RuntimeException e) {
+                // Report the error silently
+                ACRA.getErrorReporter().handleSilentException(e);
+            }
 
             return null;
         }

@@ -82,9 +82,13 @@ public class EVIACAM {
     
     private static void doToast (Context c, CharSequence t, int duration) {
         final Toast toast = Toast.makeText(c, t, duration);
-        ViewGroup group = (ViewGroup) toast.getView();
-        TextView messageTextView = (TextView) group.getChildAt(0);
-        messageTextView.setTextSize(25);
+        /* Try to increase the size of the text */
+        try {
+            ViewGroup group = (ViewGroup) toast.getView();
+            TextView messageTextView = (TextView) group.getChildAt(0);
+            messageTextView.setTextSize(25);
+        }
+        catch (ClassCastException ignored) { }
         toast.show();
     }
 

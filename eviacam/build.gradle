@@ -35,6 +35,13 @@ def getVersionCode = { ->
     }
 }
 
+def getBuildOrigin() {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def build_origin  = properties.getProperty('build.origin')
+    if (build_origin== null) return "regular"
+    else return build_origin
+}
 
 android {
     compileSdkVersion 23
@@ -72,9 +79,11 @@ android {
 
     def ndkProjectPath="src/main"
 
-    // file: local.properties should have something like this:
+    // File: local.properties should have something like this:
+
     // ndk.dir=C\:\\Program_Files\\Android\\android-ndk-r10e
     // sdk.dir=C\:\\Program Files (x86)\\Android\\android-sdk
+    // build.origin="regular"
     task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
         Properties properties = new Properties()
         properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -115,6 +124,11 @@ android {
             lintOptions {
                 disable 'MissingTranslation'
             }
+            buildConfigField "String", "BUILD_ORIGIN", getBuildOrigin()
+        }
+
+        debug {
+            buildConfigField "String", "BUILD_ORIGIN", getBuildOrigin()
         }
     }
 }

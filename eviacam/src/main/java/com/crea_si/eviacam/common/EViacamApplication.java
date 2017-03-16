@@ -26,6 +26,7 @@ import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
+import com.crea_si.eviacam.BuildConfig;
 
 /**
  * Annotation for ACRA
@@ -44,7 +45,7 @@ import org.acra.annotation.ReportsCrashes;
                 ReportField.CUSTOM_DATA,
                 ReportField.STACK_TRACE,
                 ReportField.LOGCAT },
-        logcatArguments = { "-t", "50", "-v", "time" },
+        logcatArguments = { "-t", "100", "-v", "time" },
         resToastText = com.crea_si.eviacam.R.string.crash_toast_text,
         resDialogText = com.crea_si.eviacam.R.string.crash_dialog_text,
         resDialogCommentPrompt = com.crea_si.eviacam.R.string.crash_dialog_comment_prompt,
@@ -73,6 +74,7 @@ public class EViacamApplication extends Application {
          * handler is called first so that it can filter some exceptions.
          */
         ACRA.init(this);
+        ACRA.getErrorReporter().putCustomData("BUILD_ORIGIN", BuildConfig.BUILD_ORIGIN);
         UncaughtExceptionHandler.init(this);
 
         if (EVIACAM.isSoftkeyboardProcess()) {

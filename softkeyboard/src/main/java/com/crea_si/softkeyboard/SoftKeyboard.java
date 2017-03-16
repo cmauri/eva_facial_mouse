@@ -789,6 +789,14 @@ public class SoftKeyboard extends InputMethodService
         public void unMinimizeSoftInput() {
             // Just do nothing
         }
+
+        public void minimizeSoftInput(int i) {
+            // Just do nothing
+        }
+
+        public void turnOffEmoticonIcon() {
+            // Just do nothing
+        }
     }
 
     public void swipeRight() {

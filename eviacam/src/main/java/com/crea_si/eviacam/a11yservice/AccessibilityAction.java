@@ -144,8 +144,12 @@ public class AccessibilityAction {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AccessibilityServiceInfo asi= mAccessibilityService.getServiceInfo();
-            asi.flags|= AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
-            mAccessibilityService.setServiceInfo(asi);
+            /* This call should not return null under normal circumstances,
+               just to avoid spurious crashes */
+            if (asi!= null) {
+                asi.flags |= AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
+                mAccessibilityService.setServiceInfo(asi);
+            }
         }
     }
 

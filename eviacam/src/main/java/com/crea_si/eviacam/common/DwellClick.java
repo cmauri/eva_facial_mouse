@@ -24,8 +24,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 
-import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.util.Countdown;
 
@@ -57,7 +57,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
     // to remember previous pointer location and measure traveled distance
     private PointF mPrevPointerLocation= new PointF();
     
-    public DwellClick(Context c) {
+    DwellClick(@NonNull Context c) {
         // get constants from resources
         Resources r= c.getResources();
         DWELL_TIME_DEFAULT= r.getInteger(R.integer.dwell_time_default) * 100;
@@ -118,7 +118,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
      * 
      * this method is called from a secondary thread
      */
-    public boolean updatePointerLocation (PointF pl) {
+    boolean updatePointerLocation(@NonNull PointF pl) {
         boolean retval= false;
        
         // state machine
@@ -165,7 +165,7 @@ class DwellClick implements OnSharedPreferenceChangeListener {
      * Get click progress percent
      * @return value in the range 0 to 100
      */
-    public int getClickProgressPercent() {
+    int getClickProgressPercent() {
         if (mState != State.COUNTDOWN_STARTED) return 0;
         
         return mCountdown.getElapsedPercent();

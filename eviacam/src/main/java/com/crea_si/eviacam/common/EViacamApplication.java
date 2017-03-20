@@ -27,10 +27,11 @@ import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 import com.crea_si.eviacam.BuildConfig;
-
 /**
- * Annotation for ACRA
+ * Customized application class
  */
+
+/* Annotation for ACRA */
 @ReportsCrashes(
         formUri = "http://eva.crea-si.com/submit.php",
         mode = ReportingInteractionMode.TOAST,
@@ -52,9 +53,6 @@ import com.crea_si.eviacam.BuildConfig;
         resDialogOkToast = com.crea_si.eviacam.R.string.crash_dialog_ok_toast
 )
 
-/**
- * Customized application class
- */
 public class EViacamApplication extends Application {
 
     public void onCreate() {

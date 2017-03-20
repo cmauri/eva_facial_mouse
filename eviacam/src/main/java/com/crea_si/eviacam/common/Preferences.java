@@ -27,6 +27,7 @@ import android.util.Log;
 
 import com.crea_si.eviacam.R;
 
+@SuppressWarnings("WeakerAccess")
 public class Preferences {
     /**
      * Preference file names
@@ -64,6 +65,7 @@ public class Preferences {
     public static final int LOCATION_GAMEPAD_TOP_CENTER= 2;
     public static final int LOCATION_GAMEPAD_BOTTOM_CENTER= 3;
     public static final int LOCATION_GAMEPAD_TOP_RIGHT= 4;
+    @SuppressWarnings("unused")
     public static final int LOCATION_GAMEPAD_BOTTOM_RIGHT= 5;
 
     /**

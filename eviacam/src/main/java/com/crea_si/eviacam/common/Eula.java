@@ -24,6 +24,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
@@ -42,8 +43,7 @@ public class Eula {
     // the EULA_KEY changes every time you increment the version number
     private static final String EULA_KEY = EULA_PREFIX + BuildConfig.VERSION_CODE;
 
-    static
-    public boolean wasAccepted(final Activity a) {
+    static boolean wasAccepted(@NonNull final Activity a) {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(a);
         return prefs.getBoolean(EULA_KEY, false);
     }
@@ -70,7 +70,7 @@ public class Eula {
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(a);
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean(EULA_KEY, true);
-                    editor.commit();
+                    editor.apply();
                     dialogInterface.dismiss();
                     l.onAcceptEula();
                 }

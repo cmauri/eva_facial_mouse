@@ -19,6 +19,7 @@
 package com.crea_si.eviacam.common;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -45,7 +46,7 @@ public class Analytics {
     private long mStartTime;
 
     /* Create the Analytics instance. Should be called only once */
-    static void init (Context c) {
+    static void init (@NonNull Context c) {
         sInstance= new Analytics(c);
     }
 
@@ -74,7 +75,7 @@ public class Analytics {
     }
 
     /* Constructor */
-    private Analytics(Context c) {
+    private Analytics(@NonNull Context c) {
         GoogleAnalytics analytics = GoogleAnalytics.getInstance(c);
         analytics.setDryRun(false);
         analytics.setLocalDispatchPeriod((BuildConfig.DEBUG ? 15 : 1800));

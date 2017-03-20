@@ -27,6 +27,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 
 import com.crea_si.eviacam.R;
 
@@ -62,7 +63,7 @@ class ServiceNotification {
      * @param s  service
      * @param bc broadcast receiver which will be called when the notification is tapped
      */
-    ServiceNotification(Service s, BroadcastReceiver bc) {
+    ServiceNotification(@NonNull Service s, @NonNull BroadcastReceiver bc) {
         mService = s;
         mBroadcastReceiver = bc;
     }
@@ -128,7 +129,7 @@ class ServiceNotification {
      * @param action code of the action
      * @return return notification object
      */
-    private static Notification createNotification(Context c, int action) {
+    private static Notification createNotification(@NonNull Context c, int action) {
         // notification initialization
         Intent intent = new Intent(NOTIFICATION_FILTER_ACTION);
         intent.putExtra(NOTIFICATION_ACTION_NAME, action);

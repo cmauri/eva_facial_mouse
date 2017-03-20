@@ -44,15 +44,16 @@ public class GamepadView extends View implements OnSharedPreferenceChangeListene
     public static final float INNER_RADIUS_RATIO= 0.4f;
     
     private static final float OUTER_RADIUS_NORM_DEFAULT= 0.15f;
-    
+
+    private static final float BITMAP_RELATIVE_SIZE = 0.4f;
+
     /*
      * Main values for drawing gamepad (normalized to the shortest 
      * side of the canvas)
      */
     private PointF mPadCenterNorm= new PointF();
     private float mOuterRadiusNorm= OUTER_RADIUS_NORM_DEFAULT;
-    private float mBitmapRelativeSize= 0.4f;
-    
+
     // Transparency for painting
     private int mTransparency= 255;
     
@@ -91,7 +92,7 @@ public class GamepadView extends View implements OnSharedPreferenceChangeListene
         // shared preferences
         SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
-        updateSettings(sp);
+        updateSettings();
     }
 
     public void cleanup() {
@@ -99,7 +100,7 @@ public class GamepadView extends View implements OnSharedPreferenceChangeListene
         sp.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void updateSettings(SharedPreferences sp) {
+    private void updateSettings() {
         /*
          * Gamepad location
          */
@@ -144,8 +145,82 @@ public class GamepadView extends View implements OnSharedPreferenceChangeListene
         if (key.equals(Preferences.KEY_GAMEPAD_LOCATION) ||
             key.equals(Preferences.KEY_GAMEPAD_TRANSPARENCY) ||
             key.equals(Preferences.KEY_UI_ELEMENTS_SIZE)) {
-            updateSettings(sp);
+            updateSettings();
         }
+    }
+
+    private void updateCachedValues(Canvas canvas) {
+        mCanvasWidth= canvas.getWidth();
+        mCanvasHeight= canvas.getHeight();
+        mPadCenterX= mCanvasWidth * mPadCenterNorm.x;
+        mPadCenterY= mCanvasHeight * mPadCenterNorm.y;
+        final float canvasShortSize= (mCanvasWidth< mCanvasHeight? mCanvasWidth : mCanvasHeight);
+        mOuterRadius= canvasShortSize * mOuterRadiusNorm;
+        mInnerRadius= canvasShortSize * mOuterRadiusNorm * INNER_RADIUS_RATIO;
+
+        /*
+         * Read original bitmaps from resources
+         */
+        BitmapDrawable bd = (BitmapDrawable) getContext().getResources().
+                getDrawable(R.drawable.ic_pad_arrow_down);
+        Bitmap downArrowOrig= bd.getBitmap();
+        downArrowOrig.setDensity(Bitmap.DENSITY_NONE);
+
+        bd = (BitmapDrawable) getContext().getResources().
+                getDrawable(R.drawable.ic_pad_arrow_down_pressed);
+        Bitmap downArrowPressedOrig= bd.getBitmap();
+        downArrowPressedOrig.setDensity(Bitmap.DENSITY_NONE);
+
+        /*
+         * Compute radius and size of the bitmaps (assume bitmap width > length)
+         */
+        final float shortSide= (mOuterRadius - mInnerRadius) * BITMAP_RELATIVE_SIZE;
+        final float scaling = shortSide / (float) bd.getIntrinsicHeight();
+        final float longSide= scaling * bd.getIntrinsicWidth();
+        final float bmpCenterRadius = mInnerRadius + (mOuterRadius - mInnerRadius) / 2.0f;
+
+        /*
+         * Scale to the desired size
+         */
+        Bitmap downArrowSized= Bitmap.createScaledBitmap(downArrowOrig, (int) longSide, (int) shortSide, true);
+        downArrowSized.setDensity(Bitmap.DENSITY_NONE);
+
+        Bitmap downArrowPressedSized= Bitmap.createScaledBitmap(downArrowPressedOrig, (int) longSide, (int) shortSide, true);
+        downArrowPressedSized.setDensity(Bitmap.DENSITY_NONE);
+
+        /*
+         * Initialize arrays (position 0 is arrow down)
+         */
+        mPadArrows[0]= downArrowSized;
+        mPadArrowsPressed[0]= downArrowPressedSized;
+        mPadArrowsLocation[0]= new PointF(
+                mPadCenterX - (float) downArrowSized.getWidth()/2.0f,
+                mPadCenterY + bmpCenterRadius - (float) downArrowSized.getHeight()/2.0f);
+
+        double alpha= Math.PI / 2.0 + Math.PI / 4.0;
+        Matrix matrix = new Matrix();
+        int rotate= 45;
+        for (int i= 1; i< 8; i++) {
+            matrix.reset();
+            matrix.setRotate(rotate);
+
+            Bitmap tb= Bitmap.createBitmap(downArrowSized, 0, 0, downArrowSized.getWidth(), downArrowSized.getHeight(), matrix, false);
+            tb.setDensity(Bitmap.DENSITY_NONE);
+            mPadArrows[i]= tb;
+
+            tb= Bitmap.createBitmap(downArrowPressedSized, 0, 0, downArrowPressedSized.getWidth(), downArrowPressedSized.getHeight(), matrix, false);
+            tb.setDensity(Bitmap.DENSITY_NONE);
+            mPadArrowsPressed[i]= tb;
+
+            mPadArrowsLocation[i]= new PointF(
+                    mPadCenterX + bmpCenterRadius * (float) Math.cos(alpha) - (float) tb.getWidth() / 2.0f,
+                    mPadCenterY + bmpCenterRadius * (float) Math.sin(alpha) - (float) tb.getHeight() / 2.0f);
+
+            rotate+= 45;
+            alpha+= Math.PI / 4.0;
+        }
+
+        mCacheNeedRefresh= false;
     }
 
     @Override
@@ -156,77 +231,7 @@ public class GamepadView extends View implements OnSharedPreferenceChangeListene
          * Check whether the canvas has been resized and update cached values if so 
          */
         if (mCacheNeedRefresh || mCanvasWidth!= canvas.getWidth() || mCanvasHeight!= canvas.getHeight()) {
-            mCanvasWidth= canvas.getWidth();
-            mCanvasHeight= canvas.getHeight();
-            mPadCenterX= mCanvasWidth * mPadCenterNorm.x;
-            mPadCenterY= mCanvasHeight * mPadCenterNorm.y;
-            final float canvasShortSize= (mCanvasWidth< mCanvasHeight? mCanvasWidth : mCanvasHeight);
-            mOuterRadius= canvasShortSize * mOuterRadiusNorm;
-            mInnerRadius= canvasShortSize * mOuterRadiusNorm * INNER_RADIUS_RATIO;
-
-            /*
-             * Read original bitmaps from resources
-             */
-            BitmapDrawable bd = (BitmapDrawable) getContext().getResources().
-                                    getDrawable(R.drawable.ic_pad_arrow_down);
-            Bitmap downArrowOrig= bd.getBitmap();
-            downArrowOrig.setDensity(Bitmap.DENSITY_NONE);
-
-            bd = (BitmapDrawable) getContext().getResources().
-                    getDrawable(R.drawable.ic_pad_arrow_down_pressed);
-            Bitmap downArrowPressedOrig= bd.getBitmap();
-            downArrowPressedOrig.setDensity(Bitmap.DENSITY_NONE);
-
-            /*
-             * Compute radius and size of the bitmaps (assume bitmap width > length) 
-             */
-            final float shortSide= (mOuterRadius - mInnerRadius) * mBitmapRelativeSize;
-            final float scaling = shortSide / (float) bd.getIntrinsicHeight();
-            final float longSide= scaling * bd.getIntrinsicWidth();
-            final float bmpCenterRadius = mInnerRadius + (mOuterRadius - mInnerRadius) / 2.0f;
-
-            /*
-             * Scale to the desired size
-             */
-            Bitmap downArrowSized= Bitmap.createScaledBitmap(downArrowOrig, (int) longSide, (int) shortSide, true);
-            downArrowSized.setDensity(Bitmap.DENSITY_NONE);
-
-            Bitmap downArrowPressedSized= Bitmap.createScaledBitmap(downArrowPressedOrig, (int) longSide, (int) shortSide, true);
-            downArrowPressedSized.setDensity(Bitmap.DENSITY_NONE);
-
-            /*
-             * Initialize arrays (position 0 is arrow down)
-             */
-            mPadArrows[0]= downArrowSized;
-            mPadArrowsPressed[0]= downArrowPressedSized;
-            mPadArrowsLocation[0]= new PointF(
-                    mPadCenterX - (float) downArrowSized.getWidth()/2.0f,
-                    mPadCenterY + bmpCenterRadius - (float) downArrowSized.getHeight()/2.0f);
-
-            double alpha= Math.PI / 2.0 + Math.PI / 4.0;
-            Matrix matrix = new Matrix();
-            int rotate= 45;
-            for (int i= 1; i< 8; i++) {
-                matrix.reset();
-                matrix.setRotate(rotate);
-                
-                Bitmap tb= Bitmap.createBitmap(downArrowSized, 0, 0, downArrowSized.getWidth(), downArrowSized.getHeight(), matrix, false);
-                tb.setDensity(Bitmap.DENSITY_NONE);
-                mPadArrows[i]= tb;
-                
-                tb= Bitmap.createBitmap(downArrowPressedSized, 0, 0, downArrowPressedSized.getWidth(), downArrowPressedSized.getHeight(), matrix, false);
-                tb.setDensity(Bitmap.DENSITY_NONE);
-                mPadArrowsPressed[i]= tb;
-                
-                mPadArrowsLocation[i]= new PointF(
-                        mPadCenterX + bmpCenterRadius * (float) Math.cos(alpha) - (float) tb.getWidth() / 2.0f,
-                        mPadCenterY + bmpCenterRadius * (float) Math.sin(alpha) - (float) tb.getHeight() / 2.0f);
-                
-                rotate+= 45;
-                alpha+= Math.PI / 4.0;
-            }
-
-            mCacheNeedRefresh= false;
+            updateCachedValues(canvas);
         }
 
         /*

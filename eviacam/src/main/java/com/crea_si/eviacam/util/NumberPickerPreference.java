@@ -49,6 +49,7 @@ public class NumberPickerPreference extends DialogPreference {
     private int mMaxValue;
     private CharSequence mTitle;
 
+    @SuppressWarnings("WeakerAccess")
     public NumberPickerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         

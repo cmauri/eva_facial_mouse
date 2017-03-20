@@ -22,6 +22,7 @@ package com.crea_si.eviacam.common;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 
 import java.lang.Math;
 
@@ -53,7 +54,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
     private final OrientationManager mOrientationManager;
 
     // constructor
-    public PointerControl(PointerLayerView pv, OrientationManager om) {
+    PointerControl(@NonNull PointerLayerView pv, @NonNull OrientationManager om) {
         mPointerLayerView= pv;
         mOrientationManager= om;
 
@@ -160,7 +161,7 @@ class PointerControl implements OnSharedPreferenceChangeListener {
      * Called for each frame to update pointer position
      * @param vel motion vector in world coordinates (i.e. upright face coordinates)
      */
-    public void updateMotion(PointF vel) {
+    void updateMotion(@NonNull PointF vel) {
         mCurrMotion.x= vel.x;
         mCurrMotion.y= vel.y;
 
@@ -244,7 +245,8 @@ class PointerControl implements OnSharedPreferenceChangeListener {
         
         mPointerLayerView.updatePosition(mPointerLocation);
     }
-    
+
+    @NonNull
     PointF getPointerLocation() {
         return mPointerLocation;
     }

@@ -1,7 +1,7 @@
  /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,14 @@ import java.util.List;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -43,10 +46,13 @@ import com.crea_si.eviacam.common.InputMethodAction;
 import com.crea_si.eviacam.util.AccessibilityNodeDebug;
 
  /**
- * Manages actions relative to the Android accessibility API 
- */
+  * Manages actions relative to the Android accessibility API
+  *
+  * TODO: refactor this class
+  */
 
-public class AccessibilityAction {
+ @TargetApi(Build.VERSION_CODES.KITKAT)
+ class AccessibilityAction {
 
     // delay after which an accessibility event is processed
     private static final long SCROLLING_SCAN_RUN_DELAY= 700;
@@ -122,8 +128,8 @@ public class AccessibilityAction {
     // navigation keyboard advice shown?
     private boolean mNavigationKeyboardAdviceShown= false;
 
-    public AccessibilityAction (AccessibilityService as, ContextMenuLayerView cv,
-                                DockPanelLayerView dplv, ScrollLayerView slv) {
+    AccessibilityAction (@NonNull AccessibilityService as, @NonNull ContextMenuLayerView cv,
+                         @NonNull DockPanelLayerView dplv, @NonNull ScrollLayerView slv) {
         mAccessibilityService= as;
         mContextMenuLayerView = cv;
         mDockPanelLayerView= dplv;
@@ -153,6 +159,7 @@ public class AccessibilityAction {
         }
     }
 
+    @NonNull
     private Context getContext() {
         return mContextMenuLayerView.getContext();
     }
@@ -161,14 +168,14 @@ public class AccessibilityAction {
         mInputMethodAction.cleanup();
     }
 
-    public void enableScrollingScan () {
+    void enableScrollingScan() {
         mScrollingScanEnabled= true;
         mNeedToRunScrollingScan= true;
     }
-    public void disableScrollingScan () { mScrollingScanEnabled= false; }
+    void disableScrollingScan() { mScrollingScanEnabled= false; }
 
     /** Manages global actions, return false if action not generated */
-    private boolean manageGlobalActions (Point p) {
+    private boolean manageGlobalActions (@NonNull Point p) {
         /*
          * Is the action for the dock panel?
          */
@@ -225,7 +232,7 @@ public class AccessibilityAction {
     }
     
     /** Checks and run scrolling actions */
-    private boolean manageScrollActions(Point p) {
+    private boolean manageScrollActions(@NonNull Point p) {
         ScrollLayerView.NodeAction na= mScrollLayerView.getContaining(p);
         if (na == null) return false;
         
@@ -246,7 +253,7 @@ public class AccessibilityAction {
     }
     
     /** Perform an action to a node focusing it when necessary */
-    private void performActionOnNode(AccessibilityNodeInfo node, int action) {
+    private void performActionOnNode(@NonNull AccessibilityNodeInfo node, int action) {
         if (action == 0) return;
         
         /*
@@ -296,20 +303,11 @@ public class AccessibilityAction {
      * rest mode (clicking function disabled). It does not check
      * if the node below the pointer is actually actionable.
      */
-    public boolean isActionable (Point p) {
+    boolean isActionable(@NonNull Point p) {
         if (!mDockPanelLayerView.getRestModeEnabled()) return true;
 
         // Rest mode, only specific button in the dock panel works
         return (mDockPanelLayerView.getViewIdBelowPoint(p) == R.id.toggle_rest_mode);
-    }
-    
-    /**
-     * Return the status of the click feature 
-     * 
-     * @return true if disabled
-     */
-    public boolean getRestModeEnabled() {
-        return mDockPanelLayerView.getRestModeEnabled();
     }
 
     /**
@@ -317,9 +315,9 @@ public class AccessibilityAction {
      * 
      * @param pInt - point in screen coordinates
      */
-    public void performAction (Point pInt) {
+    void performAction(@NonNull Point pInt) {
         if (mContextMenuOpen) {
-            /** When context menu open only check it */
+            /* When context menu open only check it */
             int action= mContextMenuLayerView.testClick(pInt);
             mContextMenuLayerView.hideContextMenu();
             mContextMenuOpen= false;
@@ -335,30 +333,30 @@ public class AccessibilityAction {
             AccessibilityNodeInfo root= null;
             
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                /**
-                 * According to the documentation [1]: "This method returns only the windows
-                 * that a sighted user can interact with, as opposed to all windows.".
-                 * Unfortunately this does not seem to be the actual behavior. On Lollypop 
-                 * API 21 (Nexus 7) the windows of the IME is not returned. With API 22
-                 * the window of the IME is only returned for the google keyboard (and allows
-                 * to interact with it). For other keyboards (e.g. AnySoftKeyboard or 
-                 * Go Keyboard 2015) does not work.
-                 * 
-                 * UPDATE: this does not always happens, sometimes an IME window is reported,
-                 * needs more work (tested under API 22 and bundled eviacam IME and 
-                 * Go Keyboard 2015).
-                 * 
-                 * logcat excerpt
-                 * W3 AccessibilityWindowInfo[id=1544, type=TYPE_INPUT_METHOD, layer=21040, bounds=Rect(0, 33 - 1280, 800), focused=false, active=false, hasParent=false, hasChildren=false]
-                 * W3.1 [...............VI]; android.widget.FrameLayout; null; null; ; [ACTION_SELECT, ACTION_CLEAR_SELECTION, ACTION_ACCESSIBILITY_FOCUS, ]Rect(0, 808 - 800, 1280)
-                 * W4 AccessibilityWindowInfo[id=1516, type=TYPE_APPLICATION, layer=21035, bounds=Rect(0, 0 - 1280, 800), focused=true, active=true, hasParent=false, hasChildren=false]
-                 * W4.1 [...............VI]; android.widget.FrameLayout; null; null; ; [ACTION_SELECT, ACTION_CLEAR_SELECTION, ACTION_ACCESSIBILITY_FOCUS, ]Rect(0, 0 - 800, 1280)
-                 * 
-                 * Further tests with WhatsApp client show that if the input text of a chat
-                 * is not focused the window containing the emoticons is not reported (although
-                 * is visible and the user can interact with it).
-                 * 
-                 * [1] http://developer.android.com/reference/android/accessibilityservice/AccessibilityService.html#getWindows()
+                /*
+                  According to the documentation [1]: "This method returns only the windows
+                  that a sighted user can interact with, as opposed to all windows.".
+                  Unfortunately this does not seem to be the actual behavior. On Lollipop
+                  API 21 (Nexus 7) the windows of the IME is not returned. With API 22
+                  the window of the IME is only returned for the google keyboard (and allows
+                  to interact with it). For other keyboards (e.g. AnySoftKeyboard or
+                  Go Keyboard 2015) does not work.
+
+                  UPDATE: this does not always happens, sometimes an IME window is reported,
+                  needs more work (tested under API 22 and bundled eviacam IME and
+                  Go Keyboard 2015).
+
+                  logcat excerpt
+                  W3 AccessibilityWindowInfo[id=1544, type=TYPE_INPUT_METHOD, layer=21040, bounds=Rect(0, 33 - 1280, 800), focused=false, active=false, hasParent=false, hasChildren=false]
+                  W3.1 [...............VI]; android.widget.FrameLayout; null; null; ; [ACTION_SELECT, ACTION_CLEAR_SELECTION, ACTION_ACCESSIBILITY_FOCUS, ]Rect(0, 808 - 800, 1280)
+                  W4 AccessibilityWindowInfo[id=1516, type=TYPE_APPLICATION, layer=21035, bounds=Rect(0, 0 - 1280, 800), focused=true, active=true, hasParent=false, hasChildren=false]
+                  W4.1 [...............VI]; android.widget.FrameLayout; null; null; ; [ACTION_SELECT, ACTION_CLEAR_SELECTION, ACTION_ACCESSIBILITY_FOCUS, ]Rect(0, 0 - 800, 1280)
+
+                  Further tests with WhatsApp client show that if the input text of a chat
+                  is not focused the window containing the emoticons is not reported (although
+                  is visible and the user can interact with it).
+
+                  [1] http://developer.android.com/reference/android/accessibilityservice/AccessibilityService.html#getWindows()
                  */
                 List<AccessibilityWindowInfo> l= mAccessibilityService.getWindows();
                 
@@ -368,9 +366,9 @@ public class AccessibilityAction {
                     if (bounds.contains(pInt.x, pInt.y)) {
                         AccessibilityNodeInfo rootCandidate= awi.getRoot();
                         if (rootCandidate == null) continue;
-                        /**
-                         * Check bounds for the candidate root node. Sometimes windows bounds
-                         *  are larger than root bounds
+                        /*
+                          Check bounds for the candidate root node. Sometimes windows bounds
+                           are larger than root bounds
                          */
                         rootCandidate.getBoundsInScreen(bounds);
                         if (bounds.contains(pInt.x, pInt.y)) {
@@ -380,28 +378,27 @@ public class AccessibilityAction {
                     }
                 }
                 
-                /**
-                 * Give an opportunity to the bundled eviacam keyboard
-                 * 
-                 * TODO: check whether this is really needed (e.g. checking which IME is 
-                 * currently active, if the node is already an IME)
+                /*
+                  Give an opportunity to the bundled eviacam keyboard
+                  TODO: check whether this is really needed (e.g. checking which IME is
+                  currently active, if the node is already an IME)
                  */
                 if (mInputMethodAction.click(pInt.x, pInt.y)) return;
             }
             else {
-                /**
-                 * Manages actions for the IME.
-                 * 
-                 * LIMITATIONS: when a pop up or dialog is covering the IME there is no way to
-                 * know (at least for API < 21) such circumstance. Therefore, we give preference
-                 * to the IME. This may lead to situations where the pop up is not accessible.
-                 * 
-                 * TODO: add an option to open/close IME
+                /*
+                  Manages actions for the IME.
+
+                  LIMITATIONS: when a pop up or dialog is covering the IME there is no way to
+                  know (at least for API < 21) such circumstance. Therefore, we give preference
+                  to the IME. This may lead to situations where the pop up is not accessible.
+
+                  TODO: add an option to open/close IME
                  */
                 if (mInputMethodAction.click(pInt.x, pInt.y)) return;
             }
             
-            /** Manages actions on an arbitrary position of the screen  */
+            /* Manages actions on an arbitrary position of the screen  */
             
             // Finds node under (x, y) and its available actions
             AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK, root);
@@ -410,7 +407,7 @@ public class AccessibilityAction {
 
             if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "Actionable node found: (" + pInt.x + ", " +
                     pInt.y + ")." + AccessibilityNodeDebug.getNodeInfo(node));
-            
+
             int availableActions= FULL_ACTION_MASK & node.getActions();
             
             if (Integer.bitCount(availableActions)> 1) {
@@ -442,7 +439,7 @@ public class AccessibilityAction {
      * 
      * Remarks: checks whether needs to start a scrolling nodes exploration
      */
-    public void refresh() {
+    void refresh() {
         if (mDockPanelLayerView.getRestModeEnabled()) return;
         if (!mNeedToRunScrollingScan) return;
         if (System.currentTimeMillis()< mRunScrollingScanTStamp) return;
@@ -455,7 +452,6 @@ public class AccessibilityAction {
 
         @Override
         public void run() {
-            //EVIACAM.debug("Scanning for scrollables");
             mScrollLayerView.clearScrollAreas();
 
             if (mScrollingScanEnabled && !mDockPanelLayerView.getRestModeEnabled()) {
@@ -476,7 +472,7 @@ public class AccessibilityAction {
     };
 
     private void refreshScrollingButtons() {
-        /** Interaction with the UI needs to be done in the main thread */
+        /* Interaction with the UI needs to be done in the main thread */
         mHandler.post(mRefreshScrollingRunnable);
     }
 
@@ -494,14 +490,12 @@ public class AccessibilityAction {
      * time and improve responsiveness by delaying the execution of the scan
      * so that consecutive events only fire an actual scan. 
      */
-    public void onAccessibilityEvent(AccessibilityEvent event) {
+    void onAccessibilityEvent(@NonNull AccessibilityEvent event) {
         switch (event.getEventType()) {
         case AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED:
-            //EVIACAM.debug("WINDOW_STATE_CHANGED");
             break;
 
         case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
-            //EVIACAM.debug("WINDOW_CONTENT_CHANGED");
 
             // If contains a WebView stop processing
             if (mContainsWebView) return;
@@ -510,20 +504,15 @@ public class AccessibilityAction {
                 switch (event.getContentChangeTypes ()) {
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_CONTENT_DESCRIPTION:
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_TEXT:
-                    //EVIACAM.debug("WINDOW_CONTENT_TEXT|CONTENT_DESC_CHANGED: IGNORED");
                     return;  // just ignore these events
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_SUBTREE:
-                    //EVIACAM.debug("WINDOW_CONTENT_CHANGED_SUBTREE");
                     break;
                 case AccessibilityEvent.CONTENT_CHANGE_TYPE_UNDEFINED:
-                    //EVIACAM.debug("WINDOW_CONTENT_CHANGED_UNDEFINED");
                 }
             }
             break;
 
         case AccessibilityEvent.TYPE_VIEW_SCROLLED:
-            //EVIACAM.debug("VIEW_SCROLLED");
-
             // If contains a WebView stop processing
             if (mContainsWebView) return;
 
@@ -534,7 +523,7 @@ public class AccessibilityAction {
             return;
         }
 
-        /** Schedule scrolling nodes scanning after SCROLLING_SCAN_RUN_DELAY ms */
+        /* Schedule scrolling nodes scanning after SCROLLING_SCAN_RUN_DELAY ms */
         mRunScrollingScanTStamp= System.currentTimeMillis() + SCROLLING_SCAN_RUN_DELAY;
         mNeedToRunScrollingScan= true;
     } 
@@ -557,7 +546,8 @@ public class AccessibilityAction {
      * Find recursively the node under (x, y) that accepts some or all
      * actions encoded on the mask
      */
-    private AccessibilityNodeInfo findActionable (Point p, int actions, AccessibilityNodeInfo root) {
+    private AccessibilityNodeInfo findActionable (@NonNull Point p, int actions,
+                                                  @Nullable AccessibilityNodeInfo root) {
         // get root node
         if (root == null) { 
             root = mAccessibilityService.getRootInActiveWindow();
@@ -573,7 +563,7 @@ public class AccessibilityAction {
     
     /** Actual recursive call for findActionable */
     private static AccessibilityNodeInfo findActionable0(
-            AccessibilityNodeInfo node, RecursionInfo ri) {
+            @Nullable AccessibilityNodeInfo node, @NonNull RecursionInfo ri) {
 
         // sometimes, during the recursion, getChild() might return null
         // check here and abort recursion in that case
@@ -581,15 +571,15 @@ public class AccessibilityAction {
         
         node.getBoundsInScreen(ri.tmp);
         if (!ri.tmp.contains(ri.p.x, ri.p.y)) {
-            /**
-             * If node does not contain (x, y) stop recursion. It seems that, when part
-             * of the view is covered by another window (e.g. IME), reported bounds 
-             * EXCLUDE the area covered by such a window. Unfortunately, this does not
-             * always works, for instance, when a extracted view is shown (e.g. usually
-             * in landscape mode). This behavior can be changed (see [1]) in the IME
-             * but perhaps this is not the best approach.
-             * 
-             * [1] http://stackoverflow.com/questions/14252184/how-can-i-make-my-custom-keyboard-to-show-in-fullscreen-mode-always
+            /*
+              If node does not contain (x, y) stop recursion. It seems that, when part
+              of the view is covered by another window (e.g. IME), reported bounds
+              EXCLUDE the area covered by such a window. Unfortunately, this does not
+              always works, for instance, when a extracted view is shown (e.g. usually
+              in landscape mode). This behavior can be changed (see [1]) in the IME
+              but perhaps this is not the best approach.
+
+              [1] http://stackoverflow.com/questions/14252184/how-can-i-make-my-custom-keyboard-to-show-in-fullscreen-mode-always
              */
             return null;
         }

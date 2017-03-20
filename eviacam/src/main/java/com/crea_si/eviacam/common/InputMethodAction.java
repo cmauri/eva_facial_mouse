@@ -27,8 +27,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.inputmethod.InputMethodManager;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
@@ -48,9 +48,7 @@ public class InputMethodAction implements ServiceConnection {
     private static final int BIND_RETRY_PERIOD = 2000;
     
     private final Context mContext;
-    
-    private final InputMethodManager mInputMethodManager;
-    
+
     // binder (proxy) with the remote input method service
     private IClickableIME mRemoteService;
     
@@ -59,11 +57,8 @@ public class InputMethodAction implements ServiceConnection {
 
     private final Handler mHandler= new Handler();
 
-    public InputMethodAction(Context c) {
+    public InputMethodAction(@NonNull Context c) {
         mContext= c;
-        
-        mInputMethodManager= (InputMethodManager) 
-                c.getSystemService (Context.INPUT_METHOD_SERVICE);
 
         // attempt to bind with IME
         keepBindAlive();
@@ -85,9 +80,9 @@ public class InputMethodAction implements ServiceConnection {
     private void keepBindAlive() {
         if (mRemoteService != null) return;
         
-        /**
-         * no bind available, try to establish it if enough 
-         * time passed since the last attempt
+        /*
+          no bind available, try to establish it if enough
+          time passed since the last attempt
          */
         long tstamp= System.currentTimeMillis();
         
@@ -136,8 +131,7 @@ public class InputMethodAction implements ServiceConnection {
             }
             return false;
         }
-        //if (!mInputMethodManager.isActive()) return false;
-        
+
         try {
             return mRemoteService.click(x, y);
         } catch (RemoteException e) {
@@ -171,7 +165,6 @@ public class InputMethodAction implements ServiceConnection {
     public void openIME() {
         if (!IMEPrereq()) return;
 
-        //if (mInputMethodManager.isActive()) return; // already open
         try {
             mRemoteService.openIME();
         } catch (RemoteException e) {
@@ -218,9 +211,6 @@ public class InputMethodAction implements ServiceConnection {
      * @return true if enabled
      */
     public static boolean isEnabledCustomKeyboard (Context c) {
-        InputMethodManager imem =
-                (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
-
         String pkgName= Settings.Secure.getString(c.getContentResolver(),
                                                   Settings.Secure.DEFAULT_INPUT_METHOD);
         return pkgName.contentEquals(IME_NAME);

@@ -36,6 +36,8 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.PointF;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
@@ -148,11 +150,11 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
      *                     not all frames are checked for the face detection algorithm
      * @param state current state of the engine
      */
-    protected abstract void onFrame(PointF motion, boolean faceDetected, int state);
+    protected abstract void onFrame(@NonNull PointF motion, boolean faceDetected, int state);
 
 
     @Override
-    public boolean init(Service s, OnInitListener l) {
+    public boolean init(@NonNull Service s, @Nullable OnInitListener l) {
         if (mCurrentState != STATE_DISABLED) {
             // Already started, something went wrong
             throw new IllegalStateException();
@@ -226,6 +228,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
             adb.setPositiveButton(mService.getText(android.R.string.ok), null);
 
             AlertDialog ad= adb.create();
+            //noinspection ConstantConditions
             ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
             ad.show();
 
@@ -449,7 +452,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
      * @param rgba opencv matrix with the captured image
      */
     @Override
-    public void processFrame(Mat rgba) {
+    public void processFrame(@NonNull Mat rgba) {
         // For these states do nothing
         if (mCurrentState== STATE_DISABLED || mCurrentState== STATE_STOPPED) return;
 

@@ -7,6 +7,7 @@ package org.opencv.android;
  * which includes its own exception (CameraAccessException). Since we target API level 16
  * or higher we do not use it.
  */
+@SuppressWarnings("WeakerAccess")
 public class CameraException extends java.lang.Exception {
     /**
      * There is no available cameras.

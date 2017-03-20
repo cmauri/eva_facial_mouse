@@ -20,6 +20,8 @@
 package com.crea_si.eviacam.common;
 
 import android.app.Service;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * Interface for the engine
@@ -60,13 +62,13 @@ public interface Engine {
     /**
      * Engine initialization
      *
-     * @s service to be used as context for the engine
+     * @param s service to be used as context for the engine
      * @param l listener to be called when initialization finished
      * @return true if, at least, the first stage of the initialization went fine
      *         to know when the initialization is complete and everything went fine
      *         need to register a OnInitListener
      */
-    boolean init(Service s, OnInitListener l);
+    boolean init(@NonNull Service s, @Nullable OnInitListener l);
 
     /**
      * Start the engine
@@ -111,7 +113,7 @@ public interface Engine {
     /**
      * Return whether the engine is ready (not in STATE_DISABLED)
      *
-     * @return
+     * @return true when ready
      */
     boolean isReady();
 

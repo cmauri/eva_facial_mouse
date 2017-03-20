@@ -30,7 +30,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 
 /**
@@ -74,13 +73,13 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
         mPaintBox = new Paint();
         setWillNotDraw(false);
         mPointerLocation= new PointF();
-        
+
         DISABLED_ALPHA= c.getResources().getColor(R.color.disabled_alpha) >> 24;
         
         // preferences
         SharedPreferences sp= Preferences.get().getSharedPreferences();
         sp.registerOnSharedPreferenceChangeListener(this);
-        updateSettings(sp);
+        updateSettings();
     }
     
     public void cleanup() {
@@ -92,17 +91,17 @@ public class PointerLayerView extends View implements OnSharedPreferenceChangeLi
     public void onSharedPreferenceChanged(SharedPreferences sp, String key) {
         if (key.equals(Preferences.KEY_UI_ELEMENTS_SIZE) ||
             key.equals(Preferences.KEY_GAMEPAD_TRANSPARENCY)) {
-            updateSettings(sp);
+            updateSettings();
         }
     }
     
-    private void updateSettings(SharedPreferences sp) {
+    private void updateSettings() {
         float size= Preferences.get().getUIElementsSize();
 
         mAlphaPointer= (255 * Preferences.get().getGamepadTransparency()) / 100;
         
         // re-scale pointer accordingly
-        BitmapDrawable bd = (BitmapDrawable) 
+        BitmapDrawable bd = (BitmapDrawable)
                 getContext().getResources().getDrawable(R.drawable.pointer);
         Bitmap origBitmap= bd.getBitmap();
         origBitmap.setDensity(Bitmap.DENSITY_NONE);

@@ -65,7 +65,7 @@ public class GamepadPreferencesActivity extends Activity {
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.gamepad_preference_fragment);
                         
-            /**
+            /*
              * Listeners for list preference entries
              */
             ListPreference lp = (ListPreference) findPreference(Preferences.KEY_GAMEPAD_LOCATION);

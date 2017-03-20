@@ -24,6 +24,7 @@ import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.media.AudioManager;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -60,10 +61,9 @@ class ClickDispatcher implements MouseEmulationCallbacks,
     private volatile boolean mSoundOnClick;
 
     // perform actions on the UI using the accessibility API
-    // TODO: refactor this class
     private AccessibilityAction mAccessibilityAction;
 
-    ClickDispatcher(AccessibilityService s, OverlayView ov) {
+    ClickDispatcher(@NonNull AccessibilityService s, @NonNull OverlayView ov) {
         mAudioManager= (AudioManager) s.getSystemService(Context.AUDIO_SERVICE);
 
         /* dockable menu view */
@@ -212,7 +212,7 @@ class ClickDispatcher implements MouseEmulationCallbacks,
      *
      * @return true if view state is in rest mode
      */
-    public boolean getRestModeEnabled () {
+    boolean getRestModeEnabled() {
         return mDockPanelView.getRestModeEnabled();
     }
 
@@ -233,7 +233,7 @@ class ClickDispatcher implements MouseEmulationCallbacks,
      * NOTE: this method is called from a secondary thread
      */
     @Override
-    public void onMouseEvent(PointF location, boolean click) {
+    public void onMouseEvent(@NonNull PointF location, boolean click) {
         mPointInt.x= (int) location.x;
         mPointInt.y= (int) location.y;
 
@@ -256,7 +256,7 @@ class ClickDispatcher implements MouseEmulationCallbacks,
      * @return true when the location supports some action
      */
     @Override
-    public boolean isClickable(PointF location) {
+    public boolean isClickable(@NonNull PointF location) {
         mPointInt.x= (int) location.x;
         mPointInt.y= (int) location.y;
         return mAccessibilityAction!= null && mAccessibilityAction.isActionable(mPointInt);

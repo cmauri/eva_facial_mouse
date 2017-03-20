@@ -23,6 +23,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -282,7 +283,7 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
      * @param state current state of the engine
      */
     @Override
-    protected void onFrame(PointF motion, boolean faceDetected, int state) {
+    protected void onFrame(@NonNull PointF motion, boolean faceDetected, int state) {
         if (mCurrentMotionProcessor!= null) {
             if (state == STATE_RUNNING) {
                 mCurrentMotionProcessor.processMotion(motion);
@@ -300,7 +301,7 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
      * @param click true when click generated
      */
     @Override
-    public void onMouseEvent(PointF location, boolean click) {
+    public void onMouseEvent(@NonNull PointF location, boolean click) {
         mPointInt.x= (int) location.x;
         mPointInt.y= (int) location.y;
 
@@ -368,7 +369,7 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
      * @return always true
      */
     @Override
-    public boolean isClickable(PointF location) {
+    public boolean isClickable(@NonNull PointF location) {
         if (!mDockPanelLayerView.getRestModeEnabled()) return true;
 
         mPointInt.x= (int) location.x;

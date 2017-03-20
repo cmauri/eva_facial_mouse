@@ -19,6 +19,7 @@
 package com.crea_si.eviacam.common;
 
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 
 /**
  * Interface for mouse emulation callbacks
@@ -31,7 +32,7 @@ public interface MouseEmulationCallbacks {
      * @param location location of the pointer is screen coordinates
      * @param click true when click generated
      */
-    void onMouseEvent(PointF location, boolean click);
+    void onMouseEvent(@NonNull PointF location, boolean click);
 
     /**
      * Called to ask whether a certain location of the screen is clickable.
@@ -40,5 +41,5 @@ public interface MouseEmulationCallbacks {
      * @param location location of the pointer is screen coordinates
      * @return true if the point is clickable
      */
-    boolean isClickable(PointF location);
+    boolean isClickable(@NonNull PointF location);
 }

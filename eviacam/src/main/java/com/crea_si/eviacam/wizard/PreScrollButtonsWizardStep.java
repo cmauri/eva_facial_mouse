@@ -37,8 +37,7 @@ public class PreScrollButtonsWizardStep extends WizardStep {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.wizard_step_pre_scroll_buttons, container, false);
-        return v;
+        return inflater.inflate(R.layout.wizard_step_pre_scroll_buttons, container, false);
     }
 
     @Override

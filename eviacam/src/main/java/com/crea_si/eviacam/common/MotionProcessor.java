@@ -20,9 +20,10 @@
 package com.crea_si.eviacam.common;
 
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 
 public interface MotionProcessor {
-    void processMotion(PointF motion);
+    void processMotion(@NonNull PointF motion);
     void start();
     void stop();
     void cleanup();

@@ -29,6 +29,7 @@ import com.crea_si.eviacam.common.PointerLayerView;
 import android.content.Context;
 import android.graphics.PointF;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
@@ -173,7 +174,7 @@ public class Gamepad implements MotionProcessor {
      */
     
     @Override
-    public void processMotion(PointF motion) {
+    public void processMotion(@NonNull PointF motion) {
         if (isPaused) return;
         if (mOperationMode== SlaveMode.GAMEPAD_ABSOLUTE) {
             processMotionAbsoluteGamepad(motion);
@@ -232,13 +233,11 @@ public class Gamepad implements MotionProcessor {
      * Relative gamepad motion processing
      */
     private long mLastHighlightTStamp = 0;
-    private void processMotionRelativeGamepad(PointF motion) {
-        //EVIACAM.debug("motion: (" + motion.x + ", " + motion.y + ")");
-        
+    private void processMotionRelativeGamepad(@NonNull PointF motion) {
         long current= System.currentTimeMillis();
         int button= GamepadButtons.PAD_NONE;
         
-        /** Y axis */
+        /* Y axis */
         int shakeY= mShakeDetectorV.update(motion.y);
         if (shakeY> 0) {
             button= GamepadButtons.PAD_DOWN;
@@ -253,7 +252,7 @@ public class Gamepad implements MotionProcessor {
             mLastHighlightTStamp= current;
         }
         
-        /** X axis */
+        /* X axis */
         if (shakeY== 0) {
             int shakeX= mShakeDetectorH.update(motion.x);
             if (shakeX> 0) {

@@ -20,6 +20,7 @@ package com.crea_si.eviacam.common;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 public class MouseEmulation implements MotionProcessor {
@@ -168,7 +169,7 @@ public class MouseEmulation implements MotionProcessor {
      * NOTE: this method can be called from a secondary thread
      */
     @Override
-    public void processMotion(PointF motion) {
+    public void processMotion(@NonNull PointF motion) {
         if (mState != STATE_RUNNING) return;
 
         // update pointer location given motion

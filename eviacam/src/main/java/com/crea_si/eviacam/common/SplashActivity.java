@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -62,8 +63,8 @@ public class SplashActivity extends Activity
         setContentView(R.layout.splash_layout);
 
         if (isSecondRun()) {
-            /**
-             * Close this splash after some seconds.
+            /*
+              Close this splash after some seconds.
              */
             new Handler().postDelayed(new Runnable(){
                 @Override
@@ -90,7 +91,7 @@ public class SplashActivity extends Activity
     /**
      * Is the second time this activity is instantiated?
      *
-     * @return
+     * @return true when is the second run
      */
     private boolean isSecondRun() {
         Intent i= SplashActivity.this.getIntent();
@@ -108,9 +109,9 @@ public class SplashActivity extends Activity
             Intent notificationIntent= new Intent(FINISHED_INTENT_FILTER);
             LocalBroadcastManager.getInstance(this).sendBroadcast(notificationIntent);
 
-            /**
-             * Restart this activity so that it does not show up in recents
-             * nor when pressing back button
+            /*
+              Restart this activity so that it does not show up in recents
+              nor when pressing back button
              */
             Intent dialogIntent = new Intent(this, SplashActivity.class);
             dialogIntent.addFlags(
@@ -170,8 +171,8 @@ public class SplashActivity extends Activity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,String permissions[],
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         if (requestCode == CAMERA_PERMISSION_REQUEST) {
             if (grantResults.length== 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                 finish();

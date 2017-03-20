@@ -32,13 +32,6 @@ public class MyCanvas extends View {
         setWillNotDraw(false);
     }
 
-    public MyCanvas(Context c, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(c, attrs, defStyleAttr, defStyleRes);
-        setWillNotDraw(false);
-    }
-
-    
-    
     @Override
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);

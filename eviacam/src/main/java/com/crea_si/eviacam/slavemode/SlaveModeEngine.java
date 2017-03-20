@@ -18,6 +18,8 @@
  */
 package com.crea_si.eviacam.slavemode;
 
+import android.support.annotation.Nullable;
+
 import com.crea_si.eviacam.api.IDockPanelEventListener;
 import com.crea_si.eviacam.api.IGamepadEventListener;
 import com.crea_si.eviacam.api.IMouseEventListener;
@@ -28,10 +30,10 @@ import com.crea_si.eviacam.common.Engine;
  */
 public interface SlaveModeEngine extends Engine {
     void setSlaveOperationMode(int mode);
-    boolean registerGamepadListener(IGamepadEventListener l);
+    boolean registerGamepadListener(@Nullable IGamepadEventListener l);
     void unregisterGamepadListener();
-    boolean registerMouseListener(IMouseEventListener l);
+    boolean registerMouseListener(@Nullable IMouseEventListener l);
     void unregisterMouseListener();
     void unregisterDockPanelListener();
-    boolean registerDockPanelListener(IDockPanelEventListener l);
+    boolean registerDockPanelListener(@Nullable IDockPanelEventListener l);
 }

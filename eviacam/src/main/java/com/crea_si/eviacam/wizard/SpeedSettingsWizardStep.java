@@ -42,8 +42,8 @@ public class SpeedSettingsWizardStep extends WizardStep {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.wizard_step_speed_settings, container, false);
 
-        /**
-         * Horizontal speed setting
+        /*
+          Horizontal speed setting
          */
         final Button hSpeedMinus= (Button) v.findViewById(R.id.hspeed_minus_button);
         final Button hSpeedPlus= (Button) v.findViewById(R.id.hspeed_plus_button);
@@ -70,8 +70,8 @@ public class SpeedSettingsWizardStep extends WizardStep {
             }
         });
 
-        /**
-         * Vertical speed setting
+        /*
+          Vertical speed setting
          */
         final Button vSpeedMinus= (Button) v.findViewById(R.id.vspeed_minus_button);
         final Button vSpeedPlus= (Button) v.findViewById(R.id.vspeed_plus_button);

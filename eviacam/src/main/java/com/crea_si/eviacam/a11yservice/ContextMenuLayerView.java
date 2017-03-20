@@ -20,6 +20,8 @@ package com.crea_si.eviacam.a11yservice;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -30,7 +32,7 @@ public class ContextMenuLayerView extends RelativeLayout {
     // view of the pointer context menu 
     private ContextMenuView mContextMenuView;
         
-    public ContextMenuLayerView(Context context) {
+    public ContextMenuLayerView(@NonNull Context context) {
         super(context);
         
         // create and add buttons. initially these are hidden.
@@ -48,7 +50,7 @@ public class ContextMenuLayerView extends RelativeLayout {
         mContextMenuView= null;
     }
     
-    public void showContextMenu(final Point p, final int actions) {
+    public void showContextMenu(@Nullable final Point p, final int actions) {
         // TODO: when the screen is rotated the menu vanishes
         
         this.post(new Runnable() {
@@ -57,7 +59,7 @@ public class ContextMenuLayerView extends RelativeLayout {
                 // Prevent crash due to a race condition on closing
                 if (mContextMenuView== null) return;
 
-                if (actions == 0) {
+                if (actions == 0 || p == null) {
                     mContextMenuView.setVisibility(View.GONE);
                     setBackgroundColor(0);
                     return;
@@ -105,10 +107,10 @@ public class ContextMenuLayerView extends RelativeLayout {
         showContextMenu(null, 0);
     }
     
-    /*
-     * test if one button has been clicked
+    /**
+     * Test if one button has been clicked
      */
-    public int testClick (Point p)  {
+    public int testClick (@NonNull Point p)  {
         return mContextMenuView.testClick(p);
     }
     

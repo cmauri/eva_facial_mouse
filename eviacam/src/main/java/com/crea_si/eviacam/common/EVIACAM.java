@@ -46,6 +46,7 @@ public class EVIACAM {
     
     private static final boolean ATTACH_DEBUGGER = DEBUG;
     
+    @SuppressWarnings("unused")
     private static final boolean DEBUG_MESSAGES = DEBUG;
     
     private static HeartBeat sHeartBeat;
@@ -66,6 +67,7 @@ public class EVIACAM {
     // Store current running process
     private static int sCurrentProcess = UNKNOWN_PROCESS;
     
+    @SuppressWarnings("unused")
     public static void debugInit(Context c) {
         if (!ATTACH_DEBUGGER) return;
         android.os.Debug.waitForDebugger();
@@ -74,6 +76,7 @@ public class EVIACAM {
         sHeartBeat.start();
     }
     
+    @SuppressWarnings("unused")
     public static void debugCleanup() {
         if (sHeartBeat == null) return;
         sHeartBeat.stop();
@@ -92,6 +95,7 @@ public class EVIACAM {
         toast.show();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static void Toast (final Context c, final CharSequence t, final int duration) {
         if (Looper.myLooper()== Looper.getMainLooper()) {
             doToast(c, t, duration);
@@ -106,18 +110,22 @@ public class EVIACAM {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static void LongToast (Context c, CharSequence t) {
         Toast(c, t, Toast.LENGTH_LONG);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static void LongToast (Context c, int id) {
         LongToast(c, c.getResources().getString(id));
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static void ShortToast (Context c, CharSequence t) {
         Toast(c, t, Toast.LENGTH_SHORT);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static void ShortToast (Context c, int id) {
         ShortToast(c, c.getResources().getString(id));
     }

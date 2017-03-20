@@ -30,7 +30,7 @@ import com.crea_si.eviacam.common.EVIACAM;
  * Power management stuff
  */
 public class PowerManagement extends BroadcastReceiver {
-    public interface OnScreenStateChangeListener {
+    interface OnScreenStateChangeListener {
         void onOnScreenStateChange ();
     }
 

@@ -24,6 +24,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -55,7 +56,7 @@ class ContextMenuView extends LinearLayout
     // Buttons scale factor
     private float mScale = 1.0f;
     
-    ContextMenuView(Context c) {
+    ContextMenuView(@NonNull Context c) {
         super(c);
         setOrientation(LinearLayout.VERTICAL);
 
@@ -125,7 +126,7 @@ class ContextMenuView extends LinearLayout
         mActionsMask= actions;
     }
 
-    int testClick (Point p)  {
+    int testClick (@NonNull Point p)  {
         if (!ViewUtils.isPointInsideView(p, this, mScale)) return 0;
 
         for (ActionButton ab : mActionButtons) {

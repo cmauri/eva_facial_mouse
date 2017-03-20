@@ -44,7 +44,7 @@ public class MousePreferencesActivity extends Activity {
 
         private final ListPreference mListPreference;
 
-        public ListPreferenceUpdate(ListPreference lp) {
+        ListPreferenceUpdate(ListPreference lp) {
             mListPreference = lp;
         }
 

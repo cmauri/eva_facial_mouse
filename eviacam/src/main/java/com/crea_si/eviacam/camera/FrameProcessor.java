@@ -19,6 +19,8 @@
 
 package com.crea_si.eviacam.camera;
 
+import android.support.annotation.NonNull;
+
 import org.opencv.core.Mat;
 
 /**
@@ -30,5 +32,5 @@ public interface FrameProcessor {
      *
      * @param rgba captured frame
      */
-    void processFrame(Mat rgba);
+    void processFrame(@NonNull Mat rgba);
 }

@@ -37,8 +37,7 @@ public class FinalWizardStep extends WizardStep {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v=  inflater.inflate(R.layout.wizard_step_final, container, false);
-        return v;
+        return inflater.inflate(R.layout.wizard_step_final, container, false);
     }
 
     @Override

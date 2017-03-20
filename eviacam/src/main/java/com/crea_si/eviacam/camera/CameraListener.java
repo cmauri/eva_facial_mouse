@@ -80,7 +80,7 @@ public class CameraListener implements CvCameraViewListener2 {
      * @param rid - resource id
      * @param suffix - extension of the temporary file
      * @return a File object representing the temporary file
-     * @throws IOException
+     * @throws IOException when failed
      */
     private static File resourceToTempFile (Context c, int rid, String suffix) 
             throws IOException {
@@ -201,11 +201,11 @@ public class CameraListener implements CvCameraViewListener2 {
     }
     
     public void startCamera() {
-        /**
-         * In previous versions we used the OpenCV async helper, but we found
-         * problems with devices running Android arm64 (e.g. Huawei P8) due
-         * to missing OpenCV libraries. To avoid such problems we included the
-         * OpenCV binaries in the App apk
+        /*
+          In previous versions we used the OpenCV async helper, but we found
+          problems with devices running Android arm64 (e.g. Huawei P8) due
+          to missing OpenCV libraries. To avoid such problems we included the
+          OpenCV binaries in the App apk
          */
         if (!OpenCVLoader.initDebug()) {
             throw new RuntimeException("Cannot initialize OpenCV");
@@ -216,7 +216,7 @@ public class CameraListener implements CvCameraViewListener2 {
         // initialize JNI part
         System.loadLibrary("visionpipeline");
 
-        /** Load haarcascade from resources */
+        /* Load haarcascade from resources */
         try {
             File f= resourceToTempFile (mContext, R.raw.haarcascade, "xml");
             VisionPipeline.init(f.getAbsolutePath());
@@ -301,6 +301,7 @@ public class CameraListener implements CvCameraViewListener2 {
      * Enable or disable camera viewer refresh to save CPU cycles
      * @param v true to enable update, false to disable
      */
+    @SuppressWarnings("unused")
     public void setUpdateViewer(boolean v) {
         if (mCameraView!= null) mCameraView.setUpdateViewer(v);
     }

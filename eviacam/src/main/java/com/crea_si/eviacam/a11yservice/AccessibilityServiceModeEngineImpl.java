@@ -28,6 +28,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
@@ -48,7 +49,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
     private ServiceNotification mServiceNotification;
 
     @Override
-    protected void onInit(Service service) {
+    protected void onInit(@NonNull Service service) {
         mClickDispatcher= new ClickDispatcher((AccessibilityService) service, getOverlayView());
 
         /* mouse emulation subsystem, should be the last one to add visible layers
@@ -143,7 +144,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
      * NOTE: called from a secondary thread
      */
     @Override
-    protected void onFrame(PointF motion, boolean faceDetected, int state) {
+    protected void onFrame(@NonNull PointF motion, boolean faceDetected, int state) {
         if (getState() == STATE_RUNNING) {
             mMouseEmulation.processMotion(motion);
             mClickDispatcher.refresh();
@@ -202,7 +203,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
     }
 
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
+    public void onAccessibilityEvent(@NonNull AccessibilityEvent event) {
         if (mClickDispatcher != null) {
             mClickDispatcher.onAccessibilityEvent(event);
         }

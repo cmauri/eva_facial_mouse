@@ -57,9 +57,9 @@ public class TheAccessibilityService
      */
     private void init() {
         if (CrashRegister.crashedRecently(this)) {
-            /**
-             * Abort initialization to avoid several crash messages in a row.
-             * The user will need to restart the accessibility service manually.
+            /*
+              Abort initialization to avoid several crash messages in a row.
+              The user will need to restart the accessibility service manually.
              */
             Log.w(EVIACAM.TAG, "Recent crash detected. Aborting initialization.");
             CrashRegister.clearCrash(this);

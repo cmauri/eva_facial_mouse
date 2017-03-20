@@ -69,6 +69,7 @@ public class Countdown {
      *
      * @return time in milliseconds
      */
+    @SuppressWarnings("WeakerAccess")
     public long getTimeToWait() {
         return mTimeToWait;
     }

@@ -21,6 +21,7 @@ package com.crea_si.eviacam.common;
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 import android.view.Surface;
 import android.view.WindowManager;
 
@@ -45,7 +46,7 @@ class OrientationManager {
     private PhysicalOrientation mPhysicalOrientation;
 
     // constructor
-    public OrientationManager(Context c, FlipDirection flip, int cameraOrientation) {
+    OrientationManager(@NonNull Context c, @NonNull FlipDirection flip, int cameraOrientation) {
         mWindowManager= (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
 
         mCameraFlip= flip;
@@ -79,7 +80,7 @@ class OrientationManager {
      * 90 degrees clockwise and thus the returned value here will be Surface.ROTATION_90.
      * 
      */
-    public int getScreenOrientation() {
+    private int getScreenOrientation() {
         switch (mWindowManager.getDefaultDisplay().getRotation()) {
         case Surface.ROTATION_0: return 0;
         case Surface.ROTATION_90: return 90;
@@ -90,7 +91,7 @@ class OrientationManager {
         }
     }
 
-    /**
+    /*
      * (Method removed, comments left for future reference only)
      *
      * In theory, this method is called according to android:configChanges which should be
@@ -116,7 +117,8 @@ class OrientationManager {
      *
      * @return FlipDirection reference
      */
-    public FlipDirection getPictureFlip() {
+    @NonNull
+    FlipDirection getPictureFlip() {
         return mCameraFlip;
     }
 
@@ -127,7 +129,7 @@ class OrientationManager {
      * @return the rotation (clockwise) in degrees that needs to be applied
      * to the image so that the subject appears upright
      */
-    public int getPictureRotation() {
+    int getPictureRotation() {
         int phyRotation = mCameraOrientation - mPhysicalOrientation.getCurrentOrientation();
         if (phyRotation< 0) phyRotation+= 360;
         
@@ -158,7 +160,7 @@ class OrientationManager {
      * modifies a given a motion vector so that the physical motion of the subject
      * matches the motion of the pointer on the screen
      */
-    public void fixVectorOrientation(PointF motion) {
+    void fixVectorOrientation(@NonNull PointF motion) {
         switch (getDiffRotation()) {
         case 0: 
             // Nothing to be done
@@ -175,6 +177,7 @@ class OrientationManager {
             break;
         case 270: {
             float tmp= motion.x;
+            //noinspection SuspiciousNameCombination
             motion.x= motion.y;
             motion.y= -tmp;
             break;

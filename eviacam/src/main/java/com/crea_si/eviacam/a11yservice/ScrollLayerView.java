@@ -28,6 +28,8 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -44,8 +46,7 @@ import com.crea_si.eviacam.util.ViewUtils;
  */
 public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenceChangeListener {
     
-    /** */
-    public class NodeAction {
+    class NodeAction {
         AccessibilityNodeInfo node;
         public int actions;
         
@@ -74,7 +75,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     private List<ButtonNodeAction> mScrollAreas = new ArrayList<>();
     private int mScrollAreasCount = 0;
     
-    public ScrollLayerView(Context c) {
+    public ScrollLayerView(@NonNull Context c) {
         super(c);
         
         // Preferences
@@ -111,7 +112,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
      * 
      * Remarks: this method might be called safely from a secondary thread 
      */
-    public synchronized NodeAction getContaining(Point p)  {
+    public synchronized NodeAction getContaining(@NonNull Point p)  {
         for (int i= 0; i< mScrollAreasCount; i++) {
             ButtonNodeAction bna= mScrollAreas.get(i);
             if ((bna.buttonBackward.getVisibility() == View.VISIBLE) &&
@@ -151,7 +152,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     }
     
     /** Create a scrolling button */
-    private ImageButton createScrollButton(Drawable d) {
+    private ImageButton createScrollButton(@NonNull Drawable d) {
         ImageButton b= new ImageButton(getContext());
         b.setBackgroundColor(getResources().getColor(R.color.half_alpha));
         b.setContentDescription(getContext().getText(R.string.scroll_backward));
@@ -175,7 +176,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     }
     
     /** Set the position of a button */
-    private void setButtonPosition(ImageButton b, int x, int y) {
+    private void setButtonPosition(@NonNull ImageButton b, int x, int y) {
         RelativeLayout.LayoutParams rlp= (RelativeLayout.LayoutParams) b.getLayoutParams();
         rlp.leftMargin = x;
         rlp.topMargin = y;
@@ -187,10 +188,11 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
      *  
      * @param node - the node of the scrollable area
      */
-    public synchronized void addScrollArea(AccessibilityNodeInfo node) {
+
+    public synchronized void addScrollArea(@Nullable AccessibilityNodeInfo node) {
         if (node == null || !node.isScrollable()) return;
 
-        /** Grow the list when necessary */
+        /* Grow the list when necessary */
         if (mScrollAreasCount>= mScrollAreas.size()) {
             mScrollAreas.add(new ButtonNodeAction());
         }
@@ -199,7 +201,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         final ButtonNodeAction bna= mScrollAreas.get(mScrollAreasCount++);
         bna.node= node;
         
-        /** Create buttons if needed */        
+        /* Create buttons if needed */
         if (bna.buttonBackward == null) {
             Drawable d= getContext().getResources().getDrawable(R.drawable.scrollback_icon);
             bna.buttonBackward= createScrollButton(d);
@@ -211,13 +213,13 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
             addView(bna.buttonForward);
         }
         
-        /** 
-         * Set visibility and position of the scroll buttons
-         * 
-         * We take into account whether they are really needed (i.e. support the corresponding
-         * action) and the position of the buttons placed previously. We just move the button
-         * down (or up) if it overlaps with previously placed buttons. This does not guarantee
-         * that buttons will never overlap, but will probably work in most cases.
+        /*
+          Set visibility and position of the scroll buttons
+
+          We take into account whether they are really needed (i.e. support the corresponding
+          action) and the position of the buttons placed previously. We just move the button
+          down (or up) if it overlaps with previously placed buttons. This does not guarantee
+          that buttons will never overlap, but will probably work in most cases.
          */
         final Rect tmpRect = new Rect();
         node.getBoundsInScreen(tmpRect);
@@ -227,7 +229,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         
         final int actions = node.getActions();
         
-        /** Scroll backward buttons */
+        /* Scroll backward buttons */
         if ((actions & AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD) != 0) {
             final int x = tmpRect.left;
             int y = tmpRect.top;
@@ -247,7 +249,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
             bna.buttonBackward.setVisibility(View.GONE);
         }
         
-        /** Scroll forward buttons */
+        /* Scroll forward buttons */
         if ((actions & AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) != 0) {
             final int x = tmpRect.right - width;
             int y = tmpRect.bottom - height;

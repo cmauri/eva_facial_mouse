@@ -36,7 +36,7 @@ public class FaceDetectionCountdown extends Countdown
     /**
      * Constructor
      */
-    public FaceDetectionCountdown() {
+    FaceDetectionCountdown() {
         super(0);
 
         // preferences

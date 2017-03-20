@@ -65,7 +65,7 @@ public class AccessibilityNodeDebug {
                         
         result+= "; ";
        
-        // use getActions instead of getActionList because the latter crashes 
+        // TODO use getActions instead of getActionList because the latter crashes
         int actions= node.getActions();
         
         result+= "; [";

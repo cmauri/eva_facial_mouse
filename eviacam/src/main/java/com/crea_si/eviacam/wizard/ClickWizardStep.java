@@ -49,7 +49,7 @@ public class ClickWizardStep extends WizardStep {
                 b.setText(R.string.click);
                 mClickDone= true;
 
-                if (mClickDone && mLongClickDone) notifyCompleted();
+                if (mLongClickDone) notifyCompleted();
             }
         });
 
@@ -58,7 +58,7 @@ public class ClickWizardStep extends WizardStep {
             public boolean onLongClick(View view) {
                 b.setText(R.string.long_click);
                 mLongClickDone= true;
-                if (mClickDone && mLongClickDone) notifyCompleted();
+                if (mClickDone) notifyCompleted();
                 return true;
             }
         });

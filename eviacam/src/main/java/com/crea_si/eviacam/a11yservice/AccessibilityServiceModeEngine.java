@@ -19,6 +19,7 @@
 
 package com.crea_si.eviacam.a11yservice;
 
+import android.support.annotation.NonNull;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.crea_si.eviacam.common.Engine;
@@ -60,5 +61,5 @@ public interface AccessibilityServiceModeEngine extends Engine {
      * Method to route the accessibility events received by the accessibility service
      * @param event the accessibility event
      */
-    void onAccessibilityEvent(AccessibilityEvent event);
+    void onAccessibilityEvent(@NonNull AccessibilityEvent event);
 }

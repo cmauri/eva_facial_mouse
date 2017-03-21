@@ -30,6 +30,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -37,6 +38,8 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.ImageView.ScaleType;
 
+import com.crea_si.eviacam.BuildConfig;
+import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.util.ViewUtils;
@@ -177,6 +180,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     
     /** Set the position of a button */
     private void setButtonPosition(@NonNull ImageButton b, int x, int y) {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "Scroll button (" + x + ", " + y + ")");
         RelativeLayout.LayoutParams rlp= (RelativeLayout.LayoutParams) b.getLayoutParams();
         rlp.leftMargin = x;
         rlp.topMargin = y;
@@ -231,8 +235,16 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         
         /* Scroll backward buttons */
         if ((actions & AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD) != 0) {
-            final int x = tmpRect.left;
+            int x = tmpRect.left;
             int y = tmpRect.top;
+
+            /* Make sure the button is drawn inside the view */
+            if (x < getX()) {
+                x= (int) getX();
+            }
+            if (y < getY()) {
+                y= (int) getY();
+            }
 
             for (int i= 0; i< mScrollAreasCount; i++) {
                 ImageButton other_button= mScrollAreas.get(i).buttonBackward;
@@ -251,9 +263,17 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
         
         /* Scroll forward buttons */
         if ((actions & AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) != 0) {
-            final int x = tmpRect.right - width;
+            int x = tmpRect.right - width;
             int y = tmpRect.bottom - height;
-        
+
+            /* Make sure the button is drawn inside the view */
+            if (x + width> getX() + getWidth()) {
+                x= (int) getX() + getWidth() - width;
+            }
+            if (y + height> getY() + getHeight()) {
+                y= (int) getY() + getHeight() - height;
+            }
+
             for (int i= 0; i< mScrollAreasCount; i++) {
                 ImageButton other_button= mScrollAreas.get(i).buttonForward;
                 if (other_button.getVisibility() != View.VISIBLE) continue;

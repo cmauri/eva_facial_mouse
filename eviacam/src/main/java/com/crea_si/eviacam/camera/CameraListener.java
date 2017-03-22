@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.acra.ACRA;
 import org.opencv.android.CameraException;
 import org.opencv.android.MyCameraBridgeViewBase;
 import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewFrame;
@@ -36,6 +37,7 @@ import org.opencv.core.Mat;
 import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.SurfaceView;
 
@@ -44,8 +46,9 @@ import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.common.VisionPipeline;
 import com.crea_si.eviacam.util.FlipDirection;
 
-
-@SuppressWarnings("deprecation")
+/**
+ * Provides a simple camera interface for initializing, starting and stopping it.
+ */
 public class CameraListener implements CvCameraViewListener2 {
     private final Context mContext;
     
@@ -123,8 +126,12 @@ public class CameraListener implements CvCameraViewListener2 {
         return outFile;
     }
 
-    // Constructor
-    public CameraListener(Context c, FrameProcessor fp) throws CameraException {
+    /**
+     * Constructor
+     * @param c context
+     * @param fp object that will receive the camera callbacks
+     */
+    public CameraListener(@NonNull Context c, @NonNull FrameProcessor fp) throws CameraException {
         mContext= c;
         mFrameProcessor= fp;
 
@@ -147,8 +154,8 @@ public class CameraListener implements CvCameraViewListener2 {
          */
         final int numCameras= Camera.getNumberOfCameras();
         if (numCameras< 1) {
-            throw new CameraException(
-                    CameraException.NO_CAMERAS_AVAILABLE,
+            Log.e(EVIACAM.TAG, "No cameras available");
+            throw new CameraException(CameraException.NO_CAMERAS_AVAILABLE,
                     c.getResources().getString(R.string.no_cameras_available));
         }
 
@@ -188,6 +195,8 @@ public class CameraListener implements CvCameraViewListener2 {
          */
         mCameraView= new MyJavaCameraView(c, cameraId);
 
+        mCameraView.setCvCameraViewListener(this);
+
         // We first attempted to work at 320x240, but for some devices such as the
         // Galaxy Nexus crashes with a "Callback buffer was too small!" error.
         // However, at 352x288 works for all devices tried so far.
@@ -195,8 +204,6 @@ public class CameraListener implements CvCameraViewListener2 {
 
         //mCameraView.enableFpsMeter();  // remove comment for testing
 
-        mCameraView.setCvCameraViewListener(this);
-        
         mCameraView.setVisibility(SurfaceView.VISIBLE);
     }
     
@@ -228,11 +235,23 @@ public class CameraListener implements CvCameraViewListener2 {
         }
 
         // start camera capture
-        mCameraView.enableView();
+        try {
+            mCameraView.enableView();
+        }
+        catch(Exception error) {
+            mFrameProcessor.onCameraError(error);
+        }
     }
     
     public void stopCamera() {
-        mCameraView.disableView();
+        try {
+            mCameraView.disableView();
+        }
+        catch (Exception error) {
+            // Ignore errors when stopping camera
+            Log.e(EVIACAM.TAG, error.getLocalizedMessage());
+            ACRA.getErrorReporter().handleSilentException(error);
+        }
     }
 
     /**
@@ -268,6 +287,7 @@ public class CameraListener implements CvCameraViewListener2 {
     @Override
     public void onCameraViewStarted(int width, int height) {
         Log.i(EVIACAM.TAG, "onCameraViewStarted");
+        mFrameProcessor.onCameraStarted();
     }
 
     @Override
@@ -276,6 +296,13 @@ public class CameraListener implements CvCameraViewListener2 {
         
         // finish JNI part
         VisionPipeline.cleanup();
+
+        mFrameProcessor.onCameraStopped();
+    }
+
+    @Override
+    public void onCameraViewError(Throwable error) {
+        mFrameProcessor.onCameraError(error);
     }
 
     /**
@@ -283,6 +310,7 @@ public class CameraListener implements CvCameraViewListener2 {
      */
     @Override
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
+        /* Informative log for debug purposes */
         mCapuredFrames++;
         if (mCapuredFrames< 100) {
             if ((mCapuredFrames % 10) == 0) {

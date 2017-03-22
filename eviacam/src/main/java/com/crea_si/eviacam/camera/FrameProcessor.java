@@ -20,6 +20,7 @@
 package com.crea_si.eviacam.camera;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.opencv.core.Mat;
 
@@ -29,8 +30,23 @@ import org.opencv.core.Mat;
 public interface FrameProcessor {
     /**
      * Process a captured frame
-     *
      * @param rgba captured frame
      */
     void processFrame(@NonNull Mat rgba);
+
+    /**
+     * Called when the camera is started
+     */
+    void onCameraStarted();
+
+    /**
+     * Called when the camera is stopped
+     */
+    void onCameraStopped();
+
+    /**
+     * Called when the camera initialization failed
+     * @param error throwable that caused the error
+     */
+    void onCameraError(@Nullable Throwable error);
 }

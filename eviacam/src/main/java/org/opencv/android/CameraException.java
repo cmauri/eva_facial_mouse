@@ -10,13 +10,24 @@ package org.opencv.android;
 @SuppressWarnings("WeakerAccess")
 public class CameraException extends java.lang.Exception {
     /**
-     * There is no available cameras.
+     * The device has no cameras available
      */
-    public static final int NO_CAMERAS_AVAILABLE= 0x1;
+    public static final int NO_CAMERAS_AVAILABLE = 1;
+
     /**
-     * An error occurred when opening the camera.
+     * The camera is being used
      */
-    public static final int CAMERA_ERROR= 0x2;
+    public static final int CAMERA_IN_USE = 2;
+
+    /**
+     * The the device's cameras have been disabled for this user
+     */
+    public static final int CAMERA_DISABLED = 3;
+
+    /**
+     * General camera error
+     */
+    public static final int CAMERA_ERROR = -1;
 
     // the problem id
     private final int mProblem;

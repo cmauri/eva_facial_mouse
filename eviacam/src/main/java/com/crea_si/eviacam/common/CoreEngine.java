@@ -18,6 +18,7 @@
  */
 package com.crea_si.eviacam.common;
 
+import org.acra.ACRA;
 import org.opencv.android.CameraException;
 import org.opencv.core.Mat;
 
@@ -31,6 +32,7 @@ import android.app.AlertDialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
@@ -221,18 +223,11 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
             mCameraListener = new CameraListener(mService, this);
         }
         catch(CameraException e) {
-            AlertDialog.Builder adb = new AlertDialog.Builder(mService);
-            adb.setCancelable(false); // This blocks the 'BACK' button
-            adb.setTitle(mService.getText(R.string.app_name));
-            adb.setMessage(e.getMessage());
-            adb.setPositiveButton(mService.getText(android.R.string.ok), null);
+            cleanup();
 
-            AlertDialog ad= adb.create();
-            //noinspection ConstantConditions
-            ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-            ad.show();
+            if (mOnInitListener!= null) mOnInitListener.onInit(OnInitListener.INIT_ERROR);
 
-            if (mOnInitListener!= null) mOnInitListener.onInit(-1);
+            manageCameraError(e);
 
             return false;  // abort initialization
         }
@@ -255,7 +250,8 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         mSaveState= mCurrentState;
 
         // Notify successful initialization
-        if (mOnInitListener!= null) mOnInitListener.onInit(0);
+        // TODO: send notification via Handler and remove return value
+        if (mOnInitListener!= null) mOnInitListener.onInit(OnInitListener.INIT_SUCCESS);
 
         return true;
     }
@@ -263,10 +259,16 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
     @Override
     public boolean start() {
         // If not initialized just fail
-        if (mCurrentState == STATE_DISABLED) return false;
+        if (mCurrentState == STATE_DISABLED) {
+            Log.e(EVIACAM.TAG, "Attempt to start DISABLED engine");
+            return false;
+        }
 
-        // If already initialized just return startup correct
-        if (mCurrentState==STATE_RUNNING) return true;
+        // If already running just return startup correct
+        if (mCurrentState==STATE_RUNNING) {
+            Log.i(EVIACAM.TAG, "Attempt to start already running engine");
+            return true;
+        }
 
         // If paused or in standby, just resume
         if (mCurrentState == STATE_PAUSED || mCurrentState!= STATE_STANDBY) {
@@ -275,7 +277,10 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
         /* At this point means that (mCurrentState== STATE_STOPPED) */
 
-        if (!onStart()) return false;
+        if (!onStart()) {
+            Log.e(EVIACAM.TAG, "start.onStart failed");
+            return false;
+        }
 
         mFaceDetectionCountdown.start();
 
@@ -291,7 +296,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         // start processing frames
         mCameraListener.startCamera();
 
-        mCurrentState= STATE_RUNNING;
+        mCurrentState= STATE_WAIT_START;
 
         return true;
     }
@@ -405,6 +410,29 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         mFaceDetectionCountdown.cleanup();
     }
 
+
+    @Override
+    public void onCameraStarted() {
+        if (mCurrentState == STATE_WAIT_START) {
+            mCurrentState = STATE_RUNNING;
+        }
+        else {
+            Log.e(EVIACAM.TAG, "onCameraStarted: inconsistent state (ignoring): " + mCurrentState);
+        }
+    }
+
+    @Override
+    public void onCameraStopped() {
+        // Currently do nothing
+    }
+
+    @Override
+    public void onCameraError(@Nullable Throwable error) {
+        cleanup();
+
+        manageCameraError(error);
+    }
+
     @Override
     public boolean isReady() {
         return (mCurrentState != STATE_DISABLED);
@@ -437,9 +465,41 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         }
         else {
             // Screen switched off
-            mSaveState= getState();
+            mSaveState= mCurrentState;
             if (mSaveState!= Engine.STATE_STANDBY) stop();
         }
+    }
+
+    /**
+     * Handle camera errors
+     * @param errorIn the error
+     */
+    private void manageCameraError(@Nullable Throwable errorIn) {
+        final Throwable error;
+        if (errorIn== null) {
+            error= new RuntimeException("Unexpected error");
+        }
+        else {
+            error= errorIn;
+        }
+
+        // TODO: distinguish the kind of error and show action buttons accordingly
+
+        AlertDialog.Builder adb = new AlertDialog.Builder(mService);
+        adb.setCancelable(false); // This blocks the 'BACK' button
+        adb.setTitle(mService.getText(R.string.app_name));
+        adb.setMessage(error.getLocalizedMessage());
+        adb.setNeutralButton(mService.getText(android.R.string.ok), null);
+        adb.setPositiveButton(mService.getText(R.string.send_report),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ACRA.getErrorReporter().handleException(error);
+                    }});
+
+        AlertDialog ad= adb.create();
+        //noinspection ConstantConditions
+        ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        ad.show();
     }
 
 

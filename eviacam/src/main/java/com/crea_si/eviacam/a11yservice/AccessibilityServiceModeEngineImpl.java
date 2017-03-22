@@ -145,7 +145,7 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
      */
     @Override
     protected void onFrame(@NonNull PointF motion, boolean faceDetected, int state) {
-        if (getState() == STATE_RUNNING) {
+        if (state == STATE_RUNNING) {
             mMouseEmulation.processMotion(motion);
             mClickDispatcher.refresh();
             mMouseEmulation.setRestMode(mClickDispatcher.getRestModeEnabled());

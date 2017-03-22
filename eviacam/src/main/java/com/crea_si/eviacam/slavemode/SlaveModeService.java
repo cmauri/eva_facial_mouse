@@ -39,6 +39,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 /**
@@ -69,10 +70,8 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
          *                 initialization will be performed.
          */
         @Override
-        public void init(final IReadyEventListener listener) throws RemoteException {
+        public void init(@NonNull final IReadyEventListener listener) throws RemoteException {
             Log.i(EVIACAM.TAG, "SlaveModeService.init: enter. Listener:" + listener);
-            // No listener, just does not continue
-            if (listener== null) return;
 
             Runnable r= new Runnable() {
                 @Override

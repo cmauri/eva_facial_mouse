@@ -51,6 +51,9 @@ public interface Engine {
      * of the Engine initialization.
      */
     interface OnInitListener {
+        int INIT_SUCCESS = 0;
+        int INIT_ERROR = -1;
+
         /**
          * Called to signal the completion of the Engine initialization.
          *

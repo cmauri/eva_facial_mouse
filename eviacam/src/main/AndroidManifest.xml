@@ -14,6 +14,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
 
     <application
+        tools:replace="android:allowBackup"
         android:name=".common.EViacamApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"

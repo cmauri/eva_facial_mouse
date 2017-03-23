@@ -464,7 +464,7 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
                     EVIACAM.LongToast(getContext(), R.string.navigation_kbd_advice);
                     mNavigationKeyboardAdviceShown= true;
                 }
-                if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "Scroll buttons refresh done. Found:" +
+                if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "Scroll areas refresh done. Found:" +
                         scrollableNodes.size());
                 for (AccessibilityNodeInfo n : scrollableNodes) {
                     mScrollLayerView.addScrollArea(n);

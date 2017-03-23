@@ -114,7 +114,17 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
     }
 
     @Override
-    public void setSlaveOperationMode(int mode) {
+    public void setSlaveOperationMode(final int mode) {
+        Runnable request = new Runnable() {
+            @Override
+            public void run() {
+                doSetSlaveOperationMode(mode);
+            }
+        };
+        processRequest(request);
+    }
+
+    private void doSetSlaveOperationMode(int mode) {
         if (mSlaveOperationMode== mode) return;
 
         // Pause old motion processor & switch to new one

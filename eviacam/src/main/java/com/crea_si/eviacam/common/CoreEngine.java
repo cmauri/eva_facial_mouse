@@ -35,7 +35,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -44,6 +43,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+
+import java.util.ArrayDeque;
 
 /**
  * Provides an abstract implementation for the Engine interface. The class is in charge of:
@@ -82,7 +83,6 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
     /* reference to the service which started the engine */
     private Service mService;
-    protected Service getService() { return mService; }
 
     /* root overlay view */
     private OverlayView mOverlayView;
@@ -100,6 +100,14 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
     /* Last time a face has been detected */
     private volatile long mLastFaceDetectionTimeStamp;
+
+    /* When the engine is wating for the completion of some operation */
+    private boolean mWaitState = false;
+
+    /* Store requests when the engine is waiting for the completion of a previous one.
+       These stored requests will be executed eventually in the order as arrived.
+       This is needed because some operations (for instance, start or stop). */
+    private ArrayDeque<Runnable> mPendingRequests= new ArrayDeque<>();
 
     /* Abstract methods to be implemented by derived classes */
 
@@ -197,7 +205,6 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
             LocalBroadcastManager.getInstance(mService).unregisterReceiver(onSplashReady);
 
             /* Resume initialization */
-            if (mOnInitListener!= null) mOnInitListener.onInit(0);
             mSplashDisplayed = true;
             init2();
         }
@@ -225,6 +232,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         catch(CameraException e) {
             cleanup();
 
+            // TODO: send notification via Handler and remove return value
             if (mOnInitListener!= null) mOnInitListener.onInit(OnInitListener.INIT_ERROR);
 
             manageCameraError(e);
@@ -256,30 +264,71 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         return true;
     }
 
+    private boolean isInWaitState() {
+        return mWaitState;
+    }
+
+    /**
+     * Process requests in two steps. First, the request is added to
+     * a queue. After that, if the engine is not waiting for the
+     * completion of a previous requests, the queue is processed
+     * @param request runnable with the request
+     */
+    protected void processRequest (Runnable request) {
+        // Queue request
+        mPendingRequests.add(request);
+        dispatchRequests();
+    }
+
+    /**
+     * Dispatch previously queued requests
+     */
+    private void dispatchRequests() {
+        while (mPendingRequests.size()> 0 && !isInWaitState()) {
+            Runnable request = mPendingRequests.remove();
+            request.run();
+        }
+    }
+
+    // TODO: remove return value
     @Override
     public boolean start() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.start");
+        final Runnable request= new Runnable() {
+            @Override
+            public void run() {
+                doStart();
+            }
+        };
+        processRequest(request);
+        return true;
+    }
+
+    private void doStart() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.doStart");
         // If not initialized just fail
         if (mCurrentState == STATE_DISABLED) {
             Log.e(EVIACAM.TAG, "Attempt to start DISABLED engine");
-            return false;
+            return;
         }
 
         // If already running just return startup correct
         if (mCurrentState==STATE_RUNNING) {
             Log.i(EVIACAM.TAG, "Attempt to start already running engine");
-            return true;
+            return;
         }
 
         // If paused or in standby, just resume
-        if (mCurrentState == STATE_PAUSED || mCurrentState!= STATE_STANDBY) {
+        if (mCurrentState == STATE_PAUSED || mCurrentState== STATE_STANDBY) {
             resume();
+            return;
         }
 
         /* At this point means that (mCurrentState== STATE_STOPPED) */
 
         if (!onStart()) {
             Log.e(EVIACAM.TAG, "start.onStart failed");
-            return false;
+            return;
         }
 
         mFaceDetectionCountdown.start();
@@ -296,13 +345,37 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         // start processing frames
         mCameraListener.startCamera();
 
-        mCurrentState= STATE_WAIT_START;
+        // set wait state until camera actually starts or error
+        mWaitState= true;
+    }
 
-        return true;
+    @Override
+    public void onCameraStarted() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.onCameraStarted");
+        if (mWaitState && mCurrentState == STATE_STOPPED) {
+            mWaitState= false;
+            mCurrentState = STATE_RUNNING;
+            dispatchRequests();
+        }
+        else {
+            Log.e(EVIACAM.TAG, "onCameraStarted: inconsistent state (ignoring): " + mCurrentState);
+        }
     }
 
     @Override
     public void pause() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.pause");
+        final Runnable request= new Runnable() {
+            @Override
+            public void run() {
+                doPause();
+            }
+        };
+        processRequest(request);
+    }
+
+    private void doPause() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.doPause");
         // If not initialized, stopped or already paused, just stop here
         if (mCurrentState == STATE_DISABLED ||
             mCurrentState == STATE_PAUSED   ||
@@ -322,6 +395,18 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
     @Override
     public void standby() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.standby");
+        final Runnable request= new Runnable() {
+            @Override
+            public void run() {
+                doStandby();
+            }
+        };
+        processRequest(request);
+    }
+
+    private void doStandby() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.doStandby");
         // If not initialized, stopped or already standby, just stop here
         if (mCurrentState == STATE_DISABLED ||
             mCurrentState == STATE_STANDBY   ||
@@ -335,14 +420,10 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         mPowerManagement.unlockFullPower();
         mPowerManagement.setSleepEnabled(true);   // Enable sleep call
 
-        Service s= getService();
-        if (s!= null) {
-            Resources res = s.getResources();
-            String t = String.format(
-                    res.getString(R.string.pointer_stopped_toast),
-                    Preferences.get().getTimeWithoutDetectionEntryValue());
-            EVIACAM.LongToast(s, t);
-        }
+        String t = String.format(
+                mService.getResources().getString(R.string.pointer_stopped_toast),
+                Preferences.get().getTimeWithoutDetectionEntryValue());
+        EVIACAM.LongToast(mService, t);
 
         onStandby();
 
@@ -351,6 +432,18 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
     @Override
     public void resume() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.resume");
+        final Runnable request= new Runnable() {
+            @Override
+            public void run() {
+                doResume();
+            }
+        };
+        processRequest(request);
+    }
+
+    private void doResume() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.doResume");
         if (mCurrentState != STATE_PAUSED && mCurrentState!= STATE_STANDBY) return;
 
         onResume();
@@ -371,6 +464,18 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
     @Override
     public void stop() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.stop");
+        final Runnable request= new Runnable() {
+            @Override
+            public void run() {
+                doStop();
+            }
+        };
+        processRequest(request);
+    }
+
+    private void doStop() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.doStop");
         if (mCurrentState == STATE_DISABLED || mCurrentState == STATE_STOPPED) return;
 
         mCameraListener.stopCamera();
@@ -381,15 +486,26 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
         onStop();
 
+        // TODO: consider adding STATE_WAIT_STOP
         mCurrentState= STATE_STOPPED;
     }
-    
+
+    @Override
+    public void onCameraStopped() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.onCameraStopped");
+        // TODO: consider adding STATE_WAIT_STOP
+    }
+
     @Override
     public void cleanup() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.cleanup");
         if (mCurrentState == STATE_DISABLED) return;
 
-        stop();
+        /* Stop engine immediately and purge pending requests queue */
+        doStop();
+        mPendingRequests.clear();
 
+        // Call derived
         onCleanup();
 
         mCameraListener= null;
@@ -410,26 +526,10 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         mFaceDetectionCountdown.cleanup();
     }
 
-
-    @Override
-    public void onCameraStarted() {
-        if (mCurrentState == STATE_WAIT_START) {
-            mCurrentState = STATE_RUNNING;
-        }
-        else {
-            Log.e(EVIACAM.TAG, "onCameraStarted: inconsistent state (ignoring): " + mCurrentState);
-        }
-    }
-
-    @Override
-    public void onCameraStopped() {
-        // Currently do nothing
-    }
-
     @Override
     public void onCameraError(@Nullable Throwable error) {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.onCameraError");
         cleanup();
-
         manageCameraError(error);
     }
 
@@ -454,6 +554,18 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
      */
     @Override
     public void onOnScreenStateChange() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.onOnScreenStateChanged");
+        final Runnable request= new Runnable() {
+            @Override
+            public void run() {
+                doOnOnScreenStateChange();
+            }
+        };
+        processRequest(request);
+    }
+
+    private void doOnOnScreenStateChange() {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.doOnOnScreenStateChanged");
         if (mPowerManagement.getScreenOn()) {
             // Screen switched on
             if (mSaveState == Engine.STATE_RUNNING ||
@@ -514,7 +626,8 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
     @Override
     public void processFrame(@NonNull Mat rgba) {
         // For these states do nothing
-        if (mCurrentState== STATE_DISABLED || mCurrentState== STATE_STOPPED) return;
+        if (mCurrentState== STATE_DISABLED || mCurrentState== STATE_STOPPED ||
+                isInWaitState()) return;
 
         /*
          * In STATE_RUNNING, STATE_PAUSED or STATE_STANDBY state.

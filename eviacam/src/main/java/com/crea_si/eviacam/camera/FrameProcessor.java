@@ -48,5 +48,5 @@ public interface FrameProcessor {
      * Called when the camera initialization failed
      * @param error throwable that caused the error
      */
-    void onCameraError(@Nullable Throwable error);
+    void onCameraError(@NonNull Throwable error);
 }

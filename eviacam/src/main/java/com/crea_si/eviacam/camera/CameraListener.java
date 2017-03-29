@@ -301,7 +301,7 @@ public class CameraListener implements CvCameraViewListener2 {
     }
 
     @Override
-    public void onCameraViewError(Throwable error) {
+    public void onCameraViewError(@NonNull Throwable error) {
         mFrameProcessor.onCameraError(error);
     }
 

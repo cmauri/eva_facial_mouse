@@ -213,6 +213,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
     /**
      * Init phase 2: actual initialization
      */
+    // TODO: remove return value
     private boolean init2() {
         /*
          * Create UI stuff: root overlay and camera view
@@ -230,13 +231,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
             mCameraListener = new CameraListener(mService, this);
         }
         catch(CameraException e) {
-            cleanup();
-
-            // TODO: send notification via Handler and remove return value
-            if (mOnInitListener!= null) mOnInitListener.onInit(OnInitListener.INIT_ERROR);
-
             manageCameraError(e);
-
             return false;  // abort initialization
         }
         mCameraLayerView.addCameraSurface(mCameraListener.getCameraSurface());
@@ -503,6 +498,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
         /* Stop engine immediately and purge pending requests queue */
         doStop();
+        mWaitState= false;
         mPendingRequests.clear();
 
         // Call derived
@@ -526,10 +522,10 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         mFaceDetectionCountdown.cleanup();
     }
 
+    /* Called during camera startup if something goes wrong */
     @Override
-    public void onCameraError(@Nullable Throwable error) {
+    public void onCameraError(@NonNull Throwable error) {
         if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.onCameraError");
-        cleanup();
         manageCameraError(error);
     }
 
@@ -584,30 +580,85 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
     /**
      * Handle camera errors
-     * @param errorIn the error
+     * @param error the error
      */
-    private void manageCameraError(@Nullable Throwable errorIn) {
-        final Throwable error;
-        if (errorIn== null) {
-            error= new RuntimeException("Unexpected error");
+    private void manageCameraError(@NonNull Throwable error) {
+        /* Cast into CameraException */
+        CameraException cameraException;
+        if (error.getClass().isAssignableFrom(CameraException.class)) {
+            cameraException = (CameraException) error;
         }
         else {
-            error= errorIn;
+            cameraException = new CameraException(CameraException.CAMERA_ERROR,
+                    error.getLocalizedMessage(), error);
         }
 
-        // TODO: distinguish the kind of error and show action buttons accordingly
+        boolean allowRetry = false;
+
+        if (mCurrentState == STATE_DISABLED) {
+            /* Exception during initialization. Non recoverable. */
+            cleanup();
+
+            ACRA.getErrorReporter().handleSilentException(cameraException);
+
+            /* Notify whoever requested the initialization */
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mOnInitListener!= null) {
+                        mOnInitListener.onInit(OnInitListener.INIT_ERROR);
+                    }
+                }
+            });
+        }
+        else if (mCurrentState == STATE_STOPPED && mWaitState &&
+                cameraException.getProblem() == CameraException.CAMERA_IN_USE) {
+            /* Exception during camera startup because is in use, allow to retry */
+            allowRetry = true;
+        }
+        else {
+            /* Other camera exceptions */
+            cleanup();
+
+            if (cameraException.getProblem() != CameraException.CAMERA_DISABLED) {
+                ACRA.getErrorReporter().handleSilentException(cameraException);
+            }
+        }
+
+
+        final DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                cleanup();
+            }
+        };
 
         AlertDialog.Builder adb = new AlertDialog.Builder(mService);
         adb.setCancelable(false); // This blocks the 'BACK' button
         adb.setTitle(mService.getText(R.string.app_name));
-        adb.setMessage(error.getLocalizedMessage());
-        adb.setNeutralButton(mService.getText(android.R.string.ok), null);
+        adb.setMessage(cameraException.getLocalizedMessage());
+        if (!allowRetry) {
+            adb.setPositiveButton(mService.getText(android.R.string.ok), okListener);
+        }
+        else {
+            adb.setNeutralButton(mService.getText(R.string.close), okListener);
+            adb.setPositiveButton(mService.getText(R.string.retry),
+                    new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Try to start the camera again
+                    mCameraListener.stopCamera();
+                    mCameraListener.startCamera();
+                }
+            });
+        }
+        /*
         adb.setPositiveButton(mService.getText(R.string.send_report),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         ACRA.getErrorReporter().handleException(error);
                     }});
-
+        */
         AlertDialog ad= adb.create();
         //noinspection ConstantConditions
         ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);

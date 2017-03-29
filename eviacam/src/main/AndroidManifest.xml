@@ -61,7 +61,7 @@
             android:name=".common.SplashActivity"
             android:exported="false"
             android:noHistory="false"
-            android:excludeFromRecents="false"
+            android:excludeFromRecents="true"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
         </activity>
         

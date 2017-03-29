@@ -53,9 +53,18 @@ public class SplashActivity extends Activity
     private static final int MANAGE_OVERLAY_PERMISSION_REQUEST= 10001;
 
     /* Duration of the splash */
-    private static final int SPLASH_DISPLAY_LENGTH = 2000;
+    private static final int SPLASH_DISPLAY_LENGTH = 1500;
 
     private boolean mIsPaused = true;
+
+    private Handler mHandler = new Handler();
+
+    private Runnable mFinishActivity = new Runnable() {
+        @Override
+        public void run() {
+            SplashActivity.this.finish();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -63,15 +72,8 @@ public class SplashActivity extends Activity
         setContentView(R.layout.splash_layout);
 
         if (isSecondRun()) {
-            /*
-              Close this splash after some seconds.
-             */
-            new Handler().postDelayed(new Runnable(){
-                @Override
-                public void run() {
-                    SplashActivity.this.finish();
-                }
-            }, SPLASH_DISPLAY_LENGTH);
+            /* Close this splash after some seconds */
+            mHandler.postDelayed(mFinishActivity, SPLASH_DISPLAY_LENGTH);
         }
     }
 
@@ -79,13 +81,24 @@ public class SplashActivity extends Activity
     protected void onResume() {
         super.onResume();
         mIsPaused= false;
-        if (!isSecondRun()) checkRequisites();
+        if (!isSecondRun()) {
+            checkRequisites();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mIsPaused= true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (isSecondRun()) {
+            mHandler.removeCallbacks(mFinishActivity);
+            finish();
+        }
     }
 
     /**
@@ -108,6 +121,8 @@ public class SplashActivity extends Activity
             /* If all permissions granted notify that this activity is finished */
             Intent notificationIntent= new Intent(FINISHED_INTENT_FILTER);
             LocalBroadcastManager.getInstance(this).sendBroadcast(notificationIntent);
+
+            finish();
 
             /*
               Restart this activity so that it does not show up in recents

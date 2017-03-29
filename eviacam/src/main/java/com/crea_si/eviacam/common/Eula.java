@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.CheckBox;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
@@ -55,13 +57,15 @@ public class Eula {
             return;
         }
 
+        View eulaView = View.inflate(a, R.layout.eula, null);
+        final CheckBox checkBox = (CheckBox) eulaView.findViewById(R.id.checkbox);
+
         // Show the Eula
         String title = a.getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME;
-        String message = a.getString(R.string.eula);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(a)
+        Dialog dialog= new AlertDialog.Builder(a)
             .setTitle(title)
-            .setMessage(message)
+            .setView(eulaView)
             .setPositiveButton(android.R.string.ok, new Dialog.OnClickListener() {
 
                 @Override
@@ -72,6 +76,7 @@ public class Eula {
                     editor.putBoolean(EULA_KEY, true);
                     editor.apply();
                     dialogInterface.dismiss();
+                    Preferences.get().setACRAEnabled(checkBox.isChecked());
                     l.onAcceptEula();
                 }
             })
@@ -80,7 +85,9 @@ public class Eula {
                 public void onClick(DialogInterface dialog, int which) {
                     l.onCancelEula();
                 }
-            });
-        builder.create().show();
+            })
+            .create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 }

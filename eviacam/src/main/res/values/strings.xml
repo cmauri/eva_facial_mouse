@@ -229,5 +229,6 @@
     <string name="no_cameras_available">Not detected any camera</string>
     <string name="camera_disabled_error">The device\'s cameras have been disabled for this user.</string>
     <string name="camera_error">Cannot access the camera</string>
+    <string name="send_anonymous_error_reports">Send anonymous error reports</string>
 
 </resources>

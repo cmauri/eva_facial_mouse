@@ -154,6 +154,12 @@
             android:title="@string/configuration_wizard">
         </Preference>
 
+        <CheckBoxPreference
+            android:key="acra.enable"
+            android:title="@string/send_anonymous_error_reports"
+            android:defaultValue="true"
+        />
+
         <Preference
             android:key="version"
             android:title="@string/version">

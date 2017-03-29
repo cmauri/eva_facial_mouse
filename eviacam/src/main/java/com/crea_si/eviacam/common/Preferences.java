@@ -27,6 +27,8 @@ import android.util.Log;
 
 import com.crea_si.eviacam.R;
 
+import org.acra.ACRA;
+
 @SuppressWarnings("WeakerAccess")
 public class Preferences {
     /**
@@ -352,6 +354,12 @@ public class Preferences {
 
     public int getGamepadRelSensitivity() {
         return mSharedPreferences.getInt(KEY_GAMEPAD_REL_SENSITIVITY, 0);
+    }
+
+    public void setACRAEnabled (boolean value) {
+        SharedPreferences.Editor spe= mSharedPreferences.edit();
+        spe.putBoolean(ACRA.PREF_ENABLE_ACRA, value);
+        spe.apply();
     }
  }
  

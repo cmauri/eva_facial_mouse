@@ -52,7 +52,7 @@ public class EngineSelector {
      *
      * @return a reference to the engine interface or null if not available
      */
-    public static AccessibilityServiceModeEngine getAccessibilityServiceModeEngine() {
+    public static AccessibilityServiceModeEngine initAccessibilityServiceModeEngine() {
         if (mModeInUse == SLAVE_MODE) return null;
 
         mModeInUse= A11Y_SERVICE_MODE;
@@ -64,11 +64,18 @@ public class EngineSelector {
         return sAccessibilityServiceModeEngine;
     }
 
+    public static AccessibilityServiceModeEngine getAccessibilityServiceModeEngine() {
+        return sAccessibilityServiceModeEngine;
+    }
+
     /**
      * Release accessibility service mode if previously requested
      */
     public static void releaseAccessibilityServiceModeEngine() {
-        if (mModeInUse== A11Y_SERVICE_MODE) mModeInUse= NONE_MODE;
+        if (mModeInUse== A11Y_SERVICE_MODE) {
+            mModeInUse= NONE_MODE;
+            sAccessibilityServiceModeEngine = null;
+        }
     }
 
     /**
@@ -76,7 +83,7 @@ public class EngineSelector {
      *
      * @return a reference to the engine interface or null if not available
      */
-    public static SlaveModeEngine getSlaveModeEngine() {
+    public static SlaveModeEngine initSlaveModeEngine() {
         if (mModeInUse == A11Y_SERVICE_MODE) return null;
 
         mModeInUse= SLAVE_MODE;
@@ -92,6 +99,9 @@ public class EngineSelector {
      * Release accessibility service mode if previously requested
      */
     public static void releaseSlaveModeEngine() {
-        if (mModeInUse== SLAVE_MODE) mModeInUse= NONE_MODE;
+        if (mModeInUse== SLAVE_MODE) {
+            mModeInUse= NONE_MODE;
+            sSlaveModeEngine = null;
+        }
     }
 }

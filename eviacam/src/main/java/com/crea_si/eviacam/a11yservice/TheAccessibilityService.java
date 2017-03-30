@@ -87,7 +87,7 @@ public class TheAccessibilityService
         if (Preferences.initForA11yService(this) == null) return;
 
         /* Init the main engine */
-        mEngine= EngineSelector.getAccessibilityServiceModeEngine();
+        mEngine= EngineSelector.initAccessibilityServiceModeEngine();
         if (mEngine== null) {
             Log.e(EVIACAM.TAG, "Cannot initialize CoreEngine in A11Y mode");
         }

@@ -343,7 +343,7 @@ public class SlaveModeService extends Service implements Engine.OnInitListener {
         // Already initialized preferences, probably A11Y service running. Deny binding.
         if (Preferences.initForSlaveService(this) == null) return null;
 
-        mSlaveModeEngine= EngineSelector.getSlaveModeEngine();
+        mSlaveModeEngine= EngineSelector.initSlaveModeEngine();
         if (mSlaveModeEngine== null) return null;
 
         return mBinder;

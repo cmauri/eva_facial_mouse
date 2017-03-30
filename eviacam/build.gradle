@@ -39,7 +39,7 @@ def getBuildOrigin() {
     Properties properties = new Properties()
     properties.load(project.rootProject.file('local.properties').newDataInputStream())
     def build_origin  = properties.getProperty('build.origin')
-    if (build_origin== null) return "regular"
+    if (build_origin== null) return "\"regular\""
     else return build_origin
 }
 

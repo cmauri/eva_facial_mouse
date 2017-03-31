@@ -62,7 +62,7 @@
             android:exported="false"
             android:noHistory="false"
             android:excludeFromRecents="true"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar" >
         </activity>
         
         <!-- Launcher activity -->

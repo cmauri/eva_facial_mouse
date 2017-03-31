@@ -221,4 +221,9 @@
     <string name="cannot_access_camera">No es pot accedir a la càmera. Potser està en ús per una altra aplicació.</string>
     <string name="no_cameras_available">No se ha detectado ninguna cámara</string>
     <string name="send_report">Enviar informe d\'error</string>
+    <string name="camera_disabled_error">Les càmeres del dispositiu han estat desactivats per a aquest usuari.</string>
+    <string name="camera_error">No es pot accedir a la càmera</string>
+    <string name="no_accessibility_settings">No es pot obrir la configuració d\'accessibilitat.\n\nIntenti obrir manualment:\n\nConfiguració > Accessibilitat > EVA Facial Mouse\n\ni després activi el servei d\'accessibilitat d\'EVA Facial Mouse</string>
+    <string name="open_accessibility_settings">Obrir configuració d\'accessibilitat</string>
+    <string name="send_anonymous_error_reports">Enviar informes d\'error anònims</string>
 </resources>

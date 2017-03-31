@@ -222,4 +222,9 @@
     <string name="cannot_access_camera">No se puede acceder a la cámara. Tal vez está en uso por otra aplicación.</string>
     <string name="no_cameras_available">No se ha detectado ninguna cámara</string>
     <string name="send_report">Enviar informe de error</string>
+    <string name="camera_disabled_error">Las cámaras del dispositivo se han inhabilitado para este usuario.</string>
+    <string name="camera_error">No se puede acceder a la cámara</string>
+    <string name="no_accessibility_settings">No es posible abrir los ajustes de accesibilidad.\n\nIntente abrir manualmente:\n\nAjustes > Accesibilidad > EVA Facial Mouse\n\ny luego active el servicio de accesibilidad de EVA Facial Mouse</string>
+    <string name="open_accessibility_settings">Abrir ajustes de accesibilidad</string>
+    <string name="send_anonymous_error_reports">Enviar informes de error anónimos</string>
 </resources>

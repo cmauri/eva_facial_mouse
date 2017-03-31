@@ -102,7 +102,6 @@
          \n5. Wähle \'EVA Tastatur\'</string>
     <string name="positioning_summary">Positioniere dein Gerät entsprechend, damit dein komplettes Gesicht in einem Abstand von ca. 30–50cm von der Kamera mittig erkannt wird.\nWenn dein Gesicht erfolgreich erkannt wurde, wird die Umrandung Rot und das Kreuz erscheint in der Mitte des Gesichts.</string>
     <string name="trying_to_detect_face">Versuche Gesicht zu erkennen…</string>
-    <string name="how_to_run">Um EVA zu verwenden, öffne\n\nEinstellungen > Bedienungshilfen > EVA Facial Mouse</string>
     <string name="keyboard_not_configured_confirm">Wirklich fortsetzen ohne eine Tastatur zu konfigurieren?</string>
     <string name="gamepad_transparency">Transparenz</string>
     <string name="keyboard_not_enabled_toast">EVA Tastatur ist nicht aktiviert. Verwende den Assistenten zur Einrichtung.</string>

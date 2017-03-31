@@ -127,7 +127,7 @@
    <string name="check">בדיקה</string>
    <string name="done">בוצע</string>
    <string name="positioning">מיקום</string>
-   <string name="positioning_summary">יש לקבע את ההתקן כשהצד הקדמי פונה אל פני המשתמש בתנוחה הטבעית במרחק של 30-50 ס״מ.\nהפנים אמורים להופיע במלואם בתוך המציג כדי שיהיה ניתן לזהות אותם. כשהמצב הזה מתקיים, המסגרת הופכת לאדומה וצלב אדום מופיע על מרכז הפנים.</string>
+   <string name="positioning_summary">יש לקבע את ההתקן כשהצד הקדמי פונה אל פני המשתמש בתנוחה הטבעית במרחק של 30–50 ס״מ.\nהפנים אמורים להופיע במלואם בתוך המציג כדי שיהיה ניתן לזהות אותם. כשהמצב הזה מתקיים, המסגרת הופכת לאדומה וצלב אדום מופיע על מרכז הפנים.</string>
    <string name="dock_menu">תפריט מעוגן</string>
    <string name="dock_menu_summary">התפריט המעוגן לצדו השמאלי של המסך מאפשר גישה פשוטה למגוון תכונות</string>
    <string name="home">בית</string>
@@ -181,6 +181,5 @@
    <string name="rest_mode_disabled">מצב מנוחה מנוטרל</string>
    <string name="got_it">הבנתי</string>
    <string name="button">כפתור</string>
-   <string name="how_to_run">כדי להפעיל את עכבראש, עליך לגשת אל \n\nהגדרות &gt; נגישות &gt; EVA Facial Mouse</string>
    <string name="dont_remember_again">לא להזכיר לי שוב</string>
 </resources>

@@ -164,7 +164,7 @@
     <string name="check">Check</string>
     <string name="done">Done</string>
     <string name="positioning">Positioning</string>
-    <string name="positioning_summary">Mount the device facing the face, with the head in a natural position, around 30-50cm.\nThe full face should appear inside the viewer to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face.</string>
+    <string name="positioning_summary">Mount the device facing the face, with the head in a natural position, around 30–50cm.\nThe full face should appear inside the viewer to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face.</string>
     <string name="dock_menu">Dock menu</string>
     <string name="dock_menu_summary">The Dock Menu on the left edge of the screen allows quick access to a number of functions</string>
     <string name="home">Home</string>
@@ -197,7 +197,7 @@
     <string name="eva_not_running">EVA not running</string>
     <string name="eva_not_running_summary">To run this wizard, you need to enable EVA Facial Mouse service</string>
     <string name="close">Close</string>
-    <string name="trying_to_detect_face">Trying to detect face...</string>
+    <string name="trying_to_detect_face">Trying to detect face…</string>
     <string name="face_detected">Face detected</string>
     <string name="pre_click_summary">To make click, stop the pointer over the desired location. After a few moments the click will be generated automatically. If the element below accepts more than one action, the Context Menu will be displayed.</string>
     <string name="click_enabled_next">In the next screen, the pointer with the click function will be enabled</string>

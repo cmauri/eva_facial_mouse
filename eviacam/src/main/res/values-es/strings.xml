@@ -138,7 +138,7 @@
     <string name="wizard_icon_name">EVA Asistente</string>
     <string name="back">Atrás</string>
     <string name="positioning">Posicionamiento</string>
-    <string name="positioning_summary">Instale el dispositivo frente a la cara, con la cabeza en posición natural, a unos 30-50cm.\nLa cara completa debe aparecer dentro del visor para ser detectada. Cuando esto sucede, el marco pasa a rojo y una cruz indica el centro del rostro.</string>
+    <string name="positioning_summary">Instale el dispositivo frente a la cara, con la cabeza en posición natural, a unos 30–50cm.\nLa cara completa debe aparecer dentro del visor para ser detectada. Cuando esto sucede, el marco pasa a rojo y una cruz indica el centro del rostro.</string>
     <string name="check">Comprobar</string>
     <string name="configuration_settings">Opciones de configuración</string>
     <string name="configuration_settings_summary">La velocidad del puntero y otros parámetros pueden ajustarse desde\nAjustes > Accesibilidad> EVA Facial Mouse > Ajustes</string>
@@ -192,7 +192,7 @@
     <string name="eva_not_running">EVA no se está ejecutando</string>
     <string name="eva_not_running_summary">Para ejecutar este asistente es necesario activar el servicio EVA Facial Mouse</string>
     <string name="close">Cerrar</string>
-    <string name="trying_to_detect_face">Intentando detectar rostro...</string>
+    <string name="trying_to_detect_face">Intentando detectar rostro…</string>
     <string name="face_detected">Rostro detectado</string>
     <string name="pre_click_summary">Para hacer clic, detenga el puntero sobre el lugar deseado. Pasados unos instantes el clic se generará automáticamente. Si el elemento que hay debajo acepta más de una acción, se mostrará el Menú Contextual.</string>
     <string name="click_enabled_next">En la pantalla siguiente, se activará el puntero con la función del clic</string>
@@ -217,9 +217,9 @@
     <string name="pointer_speed_summary">Mueva la cabeza para mover el puntero. Trate de alcanzar toda la pantalla. Ajuste las velocidades si es preciso.</string>
     <string name="got_it">Entendido</string>
     <string name="button">Botón</string>
-    <string name="how_to_run">Para ejecutar EVA, vaya a\n\nAjustes > Accesibilidad > EVA Facial Mouse</string>
+    <string name="how_to_run">Para ejecutar EVA Facial Mouse, active el servicio en los ajustes de accessibilidad</string>
     <string name="dont_remember_again">No volver a recordar</string>
-    <string name="cannot_access_camera">Error al intentar acceder a la cámara, tal vez está en uso por otra aplicación.</string>
+    <string name="cannot_access_camera">No se puede acceder a la cámara. Tal vez está en uso por otra aplicación.</string>
     <string name="no_cameras_available">No se ha detectado ninguna cámara</string>
     <string name="send_report">Enviar informe de error</string>
 </resources>

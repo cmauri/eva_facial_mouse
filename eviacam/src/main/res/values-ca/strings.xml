@@ -138,7 +138,7 @@
     <string name="wizard_icon_name">EVA Assistent</string>
     <string name="back">Enrere</string>
     <string name="positioning">Posicionament</string>
-    <string name="positioning_summary">Instal·li el dispositiu enfront de la cara, amb el cap en una posició natural, a uns 30-50cm.\nLa cara completa ha d\'aparèixer dins el visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
+    <string name="positioning_summary">Instal·li el dispositiu enfront de la cara, amb el cap en una posició natural, a uns 30–50cm.\nLa cara completa ha d\'aparèixer dins el visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
     <string name="check">Comprovar</string>
     <string name="configuration_settings">Opcions de configuració</string>
     <string name="configuration_settings_summary">Per configurar la velocitat del punter i altres paràmetres, vagi a\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
@@ -193,7 +193,7 @@
     <string name="eva_not_running">EVA no s\'està executant</string>
     <string name="eva_not_running_summary">Per executar aquest assistent cal activar el servei EVA Facial Mouse</string>
     <string name="close">Tancar</string>
-    <string name="trying_to_detect_face">Intentant detectar rostre...</string>
+    <string name="trying_to_detect_face">Intentant detectar rostre…</string>
     <string name="face_detected">Rostre detectat</string>
     <string name="pre_click_summary">Per fer clic, aturi el punter sobre el lloc desitjat. Passats uns instants el clic es generarà automàticament. Si l\'element que hi ha a sota accepta més d\'una acció, es mostrarà el Menú Contextual.</string>
     <string name="click_enabled_next">A la pantalla següent s\'activarà el punter amb la funció del clic</string>
@@ -216,9 +216,9 @@
     <string name="rest_mode_disabled">Mode Repòs desactivat</string>
     <string name="got_it">Entesos</string>
     <string name="button">Botó</string>
-    <string name="how_to_run">Per executar EVA, vagi a\n\nConfiguració > Accessibilitat > EVA Facial Mouse</string>
+    <string name="how_to_run">Per executar EVA Facial Mouse, activi el servei a la configuració d\'accessibilitat</string>
     <string name="dont_remember_again">No tornar a recordar</string>
-    <string name="cannot_access_camera">Error en intentar accedir a la càmera, potser està en ús per una altra aplicació.</string>
+    <string name="cannot_access_camera">No es pot accedir a la càmera. Potser està en ús per una altra aplicació.</string>
     <string name="no_cameras_available">No se ha detectado ninguna cámara</string>
     <string name="send_report">Enviar informe d\'error</string>
 </resources>

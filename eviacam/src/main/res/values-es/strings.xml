@@ -19,7 +19,7 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Description shown in the accessibility service screen -->
     <string name="service_description">EVA es un emulador de ratón que permite mover el puntero con la cabeza. Hace el seguimiento del rostro utilizando la cámara frontal del dispositivo.</string>
 
@@ -124,7 +124,6 @@
     <string name="slave_settings_top_right">Parte superior derecha</string>
     <string name="slave_settings_bottom_right">Parte inferior derecha</string>
     <string name="slave_settings_label">Ajustes del modo esclavo de EVA</string>
-    <string name="slave_mode_preferences">Ajustes del modo esclavo</string>
     <string name="slave_settings_gamepad_interface_settings">Interfaz del gamepad</string>
     <string name="slave_settings_gamepad_transparency">Transparencia</string>
     <string name="slave_settings_gamepad_abs_speed">Velocidad modo abs.</string>
@@ -139,7 +138,6 @@
     <string name="wizard_back">Atrás</string>
     <string name="wizard_positioning">Posicionamiento</string>
     <string name="wizard_positioning_summary">Instale el dispositivo frente a la cara, con la cabeza en posición natural, a unos 30–50cm.\nLa cara completa debe aparecer dentro del visor para ser detectada. Cuando esto sucede, el marco pasa a rojo y una cruz indica el centro del rostro.</string>
-    <string name="check">Comprobar</string>
     <string name="wizard_configuration_settings">Opciones de configuración</string>
     <string name="wizard_configuration_settings_summary">La velocidad del puntero y otros parámetros pueden ajustarse desde\nAjustes > Accesibilidad> EVA Facial Mouse > Ajustes</string>
     <string name="settings_configuration_wizard">Asistente de configuración</string>
@@ -151,7 +149,6 @@
     <string name="wizard_install">Instalar</string>
     <string name="wizard_keyboard">Teclado</string>
     <string name="wizard_keyboard_remarks">La mayoría de teclados no funcionan con EVA. Para activar el teclado compatible proporcionado:</string>
-    <string name="configure">Configurar</string>
     <string name="wizard_keyboard_setup">Configuración del teclado</string>
     <string name="wizard_known_limitations">Limitaciones conocidas</string>
     <string name="wizard_limitations_summary">Debido a restricciones de Android, algunas funciones no están todavía disponibles.
@@ -161,7 +158,6 @@
         \n- Aplicaciones como Maps, Earth, Galería y los navegadores web (recomendamos Google Chrome) funcionan con limitaciones
         \n- Los Botones de Desplazamiento no siempre funcionan (ej. con los navegadores web). Para hacer el desplazamiento en tales circunstancias, pruebe a utilizar el Teclado de Navegación (véase a continuación)
     </string>
-    <string name="navigation_keyboard">Teclado de Navegación</string>
     <string name="wizard_next">Siguiente</string>
     <string name="wizard_open_keyboard">Abrir el teclado</string>
     <string name="wizard_open_notifications">Abrir notificaciones</string>
@@ -215,13 +211,11 @@
     <string name="service_toast_rest_mode_disabled">Modo Reposo desactivado</string>
     <string name="wizard_pointer_speed">Velocidad del puntero</string>
     <string name="wizard_pointer_speed_summary">Mueva la cabeza para mover el puntero. Trate de alcanzar toda la pantalla. Ajuste las velocidades si es preciso.</string>
-    <string name="got_it">Entendido</string>
     <string name="wizard_button">Botón</string>
     <string name="launcher_how_to_run">Para ejecutar EVA Facial Mouse, active el servicio en los ajustes de accessibilidad</string>
     <string name="launcher_dont_remember_again">No volver a recordar</string>
     <string name="service_camera_no_access">No se puede acceder a la cámara. Tal vez está en uso por otra aplicación.</string>
     <string name="service_camera_no_available">No se ha detectado ninguna cámara</string>
-    <string name="send_report">Enviar informe de error</string>
     <string name="service_camera_disabled_error">Las cámaras del dispositivo se han inhabilitado para este usuario.</string>
     <string name="service_camera_error">No se puede acceder a la cámara</string>
     <string name="launcher_no_accessibility_settings">No es posible abrir los ajustes de accesibilidad.\n\nIntente abrir manualmente:\n\nAjustes > Accesibilidad > EVA Facial Mouse\n\ny luego active el servicio de accesibilidad de EVA Facial Mouse</string>

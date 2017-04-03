@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
    <!--Do NOT translate-->
    <!--Description shown in the accessibility service screen-->
    <string name="service_description">עכבראש הנה תכנית הדמייה להזזת העכבר עם הזזת הראש. התכנית עוקבת אחר הפנים שלך בעזרת המצלמה הקדמית של ההתקן שלך.</string>
@@ -98,7 +98,6 @@
    <string name="slave_settings_top_right">ימין למעלה</string>
    <string name="slave_settings_bottom_right">ימין למטה</string>
    <string name="slave_settings_label">העדפות לעכבראש במצב נשלט</string>
-   <string name="slave_mode_preferences">העדפות מצב נשלט</string>
    <string name="slave_settings_gamepad_interface_settings">מנשק לוח משחק</string>
    <string name="slave_settings_gamepad_transparency">שקיפות</string>
    <string name="slave_settings_gamepad_abs_speed">מהירות מצב מוחלט</string>
@@ -124,7 +123,6 @@
         \n3. לחזור אחורה
         \n4. לגעת באפשרות \'מקלדת נוכחית\'
         \n5. לבחור ב־\'EVA Keyboard\'</string>
-   <string name="check">בדיקה</string>
    <string name="launcher_done">בוצע</string>
    <string name="wizard_positioning">מיקום</string>
    <string name="wizard_positioning_summary">יש לקבע את ההתקן כשהצד הקדמי פונה אל פני המשתמש בתנוחה הטבעית במרחק של 30–50 ס״מ.\nהפנים אמורים להופיע במלואם בתוך המציג כדי שיהיה ניתן לזהות אותם. כשהמצב הזה מתקיים, המסגרת הופכת לאדומה וצלב אדום מופיע על מרכז הפנים.</string>
@@ -136,10 +134,8 @@
    <string name="wizard_open_keyboard">פתיחת מקלדת</string>
    <string name="wizard_scroll_buttons">כפתורי גלילה</string>
    <string name="wizard_scroll_buttons_description">כדי לגלול תוכן, יש להשתמש בכפתורי הגלילה</string>
-   <string name="navigation_keyboard">מקלדת ניווט</string>
    <string name="wizard_keyboard">מקלדת</string>
    <string name="wizard_keyboard_remarks">רוב המקלדות לא עובדות עם עכבראש. כדי להפעיל את המקלדת התואמת המסופקת:</string>
-   <string name="configure">הגדרה</string>
    <string name="wizard_keyboard_not_configured">המקלדת אינה מוגדרת</string>
    <string name="wizard_keyboard_not_configured_confirm">האם להמשיך מבלי להגדיר את המקלדת?</string>
    <string name="wizard_pointer_speed">מהירות הסמן</string>
@@ -179,7 +175,6 @@
    <string name="service_toast_context_menu_disabled">תפריט ההקשר מנוטרל</string>
    <string name="service_toast_rest_mode_enabled">מצב מנוחה פעיל</string>
    <string name="service_toast_rest_mode_disabled">מצב מנוחה מנוטרל</string>
-   <string name="got_it">הבנתי</string>
    <string name="wizard_button">כפתור</string>
    <string name="launcher_dont_remember_again">לא להזכיר לי שוב</string>
 </resources>

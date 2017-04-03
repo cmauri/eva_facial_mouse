@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="settings_acceleration">Beschleunigung</string>
     <string name="settings_acceleration_summary">Zeigerbeschleunigung. 0 deaktiviert</string>
     <string name="settings_after_five_minutes">nach 5 Minuten</string>
@@ -14,7 +14,6 @@
     <string name="slave_settings_bottom_left">Unten Links</string>
     <string name="slave_settings_bottom_right">Unten Rechts</string>
     <string name="wizard_button">Schaltfläche</string>
-    <string name="check">Prüfen</string>
     <string name="action_click">Klick</string>
     <string name="settings_click_settings">Klickeinstellungen</string>
     <string name="close">Beenden</string>
@@ -106,7 +105,6 @@
     <string name="slave_settings_gamepad_transparency">Transparenz</string>
     <string name="service_toast_keyboard_not_enabled_toast">EVA Tastatur ist nicht aktiviert. Verwende den Assistenten zur Einrichtung.</string>
     <string name="service_camera_no_access">Fehler beim Zugriff auf die Kamera, möglicherweise wird sie von einer anderen Applikation verwendet.</string>
-    <string name="configure">Konfigurieren</string>
     <string name="service_toast_context_menu_disabled">Kontextmenü deaktiviert</string>
     <string name="service_toast_context_menu_enabled">Kontextmenü aktiviert</string>
     <string name="dock_menu_button">Menüleiste ein-/ausblenden</string>
@@ -118,7 +116,6 @@
         \n2. Aktiviere \'EVA Tastatur\'
         \n3. Tippe \'Standard\'
         \n4. Wähle \'EVA Tastatur\'</string>
-    <string name="send_report">Fehlerbericht senden</string>
     <string name="action_scroll_forward">Vorwärts blättern</string>
     <string name="action_scroll_backward">Rückwärts blättern</string>
     <string name="wizard_scroll_buttons">Scroll Schaltflächen</string>
@@ -138,7 +135,6 @@
     <string name="wizard_notification_icon_summary">Zum Pausieren und fortsetzen von EVA (z.B. wenn Unterstützung benötigt wird), verwende das Benachrichtigungssymbol oben.</string>
     <string name="service_camera_no_available">Keine Kamera gefunden</string>
     <string name="slave_settings_mouse_preferences">Maus Einstellungen</string>
-    <string name="navigation_keyboard">Navigationstasten</string>
     <string name="service_toast_navigation_keyboard_advice">Verwende die Navigationstasten zum scrollen</string>
     <string name="wizard_full_enable_after">Alle Funktionen von EVA werden nach Fertigstellung des Assistenten aktiviert</string>
     <string name="wizard_dock_menu_summary">Die Menüleiste an der linken Seite des Bildschirms ermöglicht schnellen Zugriff auf einige Funktionen</string>
@@ -150,7 +146,6 @@
     <string name="wizard_click_enabled_next">Auf der nächsten Seite wird der Zeiger mit Klickfunktion aktiviert</string>
     <string name="slave_settings_gamepad_location">Gamepad Position</string>
     <string name="slave_settings_gamepad_settings">Gamepad Einstellungen</string>
-    <string name="got_it">Hab es</string>
     <string name="wizard_to_test_click">Für einen Klicktest, verwende die folgende Schaltfläche. Beachte, falls du außerhalb der Schaltfläche klickst werden dir zwei Navigationsoptionen angeboten.</string>
     <string name="dock_toggle_rest_mode">Umschalten in den Ruhemodus. Zum Deaktivieren des automatischen Klicken während des Lesens bzw. anschauen eines Videos.</string>
     <string name="dock_toggle_context_menu">Kontextmenü aktivieren/deaktivieren</string>
@@ -165,7 +160,6 @@
     <string name="wizard_recents">Zuletzt genutzt</string>
     <string name="dock_recents_button">Zuletzt genutzt Taste</string>
     <string name="slave_settings_label">EVA Slave-Modus-Einstellungen</string>
-    <string name="slave_mode_preferences">Slave-Modus-Einstellungen</string>
     <string name="slave_settings_gamepad_interface_settings">Gamepad Schnittstelle</string>
     <string name="slave_settings_gamepad_preferences">Gamepad Einstellungen</string>
     <string name="slave_settings_gamepad_abs_speed">Geschwindigkeit abs. Modus</string>

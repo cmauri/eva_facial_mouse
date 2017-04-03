@@ -19,7 +19,7 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Description shown in the accessibility service screen -->
     <string name="service_description">EVA és un emulador de ratolí que permet moure el punter amb el cap. Fa el seguiment del rostre emprant la càmera frontal del dispositiu.</string>
 
@@ -124,7 +124,6 @@
     <string name="slave_settings_top_right">Part superior dreta</string>
     <string name="slave_settings_bottom_right">Part inferior dreta</string>
     <string name="slave_settings_label">Ajustos del mode esclau d\'EVA</string>
-    <string name="slave_mode_preferences">Ajustos del mode esclau</string>
     <string name="slave_settings_gamepad_interface_settings">Interfície del gamepad</string>
     <string name="slave_settings_gamepad_transparency">Transparència</string>
     <string name="slave_settings_gamepad_abs_speed">Velocitat mode abs.</string>
@@ -139,7 +138,6 @@
     <string name="wizard_back">Enrere</string>
     <string name="wizard_positioning">Posicionament</string>
     <string name="wizard_positioning_summary">Instal·li el dispositiu enfront de la cara, amb el cap en una posició natural, a uns 30–50cm.\nLa cara completa ha d\'aparèixer dins el visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
-    <string name="check">Comprovar</string>
     <string name="wizard_configuration_settings">Opcions de configuració</string>
     <string name="wizard_configuration_settings_summary">Per configurar la velocitat del punter i altres paràmetres, vagi a\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
     <string name="settings_configuration_wizard">Assistent de configuració</string>
@@ -151,7 +149,6 @@
     <string name="wizard_install">Instal·lar</string>
     <string name="wizard_keyboard">Teclat</string>
     <string name="wizard_keyboard_remarks">La majoria de teclats no funcionen amb EVA. Per activar el teclat compatible proporcionat:</string>
-    <string name="configure">Configurar</string>
     <string name="wizard_keyboard_setup">Configuració del teclat</string>
     <string name="wizard_known_limitations">Limitacions conegudes</string>
     <string name="wizard_limitations_summary">Degut a restriccions d\'Android, algunes funcions no estan encara disponibles.
@@ -161,7 +158,6 @@
         \n- Aplicacions com Maps, Earth, Galeria i els navegadors web funcionen amb limitacions
         \n- Els Botons de Desplaçament no sempre funcionen (p.e. navegadors web). Per fer el desplaçament en aquestes circumstàncies, provi a utilitzar el Teclat de Navegació (vegi a continuació)
     </string>
-    <string name="navigation_keyboard">Teclat de Navegació</string>
     <string name="wizard_next">Següent</string>
     <string name="wizard_open_notifications">Obrir notificacions</string>
     <string name="wizard_open_keyboard">Obrir el teclat</string>
@@ -214,13 +210,11 @@
     <string name="service_toast_context_menu_disabled">Menú Contextual desactivat</string>
     <string name="service_toast_rest_mode_enabled">Mode Repòs activat</string>
     <string name="service_toast_rest_mode_disabled">Mode Repòs desactivat</string>
-    <string name="got_it">Entesos</string>
     <string name="wizard_button">Botó</string>
     <string name="launcher_how_to_run">Per executar EVA Facial Mouse, activi el servei a la configuració d\'accessibilitat</string>
     <string name="launcher_dont_remember_again">No tornar a recordar</string>
     <string name="service_camera_no_access">No es pot accedir a la càmera. Potser està en ús per una altra aplicació.</string>
     <string name="service_camera_no_available">No se ha detectado ninguna cámara</string>
-    <string name="send_report">Enviar informe d\'error</string>
     <string name="service_camera_disabled_error">Les càmeres del dispositiu han estat desactivats per a aquest usuari.</string>
     <string name="service_camera_error">No es pot accedir a la càmera</string>
     <string name="launcher_no_accessibility_settings">No es pot obrir la configuració d\'accessibilitat.\n\nIntenti obrir manualment:\n\nConfiguració > Accessibilitat > EVA Facial Mouse\n\ni després activi el servei d\'accessibilitat d\'EVA Facial Mouse</string>

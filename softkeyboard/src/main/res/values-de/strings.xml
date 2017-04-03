@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="label_next_key">Weiter</string>
-    <string name="del">Entf</string>
-    <string name="end">Ende</string>
-    <string name="wizard_home">Pos1</string>
-    <string name="label_send_key">Senden</string>
-    <string name="language_selection_title">Eingabesprache</string>
-    <string name="pgdown">Bild ab</string>
-    <string name="pgup">Bild auf</string>
-    <string name="select_language">Eingabesprache wählen</string>
-    <string name="settings_name">EVA Tastatur Einstellungen</string>
-    <string name="ime_name">EVA Tastatur</string>
-    <string name="label_go_key">Los</string>
+    <string name="kbd_key_label_next">Weiter</string>
+    <string name="kdd_key_label_delete">Entf</string>
+    <string name="kbd_key_label_end">Ende</string>
+    <string name="kbd_key_label_home">Pos1</string>
+    <string name="kbd_key_label_send">Senden</string>
+    <string name="kbd_language_selection_title">Eingabesprache</string>
+    <string name="kbd_key_label_pgdown">Bild ab</string>
+    <string name="kbd_key_label_pgup">Bild auf</string>
+    <string name="kbd_select_language">Eingabesprache wählen</string>
+    <string name="kbd_settings_name">EVA Tastatur Einstellungen</string>
+    <string name="kbd_service_name">EVA Tastatur</string>
+    <string name="kbd_key_label_go">Los</string>
 </resources>

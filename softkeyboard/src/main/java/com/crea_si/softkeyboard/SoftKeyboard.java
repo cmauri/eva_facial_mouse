@@ -80,7 +80,7 @@ public class SoftKeyboard extends InputMethodService
 
         sInstance = this;
         mInputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        mWordSeparators = getResources().getString(R.string.word_separators);
+        mWordSeparators = getResources().getString(R.string.kbd_word_separators);
     }
 
     /**

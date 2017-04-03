@@ -40,7 +40,7 @@ public class ImePreferences extends PreferenceActivity {
         super.onCreate(savedInstanceState);
 
         // We overwrite the title of the activity, as the default one is "Voice Search".
-        setTitle(R.string.settings_name);
+        setTitle(R.string.kbd_settings_name);
     }
 
     @Override
@@ -52,8 +52,8 @@ public class ImePreferences extends PreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            setInputMethodSettingsCategoryTitle(R.string.language_selection_title);
-            setSubtypeEnablerTitle(R.string.select_language);
+            setInputMethodSettingsCategoryTitle(R.string.kbd_language_selection_title);
+            setSubtypeEnablerTitle(R.string.kbd_select_language);
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.ime_preferences);

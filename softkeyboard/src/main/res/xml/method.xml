@@ -24,27 +24,27 @@
         android:settingsActivity="com.crea_si.softkeyboard.ImePreferences"
 >
     <subtype
-        android:label="@string/label_subtype_generic"
+        android:label="@string/kbd_label_subtype_generic"
         android:icon="@drawable/icon_en_us"
         android:imeSubtypeLocale="en_US"
         android:imeSubtypeMode="keyboard" />
     <subtype
-        android:label="@string/label_subtype_generic"
+        android:label="@string/kbd_label_subtype_generic"
         android:icon="@drawable/icon_en_gb"
         android:imeSubtypeLocale="en_GB"
         android:imeSubtypeMode="keyboard" />
     <subtype
-        android:label="@string/label_subtype_generic"
+        android:label="@string/kbd_label_subtype_generic"
         android:icon="@drawable/icon_es"
         android:imeSubtypeLocale="es"
         android:imeSubtypeMode="keyboard" />
     <subtype
-        android:label="@string/label_subtype_generic"
+        android:label="@string/kbd_label_subtype_generic"
         android:icon="@drawable/icon_ca"
         android:imeSubtypeLocale="ca"
         android:imeSubtypeMode="keyboard" />
     <subtype
-        android:label="@string/label_subtype_generic"
+        android:label="@string/kbd_label_subtype_generic"
         android:icon="@drawable/icon_de"
         android:imeSubtypeLocale="de"
         android:imeSubtypeMode="keyboard" />

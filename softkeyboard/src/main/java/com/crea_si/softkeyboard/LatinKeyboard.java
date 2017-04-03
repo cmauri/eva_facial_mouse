@@ -64,12 +64,12 @@ public class LatinKeyboard extends Keyboard {
             case EditorInfo.IME_ACTION_GO:
                 mEnterKey.iconPreview = null;
                 mEnterKey.icon = null;
-                mEnterKey.label = res.getText(R.string.label_go_key);
+                mEnterKey.label = res.getText(R.string.kbd_key_label_go);
                 break;
             case EditorInfo.IME_ACTION_NEXT:
                 mEnterKey.iconPreview = null;
                 mEnterKey.icon = null;
-                mEnterKey.label = res.getText(R.string.label_next_key);
+                mEnterKey.label = res.getText(R.string.kbd_key_label_next);
                 break;
             case EditorInfo.IME_ACTION_SEARCH:
                 mEnterKey.icon = res.getDrawable(R.drawable.sym_keyboard_search);
@@ -78,7 +78,7 @@ public class LatinKeyboard extends Keyboard {
             case EditorInfo.IME_ACTION_SEND:
                 mEnterKey.iconPreview = null;
                 mEnterKey.icon = null;
-                mEnterKey.label = res.getText(R.string.label_send_key);
+                mEnterKey.label = res.getText(R.string.kbd_key_label_send);
                 break;
             default:
                 mEnterKey.icon = res.getDrawable(R.drawable.sym_keyboard_return);

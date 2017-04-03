@@ -49,8 +49,8 @@ public class LauncherActivity extends Activity {
     private void noAccessibilitySettingsAlert() {
         final Resources r= getResources();
         mNoA11ySettingsDialog= new AlertDialog.Builder(this)
-            .setMessage(r.getText(R.string.no_accessibility_settings))
-            .setPositiveButton(r.getText(R.string.done),
+            .setMessage(r.getText(R.string.launcher_no_accessibility_settings))
+            .setPositiveButton(r.getText(R.string.launcher_done),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -93,9 +93,9 @@ public class LauncherActivity extends Activity {
 
         Resources r= getResources();
         mHelpDialog= new AlertDialog.Builder(this)
-        .setMessage(r.getText(R.string.how_to_run))
+        .setMessage(r.getText(R.string.launcher_how_to_run))
         .setView(checkBoxView)
-        .setPositiveButton(r.getText(R.string.open_accessibility_settings),
+        .setPositiveButton(r.getText(R.string.launcher_open_a11y_settings),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

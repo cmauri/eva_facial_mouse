@@ -75,16 +75,16 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
      * the order of the items is relevant for selecting a default action.
      */
     private static final ActionLabel[] mActionLabels = new ActionLabel[] {
-        new ActionLabel(AccessibilityNodeInfo.ACTION_CLICK, R.string.click),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_LONG_CLICK, R.string.long_click),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, R.string.scroll_backward),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.scroll_forward),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_COLLAPSE, R.string.collapse),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_COPY, R.string.copy),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_CUT, R.string.cut),            
-        new ActionLabel(AccessibilityNodeInfo.ACTION_DISMISS, R.string.dismiss),            
-        new ActionLabel(AccessibilityNodeInfo.ACTION_EXPAND, R.string.expand),
-        new ActionLabel(AccessibilityNodeInfo.ACTION_PASTE, R.string.paste),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_CLICK, R.string.action_click),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_LONG_CLICK, R.string.action_long_click),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, R.string.action_scroll_backward),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, R.string.action_scroll_forward),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_COLLAPSE, R.string.action_collapse),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_COPY, R.string.action_copy),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_CUT, R.string.action_cut),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_DISMISS, R.string.action_dismiss),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_EXPAND, R.string.action_expand),
+        new ActionLabel(AccessibilityNodeInfo.ACTION_PASTE, R.string.action_paste),
     };
 
     private final AccessibilityService mAccessibilityService;
@@ -211,19 +211,19 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
             break;
         case R.id.toggle_context_menu:
             if (mDockPanelLayerView.getContextMenuEnabled()) {
-                EVIACAM.ShortToast(getContext(), R.string.context_menu_enabled);
+                EVIACAM.ShortToast(getContext(), R.string.service_toast_context_menu_enabled);
             }
             else {
-                EVIACAM.ShortToast(getContext(), R.string.context_menu_disabled);
+                EVIACAM.ShortToast(getContext(), R.string.service_toast_context_menu_disabled);
             }
             break;
         case R.id.toggle_rest_mode:
             if (mDockPanelLayerView.getRestModeEnabled()) {
-                EVIACAM.ShortToast(getContext(), R.string.rest_mode_enabled);
+                EVIACAM.ShortToast(getContext(), R.string.service_toast_rest_mode_enabled);
                 refreshScrollingButtons();
             }
             else {
-                EVIACAM.ShortToast(getContext(), R.string.rest_mode_disabled);
+                EVIACAM.ShortToast(getContext(), R.string.service_toast_rest_mode_disabled);
             }
             break;
         }
@@ -461,7 +461,7 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
                                 AccessibilityNodeInfo.ACTION_SCROLL_FORWARD,
                         "android.webkit.WebView");
                 if (mContainsWebView && !mNavigationKeyboardAdviceShown) {
-                    EVIACAM.LongToast(getContext(), R.string.navigation_kbd_advice);
+                    EVIACAM.LongToast(getContext(), R.string.service_toast_navigation_keyboard_advice);
                     mNavigationKeyboardAdviceShown= true;
                 }
                 if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "Scroll areas refresh done. Found:" +

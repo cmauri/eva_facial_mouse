@@ -46,9 +46,9 @@ public class SetupWizard extends BasicWizardLayout {
     public WizardFlow onSetup() {
         /* Labels of the buttons */
         Resources r= getResources();
-        setNextButtonText(r.getString(R.string.next));
-        setBackButtonText(r.getString(R.string.back));
-        setFinishButtonText(r.getString(R.string.finish));
+        setNextButtonText(r.getString(R.string.wizard_next));
+        setBackButtonText(r.getString(R.string.wizard_back));
+        setFinishButtonText(r.getString(R.string.wizard_finish));
 
         /* Label of the activity */
         getActivity().setTitle(r.getString(R.string.app_name));
@@ -132,8 +132,8 @@ public class SetupWizard extends BasicWizardLayout {
         Resources r= getResources();
 
         new AlertDialog.Builder(getActivity())
-            .setTitle(r.getText(R.string.keyboard_not_configured))
-            .setMessage(r.getText(R.string.keyboard_not_configured_confirm))
+            .setTitle(r.getText(R.string.wizard_keyboard_not_configured))
+            .setMessage(r.getText(R.string.wizard_keyboard_not_configured_confirm))
             .setPositiveButton(android.R.string.yes, listenerPos)
             .setNegativeButton(android.R.string.no, listenerNeg)
             .setIcon(android.R.drawable.ic_dialog_alert)

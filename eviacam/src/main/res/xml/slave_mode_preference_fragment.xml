@@ -22,11 +22,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="@string/slave_mode_preferences">
+    <PreferenceCategory android:title="@string/slave_settings_label">
 
         <PreferenceScreen
             android:key="gamepad_preferences"
-            android:title="@string/gamepad_preferences" >
+            android:title="@string/slave_settings_gamepad_preferences" >
             <intent 
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="com.crea_si.eviacam.service" 
@@ -36,7 +36,7 @@
 
         <PreferenceScreen
             android:key="mouse_preferences"
-            android:title="@string/mouse_preferences" >
+            android:title="@string/slave_settings_mouse_preferences" >
             <intent 
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="com.crea_si.eviacam.service" 

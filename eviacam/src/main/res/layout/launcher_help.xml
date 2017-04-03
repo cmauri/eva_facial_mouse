@@ -7,7 +7,7 @@
         android:id="@+id/checkbox"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/dont_remember_again"
+        android:text="@string/launcher_dont_remember_again"
         android:layout_marginLeft="20dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp" />

@@ -34,7 +34,7 @@
 
     <!-- Labels for navigation keyboard -->
     <string name="del">Supr</string>
-    <string name="home">Inici</string>
+    <string name="wizard_home">Inici</string>
     <string name="pgup">RePág</string>
     <string name="end">Fin</string>
     <string name="pgdown">AvPág</string>

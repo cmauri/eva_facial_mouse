@@ -28,7 +28,7 @@
         <Key android:codes="61" android:keyLabel="TAB" 
              android:keyEdgeFlags="left" android:keyWidth="15%p" />
         <Key android:codes="-112" android:keyLabel="@string/del" />
-        <Key android:codes="-122" android:keyLabel="@string/home"/>
+        <Key android:codes="-122" android:keyLabel="@string/wizard_home"/>
         <Key android:codes="19" android:keyLabel="↑"/>
         <Key android:codes="92" android:keyLabel="⇧" />
         <Key android:codes="@integer/key_return" 

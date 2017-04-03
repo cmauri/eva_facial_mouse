@@ -62,7 +62,7 @@ public class KeyboardWizardStep extends WizardStep {
         /* Different instruction for Lollipop */
         if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP) {
             TextView tv = (TextView) v.findViewById(R.id.wiz_set_keyboard);
-            tv.setText(getResources().getText(R.string.wiz_set_keyboard_lollipop));
+            tv.setText(getResources().getText(R.string.wizard_set_keyboard_lollipop));
         }
 
         checkUpdate(v);

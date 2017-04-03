@@ -34,7 +34,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/skip_wizard"
+        android:text="@string/wizard_skip_wizard"
         android:id="@+id/checkBoxSkipWizard"
         android:layout_weight="0"
         android:textAppearance="?android:attr/textAppearanceMedium"/>

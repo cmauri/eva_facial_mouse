@@ -46,7 +46,7 @@
         <!-- Enable Viacam main (mouse) preferences -->
         <activity
             android:name=".common.MousePreferencesActivity"
-            android:label="@string/eviacam_preferences_title"
+            android:label="@string/settings_label"
             android:launchMode="singleTask"
             android:taskAffinity="com.crea_si.eviacam.SettingsAffinity"
             tools:ignore="ExportedActivity" >
@@ -104,7 +104,7 @@
         <!-- Slave mode preferences -->
         <activity
             android:name=".slavemode.SlaveModePreferencesActivity"
-            android:label="@string/eviacam_slave_mode_preferences_title"
+            android:label="@string/slave_settings_label"
             android:launchMode="singleTask"
             android:taskAffinity="com.crea_si.eviacam.SettingsAffinity" >
             <intent-filter>
@@ -115,7 +115,7 @@
         <!-- Gamepad preferences -->
         <activity
             android:name=".slavemode.GamepadPreferencesActivity"
-            android:label="@string/gamepad_preferences"
+            android:label="@string/slave_settings_gamepad_preferences"
             android:exported="true"
             android:launchMode="singleTask"
             android:taskAffinity="com.crea_si.eviacam.SettingsAffinity" >

@@ -118,7 +118,7 @@ public class MousePreferencesActivity extends Activity {
                     Preferences.get().cleanup();
 
                     new AlertDialog.Builder(getActivity())
-                            .setMessage(R.string.wizard_will_run)
+                            .setMessage(R.string.settings_wizard_will_run)
                             .setPositiveButton(android.R.string.ok, null)
                             .create().show();
                     return true;
@@ -182,7 +182,7 @@ public class MousePreferencesActivity extends Activity {
                 .commit();
 
         if (slaveMode) {
-            setTitle(getResources().getText(R.string.mouse_preferences));
+            setTitle(getResources().getText(R.string.slave_settings_mouse_preferences));
         }
     }
 }

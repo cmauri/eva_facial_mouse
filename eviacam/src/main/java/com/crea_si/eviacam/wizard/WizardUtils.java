@@ -63,8 +63,8 @@ public class WizardUtils {
             final Resources res = a.getResources();
             AlertDialog ad = new AlertDialog.Builder(a).create();
             ad.setCancelable(false); // This blocks the 'BACK' button
-            ad.setTitle(res.getText(R.string.eva_not_running));
-            ad.setMessage(res.getText(R.string.eva_not_running_summary));
+            ad.setTitle(res.getText(R.string.wizard_eva_not_running));
+            ad.setMessage(res.getText(R.string.wizard_eva_not_running_summary));
             ad.setButton(
                     DialogInterface.BUTTON_POSITIVE, res.getText(R.string.close),
                     new DialogInterface.OnClickListener() {

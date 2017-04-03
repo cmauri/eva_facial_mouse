@@ -46,7 +46,7 @@ public class ClickWizardStep extends WizardStep {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                b.setText(R.string.click);
+                b.setText(R.string.action_click);
                 mClickDone= true;
 
                 if (mLongClickDone) notifyCompleted();
@@ -56,7 +56,7 @@ public class ClickWizardStep extends WizardStep {
         b.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                b.setText(R.string.long_click);
+                b.setText(R.string.action_long_click);
                 mLongClickDone= true;
                 if (mClickDone) notifyCompleted();
                 return true;

@@ -30,5 +30,5 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:checked="true"
-        android:text="@string/send_anonymous_error_reports" />
+        android:text="@string/settings_send_anon_error_reports" />
 </LinearLayout>

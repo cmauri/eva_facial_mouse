@@ -158,7 +158,7 @@ public class ScrollLayerView extends RelativeLayout implements OnSharedPreferenc
     private ImageButton createScrollButton(@NonNull Drawable d) {
         ImageButton b= new ImageButton(getContext());
         b.setBackgroundColor(getResources().getColor(R.color.half_alpha));
-        b.setContentDescription(getContext().getText(R.string.scroll_backward));
+        b.setContentDescription(getContext().getText(R.string.action_scroll_backward));
         
         int padding_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
                 SCROLL_BUTTON_PADDING_DP, getResources().getDisplayMetrics());

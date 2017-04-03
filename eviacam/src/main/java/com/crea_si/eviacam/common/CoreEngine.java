@@ -416,7 +416,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         mPowerManagement.setSleepEnabled(true);   // Enable sleep call
 
         String t = String.format(
-                mService.getResources().getString(R.string.pointer_stopped_toast),
+                mService.getResources().getString(R.string.service_toast_pointer_stopped_toast),
                 Preferences.get().getTimeWithoutDetectionEntryValue());
         EVIACAM.LongToast(mService, t);
 
@@ -642,7 +642,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         }
         else {
             adb.setNeutralButton(mService.getText(R.string.close), okListener);
-            adb.setPositiveButton(mService.getText(R.string.retry),
+            adb.setPositiveButton(mService.getText(R.string.opencv_retry),
                     new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

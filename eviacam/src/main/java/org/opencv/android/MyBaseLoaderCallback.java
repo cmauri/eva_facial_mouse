@@ -36,7 +36,7 @@ public abstract class MyBaseLoaderCallback implements LoaderCallbackInterface {
                 Log.e(TAG, "Package installation failed!");
                 AlertDialog MarketErrorMessage = new AlertDialog.Builder(mAppContext).create();
                 MarketErrorMessage.setTitle("OpenCV Manager");
-                MarketErrorMessage.setMessage(res.getText(R.string.package_installation_failed));
+                MarketErrorMessage.setMessage(res.getText(R.string.opencv_package_installation_failed));
                 MarketErrorMessage.setCancelable(false); // This blocks the 'BACK' button
                 MarketErrorMessage.setButton(
                         AlertDialog.BUTTON_POSITIVE,
@@ -126,7 +126,7 @@ public abstract class MyBaseLoaderCallback implements LoaderCallbackInterface {
                 WaitMessage.setMessage(res.getText(R.string.opencv_installation_in_progress));
                 WaitMessage.setCancelable(false); // This blocks the 'BACK' button
                 WaitMessage.setButton(AlertDialog.BUTTON_POSITIVE,
-                        res.getText(R.string.wait), new OnClickListener() {
+                        res.getText(R.string.opencv_wait), new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         callback.wait_install();
                     }

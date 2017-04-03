@@ -143,10 +143,10 @@ class ServiceNotification {
             text = c.getText(R.string.app_name);
             iconId = R.drawable.ic_notification_enabled;
         } else if (action == NOTIFICATION_ACTION_PAUSE) {
-            text = c.getText(R.string.running_click_to_pause);
+            text = c.getText(R.string.notification_running_click_to_pause);
             iconId = R.drawable.ic_notification_enabled;
         } else if (action == NOTIFICATION_ACTION_RESUME) {
-            text = c.getText(R.string.stopped_click_to_resume);
+            text = c.getText(R.string.notification_stopped_click_to_resume);
             iconId = R.drawable.ic_notification_disabled;
         }
         else throw new IllegalStateException();

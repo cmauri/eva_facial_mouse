@@ -96,7 +96,7 @@ public class PositioningWizardStep extends WizardStep {
                 mHandler.postDelayed(this, TIME_TO_BLINK);
             }
             else {
-                mTextViewDetection.setText(R.string.face_detected);
+                mTextViewDetection.setText(R.string.wizard_face_detected);
                 mTextViewDetection.setVisibility(View.VISIBLE);
                 mHandler.removeCallbacks(mRunnable);
                 notifyCompleted();

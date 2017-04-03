@@ -156,7 +156,7 @@ public class CameraListener implements CvCameraViewListener2 {
         if (numCameras< 1) {
             Log.e(EVIACAM.TAG, "No cameras available");
             throw new CameraException(CameraException.NO_CAMERAS_AVAILABLE,
-                    c.getResources().getString(R.string.no_cameras_available));
+                    c.getResources().getString(R.string.service_camera_no_available));
         }
 
         // Pick the best available camera

@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/positioning"
+        android:text="@string/wizard_positioning"
         android:id="@+id/textView2"
         />
 
@@ -43,7 +43,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/positioning_summary"
+        android:text="@string/wizard_positioning_summary"
         android:id="@+id/textView4"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_marginBottom="20dp"/>
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/trying_to_detect_face"
+        android:text="@string/wizard_trying_to_detect_face"
         android:id="@+id/textViewDetectionStatus"
         android:layout_gravity="center_horizontal"
         android:gravity="center"/>

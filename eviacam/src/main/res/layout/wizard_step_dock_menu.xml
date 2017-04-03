@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="@string/dock_menu"
+            android:text="@string/wizard_dock_menu"
             android:id="@+id/textView2"
             />
 
@@ -48,7 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/dock_menu_summary"
+            android:text="@string/wizard_dock_menu_summary"
             android:id="@+id/textView10"
             android:layout_marginTop="10dp"/>
 
@@ -73,7 +73,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/back"
+                android:text="@string/wizard_back"
                 android:id="@+id/textView9"
                 />
 
@@ -100,7 +100,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/home"
+                android:text="@string/wizard_home"
                 android:id="@+id/textView1"
                 />
 
@@ -127,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/recents"
+                android:text="@string/wizard_recents"
                 android:id="@+id/textView3"
                 />
 
@@ -154,7 +154,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/open_notifications"
+                android:text="@string/wizard_open_notifications"
                 android:id="@+id/textView4"
                 />
 
@@ -181,7 +181,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/open_keyboard"
+                android:text="@string/wizard_open_keyboard"
                 android:id="@+id/textView5"
                 />
 
@@ -208,7 +208,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/toggle_context_menu"
+                android:text="@string/dock_toggle_context_menu"
                 android:id="@+id/textView7"
                 />
 
@@ -236,7 +236,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/toggle_rest_mode"
+                android:text="@string/dock_toggle_rest_mode"
                 android:id="@+id/textView6"
                 />
 

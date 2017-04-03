@@ -34,7 +34,7 @@
 
     <!-- Labels for navigation keyboard -->
     <string name="del">Del</string>
-    <string name="home">Home</string>
+    <string name="wizard_home">Home</string>
     <string name="pgup">PgUp</string>
     <string name="end">End</string>
     <string name="pgdown">PgDown</string>

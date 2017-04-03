@@ -145,13 +145,13 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                 if (dpm.getCameraDisabled(null)) {
                     Log.e(TAG, "The device's cameras have been disabled for this user");
                     throw new CameraException(CameraException.CAMERA_DISABLED,
-                            getResources().getString(R.string.camera_disabled_error));
+                            getResources().getString(R.string.service_camera_disabled_error));
                 }
 
                 /* Otherwise the camera is already in use */
                 Log.e(TAG, "Camera already in use");
                 throw new CameraException(CameraException.CAMERA_IN_USE,
-                        getResources().getString(R.string.cannot_access_camera));
+                        getResources().getString(R.string.service_camera_no_access));
             }
 
             /* Now set camera parameters */
@@ -273,7 +273,7 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                 catch (RuntimeException e) {
                     Log.e(TAG, "startPreview failed with a RuntimeException");
                     throw new CameraException(CameraException.CAMERA_ERROR,
-                            getResources().getString(R.string.camera_error), e);
+                            getResources().getString(R.string.service_camera_error), e);
                 }
             }
             else {

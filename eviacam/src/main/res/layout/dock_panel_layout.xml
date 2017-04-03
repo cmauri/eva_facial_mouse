@@ -35,7 +35,7 @@
         android:src="@drawable/ic_back"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/back_button" />
+        android:contentDescription="@string/dock_back_button" />
 
     <ImageButton
         android:id="@+id/home_button"
@@ -45,7 +45,7 @@
         android:src="@drawable/ic_home"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/home_button" />
+        android:contentDescription="@string/dock_home_button" />
     
     <ImageButton
         android:id="@+id/recents_button"
@@ -55,7 +55,7 @@
         android:src="@drawable/ic_recents"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/recents_button" />
+        android:contentDescription="@string/dock_recents_button" />
     
     <ImageButton
         android:id="@+id/notifications_button"
@@ -65,7 +65,7 @@
         android:src="@drawable/ic_notifications"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/notifications_button" />
+        android:contentDescription="@string/dock_notifications_button" />
     
     <ImageButton
         android:id="@+id/softkeyboard_button"
@@ -75,7 +75,7 @@
         android:src="@drawable/ic_keyboard"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/softkeyboard_button" />
+        android:contentDescription="@string/dock_softkeyboard_button" />
 
     <ImageButton
         android:id="@+id/toggle_context_menu"
@@ -84,7 +84,7 @@
         android:padding="2dip"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/toggle_context_menu" />
+        android:contentDescription="@string/dock_toggle_context_menu" />
 
     <ImageButton
         android:id="@+id/toggle_rest_mode"
@@ -93,6 +93,6 @@
         android:padding="2dip"
         android:background="@color/transparent"
         android:scaleType="fitCenter"
-        android:contentDescription="@string/toggle_rest_mode" />
+        android:contentDescription="@string/dock_toggle_rest_mode" />
 
 </LinearLayout>

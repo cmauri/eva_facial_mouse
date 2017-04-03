@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/keyboard"
+        android:text="@string/wizard_keyboard"
         android:id="@+id/textView3"/>
 
     <View
@@ -42,7 +42,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/keyboard_remarks"
+        android:text="@string/wizard_keyboard_remarks"
         android:id="@+id/textView11"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
@@ -72,7 +72,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/wiz_set_keyboard"
+                android:text="@string/wizard_set_keyboard"
                 android:id="@+id/wiz_set_keyboard"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
@@ -83,7 +83,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/settings"
+                android:text="@string/wizard_settings"
                 android:id="@+id/keyboardConfigureButton"
                 />
 

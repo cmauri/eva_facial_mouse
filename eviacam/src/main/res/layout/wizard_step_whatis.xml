@@ -33,5 +33,5 @@
         android:id="@+id/textView"
         android:layout_marginTop="10sp"
         android:textSize="20sp"
-        android:text="@string/eviacam_service_description"/>
+        android:text="@string/service_description"/>
 </LinearLayout>

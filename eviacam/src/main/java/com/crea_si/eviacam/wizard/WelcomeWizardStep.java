@@ -49,7 +49,7 @@ public class WelcomeWizardStep extends WizardStep {
             public void onClick(View view) {
                 AlertDialog ad = new AlertDialog.Builder(getActivity()).create();
                 ad.setCancelable(false); // This blocks the 'BACK' button
-                ad.setMessage(res.getText(R.string.close_wizard_q));
+                ad.setMessage(res.getText(R.string.wizard_close_wizard_question));
                 ad.setButton(
                     DialogInterface.BUTTON_POSITIVE, res.getText(android.R.string.yes),
                     new DialogInterface.OnClickListener() {

@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/we_finished"
+        android:text="@string/wizard_we_finished"
         android:id="@+id/textView2"
         />
 
@@ -43,7 +43,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/run_wizard_again"
+        android:text="@string/wizard_run_wizard_again"
         android:id="@+id/textView11"
         android:layout_marginTop="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/full_enable_after"
+        android:text="@string/wizard_full_enable_after"
         android:id="@+id/textView8"/>
 
 </LinearLayout>

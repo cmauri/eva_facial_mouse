@@ -18,6 +18,7 @@
 */
 package com.crea_si.eviacam.wizard;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -75,12 +76,13 @@ public class PositioningWizardStep extends WizardStep {
     private Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-
+            Activity activity= getActivity();
 
             AccessibilityServiceModeEngine engine =
-                    WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+                    WizardUtils.checkEngineAndFinishIfNeeded(activity);
 
-            if (engine== null) {
+            // This can be ran after the activity is closed and so activity could be null
+            if (activity== null || engine== null) {
                 mHandler.removeCallbacks(mRunnable);
                 return;
             }

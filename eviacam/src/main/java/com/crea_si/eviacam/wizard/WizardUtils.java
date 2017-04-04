@@ -57,6 +57,11 @@ public class WizardUtils {
 
     static AccessibilityServiceModeEngine checkEngineAndFinishIfNeeded (final Activity a) {
         if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "checkEngineAndFinishIfNeeded");
+
+        if (a== null) {
+            // This means the activity does not exists anymore
+            return null;
+        }
         AccessibilityServiceModeEngine engine= EngineSelector.getAccessibilityServiceModeEngine();
         if (engine== null || !engine.isReady()) {
             /* Engine is not ready anymore */

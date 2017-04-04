@@ -25,13 +25,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
+import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.EngineControl;
-import com.crea_si.eviacam.service.MainEngine;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.EngineSelector;
+import com.crea_si.eviacam.common.EVIACAM;
 
-class WizardUtils {
+public class WizardUtils {
+    public static final String WIZARD_CLOSE_EVENT_NAME= "wizard-closed-event";
+
     static void finishWizard(Activity a) {
         a.startActivity(new Intent(a, WizardActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
@@ -40,28 +44,29 @@ class WizardUtils {
     }
 
     static void fullStartEngine(Context c) {
-        AccessibilityServiceModeEngine engine= MainEngine.getAccessibilityServiceModeEngine();
+        AccessibilityServiceModeEngine engine= EngineSelector.getAccessibilityServiceModeEngine();
         if (engine!= null && engine.isReady()) {
             engine.enableAll();
             engine.start();
 
-            // Notify EngineControl the wizard has finished
-            Intent intent = new Intent(EngineControl.WIZARD_CLOSE_EVENT_NAME);
+            // Notify AccessibilityServiceModeEngineImpl the wizard has finished
+            Intent intent = new Intent(WIZARD_CLOSE_EVENT_NAME);
             LocalBroadcastManager.getInstance(c).sendBroadcast(intent);
         }
     }
 
-    static void checkEngineAndFinishIfNeeded (final Activity a) {
-        AccessibilityServiceModeEngine engine= MainEngine.getAccessibilityServiceModeEngine();
+    static AccessibilityServiceModeEngine checkEngineAndFinishIfNeeded (final Activity a) {
+        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "checkEngineAndFinishIfNeeded");
+        AccessibilityServiceModeEngine engine= EngineSelector.getAccessibilityServiceModeEngine();
         if (engine== null || !engine.isReady()) {
-            // Engine is not ready anymore
-            final Resources res= a.getResources();
+            /* Engine is not ready anymore */
+            final Resources res = a.getResources();
             AlertDialog ad = new AlertDialog.Builder(a).create();
             ad.setCancelable(false); // This blocks the 'BACK' button
-            ad.setTitle(res.getText(R.string.eva_not_running));
-            ad.setMessage(res.getText(R.string.eva_not_running_summary));
+            ad.setTitle(res.getText(R.string.wizard_eva_not_running));
+            ad.setMessage(res.getText(R.string.wizard_eva_not_running_summary));
             ad.setButton(
-                    DialogInterface.BUTTON_NEUTRAL, res.getText(R.string.close),
+                    DialogInterface.BUTTON_POSITIVE, res.getText(R.string.close),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -69,6 +74,10 @@ class WizardUtils {
                         }
                     });
             ad.show();
+
+            return null;
         }
+
+        return engine;
     }
 }

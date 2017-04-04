@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/scroll_buttons"
+        android:text="@string/wizard_scroll_buttons"
         android:id="@+id/textView2"
         />
 
@@ -60,7 +60,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/scroll_buttons_description"
+            android:text="@string/wizard_scroll_buttons_description"
             android:id="@+id/textView11"
             android:textAppearance="@android:style/TextAppearance.Medium"/>
 
@@ -70,7 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/click_enabled_next"
+        android:text="@string/wizard_click_enabled_next"
         android:id="@+id/textView8"/>
 
 </LinearLayout>

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/pointer_speed"
+        android:text="@string/wizard_pointer_speed"
         android:id="@+id/textView16" />
 
     <View
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/pointer_speed_summary"
+        android:text="@string/wizard_pointer_speed_summary"
         android:id="@+id/textView17"
         android:layout_marginBottom="10dp"/>
 
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/horizontal"
+                android:text="@string/settings_horizontal"
                 android:id="@+id/textView18"
                 android:textStyle="bold"
                 android:layout_weight="0"/>
@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/vertical"
+                android:text="@string/settings_vertical"
                 android:id="@+id/textView20"
                 android:textStyle="bold"
                 android:layout_weight="0"/>

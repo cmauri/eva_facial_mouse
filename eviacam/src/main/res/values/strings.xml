@@ -3,7 +3,7 @@
  /*
  ** Enable Viacam for Android, a camera based mouse emulator
  **
- ** Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ ** Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  **
  ** This program is free software: you can redistribute it and/or modify
  ** it under the terms of the GNU General Public License as published by
@@ -25,205 +25,218 @@
     <string name="app_name" translatable="false">EVA Facial Mouse</string>
 
     <!-- Description shown in the accessibility service screen -->
-    <string name="eviacam_service_description">EVA is a mouse emulator that moves the pointer as you move your head. It tracks your face using the frontal camera of your device.</string>
+    <string name="service_description">EVA is a mouse emulator that moves the pointer as you move your head. It tracks your face using the frontal camera of your device.</string>
 
-    <!-- Label for the preferences screen -->
-    <string name="eviacam_preferences_title">EVA settings</string>
+    <!-- Settings screen start -->
+    <string name="settings_label">EVA settings</string>
+    <string name="settings_motion_settings">Motion settings</string>
+    <string name="settings_horizontal">Horizontal</string>
+    <string name="settings_horizontal_speed">Horizontal speed</string>
+    <string name="settings_vertical">Vertical</string>
+    <string name="settings_vertical_speed">Vertical speed</string>
+    <string name="settings_acceleration">Acceleration</string>
+    <string name="settings_acceleration_summary">Pointer acceleration. 0 disables</string>
+    <string name="settings_click_settings">Click settings</string>
+    <string name="settings_detection_settings">Detection settings</string>
+    <string name="settings_never">Never</string>
+    <string name="settings_after_ten_seconds">after 10 seconds</string>
+    <string name="settings_after_thirty_seconds">after 30 seconds</string>
+    <string name="settings_after_one_minute">after 1 minute</string>
+    <string name="settings_after_two_minutes">after 2 minutes</string>
+    <string name="settings_after_five_minutes">after 5 minutes</string>
+    <string name="settings_dwell_area">Dwell area</string>
+    <string name="settings_dwell_area_summary">Maximum displacement before restarting the dwell time</string>
+    <string name="settings_dwell_time">Dwell time</string>
+    <string name="settings_dwell_time_summary">Time to wait (deciseconds) before making click</string>
+    <string name="settings_motion_smoothing">Motion smoothing</string>
+    <string name="settings_motion_smoothing_summary">Tremor reduction filter. 0 disables</string>
+    <string name="settings_motion_threshold">Motion threshold</string>
+    <string name="settings_motion_threshold_summary">Minimum displacement to start moving pointer</string>
+    <string name="settings_sound_on_click">Play sound on click</string>
+    <string name="settings_consecutive_clicks">Consecutive clicks</string>
+    <string name="settings_time_without_detection">Disable EVA when face not detected</string>
+    <string name="settings_interface_settings">Interface settings</string>
+    <string name="settings_dock_menu_position">Dock Menu position</string>
+    <string name="settings_dock_menu_position_left">Left</string>
+    <string name="settings_dock_menu_position_right">Right</string>
+    <string name="settings_dock_menu_position_top">Top</string>
+    <string name="settings_dock_menu_position_bottom">Bottom</string>
+    <string name="settings_ui_elements_size">Interface elements size</string>
+    <string name="settings_ui_elements_size_xlarge">Extra large</string>
+    <string name="settings_ui_elements_size_large">Large</string>
+    <string name="settings_ui_elements_size_normal">Normal</string>
+    <string name="settings_ui_elements_size_small">Small</string>
+    <string name="settings_help">Help</string>
+    <string name="settings_configuration_wizard">Configuration wizard</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_wizard_will_run">The wizard will run the next time you start EVA</string>
+    <string name="settings_send_anon_error_reports">Send anonymous error reports</string>
+    <!-- Settings screen end -->
 
-    <!-- These are labels and summaries for settings -->
-    <string name="motion_settings">Motion settings</string>
-    <string name="horizontal">Horizontal</string>
-    <string name="horizontal_speed">Horizontal speed</string>
-    <string name="vertical">Vertical</string>
-    <string name="vertical_speed">Vertical speed</string>
-    <string name="acceleration">Acceleration</string>
-    <string name="acceleration_summary">Pointer acceleration. 0 disables</string>
-    <string name="click_settings">Click settings</string>
-    <string name="detection_settings">Detection settings</string>
-    <string name="never">Never</string>
-    <string name="after_ten_seconds">after 10 seconds</string>
-    <string name="after_thirty_seconds">after 30 seconds</string>
-    <string name="after_one_minute">after 1 minute</string>
-    <string name="after_two_minutes">after 2 minutes</string>
-    <string name="after_five_minutes">after 5 minutes</string>
-    <string name="dwell_area">Dwell area</string>
-    <string name="dwell_area_summary">Maximum displacement before restarting the dwell time</string>
-    <string name="dwell_time">Dwell time</string>
-    <string name="dwell_time_summary">Time to wait (deciseconds) before making click</string>
-    <string name="motion_smoothing">Motion smoothing</string>
-    <string name="motion_smoothing_summary">Tremor reduction filter. 0 disables</string> 
-    <string name="motion_threshold">Motion threshold</string>
-    <string name="motion_threshold_summary">Minimum displacement to start moving pointer</string>
-    <string name="sound_on_click">Play sound on click</string>
-    <string name="consecutive_clicks">Consecutive clicks</string>
-    <string name="time_without_detection">Disable EVA when face not detected</string>
-    <string name="interface_settings">Interface settings</string>
-    <string name="dock_menu_position">Dock Menu position</string>
-    <string name="left">Left</string>
-    <string name="right">Right</string>
-    <string name="top">Top</string>
-    <string name="bottom">Bottom</string>
-    <string name="ui_elements_size">Interface elements size</string>
-    <string name="xlarge">Extra large</string>
-    <string name="large">Large</string>
-    <string name="normal">Normal</string>
-    <string name="small">Small</string>
-    <string name="help">Help</string>
-    <string name="configuration_wizard">Configuration wizard</string>
-    <string name="version">Version</string>
-    <string name="wizard_will_run">The wizard will run the next time you start EVA</string>
+    <!-- actions start -->
+    <string name="action_click">Click</string>
+    <string name="action_long_click">Long click</string>
+    <string name="action_collapse">Collapse</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_cut">Cut</string>
+    <string name="action_dismiss">Dismiss</string>
+    <string name="action_expand">Expand</string>
+    <string name="action_paste">Paste</string>
+    <string name="action_scroll_backward">Scroll backward</string>
+    <string name="action_scroll_forward">Scroll forward</string>
+    <string name="action_select">Select</string>
+    <string name="action_focus">Focus</string>
+    <!-- actions end -->
 
-    <!-- Actions available through the accessibility API -->
-    <string name="click">Click</string>
-    <string name="long_click">Long click</string>
-    <string name="collapse">Collapse</string>
-    <string name="copy">Copy</string>
-    <string name="cut">Cut</string>
-    <string name="dismiss">Dismiss</string>
-    <string name="expand">Expand</string>
-    <string name="paste">Paste</string>
-    <string name="scroll_backward">Scroll backward</string>
-    <string name="scroll_forward">Scroll forward</string>
-    <string name="select">Select</string>
-    <string name="focus">Focus</string>
-
-    <!-- Actions available through the docking panel -->
-    <string name="back_button">Back button</string>
-    <string name="home_button">Home button</string>
-    <string name="recents_button">Recents button</string>
-    <string name="notifications_button">Notifications button</string>
+    <!-- the docking panel start -->
+    <string name="dock_back_button">Back button</string>
+    <string name="dock_home_button">Home button</string>
+    <string name="dock_recents_button">Recents button</string>
+    <string name="dock_notifications_button">Notifications button</string>
     <string name="dock_menu_button">Expand/collapse dock menu</string>
-    <string name="softkeyboard_button">Open keyboard</string>
-    <string name="toggle_context_menu">Toggle pointer Context Menu</string>
-    <string name="toggle_rest_mode">Toggle Rest mode. To disable automatic clicks while you read or watch a video, for instance.</string>
+    <string name="dock_softkeyboard_button">Open keyboard</string>
+    <string name="dock_toggle_context_menu">Toggle pointer Context Menu</string>
+    <string name="dock_toggle_rest_mode">Toggle Rest mode. To disable automatic clicks while you read or watch a video, for instance.</string>
+    <!-- the docking panel end -->
 
-    <!-- Messages for the notification -->
-    <string name="running_click_to_pause">Running (click to pause)</string>
-    <string name="stopped_click_to_resume">Stopped (click to resume)</string>
+    <!-- notification start -->
+    <string name="notification_running_click_to_pause">Running (click to pause)</string>
+    <string name="notification_stopped_click_to_resume">Stopped (click to resume)</string>
+    <!-- notification end -->
 
-    <!-- OpenCV installation stuff. These allow to compose a message like:
-        "Installation cancelled" "EVA"" needs OpenCV manager..."
-    -->
-    <string name="package_installation_failed">Package installation failed</string>
+    <!-- OpenCV start -->
+    <string name="opencv_package_installation_failed">Package installation failed</string>
     <string name="opencv_incompatible">OpenCV Manager service is incompatible with this app. Try to update it via Google Play.</string>
     <string name="opencv_init_error">OpenCV was not initialised correctly. Application will be shut down</string>
     <string name="opencv_installation">OpenCV Manager installation</string>
     <string name="opencv_installation_summary">EVA requires OpenCV Manager. Try to install it?</string>
     <string name="opencv_not_ready">OpenCV is not ready</string>
     <string name="opencv_installation_in_progress">Installation is in progress. Wait or cancel?</string>
-    <string name="wait">Wait</string>
-    <string name="retry">Retry</string>
+    <string name="opencv_wait">Wait</string>
+    <string name="opencv_retry">Retry</string>
+    <!-- OpenCV end -->
 
-    <!-- Crash report messages (ACRA) -->
-    <string name="crash_toast_text">Oops! EVA crashed</string>
+    <!-- Crash report (ACRA) start -->
+    <string name="crash_toast_text">EVA Facial Mouse crashed</string>
     <string name="crash_dialog_text">An unexpected error occurred forcing EVA to stop. Please help us fix this by sending us error data, all you have to do is click OK.</string>
     <string name="crash_dialog_comment_prompt">You might add your comments about the problem below:</string>
     <string name="crash_dialog_ok_toast">Thank you!</string>
+    <!-- Crash report (ACRA) end -->
 
-    <!-- Slave mode gamepad settings -->
-    <string name="gamepad_settings">Gamepad settings</string>
-    <string name="gamepad_location">Gamepad location</string>
-    <string name="top_left">Top left</string>
-    <string name="bottom_left">Bottom left</string>
-    <string name="top_center">Top center</string>
-    <string name="bottom_center">Bottom center</string>
-    <string name="top_right">Top right</string>
-    <string name="bottom_right">Bottom right</string>
-    <string name="eviacam_slave_mode_preferences_title">EVA slave mode preferences</string>
-    <string name="slave_mode_preferences">Slave mode preferences</string>
-    <string name="gamepad_interface_settings">Gamepad interface</string>
-    <string name="gamepad_transparency">Transparency</string>
-    <string name="gamepad_abs_speed">Abs. mode speed</string>
-    <string name="gamepad_abs_speed_summary">Speed when using absolute mode</string>
-    <string name="gamepad_rel_sensitivity">Rel. mode sensitivity</string>
-    <string name="gamepad_rel_sensitivity_summary">Sensitivity when using relative mode (low values set high sensitivity)</string>
-    <string name="gamepad_preferences">Gamepad preferences</string>
-    <string name="mouse_preferences">Mouse preferences</string>
+    <!-- Slave mode gamepad settings start -->
+    <string name="slave_settings_gamepad_settings">Gamepad settings</string>
+    <string name="slave_settings_gamepad_location">Gamepad location</string>
+    <string name="slave_settings_top_left">Top left</string>
+    <string name="slave_settings_bottom_left">Bottom left</string>
+    <string name="slave_settings_top_center">Top center</string>
+    <string name="slave_settings_bottom_center">Bottom center</string>
+    <string name="slave_settings_top_right">Top right</string>
+    <string name="slave_settings_bottom_right">Bottom right</string>
+    <string name="slave_settings_label">Slave mode preferences</string>
+    <string name="slave_settings_gamepad_interface_settings">Gamepad interface</string>
+    <string name="slave_settings_gamepad_transparency">Transparency</string>
+    <string name="slave_settings_gamepad_abs_speed">Abs. mode speed</string>
+    <string name="slave_settings_gamepad_abs_speed_summary">Speed when using absolute mode</string>
+    <string name="slave_settings_gamepad_rel_sensitivity">Rel. mode sensitivity</string>
+    <string name="slave_settings_gamepad_rel_sensitivity_summary">Sensitivity when using relative mode (low values set high sensitivity)</string>
+    <string name="slave_settings_gamepad_preferences">Gamepad preferences</string>
+    <string name="slave_settings_mouse_preferences">Mouse preferences</string>
+    <!-- Slave mode gamepad settings start -->
 
-    <!-- Wizard -->
+    <!-- Wizard start  -->
     <string name="wizard_icon_name">EVA Wizard</string>
-    <string name="next">Next</string>
-    <string name="back">Back</string>
-    <string name="finish">Finish</string>
-    <string name="prerequisites">Prerequisites</string>
-    <string name="install">Install</string>
-    <string name="keyboard_setup">Keyboard set up</string>
-    <string name="wiz_set_keyboard">
+    <string name="wizard_next">Next</string>
+    <string name="wizard_back">Back</string>
+    <string name="wizard_finish">Finish</string>
+    <string name="wizard_prerequisites">Prerequisites</string>
+    <string name="wizard_install">Install</string>
+    <string name="wizard_keyboard_setup">Keyboard set up</string>
+    <string name="wizard_set_keyboard">
         <![CDATA[1. Open: \'Settings > Language & input\']]>
         \n2. Enable \'EVA Keyboard\'
         \n3. Tap \'Default\'
         \n4. Choose \'EVA Keyboard\'
     </string>
-    <string name="wiz_set_keyboard_lollipop">
+    <string name="wizard_set_keyboard_lollipop">
         <![CDATA[1. Open: \'Settings > Language & input > Current Keyboard > CHOOSE KEYBOARDS\']]>
         \n2. Enable \'EVA Keyboard\'
         \n3. Go back
         \n4. Tap \'Current Keyboard\'
         \n5. Choose \'EVA Keyboard\'
     </string>
-    <string name="check">Check</string>
-    <string name="done">Done</string>
-    <string name="positioning">Positioning</string>
-    <string name="positioning_summary">Mount the device facing the face, with the head in a natural position, around 30-50cm.\nThe full face should appear inside the viewer to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face.</string>
-    <string name="dock_menu">Dock menu</string>
-    <string name="dock_menu_summary">The Dock Menu on the left edge of the screen allows quick access to a number of functions</string>
-    <string name="home">Home</string>
-    <string name="recents">Recents</string>
-    <string name="open_notifications">Open notifications</string>
-    <string name="open_keyboard">Open keyboard</string>
-    <string name="scroll_buttons">Scroll Buttons</string>
-    <string name="scroll_buttons_description">To scroll contents, use the Scroll Buttons</string>
-    <string name="navigation_keyboard">Navigation keyboard</string>
-    <string name="keyboard">Keyboard</string>
-    <string name="keyboard_remarks">Most keyboards don\'t work with EVA. To enable the supplied compatible keyboard:</string>
-    <string name="configure">Configure</string>
-    <string name="keyboard_not_configured">Keyboard not configured</string>
-    <string name="keyboard_not_configured_confirm">Are you sure you want to continue without configuring the keyboard?</string>
-    <string name="pointer_speed">Pointer speed</string>
-    <string name="pointer_speed_summary">Move your head to move the pointer. Try to reach the whole screen. Adjust speeds if necessary.</string>
-    <string name="configuration_settings">Configuration settings</string>
-    <string name="configuration_settings_summary">To adjust the speed of the pointer and other settings, go to\nSettings > Accessibility > EVA Facial Mouse > Settings</string>
-    <string name="settings">Settings</string>
-    <string name="known_limitations">Known limitations</string>
-    <string name="limitations_summary">Due to Android restrictions, some features are not currently available, yet.
+    <string name="wizard_positioning">Positioning</string>
+    <string name="wizard_positioning_summary">Mount the device facing the face, with the head in a natural position, around 30–50cm.\nThe full face should appear inside the viewer to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face.</string>
+    <string name="wizard_dock_menu">Dock menu</string>
+    <string name="wizard_dock_menu_summary">The Dock Menu on the left edge of the screen allows quick access to a number of functions</string>
+    <string name="wizard_home">Home</string>
+    <string name="wizard_recents">Recents</string>
+    <string name="wizard_open_notifications">Open notifications</string>
+    <string name="wizard_open_keyboard">Open keyboard</string>
+    <string name="wizard_scroll_buttons">Scroll Buttons</string>
+    <string name="wizard_scroll_buttons_description">To scroll contents, use the Scroll Buttons</string>
+    <string name="wizard_keyboard">Keyboard</string>
+    <string name="wizard_keyboard_remarks">Most keyboards don\'t work with EVA. To enable the supplied compatible keyboard:</string>
+    <string name="wizard_keyboard_not_configured">Keyboard not configured</string>
+    <string name="wizard_keyboard_not_configured_confirm">Are you sure you want to continue without configuring the keyboard?</string>
+    <string name="wizard_pointer_speed">Pointer speed</string>
+    <string name="wizard_pointer_speed_summary">Move your head to move the pointer. Try to reach the whole screen. Adjust speeds if necessary.</string>
+    <string name="wizard_configuration_settings">Configuration settings</string>
+    <string name="wizard_configuration_settings_summary">To adjust the speed of the pointer and other settings, go to\nSettings > Accessibility > EVA Facial Mouse > Settings</string>
+    <string name="wizard_settings">Settings</string>
+    <string name="wizard_known_limitations">Known limitations</string>
+    <string name="wizard_limitations_summary">Due to Android restrictions, some features are not currently available, yet.
         \n- You can\'t use the camera
         \n- You can\'t take incoming calls in some devices
         \n- Most games don\'t work
         \n- Applications such as Maps, Earth, Gallery and web browsers work with limitations
         \n- Scroll Buttons not always work (e.g. for web browsers). To scroll in such cases, try using the Navigation Keyboard (see below)
     </string>
-    <string name="skip_wizard">Skip this wizard</string>
-    <string name="close_wizard_q">Close wizard?</string>
-    <string name="eva_not_running">EVA not running</string>
-    <string name="eva_not_running_summary">To run this wizard, you need to enable EVA Facial Mouse service</string>
-    <string name="close">Close</string>
-    <string name="trying_to_detect_face">Trying to detect face...</string>
-    <string name="face_detected">Face detected</string>
-    <string name="pre_click_summary">To make click, stop the pointer over the desired location. After a few moments the click will be generated automatically. If the element below accepts more than one action, the Context Menu will be displayed.</string>
-    <string name="click_enabled_next">In the next screen, the pointer with the click function will be enabled</string>
-    <string name="to_test_click">To test click, use the following button. Notice that, if you click outside the button, two scrolling options are offered.</string>
-    <string name="to_continue_make_click">Before continuing, try to make a Click and a Long Click on the button</string>
-    <string name="click_scroll_button_to_continue">Click on the Scroll Button of the bottom right to continue</string>
-    <string name="notification_icon">Notification icon</string>
-    <string name="notification_icon_summary">To pause and resume EVA (e.g. when providing assistance), use the notification icon above.</string>
-    <string name="we_finished">We finished!</string>
-    <string name="run_wizard_again">To run this wizard again, go to\nSettings > Accessibility > EVA Facial Mouse > Settings</string>
-    <string name="full_enable_after">All the functions of EVA will be enabled after this wizard</string>
+    <string name="wizard_skip_wizard">Skip this wizard</string>
+    <string name="wizard_close_wizard_question">Close wizard?</string>
+    <string name="wizard_eva_not_running">EVA not running</string>
+    <string name="wizard_eva_not_running_summary">To run this wizard, you need to enable EVA Facial Mouse service</string>
+    <string name="wizard_trying_to_detect_face">Trying to detect face…</string>
+    <string name="wizard_face_detected">Face detected</string>
+    <string name="wizard_pre_click_summary">To make click, stop the pointer over the desired location. After a few moments the click will be generated automatically. If the element below accepts more than one action, the Context Menu will be displayed.</string>
+    <string name="wizard_click_enabled_next">In the next screen, the pointer with the click function will be enabled</string>
+    <string name="wizard_to_test_click">To test click, use the following button. Notice that, if you click outside the button, two scrolling options are offered.</string>
+    <string name="wizard_button">Button</string>
+    <string name="wizard_to_continue_make_click">Before continuing, try to make a Click and a Long Click on the button</string>
+    <string name="wizard_click_scroll_button_to_continue">Click on the Scroll Button of the bottom right to continue</string>
+    <string name="wizard_notification_icon">Notification icon</string>
+    <string name="wizard_notification_icon_summary">To pause and resume EVA (e.g. when providing assistance), use the notification icon above.</string>
+    <string name="wizard_we_finished">We finished!</string>
+    <string name="wizard_run_wizard_again">To run this wizard again, go to\nSettings > Accessibility > EVA Facial Mouse > Settings</string>
+    <string name="wizard_full_enable_after">All the functions of EVA will be enabled after this wizard</string>
+    <!-- Wizard end -->
 
-    <!-- Toasts and other messages -->
-    <string name="keyboard_not_enabled_toast">EVA Keyboard is not enabled. To set it up, use the wizard.</string>
-    <string name="pointer_stopped_toast">EVA stopped %1$s without detecting your face. To enable it again, make sure your face is centered inside the camera viewer.</string>
-    <string name="navigation_kbd_advice">Use the Navigation Keyboard to scroll the browser contents.</string>
-    <string name="context_menu_enabled">Context Menu enabled</string>
-    <string name="context_menu_disabled">Context Menu disabled</string>
-    <string name="rest_mode_enabled">Rest Mode enabled</string>
-    <string name="rest_mode_disabled">Rest Mode disabled</string>
-    <string name="got_it">Got it</string>
-    <string name="button">Button</string>
-    <string name="how_to_run">To start EVA, go to\n\nSettings > Accessibility > EVA Facial Mouse</string>
-    <string name="dont_remember_again">Don\'t remind me again</string>
-    <string name="cannot_access_camera">Error while trying to access the camera, perhaps is in use by another application.</string>
-    <string name="send_report">Send error report</string>
-    <string name="no_cameras_available">Not detected any camera</string>
+    <!-- Service toast start -->
+    <string name="service_toast_keyboard_not_enabled_toast">EVA Keyboard is not enabled. To set it up, use the wizard.</string>
+    <string name="service_toast_pointer_stopped_toast">EVA stopped %1$s without detecting your face. To enable it again, make sure your face is centered inside the camera viewer.</string>
+    <string name="service_toast_navigation_keyboard_advice">Use the Navigation Keyboard to scroll the browser contents.</string>
+    <string name="service_toast_context_menu_enabled">Context Menu enabled</string>
+    <string name="service_toast_context_menu_disabled">Context Menu disabled</string>
+    <string name="service_toast_rest_mode_enabled">Rest Mode enabled</string>
+    <string name="service_toast_rest_mode_disabled">Rest Mode disabled</string>
+    <!-- Service toast end -->
+
+    <!-- Service camera start -->
+    <string name="service_camera_no_access">Cannot access the camera. Perhaps is in use by another application.</string>
+    <string name="service_camera_no_available">Not detected any camera</string>
+    <string name="service_camera_disabled_error">The device\'s cameras have been disabled for this user.</string>
+    <string name="service_camera_error">Cannot access the camera</string>
+    <!-- Service camera end -->
+
+    <!-- launcher activity start -->
+    <string name="launcher_how_to_run">To start EVA Facial Mouse, switch on the service in accessibility settings</string>
+    <string name="launcher_open_a11y_settings">Open accessibility settings</string>
+    <string name="launcher_dont_remember_again">Don\'t remind me again</string>
+    <string name="launcher_no_accessibility_settings">Cannot open accessibility settings.\n\nTry manually opening:\n\nSettings > Accessibility > EVA Facial Mouse\n\nand then switch on the EVA Facial Mouse accessibility service</string>
+    <string name="launcher_done">Done</string>
+    <!-- launcher activity end -->
+
+    <!-- assorted end -->
+    <string name="close">Close</string>
+    <!-- assorted start -->
 
 </resources>

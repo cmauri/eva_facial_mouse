@@ -11,14 +11,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- Allow to read log messages for improved crash error reports -->
-    <uses-permission android:name="android.permission.READ_LOGS" />
-
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
 
     <application
-        android:name=".EViacamApplication"
-        android:allowBackup="true"
+        tools:replace="android:allowBackup"
+        android:name=".common.EViacamApplication"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -30,7 +29,7 @@
 
         <!-- Accessibility service -->
         <service
-            android:name=".service.TheAccessibilityService"
+            android:name=".a11yservice.TheAccessibilityService"
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE" 
@@ -46,10 +45,10 @@
 
         <!-- Enable Viacam main (mouse) preferences -->
         <activity
-            android:name=".service.MousePreferencesActivity"
-            android:label="@string/eviacam_preferences_title"
-            android:launchMode="singleTop"
-            android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity"
+            android:name=".common.MousePreferencesActivity"
+            android:label="@string/settings_label"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.crea_si.eviacam.SettingsAffinity"
             tools:ignore="ExportedActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -59,17 +58,18 @@
         
         <!-- Splash screen -->
         <activity
-            android:name=".service.SplashActivity"
+            android:name=".common.SplashActivity"
             android:exported="false"
             android:noHistory="false"
-            android:excludeFromRecents="false"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar" >
         </activity>
         
         <!-- Launcher activity -->
         <activity
-            android:name=".service.LauncherActivity"
+            android:name=".common.LauncherActivity"
             android:label="@string/app_name"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
             android:noHistory="true"
             android:excludeFromRecents="true" >
 	        <intent-filter>
@@ -81,7 +81,7 @@
 
         <!-- Wizard activity -->
         <activity
-            android:name="com.crea_si.eviacam.wizard.WizardActivity"
+            android:name=".wizard.WizardActivity"
             android:label="@string/wizard_icon_name"
             android:launchMode="singleTask"
             android:taskAffinity="com.crea_si.eviacam.wizard.WizardActivity"
@@ -93,20 +93,20 @@
 
         <!-- Slave mode service -->
         <service
-            android:name=".service.SlaveModeService"
+            android:name=".slavemode.SlaveModeService"
             android:label="Slave mode service"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.crea_si.eviacam.service.SlaveModeService" />
+                <action android:name="com.crea_si.eviacam.slavemode.SlaveModeService" />
             </intent-filter>
         </service>
         
         <!-- Slave mode preferences -->
         <activity
-            android:name=".service.SlaveModePreferencesActivity"
-            android:label="@string/eviacam_slave_mode_preferences_title"
-            android:launchMode="singleTop"
-            android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity" >
+            android:name=".slavemode.SlaveModePreferencesActivity"
+            android:label="@string/slave_settings_label"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.crea_si.eviacam.SettingsAffinity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -114,62 +114,16 @@
        
         <!-- Gamepad preferences -->
         <activity
-            android:name=".service.GamepadPreferencesActivity"
-            android:label="@string/gamepad_preferences"
+            android:name=".slavemode.GamepadPreferencesActivity"
+            android:label="@string/slave_settings_gamepad_preferences"
             android:exported="true"
-            android:launchMode="singleTop"
-            android:taskAffinity="com.crea_si.eviacam.service.SettingsAffinity" >
+            android:launchMode="singleTask"
+            android:taskAffinity="com.crea_si.eviacam.SettingsAffinity" >
         </activity>
-
-        <!-- ACRA activity -->
-        <activity android:name="org.acra.dialog.CrashReportDialog"
-        android:theme="@android:style/Theme.Dialog"
-        android:process=":error_report"
-        android:launchMode="singleInstance"
-        android:excludeFromRecents="true"
-        android:finishOnTaskLaunch="true" />
 
         <!-- TechInfo activity -->
-        <activity android:name=".service.TechInfoActivity"
+        <activity android:name=".common.TechInfoActivity"
                   android:exported="false" />
-
-        <!--
-         * Input method (eViacam keyboard)
-        -->
-
-        <!-- Input method service -->
-        <service
-            android:name="com.crea_si.softkeyboard.SoftKeyboard"
-            android:label="@string/ime_name"
-            android:permission="android.permission.BIND_INPUT_METHOD">
-
-            <intent-filter>
-                <action android:name="android.view.InputMethod" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.view.im"
-                android:resource="@xml/method" />
-        </service>
-
-        <!-- IME Preferences activity -->
-        <activity
-            android:name="com.crea_si.softkeyboard.ImePreferences"
-            android:label="@string/settings_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-
-        <!-- IME remote service -->
-        <service
-            android:name="com.crea_si.softkeyboard.RemoteBinderService"
-            android:label="IME messenger service"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.crea_si.softkeyboard.RemoteBinderService" />
-            </intent-filter>
-        </service>
 
     </application>
 

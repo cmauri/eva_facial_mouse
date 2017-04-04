@@ -21,5 +21,5 @@ import android.view.MotionEvent;
  * AIDL interface for the mouse listener
  */
 oneway interface IMouseEventListener {
-	void onMouseEvent (in MotionEvent e);
+    void onMouseEvent (in MotionEvent e);
 }

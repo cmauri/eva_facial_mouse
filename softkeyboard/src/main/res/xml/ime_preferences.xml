@@ -15,5 +15,5 @@
 -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-        android:title="@string/settings_name">
+        android:title="@string/kbd_settings_name">
 </PreferenceScreen>

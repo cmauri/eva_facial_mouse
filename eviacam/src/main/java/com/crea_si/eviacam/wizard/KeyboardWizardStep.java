@@ -29,10 +29,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.InputMethodAction;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
+import com.crea_si.eviacam.common.InputMethodAction;
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.MainEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -63,7 +62,7 @@ public class KeyboardWizardStep extends WizardStep {
         /* Different instruction for Lollipop */
         if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP) {
             TextView tv = (TextView) v.findViewById(R.id.wiz_set_keyboard);
-            tv.setText(getResources().getText(R.string.wiz_set_keyboard_lollipop));
+            tv.setText(getResources().getText(R.string.wizard_set_keyboard_lollipop));
         }
 
         checkUpdate(v);
@@ -87,7 +86,10 @@ public class KeyboardWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine= MainEngine.getAccessibilityServiceModeEngine();
-        engine.stop();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine!= null) {
+            engine.stop();
+        }
     }
 }

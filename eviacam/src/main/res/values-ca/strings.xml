@@ -19,206 +19,205 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Description shown in the accessibility service screen -->
-    <string name="eviacam_service_description">EVA és un emulador de ratolí que permet moure el punter amb el cap. Fa el seguiment del rostre emprant la càmera frontal del dispositiu.</string>
+    <string name="service_description">EVA és un emulador de ratolí que permet moure el punter amb el cap. Fa el seguiment del rostre emprant la càmera frontal del dispositiu.</string>
 
     <!-- Label for the preferences screen -->
-    <string name="eviacam_preferences_title">Ajustos d\'EVA</string>
+    <string name="settings_label">Ajustos d\'EVA</string>
 
     <!-- These are labels and summaries for settings -->
-    <string name="motion_settings">Ajustos de moviment</string>
-    <string name="horizontal">Horitzontal</string>
-    <string name="horizontal_speed">Velocitat horitzontal</string>
-    <string name="vertical">Vertical</string>
-    <string name="vertical_speed">Velocitat vertical</string>
-    <string name="acceleration">Acceleració</string>
-    <string name="acceleration_summary">Acceleració del punter. 0 desactiva</string>
-    <string name="click_settings">Ajustos del clic</string>
-    <string name="detection_settings">Ajustos de detecció</string>
-    <string name="never">Mai</string>
-    <string name="after_ten_seconds">després de 10 segons</string>
-    <string name="after_thirty_seconds">després de 30 segons</string>
-    <string name="after_one_minute">després d\'1 minut</string>
-    <string name="after_two_minutes">després de 2 minuts</string>
-    <string name="after_five_minutes">després de 5 minuts</string>
-    <string name="dwell_area">Àrea del clic per espera</string>
-    <string name="dwell_area_summary">Desplaçament màxim abans de reiniciar el temps del clic per espera</string>
-    <string name="dwell_time">Temps de clic per espera</string>
-    <string name="dwell_time_summary">Temps a esperar (dècimes de segon) abans de fer clic</string>
-    <string name="motion_smoothing">Suavitzat del moviment</string>
-    <string name="motion_smoothing_summary">Filtre de reducció de tremolor. 0 desactiva</string>
-    <string name="motion_threshold">Llindar de moviment</string>
-    <string name="motion_threshold_summary">Desplaçament mínim per començar a moure el punter</string>
-    <string name="sound_on_click">Reproduir so al fer clic</string>
-    <string name="consecutive_clicks">Clics consecutius</string>
-    <string name="time_without_detection">Desactivar EVA quan no es detecti el rostre</string>
-    <string name="interface_settings">Ajustos de la interfície</string>
-    <string name="dock_menu_position">Posició del Menú Flotant</string>
-    <string name="left">Esquerra</string>
-    <string name="right">Dreta</string>
-    <string name="top">Part superior</string>
-    <string name="bottom">Part inferior</string>
-    <string name="ui_elements_size">Mida dels elements de la interfície</string>
-    <string name="xlarge">Extra gran</string>
-    <string name="large">Gran</string>
-    <string name="normal">Normal</string>
-    <string name="small">Petit</string>
-    <string name="version">Versió</string>
-    <string name="wizard_will_run">L\'assistent s\'executarà el proper cop que iniciï EVA</string>
+    <string name="settings_motion_settings">Ajustos de moviment</string>
+    <string name="settings_horizontal">Horitzontal</string>
+    <string name="settings_horizontal_speed">Velocitat horitzontal</string>
+    <string name="settings_vertical">Vertical</string>
+    <string name="settings_vertical_speed">Velocitat vertical</string>
+    <string name="settings_acceleration">Acceleració</string>
+    <string name="settings_acceleration_summary">Acceleració del punter. 0 desactiva</string>
+    <string name="settings_click_settings">Ajustos del clic</string>
+    <string name="settings_detection_settings">Ajustos de detecció</string>
+    <string name="settings_never">Mai</string>
+    <string name="settings_after_ten_seconds">després de 10 segons</string>
+    <string name="settings_after_thirty_seconds">després de 30 segons</string>
+    <string name="settings_after_one_minute">després d\'1 minut</string>
+    <string name="settings_after_two_minutes">després de 2 minuts</string>
+    <string name="settings_after_five_minutes">després de 5 minuts</string>
+    <string name="settings_dwell_area">Àrea del clic per espera</string>
+    <string name="settings_dwell_area_summary">Desplaçament màxim abans de reiniciar el temps del clic per espera</string>
+    <string name="settings_dwell_time">Temps de clic per espera</string>
+    <string name="settings_dwell_time_summary">Temps a esperar (dècimes de segon) abans de fer clic</string>
+    <string name="settings_motion_smoothing">Suavitzat del moviment</string>
+    <string name="settings_motion_smoothing_summary">Filtre de reducció de tremolor. 0 desactiva</string>
+    <string name="settings_motion_threshold">Llindar de moviment</string>
+    <string name="settings_motion_threshold_summary">Desplaçament mínim per començar a moure el punter</string>
+    <string name="settings_sound_on_click">Reproduir so al fer clic</string>
+    <string name="settings_consecutive_clicks">Clics consecutius</string>
+    <string name="settings_time_without_detection">Desactivar EVA quan no es detecti el rostre</string>
+    <string name="settings_interface_settings">Ajustos de la interfície</string>
+    <string name="settings_dock_menu_position">Posició del Menú Flotant</string>
+    <string name="settings_dock_menu_position_left">Esquerra</string>
+    <string name="settings_dock_menu_position_right">Dreta</string>
+    <string name="settings_dock_menu_position_top">Part superior</string>
+    <string name="settings_dock_menu_position_bottom">Part inferior</string>
+    <string name="settings_ui_elements_size">Mida dels elements de la interfície</string>
+    <string name="settings_ui_elements_size_xlarge">Extra gran</string>
+    <string name="settings_ui_elements_size_large">Gran</string>
+    <string name="settings_ui_elements_size_normal">Normal</string>
+    <string name="settings_ui_elements_size_small">Petit</string>
+    <string name="settings_version">Versió</string>
+    <string name="settings_wizard_will_run">L\'assistent s\'executarà el proper cop que iniciï EVA</string>
 
     <!-- Actions available through the accessibility API -->
-    <string name="click">Clic</string>
-    <string name="long_click">Clic llarg</string>
-    <string name="collapse">Reduir</string>
-    <string name="copy">Copiar</string>
-    <string name="cut">Tallar</string>
-    <string name="dismiss">Descartar</string>
-    <string name="expand">Expandir</string>
-    <string name="paste">Enganxar</string>
-    <string name="scroll_backward">Desplaçament enrere</string>
-    <string name="scroll_forward">Desplaçament endavant</string>
-    <string name="select">Seleccionar</string>
-    <string name="focus">Focus</string>
+    <string name="action_click">Clic</string>
+    <string name="action_long_click">Clic llarg</string>
+    <string name="action_collapse">Reduir</string>
+    <string name="action_copy">Copiar</string>
+    <string name="action_cut">Tallar</string>
+    <string name="action_dismiss">Descartar</string>
+    <string name="action_expand">Expandir</string>
+    <string name="action_paste">Enganxar</string>
+    <string name="action_scroll_backward">Desplaçament enrere</string>
+    <string name="action_scroll_forward">Desplaçament endavant</string>
+    <string name="action_select">Seleccionar</string>
+    <string name="action_focus">Focus</string>
 
     <!-- Actions available through the docking pannel -->
-    <string name="back_button">Botó enrere</string>
-    <string name="home_button">Botó d\'inici</string>
-    <string name="recents_button">Botó recents</string>
-    <string name="notifications_button">Botó de notificació</string>
+    <string name="dock_back_button">Botó enrere</string>
+    <string name="dock_home_button">Botó d\'inici</string>
+    <string name="dock_recents_button">Botó recents</string>
+    <string name="dock_notifications_button">Botó de notificació</string>
     <string name="dock_menu_button">Expandir/replegar Menú Flotant</string>
-    <string name="softkeyboard_button">Obrir teclat</string>
-    <string name="toggle_context_menu">Commutar el Menú Contextual del punter</string>
-    <string name="toggle_rest_mode">Conmutar el Mode Repòs. Per desactivar el clic automàtic mentre llegeix o mira un vídeo, per exemple.</string>
+    <string name="dock_softkeyboard_button">Obrir teclat</string>
+    <string name="dock_toggle_context_menu">Commutar el Menú Contextual del punter</string>
+    <string name="dock_toggle_rest_mode">Conmutar el Mode Repòs. Per desactivar el clic automàtic mentre llegeix o mira un vídeo, per exemple.</string>
 
     <!-- Messages for the notification -->
-    <string name="running_click_to_pause">S\'està executant (clic per aturar)</string>
-    <string name="stopped_click_to_resume">Aturat (clic per reprendre)</string>
+    <string name="notification_running_click_to_pause">S\'està executant (clic per aturar)</string>
+    <string name="notification_stopped_click_to_resume">Aturat (clic per reprendre)</string>
 
     <!-- OpenCV installation stuff. These allow to compose a message like:
         "Installation cancelled" "EVA"" needs OpenCV manager..."
     -->
-    <string name="package_installation_failed">La instal·lació del paquet ha fallat</string>
+    <string name="opencv_package_installation_failed">La instal·lació del paquet ha fallat</string>
     <string name="opencv_incompatible">El OpenCV Manager és incompatible amb aquesta app. Intenti actualitzar-lo a través de Google Play</string>
     <string name="opencv_init_error">OpenCV no s\'ha inicialitzat correctament. L\'aplicació es tancarà</string>
     <string name="opencv_installation">Instal·lació de l\'OpenCV Manager</string>
     <string name="opencv_installation_summary">EVA requereix l\'OpenCV Manager. Intentar instal·lar-lo?</string>
     <string name="opencv_not_ready">OpenCV no està llest</string>
     <string name="opencv_installation_in_progress">Instal·lació en procés. Esperar o cancel·lar?</string>
-    <string name="wait">Esperar</string>
+    <string name="opencv_wait">Esperar</string>
 
     <!-- Crash report messages (ACRA) -->
-    <string name="crash_toast_text">Oops! EVA s\'ha aturat</string>
+    <string name="crash_toast_text">EVA Facial Mouse s\'ha aturat</string>
     <string name="crash_dialog_text">S\'ha produït un error inesperat que ha forçat l\'aturada d\'EVA. Si us plau, ajudi\'ns a solucionar-ho enviant dades sobre l\'error, tot el que cal fer és clicar a OK.</string>
     <string name="crash_dialog_comment_prompt">Pot afegir comentaris sobre el problema a continuació:</string>
     <string name="crash_dialog_ok_toast">Gràcies!</string>
-    <string name="retry">Reintentar</string>
+    <string name="opencv_retry">Reintentar</string>
 
     <!-- Slave mode gamepad settings -->
-    <string name="gamepad_settings">Ajustos del gamepad</string>
-    <string name="gamepad_location">Ubicació del gamepad</string>
-    <string name="top_left">Part superior esquerra</string>
-    <string name="bottom_left">Part inferior esquerra</string>
-    <string name="top_center">Part superior central</string>
-    <string name="bottom_center">Part inferior central</string>
-    <string name="top_right">Part superior dreta</string>
-    <string name="bottom_right">Part inferior dreta</string>
-    <string name="eviacam_slave_mode_preferences_title">Ajustos del mode esclau d\'EVA</string>
-    <string name="slave_mode_preferences">Ajustos del mode esclau</string>
-    <string name="gamepad_interface_settings">Interfície del gamepad</string>
-    <string name="gamepad_transparency">Transparència</string>
-    <string name="gamepad_abs_speed">Velocitat mode abs.</string>
-    <string name="gamepad_abs_speed_summary">Velocitat quan s\'usa el mode absolut</string>
-    <string name="gamepad_rel_sensitivity">Sensibilitat del mode rel.</string>
-    <string name="gamepad_rel_sensitivity_summary">Sensibilitat del mode relatiu (valors baixos estableixen una sensibilitat alta)</string>
-    <string name="gamepad_preferences">Ajustos del gamepad</string>
-    <string name="mouse_preferences">Ajustos del ratolí</string>
+    <string name="slave_settings_gamepad_settings">Ajustos del gamepad</string>
+    <string name="slave_settings_gamepad_location">Ubicació del gamepad</string>
+    <string name="slave_settings_top_left">Part superior esquerra</string>
+    <string name="slave_settings_bottom_left">Part inferior esquerra</string>
+    <string name="slave_settings_top_center">Part superior central</string>
+    <string name="slave_settings_bottom_center">Part inferior central</string>
+    <string name="slave_settings_top_right">Part superior dreta</string>
+    <string name="slave_settings_bottom_right">Part inferior dreta</string>
+    <string name="slave_settings_label">Ajustos del mode esclau d\'EVA</string>
+    <string name="slave_settings_gamepad_interface_settings">Interfície del gamepad</string>
+    <string name="slave_settings_gamepad_transparency">Transparència</string>
+    <string name="slave_settings_gamepad_abs_speed">Velocitat mode abs.</string>
+    <string name="slave_settings_gamepad_abs_speed_summary">Velocitat quan s\'usa el mode absolut</string>
+    <string name="slave_settings_gamepad_rel_sensitivity">Sensibilitat del mode rel.</string>
+    <string name="slave_settings_gamepad_rel_sensitivity_summary">Sensibilitat del mode relatiu (valors baixos estableixen una sensibilitat alta)</string>
+    <string name="slave_settings_gamepad_preferences">Ajustos del gamepad</string>
+    <string name="slave_settings_mouse_preferences">Ajustos del ratolí</string>
 
     <!-- Wizard -->
     <string name="wizard_icon_name">EVA Assistent</string>
-    <string name="back">Enrere</string>
-    <string name="positioning">Posicionament</string>
-    <string name="positioning_summary">Instal·li el dispositiu enfront de la cara, amb el cap en una posició natural, a uns 30-50cm.\nLa cara completa ha d\'aparèixer dins el visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
-    <string name="check">Comprovar</string>
-    <string name="configuration_settings">Opcions de configuració</string>
-    <string name="configuration_settings_summary">Per configurar la velocitat del punter i altres paràmetres, vagi a\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
-    <string name="configuration_wizard">Assistent de configuració</string>
-    <string name="dock_menu">Menú Flotant</string>
-    <string name="dock_menu_summary">El Menú Flotant que apareix en la vora esquerra de la pantalla permet l\'accés ràpid a una sèrie de funcions</string>
-    <string name="finish">Finalitzar</string>
-    <string name="help">Ajuda</string>
-    <string name="home">Inici</string>
-    <string name="install">Instal·lar</string>
-    <string name="keyboard">Teclat</string>
-    <string name="keyboard_remarks">La majoria de teclats no funcionen amb EVA. Per activar el teclat compatible proporcionat:</string>
-    <string name="configure">Configurar</string>
-    <string name="keyboard_setup">Configuració del teclat</string>
-    <string name="known_limitations">Limitacions conegudes</string>
-    <string name="limitations_summary">Degut a restriccions d\'Android, algunes funcions no estan encara disponibles.
+    <string name="wizard_back">Enrere</string>
+    <string name="wizard_positioning">Posicionament</string>
+    <string name="wizard_positioning_summary">Instal·li el dispositiu enfront de la cara, amb el cap en una posició natural, a uns 30–50cm.\nLa cara completa ha d\'aparèixer dins el visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
+    <string name="wizard_configuration_settings">Opcions de configuració</string>
+    <string name="wizard_configuration_settings_summary">Per configurar la velocitat del punter i altres paràmetres, vagi a\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
+    <string name="settings_configuration_wizard">Assistent de configuració</string>
+    <string name="wizard_dock_menu">Menú Flotant</string>
+    <string name="wizard_dock_menu_summary">El Menú Flotant que apareix en la vora esquerra de la pantalla permet l\'accés ràpid a una sèrie de funcions</string>
+    <string name="wizard_finish">Finalitzar</string>
+    <string name="settings_help">Ajuda</string>
+    <string name="wizard_home">Inici</string>
+    <string name="wizard_install">Instal·lar</string>
+    <string name="wizard_keyboard">Teclat</string>
+    <string name="wizard_keyboard_remarks">La majoria de teclats no funcionen amb EVA. Per activar el teclat compatible proporcionat:</string>
+    <string name="wizard_keyboard_setup">Configuració del teclat</string>
+    <string name="wizard_known_limitations">Limitacions conegudes</string>
+    <string name="wizard_limitations_summary">Degut a restriccions d\'Android, algunes funcions no estan encara disponibles.
         \n- No es pot utilitzar la càmera
         \n- No es poden agafar trucades en alguns dispositius
         \n- No funciona amb la majoria de jocs
         \n- Aplicacions com Maps, Earth, Galeria i els navegadors web funcionen amb limitacions
         \n- Els Botons de Desplaçament no sempre funcionen (p.e. navegadors web). Per fer el desplaçament en aquestes circumstàncies, provi a utilitzar el Teclat de Navegació (vegi a continuació)
     </string>
-    <string name="navigation_keyboard">Teclat de Navegació</string>
-    <string name="next">Següent</string>
-    <string name="open_notifications">Obrir notificacions</string>
-    <string name="open_keyboard">Obrir el teclat</string>
-    <string name="prerequisites">Pre-requisits</string>
-    <string name="recents">Recents</string>
-    <string name="scroll_buttons">Botons de Desplaçament</string>
-    <string name="scroll_buttons_description">Per desplaçar continguts, utilitzi els Botons de Desplaçament</string>
-    <string name="settings">Configuració</string>
-    <string name="wiz_set_keyboard">
+    <string name="wizard_next">Següent</string>
+    <string name="wizard_open_notifications">Obrir notificacions</string>
+    <string name="wizard_open_keyboard">Obrir el teclat</string>
+    <string name="wizard_prerequisites">Pre-requisits</string>
+    <string name="wizard_recents">Recents</string>
+    <string name="wizard_scroll_buttons">Botons de Desplaçament</string>
+    <string name="wizard_scroll_buttons_description">Per desplaçar continguts, utilitzi els Botons de Desplaçament</string>
+    <string name="wizard_settings">Configuració</string>
+    <string name="wizard_set_keyboard">
         <![CDATA[1. Obrir: \'Configuració > Idioma i introducció de text\']]>
         \n2. Activar \'Teclat EVA\'
         \n3. Tocar \'Predeterminat\'
         \n4. Escollir \'Teclat EVA\'
     </string>
-    <string name="wiz_set_keyboard_lollipop">
+    <string name="wizard_set_keyboard_lollipop">
         <![CDATA[1. Obrir: \'Configuració > Idioma i introducció de text > Teclat actual > TRIA ELS TECLATS\']]>
         \n2. Activar \'Teclat EVA\'
         \n3. Enrere
         \n4. Tocar \'Teclat actual\'
         \n5. Escollir \'Teclat EVA\'
     </string>
-    <string name="done">Fet</string>
-    <string name="keyboard_not_configured">Teclat no configurat</string>
-    <string name="keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>
-    <string name="pointer_speed">Velocitat del punter</string>
-    <string name="pointer_speed_summary">Mogui el cap per moure el punter. Tracti d\'abastar tota la pantalla. Ajusti les velocitats si cal.</string>
-    <string name="skip_wizard">Ometre aquest assistent</string>
-    <string name="close_wizard_q">Tancar l\'assistent?</string>
-    <string name="eva_not_running">EVA no s\'està executant</string>
-    <string name="eva_not_running_summary">Per executar aquest assistent cal activar el servei EVA Facial Mouse</string>
+    <string name="launcher_done">Fet</string>
+    <string name="wizard_keyboard_not_configured">Teclat no configurat</string>
+    <string name="wizard_keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>
+    <string name="wizard_pointer_speed">Velocitat del punter</string>
+    <string name="wizard_pointer_speed_summary">Mogui el cap per moure el punter. Tracti d\'abastar tota la pantalla. Ajusti les velocitats si cal.</string>
+    <string name="wizard_skip_wizard">Ometre aquest assistent</string>
+    <string name="wizard_close_wizard_question">Tancar l\'assistent?</string>
+    <string name="wizard_eva_not_running">EVA no s\'està executant</string>
+    <string name="wizard_eva_not_running_summary">Per executar aquest assistent cal activar el servei EVA Facial Mouse</string>
     <string name="close">Tancar</string>
-    <string name="trying_to_detect_face">Intentant detectar rostre...</string>
-    <string name="face_detected">Rostre detectat</string>
-    <string name="pre_click_summary">Per fer clic, aturi el punter sobre el lloc desitjat. Passats uns instants el clic es generarà automàticament. Si l\'element que hi ha a sota accepta més d\'una acció, es mostrarà el Menú Contextual.</string>
-    <string name="click_enabled_next">A la pantalla següent s\'activarà el punter amb la funció del clic</string>
-    <string name="to_test_click">Per provar el clic, utilitzi el botó següent. Noti que, si fa clic fora del botó, se li ofereixen dues opcions per fer desplaçacament.</string>
-    <string name="to_continue_make_click">Abans de continuar, intenti fer un Clic i un Clic Llarg al botó</string>
-    <string name="click_scroll_button_to_continue">Faci clic al Botó de Desplaçament de la part inferior per continuar</string>
-    <string name="notification_icon">Icona de notificació</string>
-    <string name="notification_icon_summary">Per pausar i reprendre EVA (p.e. quan es proporciona assistència), utilitzi la icona de notificació de la part superior.</string>
-    <string name="we_finished">Ja hem acabat!</string>
-    <string name="run_wizard_again">Per tornar a executar aquest assistent, vagi a\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
-    <string name="full_enable_after">Totes les funcions d\'EVA s\'activaran al finalitzar aquest assistent</string>
+    <string name="wizard_trying_to_detect_face">Intentant detectar rostre…</string>
+    <string name="wizard_face_detected">Rostre detectat</string>
+    <string name="wizard_pre_click_summary">Per fer clic, aturi el punter sobre el lloc desitjat. Passats uns instants el clic es generarà automàticament. Si l\'element que hi ha a sota accepta més d\'una acció, es mostrarà el Menú Contextual.</string>
+    <string name="wizard_click_enabled_next">A la pantalla següent s\'activarà el punter amb la funció del clic</string>
+    <string name="wizard_to_test_click">Per provar el clic, utilitzi el botó següent. Noti que, si fa clic fora del botó, se li ofereixen dues opcions per fer desplaçacament.</string>
+    <string name="wizard_to_continue_make_click">Abans de continuar, intenti fer un Clic i un Clic Llarg al botó</string>
+    <string name="wizard_click_scroll_button_to_continue">Faci clic al Botó de Desplaçament de la part inferior per continuar</string>
+    <string name="wizard_notification_icon">Icona de notificació</string>
+    <string name="wizard_notification_icon_summary">Per pausar i reprendre EVA (p.e. quan es proporciona assistència), utilitzi la icona de notificació de la part superior.</string>
+    <string name="wizard_we_finished">Ja hem acabat!</string>
+    <string name="wizard_run_wizard_again">Per tornar a executar aquest assistent, vagi a\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
+    <string name="wizard_full_enable_after">Totes les funcions d\'EVA s\'activaran al finalitzar aquest assistent</string>
 
     <!-- Toasts -->
-    <string name="keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Per activar-lo, executi l\'assistent de configuració.</string>
-    <string name="pointer_stopped_toast">EVA s\'ha aturat %1$s sense detectar el rostre. Per tornar-lo a activar asseguri\'s que el seu rostre apareix dins el visor de càmera.</string>
-    <string name="navigation_kbd_advice">Utilitzi el Teclat de Navegació per desplaçar els continguts del navegador web.</string>
-    <string name="context_menu_enabled">Menú Contextual activat</string>
-    <string name="context_menu_disabled">Menú Contextual desactivat</string>
-    <string name="rest_mode_enabled">Mode Repòs activat</string>
-    <string name="rest_mode_disabled">Mode Repòs desactivat</string>
-    <string name="got_it">Entesos</string>
-    <string name="button">Botó</string>
-    <string name="how_to_run">Per executar EVA, vagi a\n\nConfiguració > Accessibilitat > EVA Facial Mouse</string>
-    <string name="dont_remember_again">No tornar a recordar</string>
-    <string name="cannot_access_camera">Error en intentar accedir a la càmera, potser està en ús per una altra aplicació.</string>
-    <string name="no_cameras_available">No se ha detectado ninguna cámara</string>
-    <string name="send_report">Enviar informe d\'error</string>
+    <string name="service_toast_keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Per activar-lo, executi l\'assistent de configuració.</string>
+    <string name="service_toast_pointer_stopped_toast">EVA s\'ha aturat %1$s sense detectar el rostre. Per tornar-lo a activar asseguri\'s que el seu rostre apareix dins el visor de càmera.</string>
+    <string name="service_toast_navigation_keyboard_advice">Utilitzi el Teclat de Navegació per desplaçar els continguts del navegador web.</string>
+    <string name="service_toast_context_menu_enabled">Menú Contextual activat</string>
+    <string name="service_toast_context_menu_disabled">Menú Contextual desactivat</string>
+    <string name="service_toast_rest_mode_enabled">Mode Repòs activat</string>
+    <string name="service_toast_rest_mode_disabled">Mode Repòs desactivat</string>
+    <string name="wizard_button">Botó</string>
+    <string name="launcher_how_to_run">Per executar EVA Facial Mouse, activi el servei a la configuració d\'accessibilitat</string>
+    <string name="launcher_dont_remember_again">No tornar a recordar</string>
+    <string name="service_camera_no_access">No es pot accedir a la càmera. Potser està en ús per una altra aplicació.</string>
+    <string name="service_camera_no_available">No se ha detectado ninguna cámara</string>
+    <string name="service_camera_disabled_error">Les càmeres del dispositiu han estat desactivats per a aquest usuari.</string>
+    <string name="service_camera_error">No es pot accedir a la càmera</string>
+    <string name="launcher_no_accessibility_settings">No es pot obrir la configuració d\'accessibilitat.\n\nIntenti obrir manualment:\n\nConfiguració > Accessibilitat > EVA Facial Mouse\n\ni després activi el servei d\'accessibilitat d\'EVA Facial Mouse</string>
+    <string name="launcher_open_a11y_settings">Obrir configuració d\'accessibilitat</string>
+    <string name="settings_send_anon_error_reports">Enviar informes d\'error anònims</string>
 </resources>

@@ -1,10 +1,10 @@
 <resources>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="android:Theme.Holo">
+    <style name="AppTheme" parent="android:Theme.DeviceDefault.Light">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <style name="Theme.Dialog" parent="@android:style/Theme.Dialog" />
+    <style name="Theme.Dialog" parent="@android:style/Theme.DeviceDefault.Light.Dialog" />
 
 </resources>

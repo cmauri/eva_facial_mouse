@@ -1,3 +1,10 @@
+v1.2.9
+- Fix soft keyboard crashes for some Samsung and LGE devices.
+- Improve camera status detection and user reporting.
+- Add background error reporting.
+- Improve launcher activity.
+- Fix other minor errors and bugs.
+
 v1.2.8
 - Fix crash "java.lang.RuntimeException: setParameters failed".
   Tested with EZee-Tab10Q16-S but should work with other devices as well.

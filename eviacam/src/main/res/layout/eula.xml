@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/eulatext"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical"
+            android:text="@string/eula" />
+    </ScrollView>
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:checked="true"
+        android:text="@string/settings_send_anon_error_reports" />
+</LinearLayout>

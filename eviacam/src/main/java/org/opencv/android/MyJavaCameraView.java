@@ -1,5 +1,6 @@
 package org.opencv.android;
 
+import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -10,6 +11,8 @@ import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.ViewGroup.LayoutParams;
+
+import com.crea_si.eviacam.R;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -120,8 +123,10 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                     }
                     if (localCameraIndex == CAMERA_ID_BACK) {
                         Log.e(TAG, "Back camera not found!");
+                        throw new CameraException(CameraException.CAMERA_ERROR, "Back camera not found!");
                     } else if (localCameraIndex == CAMERA_ID_FRONT) {
                         Log.e(TAG, "Front camera not found!");
+                        throw new CameraException(CameraException.CAMERA_ERROR, "Front camera not found!");
                     } else {
                         Log.d(TAG, "Trying to open camera with new open(" + Integer.valueOf(localCameraIndex) + ")");
                         try {
@@ -134,48 +139,58 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
             }
 
             if (mCamera == null) {
-                throw new CameraException(CameraException.CAMERA_ERROR,
-                        "Camera is not available (in use or does not exist)");
+                /* Check if the camera is disabled */
+                DevicePolicyManager dpm = (DevicePolicyManager)
+                        getContext().getSystemService(Context.DEVICE_POLICY_SERVICE);
+                if (dpm.getCameraDisabled(null)) {
+                    Log.e(TAG, "The device's cameras have been disabled for this user");
+                    throw new CameraException(CameraException.CAMERA_DISABLED,
+                            getResources().getString(R.string.service_camera_disabled_error));
+                }
+
+                /* Otherwise the camera is already in use */
+                Log.e(TAG, "Camera already in use");
+                throw new CameraException(CameraException.CAMERA_IN_USE,
+                        getResources().getString(R.string.service_camera_no_access));
             }
 
             /* Now set camera parameters */
             Camera.Parameters params = mCamera.getParameters();
             Log.d(TAG, params.flatten());
 
-            Log.d(TAG, "getSupportedPreviewSizes()");
             List<android.hardware.Camera.Size> sizes = params.getSupportedPreviewSizes();
 
             if (sizes != null && sizes.size()> 0) {
                 /* Select the size that fits surface considering maximum size allowed */
                 Size frameSize = calculateBestCameraFrameSize(sizes, new JavaCameraSizeAccessor(), mMaxWidth, mMaxHeight);
 
+                Log.d(TAG, "Set preview size to " + Integer.valueOf((int)frameSize.width) +
+                        "x" + Integer.valueOf((int)frameSize.height));
+
                 params.setPreviewFormat(ImageFormat.NV21);
-                Log.d(TAG, "Set preview size to " + Integer.valueOf((int)frameSize.width) + "x" + Integer.valueOf((int)frameSize.height));
                 params.setPreviewSize((int)frameSize.width, (int)frameSize.height);
-
                 mCamera.setParameters(params);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && !android.os.Build.MODEL.equals("GT-I9100"))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH &&
+                        !android.os.Build.MODEL.equals("GT-I9100")) {
                     params.setRecordingHint(true);
-
-                mCamera.setParameters(params);
-
-                List<String> FocusModes = params.getSupportedFocusModes();
-                if (FocusModes != null && FocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO))
-                {
-                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+                    mCamera.setParameters(params);
                 }
 
-                mCamera.setParameters(params);
+                List<String> FocusModes = params.getSupportedFocusModes();
+                if (FocusModes != null &&
+                        FocusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+                    mCamera.setParameters(params);
+                }
 
                 /*
                  * Disable stabilization to save some CPU cycles
                  */
                 if (params.isVideoStabilizationSupported()) {
                     params.setVideoStabilization(false);
+                    mCamera.setParameters(params);
                 }
-
-                mCamera.setParameters(params);
 
                 /*
                  * Tries to set a frame rate higher or equal than 15 fps.
@@ -209,10 +224,12 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                 mFrameHeight = params.getPreviewSize().height;
 
                 if ((getLayoutParams().width == LayoutParams.MATCH_PARENT) && (getLayoutParams().height == LayoutParams.MATCH_PARENT) ||
-                     width != mFrameWidth || height != mFrameHeight)
-                    mScale = Math.min(((float)height)/mFrameHeight, ((float)width)/mFrameWidth);
-                else
+                     width != mFrameWidth || height != mFrameHeight) {
+                    mScale = Math.min(((float) height) / mFrameHeight, ((float) width) / mFrameWidth);
+                }
+                else {
                     mScale = 0;
+                }
 
                 if (mFpsMeter != null) {
                     mFpsMeter.setResolution(mFrameWidth, mFrameHeight);
@@ -243,17 +260,27 @@ public class MyJavaCameraView extends MyCameraBridgeViewBase implements PreviewC
                         mCamera.setPreviewDisplay(null);
                 }
                 catch (java.io.IOException e) {
+                    Log.e(TAG, "setPreviewTexture failed with an IOException");
                     throw new CameraException(CameraException.CAMERA_ERROR,
                             "IO error while settings camera parameters", e);
                 }
 
                 /* Finally we are ready to start the preview */
                 Log.d(TAG, "startPreview");
-                mCamera.startPreview();
+                try {
+                    mCamera.startPreview();
+                }
+                catch (RuntimeException e) {
+                    Log.e(TAG, "startPreview failed with a RuntimeException");
+                    throw new CameraException(CameraException.CAMERA_ERROR,
+                            getResources().getString(R.string.service_camera_error), e);
+                }
             }
-            else
+            else {
+                Log.e(TAG, "Cannot retrieve sizes");
                 throw new CameraException(CameraException.CAMERA_ERROR,
-                        "Cannot retrieve sizes");
+                        "Camera error: cannot retrieve sizes");
+            }
         }
     }
 

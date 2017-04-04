@@ -25,19 +25,31 @@ See the [list of devices tested with EVA](https://docs.google.com/spreadsheets/d
 
 ## Limitations
 
-Due to restrictions of the Android platform, there are currently some limitations.
+Due to pre-existing restrictions of the Android platform, there are currently some limitations.
 
 * It cannot be used simultaneously with other applications that make use of the camera.
-* Most standard keyboards do not work with EVA, so a basic keyboard is provided. Such a keyboard needs to be manually activated after the installation.
+* For Android versions prior to 5.1 most standard keyboards do not work with EVA, so a basic keyboard is provided. Such a keyboard needs to be manually activated after the installation.
 * Does not work with most games. 
 * Browsers do not handle properly some actions (we recommend using Google Chrome).
 * Applications such as Maps, Earth and Gallery work with restrictions.
 
 For obvious reasons, EVA has not been tested with all devices available on the market. If you find any issues with your device, please, let us know.
 
+## FAQ
+### Can I use a regular keyboard?
+For Android 5.1 and higher it seems that [GBoard](https://play.google.com/store/apps/details?id=com.google.android.inputmethod.latin) works well with EVA.
+
+### I receive the message "Because an app is obscuring a permission request, Settings can't verify your response". What can I do?
+This is due to other apps having the "Draw over other apps" permission granted. Try the following:
+- In Settings > Apps > Configure apps (Gear Icon) > Draw over other apps
+- Disable the permission one by one for all apps other than EVA to find out which one interferes with EVA.
+
 ## Thanks
 
 EVA Facial Mouse has been developed with the support of [Fundación Vodafone España](http://www.fundacionvodafone.es) and the collaboration of experts and users from organizations of [ASPACE Confederación](http://www.aspace.org) (Spain). Namely, ASPACE Asturias, ASPACE Barcelona, ASPACE Gipuzkoa, ASPACE Granada, APPC Tarragona and AVAPACE. Furthermore, it has been tested by CEAPAT, CRE (León) and ASPAYM Castilla y León.
+
+* Christian Bieder (German localization)
+* Yaron Shahrabani (Hebrew localization)
 
 ## Licence
 

@@ -20,33 +20,31 @@
  * Modified by Cesar Mauri (CREA) 2015 for the Enable Viacam for Android project
  */
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <!-- Title for Latin keyboard  -->
-    <string name="ime_name">Teclat EVA</string>
+    <string name="kbd_service_name">Teclat EVA</string>
 
     <!-- Symbols that are commonly considered word separators in this language -->
-    <string name="word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
+    <string name="kbd_word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|&quot;</string>
     
     <!-- Labels on soft keys -->
-    <string name="label_go_key">Ves</string>
-    <string name="label_next_key">Següent</string>
-    <string name="label_send_key">Enviar</string>
+    <string name="kbd_key_label_go">Ves</string>
+    <string name="kbd_key_label_next">Següent</string>
+    <string name="kbd_key_label_send">Enviar</string>
 
     <!-- Labels for navigation keyboard -->
-    <string name="del">Supr</string>
-    <string name="home">Inici</string>
-    <string name="pgup">RePàg</string>
-    <string name="end">Fi</string>
-    <string name="pgdown">AvPàg</string>
+    <string name="kdd_key_label_delete">Supr</string>
+    <string name="kbd_key_label_home">Inici</string>
+    <string name="kbd_key_label_pgup">RePàg</string>
+    <string name="kbd_key_label_end">Fi</string>
+    <string name="kbd_key_label_pgdown">AvPàg</string>
 
     <!-- Labels for subtype -->
-    <string name="label_subtype_generic">%s</string>
-    <string name="label_subtype_en_GB">English (GB)</string>
+    <string name="kbd_label_subtype_generic">%s</string>
 
     <!-- Titles for ImePreference -->
-    <string name="settings_name">Configuració del teclat EVA</string>
-    <string name="language_selection_title">Idiomes d\'entrada</string>
-    <string name="select_language">Seleccionar idiomes d\'entrada</string>
-    <string name="general_category">General</string>
+    <string name="kbd_settings_name">Configuració del teclat EVA</string>
+    <string name="kbd_language_selection_title">Idiomes d\'entrada</string>
+    <string name="kbd_select_language">Seleccionar idiomes d\'entrada</string>
 
 </resources>

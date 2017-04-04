@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/scroll_buttons"
+        android:text="@string/wizard_scroll_buttons"
         android:id="@+id/textView2"
         />
 
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/click_scroll_button_to_continue"
+        android:text="@string/wizard_click_scroll_button_to_continue"
         android:id="@+id/textView19"/>
 
 </LinearLayout>

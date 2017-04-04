@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package com.crea_si.softkeyboard;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import com.crea_si.input_method_aidl.IClickableIME;
@@ -27,13 +26,13 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
+
+import org.acra.ACRA;
 
 /**
  * Listens to and dispatches remote requests
- *
- * TODO: improve security
  */
-
 public class RemoteBinderService extends Service {
 
     // handler used to forward calls to the main thread 
@@ -44,7 +43,7 @@ public class RemoteBinderService extends Service {
         @Override
         public boolean click(int x, int y) throws RemoteException {
             // pass the control to the main thread to facilitate implementation of the IME
-            EVIACAMSOFTKBD.debug("RemoteBinderService: click"); 
+            if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: click");
             return click_main_thread(x, y);
         }
 
@@ -53,9 +52,9 @@ public class RemoteBinderService extends Service {
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAMSOFTKBD.debug("RemoteBinderService: openIME"); 
-                    SoftKeyboard.openIME();                    
-                }                
+                    if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: openIME");
+                    SoftKeyboard.openIME();
+                }
             };
             mMainThreadHandler.post(r);
         }
@@ -65,7 +64,7 @@ public class RemoteBinderService extends Service {
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAMSOFTKBD.debug("RemoteBinderService: closeIME");
+                    if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: closeIME");
                     SoftKeyboard.closeIME();
                 }
             };
@@ -77,7 +76,7 @@ public class RemoteBinderService extends Service {
             Runnable r= new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAMSOFTKBD.debug("RemoteBinderService: closeIME");
+                    if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: closeIME");
                     SoftKeyboard.toggleIME();
                 }
             };
@@ -87,14 +86,18 @@ public class RemoteBinderService extends Service {
 
     /** Calls click on the main thread and waits for the result */
     private boolean click_main_thread(final int x, final int y) {
-        FutureTask<Boolean> futureResult = new FutureTask<Boolean>(new Callable<Boolean>() {
+        FutureTask<Boolean> futureResult = new FutureTask<>(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                // TODO: if an exception is thrown, calling code always receive
-                // a RemoteException, it would be better to provide more information
-                // on the caller. See here:
-                // http://stackoverflow.com/questions/1800881/throw-a-custom-exception-from-a-service-to-an-activity
-                return SoftKeyboard.click(x, y);
+                try {
+                    return SoftKeyboard.click(x, y);
+                }
+                catch(Exception e) {
+                    /* In case of exception, return that the operation
+                       did not work and report the error */
+                    ACRA.getErrorReporter().handleException(e);
+                    return false;
+                }
             }
         });
 
@@ -104,36 +107,33 @@ public class RemoteBinderService extends Service {
             // this block until the result is calculated
             return futureResult.get();
         } 
-        catch (ExecutionException e) {
-            EVIACAMSOFTKBD.debug("RemoteBinderService: exception: " + e.getMessage()); 
-        } 
-        catch (InterruptedException e) {
-            EVIACAMSOFTKBD.debug("RemoteBinderService: exception: " + e.getMessage()); 
+        catch (Exception e) {
+            ACRA.getErrorReporter().handleException(e);
         }
         return false;
     }
 
     @Override
     public void onCreate () {
-        EVIACAMSOFTKBD.debug("RemoteBinderService: onCreate");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: onCreate");
         mMainThreadHandler= new Handler();
     }
 
     /** When binding to the service, we return an interface to the client */
     @Override
     public IBinder onBind(Intent intent) {
-        EVIACAMSOFTKBD.debug("RemoteBinderService: onBind");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: onBind");
         return mBinder;
     }
 
     @Override
     public boolean onUnbind (Intent intent) {
-        EVIACAMSOFTKBD.debug("RemoteBinderService: onUnbind");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: onUnbind");
         return false;
     }
 
     @Override
     public void onDestroy () {
-        EVIACAMSOFTKBD.debug("RemoteBinderService: onDestroy");
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "RemoteBinderService: onDestroy");
     }
  }

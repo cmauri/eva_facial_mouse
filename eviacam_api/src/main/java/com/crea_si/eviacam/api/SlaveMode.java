@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,15 +38,25 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
     public static final int GAMEPAD_RELATIVE= 2;
 
     private static final String TAG= "eviacam_api";
-    
-    private static final String REMOTE_PACKAGE= "com.crea_si.eviacam.service";
-    private static final String REMOTE_SERVICE= REMOTE_PACKAGE + ".SlaveModeService";
-    private static final String REMOTE_PREFERENCE_ACTIVITY= 
-            REMOTE_PACKAGE + ".SlaveModePreferencesActivity";
-    private static final String REMOTE_GAMEPAD_PREFERENCE_ACTIVITY= 
-            REMOTE_PACKAGE + ".GamepadPreferencesActivity";
-    private static final String REMOTE_MOUSE_PREFERENCE_ACTIVITY= 
-            REMOTE_PACKAGE + ".MousePreferencesActivity";
+
+    // This is the Android package name for the eViacam app
+    private static final String APP_PACKAGE_NAME = "com.crea_si.eviacam.service";
+
+    // Action to start the slave mode service
+    private static final String SLAVE_MODE_SERVICE_ACTION=
+            "com.crea_si.eviacam.slavemode.SlaveModeService";
+
+    // Class to open the general slave mode preferences activity
+    private static final String PREFERENCES_ACTIVITY_CLS =
+            "com.crea_si.eviacam.slavemode.SlaveModePreferencesActivity";
+
+    // Class to open gamepad preferences activity
+    private static final String GAMEPAD_PREFERENCE_ACTIVITY_CLS =
+            "com.crea_si.eviacam.slavemode.GamepadPreferencesActivity";
+
+    // Class to open mouse preferences activity
+    private static final String MOUSE_PREFERENCE_ACTIVITY_CLS =
+            "com.crea_si.eviacam.common.MousePreferencesActivity";
     
     private final Context mContext;
     private final SlaveModeStatusListener mSlaveModeStatusListener;
@@ -65,8 +75,8 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
 
         if (callback== null) throw new NullPointerException();
 
-        Intent intent= new Intent(REMOTE_SERVICE);
-        intent.setPackage(REMOTE_PACKAGE);
+        Intent intent= new Intent(SLAVE_MODE_SERVICE_ACTION);
+        intent.setPackage(APP_PACKAGE_NAME);
         try {
             if (!c.bindService(intent, new SlaveMode(c, callback), Context.BIND_AUTO_CREATE)) {
                 Log.d(TAG, "Cannot bind remote API");
@@ -221,13 +231,41 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
             Log.d(TAG, "SlaveMode.unregisterMouseListener: exception: " + e.getMessage());
         }
     }
+
+    /**
+     * Register the listener for menu events
+     *
+     * @param listener the listener
+     * @return true if registration succeeded, false otherwise
+     */
+    public boolean registerDockPanelListener(IDockPanelEventListener listener) {
+        if (mSlaveMode== null) return false;
+        try {
+            return mSlaveMode.registerDockPanelListener(new IDockPanelListenerWrapper(listener));
+        } catch (RemoteException e) {
+            Log.d(TAG, "SlaveMode.registerDockPanelListener: exception: " + e.getMessage());
+        }
+        return false;
+    }
+
+    /**
+     * Unregister the listener for mouse events (if any)
+     */
+    public void unregisterDockPanelListener() {
+        if (mSlaveMode== null) return;
+        try {
+            mSlaveMode.unregisterDockPanelListener();
+        } catch (RemoteException e) {
+            Log.d(TAG, "SlaveMode.nregisterDockPanelListener: exception: " + e.getMessage());
+        }
+    }
     
     /**
      * Open the root preferences activity for the slave mode
      */
     public static void openSettingsActivity(Context c) {
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_PREFERENCE_ACTIVITY));
+        intent.setComponent(new ComponentName(APP_PACKAGE_NAME, PREFERENCES_ACTIVITY_CLS));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
@@ -237,7 +275,7 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
      */
     public static void openGamepadSettingsActivity(Context c) {
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_GAMEPAD_PREFERENCE_ACTIVITY));
+        intent.setComponent(new ComponentName(APP_PACKAGE_NAME, GAMEPAD_PREFERENCE_ACTIVITY_CLS));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
@@ -247,8 +285,9 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
      */
     public static void openMouseSettingsActivity(Context c) {
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(REMOTE_PACKAGE, REMOTE_MOUSE_PREFERENCE_ACTIVITY));
+        intent.setComponent(new ComponentName(APP_PACKAGE_NAME, MOUSE_PREFERENCE_ACTIVITY_CLS));
         intent.putExtra("slave_mode", true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(intent);
     }
 
@@ -258,38 +297,11 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
     }
 
     /*
-     * Get configuration parameters for gamepad
-     */
-    /*
-    public GamepadParams getGamepadParams() {
-        if (mSlaveMode== null) return null;
-        try {
-            return mSlaveMode.getGamepadParams();
-        } catch (RemoteException e) {
-            Log.d(TAG, "SlaveMode.getGamepadParams: exception: " + e.getMessage());
-        }
-        return null;
-    }*/
-
-    /*
-     * Set configuration parameters for gamepad
-     */
-    /*
-    public void setGamepadParams(GamepadParams p) {
-        if (mSlaveMode== null) return;
-        try {
-            mSlaveMode.setGamepadParams(p);
-        } catch (RemoteException e) {
-            Log.d(TAG, "SlaveMode.getGamepadParams: exception: " + e.getMessage());
-        }
-    }*/
-
-    /*
      * Stub implementation for ready event listener
      */
     private class IReadyEventListenerWrapper extends IReadyEventListener.Stub {
         private final IReadyEventListener mListener;
-        public IReadyEventListenerWrapper(IReadyEventListener l) {
+        IReadyEventListenerWrapper(IReadyEventListener l) {
             mListener= l;
         }
 
@@ -304,7 +316,7 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
      */
     private class IGamepadEventListenerWrapper extends IGamepadEventListener.Stub {
         private final IGamepadEventListener mListener;
-        public IGamepadEventListenerWrapper(IGamepadEventListener l) {
+        IGamepadEventListenerWrapper(IGamepadEventListener l) {
             mListener= l;
         }
         
@@ -324,13 +336,28 @@ public class SlaveMode implements ServiceConnection, IReadyEventListener {
      */
     private class IMouseEventListenerWrapper extends IMouseEventListener.Stub {
         private final IMouseEventListener mListener;
-        public IMouseEventListenerWrapper(IMouseEventListener l) {
+        IMouseEventListenerWrapper(IMouseEventListener l) {
             mListener= l;
         }
 
         @Override
         public void onMouseEvent(MotionEvent e) throws RemoteException {
             mListener.onMouseEvent(e);
+        }
+    }
+
+    /*
+     * Stub implementation for mouse event listener
+     */
+    private class IDockPanelListenerWrapper extends IDockPanelEventListener.Stub {
+        private final IDockPanelEventListener mListener;
+        IDockPanelListenerWrapper(IDockPanelEventListener l) {
+            mListener= l;
+        }
+
+        @Override
+        public void onDockMenuOption (int option) throws RemoteException {
+            mListener.onDockMenuOption(option);
         }
     }
 }

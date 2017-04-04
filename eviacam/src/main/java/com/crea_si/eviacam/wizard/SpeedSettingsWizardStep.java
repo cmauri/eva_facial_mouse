@@ -25,10 +25,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.crea_si.eviacam.Preferences;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.MainEngine;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -43,8 +42,8 @@ public class SpeedSettingsWizardStep extends WizardStep {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.wizard_step_speed_settings, container, false);
 
-        /**
-         * Horizontal speed setting
+        /*
+          Horizontal speed setting
          */
         final Button hSpeedMinus= (Button) v.findViewById(R.id.hspeed_minus_button);
         final Button hSpeedPlus= (Button) v.findViewById(R.id.hspeed_plus_button);
@@ -71,8 +70,8 @@ public class SpeedSettingsWizardStep extends WizardStep {
             }
         });
 
-        /**
-         * Vertical speed setting
+        /*
+          Vertical speed setting
          */
         final Button vSpeedMinus= (Button) v.findViewById(R.id.vspeed_minus_button);
         final Button vSpeedPlus= (Button) v.findViewById(R.id.vspeed_plus_button);
@@ -104,10 +103,13 @@ public class SpeedSettingsWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
-        engine.disableClick();
-        engine.disableDockPanel();
-        engine.enablePointer();
-        engine.disableScrollButtons();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine!= null) {
+            engine.disableClick();
+            engine.disableDockPanel();
+            engine.enablePointer();
+            engine.disableScrollButtons();
+        }
     }
 }

@@ -22,6 +22,7 @@ import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.view.MotionEvent;
 import android.view.View;
@@ -122,7 +123,8 @@ public class InputViewManager {
      * TODO: there is probably a better way to choose between different
      * keyboard layouts when changing the subtype (e.g. when changing language)
      */
-    public void selectSubtype(InputMethodSubtype subtype) {
+    public void selectSubtype(@Nullable InputMethodSubtype subtype) {
+        if (subtype== null) return; // prevent crash
         final String locale= subtype.getLocale();
         if (locale.compareTo("es")== 0) {
             if (mCurrentQwertySubtype != QWERTY_ES) {

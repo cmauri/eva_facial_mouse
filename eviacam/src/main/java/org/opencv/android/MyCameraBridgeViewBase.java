@@ -2,14 +2,10 @@ package org.opencv.android;
 
 import java.util.List;
 
-import org.acra.ACRA;
-
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,7 +17,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.WindowManager;
 
 import com.crea_si.eviacam.R;
 
@@ -124,6 +119,12 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         public void onCameraViewStopped();
 
         /**
+         * This method is invoked when an error occurred during initialization
+         * @param error containing the details of the detected error
+         */
+        void onCameraViewError(Throwable error);
+
+        /**
          * This method is invoked when delivery of the frame needs to be done.
          * The returned values - is a modified frame which needs to be displayed on the screen.
          * TODO: pass the parameters specifying the format of the frame (BPP, YUV or RGB and etc)
@@ -138,20 +139,26 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
          * @param width -  the width of the frames that will be delivered
          * @param height - the height of the frames that will be delivered
          */
-        public void onCameraViewStarted(int width, int height);
+        void onCameraViewStarted(int width, int height);
 
         /**
          * This method is invoked when camera preview has been stopped for some reason.
          * No frames will be delivered via onCameraFrame() callback after this method is called.
          */
-        public void onCameraViewStopped();
+        void onCameraViewStopped();
+
+        /**
+         * This method is invoked when an error occurred during initialization
+         * @param error containing the details of the detected error
+         */
+        void onCameraViewError(Throwable error);
 
         /**
          * This method is invoked when delivery of the frame needs to be done.
          * The returned values - is a modified frame which needs to be displayed on the screen.
          * TODO: pass the parameters specifying the format of the frame (BPP, YUV or RGB and etc)
          */
-        public Mat onCameraFrame(CvCameraViewFrame inputFrame);
+        Mat onCameraFrame(CvCameraViewFrame inputFrame);
     };
 
     protected class CvCameraViewListenerAdapter implements CvCameraViewListener2  {
@@ -165,6 +172,11 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
 
         public void onCameraViewStopped() {
             mOldStyleListener.onCameraViewStopped();
+        }
+
+        @Override
+        public void onCameraViewError(Throwable error) {
+            mOldStyleListener.onCameraViewError(error);
         }
 
         public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
@@ -211,17 +223,26 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
         Log.d(TAG, "call surfaceChanged event");
         synchronized(mSyncObject) {
-            if (!mSurfaceExist) {
-                mSurfaceExist = true;
-                checkCurrentState();
-            } else {
-                /** Surface changed. We need to stop camera and restart with new parameters */
-                /* Pretend that old surface has been destroyed */
-                mSurfaceExist = false;
-                checkCurrentState();
-                /* Now use new surface. Say we have it now */
-                mSurfaceExist = true;
-                checkCurrentState();
+            try {
+                if (!mSurfaceExist) {
+                    mSurfaceExist = true;
+                    checkCurrentState();
+                } else {
+                    /** Surface changed. We need to stop camera and restart with new parameters */
+                    /* Pretend that old surface has been destroyed */
+                    mSurfaceExist = false;
+                    checkCurrentState();
+                    /* Now use new surface. Say we have it now */
+                    mSurfaceExist = true;
+                    checkCurrentState();
+                }
+            }
+            catch (Exception e) {
+                Log.e(TAG, "surfaceChanged exception: " + e.getLocalizedMessage());
+                if (mListener!= null) {
+                    mListener.onCameraViewError(e);
+                }
+                else throw new RuntimeException(e);
             }
         }
     }
@@ -233,7 +254,16 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     public void surfaceDestroyed(SurfaceHolder holder) {
         synchronized(mSyncObject) {
             mSurfaceExist = false;
-            checkCurrentState();
+            try {
+                checkCurrentState();
+            }
+            catch(Exception e) {
+                Log.e(TAG, "surfaceDestroyed exception: " + e.getLocalizedMessage());
+                if (mListener!= null) {
+                    mListener.onCameraViewError(e);
+                }
+                else throw new RuntimeException(e);
+            }
         }
     }
 
@@ -241,7 +271,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
      * This method is provided for clients, so they can enable the camera connection.
      * The actual onCameraViewStarted callback will be delivered only after both this method is called and surface is available
      */
-    public void enableView() {
+    public void enableView() throws CameraException {
         synchronized(mSyncObject) {
             mEnabled = true;
             checkCurrentState();
@@ -252,7 +282,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
      * This method is provided for clients, so they can disable camera connection and stop
      * the delivery of frames even though the surface view itself is not destroyed and still stays on the scren
      */
-    public void disableView() {
+    public void disableView() throws CameraException {
         synchronized(mSyncObject) {
             mEnabled = false;
             checkCurrentState();
@@ -314,7 +344,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
     /**
      * Called when mSyncObject lock is held
      */
-    private void checkCurrentState() {
+    private void checkCurrentState() throws CameraException {
         int targetState;
 
         if (mEnabled && mSurfaceExist && getVisibility() == VISIBLE) {
@@ -331,7 +361,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
         }
     }
 
-    private void processEnterState(int state) {
+    private void processEnterState(int state) throws CameraException {
         switch(state) {
         case STARTED:
             onEnterStartedState();
@@ -369,33 +399,8 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
 
     // NOTE: The order of bitmap constructor and camera connection is important for android 4.1.x
     // Bitmap must be constructed before surface
-    private void onEnterStartedState() {
-        /* Connect camera
-         *
-         * Ideally AlertDialog should not be displayed here, would be better to throw an
-         * exception and catch it in a more appropriate location. However, this method
-         * is called as part of an UI update event and thus is not easy to install an
-         * exception handler. Furthermore, in our case this is called from a service and so
-         * we need a TYPE_SYSTEM_ALERT dialog.
-         */
-        try {
-            connectCamera(getWidth(), getHeight());
-        } catch (final CameraException e) {
-            final AlertDialog.Builder adb = new AlertDialog.Builder(getContext());
-            adb.setCancelable(false); // This blocks the 'BACK' button
-            adb.setTitle(getContext().getText(R.string.app_name));
-            adb.setMessage(getContext().getText(R.string.cannot_access_camera));
-            adb.setNeutralButton(getContext().getText(android.R.string.ok), null);
-            adb.setPositiveButton(getContext().getText(R.string.send_report),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            ACRA.getErrorReporter().handleException(e);
-                        }});
-
-            final AlertDialog ad= adb.create();
-            ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
-            ad.show();
-        }
+    private void onEnterStartedState() throws CameraException {
+        connectCamera(getWidth(), getHeight());
     }
 
     private void onExitStartedState() {

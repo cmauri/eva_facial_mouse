@@ -25,8 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.MainEngine;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -47,19 +46,19 @@ public class ClickWizardStep extends WizardStep {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                b.setText(R.string.click);
+                b.setText(R.string.action_click);
                 mClickDone= true;
 
-                if (mClickDone && mLongClickDone) notifyCompleted();
+                if (mLongClickDone) notifyCompleted();
             }
         });
 
         b.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                b.setText(R.string.long_click);
+                b.setText(R.string.action_long_click);
                 mLongClickDone= true;
-                if (mClickDone && mLongClickDone) notifyCompleted();
+                if (mClickDone) notifyCompleted();
                 return true;
             }
         });
@@ -69,12 +68,15 @@ public class ClickWizardStep extends WizardStep {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
-        engine.enableClick();
-        engine.disableDockPanel();
-        engine.enablePointer();
-        engine.disableScrollButtons();
-        engine.start();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine!= null) {
+            engine.enableClick();
+            engine.disableDockPanel();
+            engine.enablePointer();
+            engine.disableScrollButtons();
+            engine.start();
+        }
     }
 
     @Override

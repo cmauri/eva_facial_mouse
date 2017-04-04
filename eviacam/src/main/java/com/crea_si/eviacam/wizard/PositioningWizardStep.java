@@ -26,12 +26,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.MainEngine;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
-public class PositioningWizardStep extends WizardStep implements Runnable {
+public class PositioningWizardStep extends WizardStep {
+    private static final int TIME_TO_BLINK = 400;    // in milliseconds
+    private static final long FACE_MAX_ELAPSED_TIME = 1000;
+
     private TextView mTextViewDetection;
     private final Handler mHandler = new Handler();
 
@@ -45,7 +47,8 @@ public class PositioningWizardStep extends WizardStep implements Runnable {
 
         mTextViewDetection= (TextView) v.findViewById(R.id.textViewDetectionStatus);
 
-        new Thread(this).start();
+        // TODO: start here the text blink because this View is created several times
+        mHandler.postDelayed(mRunnable, TIME_TO_BLINK);
 
         return v;
     }
@@ -58,47 +61,46 @@ public class PositioningWizardStep extends WizardStep implements Runnable {
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
-        engine.disableClick();
-        engine.disableDockPanel();
-        engine.disablePointer();
-        engine.disableScrollButtons();
-        engine.start();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine!= null) {
+            engine.disableClick();
+            engine.disableDockPanel();
+            engine.disablePointer();
+            engine.disableScrollButtons();
+            engine.start();
+        }
     }
 
-    @Override
-    public void run() {
-        final long faceMaxElapsedTime = 1000;
-        final int timeToBlink = 400;    // in milliseconds
-        final AccessibilityServiceModeEngine engine =
-                MainEngine.getAccessibilityServiceModeEngine();
+    private Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
 
-        WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
 
-        while (engine.getFaceDetectionElapsedTime() == 0 ||
-               engine.getFaceDetectionElapsedTime() > faceMaxElapsedTime) {
-            try {
-                Thread.sleep(timeToBlink);
-            } catch (Exception e) { /* nothing to do */ }
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mTextViewDetection.getVisibility() == View.VISIBLE) {
-                        mTextViewDetection.setVisibility(View.INVISIBLE);
-                    } else {
-                        mTextViewDetection.setVisibility(View.VISIBLE);
-                    }
-                }
-            });
-        }
+            AccessibilityServiceModeEngine engine =
+                    WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
 
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mTextViewDetection.setText(R.string.face_detected);
+            if (engine== null) {
+                mHandler.removeCallbacks(mRunnable);
+                return;
+            }
+
+            if (mTextViewDetection.getVisibility() == View.VISIBLE) {
+                mTextViewDetection.setVisibility(View.INVISIBLE);
+            } else {
                 mTextViewDetection.setVisibility(View.VISIBLE);
+            }
+
+            if (engine.getFaceDetectionElapsedTime() == 0 ||
+                    engine.getFaceDetectionElapsedTime() > FACE_MAX_ELAPSED_TIME) {
+                mHandler.postDelayed(this, TIME_TO_BLINK);
+            }
+            else {
+                mTextViewDetection.setText(R.string.wizard_face_detected);
+                mTextViewDetection.setVisibility(View.VISIBLE);
+                mHandler.removeCallbacks(mRunnable);
                 notifyCompleted();
             }
-        });
-    }
+        }
+    };
 }

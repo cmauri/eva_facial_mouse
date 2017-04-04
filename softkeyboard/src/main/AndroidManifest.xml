@@ -1,4 +1,45 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" 
     package="com.crea_si.softkeyboard" >
+    <application>
+        <!--
+         * Input method (eViacam keyboard)
+        -->
 
+        <!-- Input method service -->
+        <service
+            android:name="com.crea_si.softkeyboard.SoftKeyboard"
+            android:label="@string/kbd_service_name"
+            android:process=":softkeyboard"
+            android:permission="android.permission.BIND_INPUT_METHOD">
+
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/method" />
+        </service>
+
+        <!-- IME Preferences activity -->
+        <activity
+            android:name="com.crea_si.softkeyboard.ImePreferences"
+            android:label="@string/kbd_settings_name"
+            android:process=":softkeyboard">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
+        <!-- IME remote service -->
+        <service
+            android:name="com.crea_si.softkeyboard.RemoteBinderService"
+            android:label="IME messenger service"
+            android:process=":softkeyboard"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.crea_si.softkeyboard.RemoteBinderService" />
+            </intent-filter>
+        </service>
+    </application>
 </manifest>

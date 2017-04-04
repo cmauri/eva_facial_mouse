@@ -207,7 +207,7 @@ bool VisionPipeline::motionTracker(CIplImage &image, int rotation, float &xVel, 
 			m_corners[i].y += featuresTrackArea.y;
 		}
 
-		LOGV("Features updated\n");
+		//LOGV("Features updated\n");
 	}
 
 	//

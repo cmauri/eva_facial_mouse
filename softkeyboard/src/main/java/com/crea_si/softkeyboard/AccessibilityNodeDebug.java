@@ -1,10 +1,11 @@
 package com.crea_si.softkeyboard;
 
+import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+@SuppressWarnings("unused")
 class AccessibilityNodeDebug {
-    static 
-    public String getNodeInfo (AccessibilityNodeInfo node) {
+    private static String getNodeInfo(AccessibilityNodeInfo node) {
         String result= "[";
         
         // actions
@@ -102,13 +103,13 @@ class AccessibilityNodeDebug {
     
     static
     public void displayFullTree (AccessibilityNodeInfo node) {
-        EVIACAMSOFTKBD.debug("Accessibility tree dump:");
+        Log.d(EVIACAMSOFTKBD.TAG, "Accessibility tree dump:");
         
         displayFullTree0(node, "1");
     }
     
     static private void displayFullTree0 (AccessibilityNodeInfo node, String prefix) {
-        EVIACAMSOFTKBD.debug(prefix + " " + getNodeInfo(node));
+        Log.d(EVIACAMSOFTKBD.TAG, prefix + " " + getNodeInfo(node));
         
         // propagate calls to children
         for (int i= 0; i< node.getChildCount(); i++) {

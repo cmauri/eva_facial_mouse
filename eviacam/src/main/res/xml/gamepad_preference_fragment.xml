@@ -22,21 +22,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="@string/gamepad_interface_settings">
+    <PreferenceCategory android:title="@string/slave_settings_gamepad_interface_settings">
       
-        <com.crea_si.eviacam.service.NumberPickerPreference
+        <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="gamepad_abs_speed"
-            android:title="@string/gamepad_abs_speed"
-            android:summary="@string/gamepad_abs_speed_summary"
+            android:title="@string/slave_settings_gamepad_abs_speed"
+            android:summary="@string/slave_settings_gamepad_abs_speed_summary"
             android:defaultValue="@integer/gamepad_abs_speed_default"
             app:minValue="@integer/gamepad_abs_speed_min"
             app:maxValue="@integer/gamepad_abs_speed_max"
         />
          
-        <com.crea_si.eviacam.service.NumberPickerPreference
+        <com.crea_si.eviacam.util.NumberPickerPreference
             android:key="gamepad_rel_sensitivity"
-            android:title="@string/gamepad_rel_sensitivity"
-            android:summary="@string/gamepad_rel_sensitivity_summary"
+            android:title="@string/slave_settings_gamepad_rel_sensitivity"
+            android:summary="@string/slave_settings_gamepad_rel_sensitivity_summary"
             android:defaultValue="@integer/gamepad_rel_sensitivity_default"
             app:minValue="@integer/gamepad_rel_sensitivity_min"
             app:maxValue="@integer/gamepad_rel_sensitivity_max"
@@ -44,7 +44,7 @@
 
         <ListPreference
             android:key="gamepad_location"
-            android:title="@string/gamepad_location"
+            android:title="@string/slave_settings_gamepad_location"
             android:summary="%s"
             android:entries="@array/gamepad_location_entries"
             android:entryValues="@array/gamepad_location_values"
@@ -53,7 +53,7 @@
 
          <ListPreference
             android:key="gamepad_transparency"
-            android:title="@string/gamepad_transparency"
+            android:title="@string/slave_settings_gamepad_transparency"
             android:summary="%s"
             android:entries="@array/gamepad_transparency_entries"
             android:entryValues="@array/gamepad_transparency_values"
@@ -62,7 +62,7 @@
 
         <ListPreference
             android:key="ui_elements_size"
-            android:title="@string/ui_elements_size"
+            android:title="@string/settings_ui_elements_size"
             android:summary="%s"
             android:entries="@array/ui_elements_size_entries"
             android:entryValues="@array/ui_elements_size_values"

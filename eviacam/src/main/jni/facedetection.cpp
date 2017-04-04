@@ -198,8 +198,8 @@ void FaceDetection::computeFaceTrackArea ()
 		m_faceRegion= *faceRect;
 		m_faceDetected= true;
 
-		LOGV("face detected: location (%d, %d) size (%d, %d)",
-			m_faceRegion.x, m_faceRegion.y, m_faceRegion.width, m_faceRegion.height);
+		//LOGV("face detected: location (%d, %d) size (%d, %d)",
+		//	m_faceRegion.x, m_faceRegion.y, m_faceRegion.width, m_faceRegion.height);
 	}
 	else
 		m_faceDetected= false;

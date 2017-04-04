@@ -24,8 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.service.AccessibilityServiceModeEngine;
-import com.crea_si.eviacam.service.MainEngine;
+import com.crea_si.eviacam.a11yservice.AccessibilityServiceModeEngine;
 
 import org.codepond.wizardroid.WizardStep;
 
@@ -38,17 +37,19 @@ public class ScrollButtonsWizardStep extends WizardStep {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.wizard_step_scroll_buttons, container, false);
-        return v;
+        return inflater.inflate(R.layout.wizard_step_scroll_buttons, container, false);
     }
 
     @Override
     public void onEnter() {
-        AccessibilityServiceModeEngine engine = MainEngine.getAccessibilityServiceModeEngine();
-        engine.enableClick();
-        engine.disableDockPanel();
-        engine.enablePointer();
-        engine.enableScrollButtons();
+        AccessibilityServiceModeEngine engine =
+                WizardUtils.checkEngineAndFinishIfNeeded(getActivity());
+        if (engine!= null) {
+            engine.enableClick();
+            engine.disableDockPanel();
+            engine.enablePointer();
+            engine.enableScrollButtons();
+        }
     }
 
     @Override

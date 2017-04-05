@@ -4,11 +4,11 @@ EVA Facial Mouse allows the user to **control an Android&trade; device by tracki
 
 Based on the movement of the face captured through the **front camera**, the app allows the user to control a pointer on the screen (i.e., like a mouse), which provides direct access to most elements of the user interface.
 
-[![Video of EVA](https://j.gifs.com/G69oQ7.gif)](https://www.youtube.com/watch?v=ED4EgNoB8hs)<br>
+[![Video of EVA](https://raw.githubusercontent.com/cmauri/eva_facial_mouse/develop/images/video.gif)](https://www.youtube.com/watch?v=ED4EgNoB8hs)<br>
 [Watch the video (2:30)](https://www.youtube.com/watch?v=ED4EgNoB8hs)
 
 ## Quick Start
-[![Android App on Google Play](https://github.com/cmauri/eva_facial_mouse/blob/master/images/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.crea_si.eviacam.service)
+[![Android App on Google Play](https://raw.githubusercontent.com/cmauri/eva_facial_mouse/develop/images/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.crea_si.eviacam.service)
 
 ## For whom is EVA?
 
@@ -50,6 +50,18 @@ EVA Facial Mouse has been developed with the support of [Fundación Vodafone Esp
 
 * Christian Bieder (German localization)
 * Yaron Shahrabani (Hebrew localization)
+
+## Awards
+- Nominee in the GSMA Glomo Awards. February, 2017.
+
+  ![](https://raw.githubusercontent.com/cmauri/eva_facial_mouse/develop/images/glomo_awards_nominee.png)
+- Selected as "Good Practice" in the “International Design For All Foundation Good Practices Awards”. January, 2017.
+
+  ![](https://raw.githubusercontent.com/cmauri/eva_facial_mouse/develop/images/deisng4all.png)
+
+- 1st prize in “Concurso de Productos de Apoyo y Soluciones de Bajo Coste". CRMF IMSERSO Albacete (Spain). July, 2016.
+
+  ![](https://raw.githubusercontent.com/cmauri/eva_facial_mouse/develop/images/bajo_coste.png)
 
 ## Licence
 

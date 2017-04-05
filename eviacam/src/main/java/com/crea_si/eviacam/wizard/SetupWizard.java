@@ -18,10 +18,12 @@
 */
 package com.crea_si.eviacam.wizard;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.crea_si.eviacam.common.InputMethodAction;
@@ -88,7 +90,7 @@ public class SetupWizard extends BasicWizardLayout {
         if (wizard.getCurrentStepPosition() == 2 &&
                 v.getId() == org.codepond.wizardroid.R.id.wizard_next_button) {
 
-            boolean result= showKeyboardWarnDialog(new DialogInterface.OnClickListener() {
+            boolean result= showKeyboardWarnDialog(getActivity(), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     SetupWizard.super.onClick(v);
                 }
@@ -105,7 +107,7 @@ public class SetupWizard extends BasicWizardLayout {
         super.onStepChanged();
         int stepCurrent= wizard.getCurrentStepPosition();
         if (mStepBefore == 2 && stepCurrent== 3) {
-            showKeyboardWarnDialog(null, new DialogInterface.OnClickListener() {
+            showKeyboardWarnDialog(getActivity(), null, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     wizard.goBack();
                 }
@@ -114,9 +116,10 @@ public class SetupWizard extends BasicWizardLayout {
         mStepBefore= stepCurrent;
     }
 
-    private boolean showKeyboardWarnDialog (DialogInterface.OnClickListener listenerPos,
-                                         DialogInterface.OnClickListener listenerNeg) {
-        if (InputMethodAction.isEnabledCustomKeyboard(getActivity())) return true;
+    private boolean showKeyboardWarnDialog (@NonNull Activity activity,
+                                            DialogInterface.OnClickListener listenerPos,
+                                            DialogInterface.OnClickListener listenerNeg) {
+        if (InputMethodAction.isEnabledCustomKeyboard(activity)) return true;
 
         mStepBefore= -1;
 
@@ -131,7 +134,7 @@ public class SetupWizard extends BasicWizardLayout {
 
         Resources r= getResources();
 
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(activity)
             .setTitle(r.getText(R.string.wizard_keyboard_not_configured))
             .setMessage(r.getText(R.string.wizard_keyboard_not_configured_confirm))
             .setPositiveButton(android.R.string.yes, listenerPos)

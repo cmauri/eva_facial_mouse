@@ -237,6 +237,8 @@
 
     <!-- assorted end -->
     <string name="close">Close</string>
+    <string name="camera_no_longer_available">The camera device is no longer available</string>
+    <string name="max_cameras_in_use">Max cameras in use</string>
     <!-- assorted start -->
 
 </resources>

@@ -58,7 +58,9 @@
     <integer name="docking_panel_edge_default">1</integer>
     
     <string name="ui_elements_size_default" translatable="false">1</string>
-    
+
+    <string name="use_camera2_api_entries_default" translatable="false">auto</string>
+
     <integer name="gamepad_size_default">1</integer>
     
     <integer name="gamepad_location_default">3</integer>

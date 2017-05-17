@@ -71,6 +71,12 @@
     <string name="settings_version">Version</string>
     <string name="settings_wizard_will_run">The wizard will run the next time you start EVA</string>
     <string name="settings_send_anon_error_reports">Send anonymous error reports</string>
+    <string name="settings_advanced">Advanced</string>
+    <string name="settings_use_camera2_api">Use camera2 API</string>
+    <string name="settings_use_camera2_api_auto">Auto</string>
+    <string name="settings_use_camera2_api_yes">Yes (experimental)</string>
+    <string name="settings_use_camera2_api_no">No</string>
+
     <!-- Settings screen end -->
 
     <!-- actions start -->

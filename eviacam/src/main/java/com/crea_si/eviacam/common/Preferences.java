@@ -58,6 +58,7 @@ public class Preferences {
     public static final String KEY_GAMEPAD_REL_SENSITIVITY= "gamepad_rel_sensitivity";
     private static final String KEY_RUN_TUTORIAL= "run_tutorial";
     private static final String KEY_SHOW_LAUNCHER_HELP= "show_launcher_help";
+    public static final String KEY_USE_CAMERA2_API= "use_camera2_api";
 
     /**
      * Gamepad locations
@@ -338,7 +339,13 @@ public class Preferences {
         spe.apply();
     }
 
-
+    public enum UseCamera2API { NO, YES, AUTO }
+    public UseCamera2API getUseCamera2API() {
+        String val= mSharedPreferences.getString(KEY_USE_CAMERA2_API, "auto");
+        if (val.equals("no")) return UseCamera2API.NO;
+        if (val.equals("yes")) return UseCamera2API.YES;
+        return UseCamera2API.AUTO;
+    }
 
     public int getGamepadLocation() {
         return Integer.parseInt(mSharedPreferences.getString(KEY_GAMEPAD_LOCATION, null));

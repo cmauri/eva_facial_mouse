@@ -19,11 +19,6 @@
 
 package com.crea_si.eviacam.camera;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,7 +29,6 @@ import org.acra.ACRA;
 import org.opencv.android.CameraException;
 import org.opencv.android.FpsMeter;
 import org.opencv.android.MyCameraBridgeViewBase;
-import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -74,19 +68,14 @@ import com.android.ex.camera2.blocking.BlockingStateCallback;
 import com.android.ex.camera2.exceptions.TimeoutRuntimeException;
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.common.VisionPipeline;
 import com.crea_si.eviacam.util.FlipDirection;
 
 /**
  * Simple camera2 based interface for capturing camera image in real time for CV
  */
 @TargetApi(21)
-public class Camera2Listener {
+class Camera2Listener {
     private static final String TAG= "Camera2Listener";
-
-    /* Desired capture size */
-    private static final int DESIRED_CAPTURE_WIDTH = 352;
-    private static final int DESIRED_CAPTURE_HEIGHT = 288;
 
     private final Context mContext;
     
@@ -98,7 +87,7 @@ public class Camera2Listener {
     
     // surface on which the image from the camera will be drawn
     private SurfaceView mCamera2View;
-    public SurfaceView getCameraSurface() {
+    SurfaceView getCameraSurface() {
         return mCamera2View;
     }
 
@@ -113,11 +102,11 @@ public class Camera2Listener {
        camera such as the Lenovo YT3-X50L)
      */
     private FlipDirection mCameraFlip= FlipDirection.NONE;
-    public FlipDirection getCameraFlip() { return mCameraFlip; }
+    FlipDirection getCameraFlip() { return mCameraFlip; }
 
     // physical orientation of the camera (0, 90, 180, 270)
     private int mCameraOrientation;
-    public int getCameraOrientation() { return mCameraOrientation; }
+    int getCameraOrientation() { return mCameraOrientation; }
 
     // store the rotation needed to draw the picture in upwards position
     private int mPreviewRotation= 0;
@@ -161,35 +150,9 @@ public class Camera2Listener {
      * @param c context
      * @param fp object that will receive the camera callbacks
      */
-    public Camera2Listener(@NonNull Context c, @NonNull FrameProcessor fp) throws CameraException {
+    Camera2Listener(@NonNull Context c, @NonNull FrameProcessor fp) throws CameraException {
         mContext= c;
         mFrameProcessor= fp;
-
-        /*
-          In previous versions we used the OpenCV async helper, but we found
-          problems with devices running Android arm64 (e.g. Huawei P8) due
-          to missing OpenCV libraries. To avoid such problems we included the
-          OpenCV binaries in the App apk
-         */
-        if (!OpenCVLoader.initDebug()) {
-            throw new RuntimeException("Cannot initialize OpenCV");
-        }
-
-        Log.i(TAG, "OpenCV loaded successfully");
-
-        // initialize JNI part
-        System.loadLibrary("visionpipeline");
-
-        /* Load haarcascade from resources */
-        try {
-            File f= resourceToTempFile (mContext, R.raw.haarcascade, "xml");
-            VisionPipeline.init(f.getAbsolutePath());
-            //noinspection ResultOfMethodCallIgnored
-            f.delete();
-        }
-        catch (IOException e) {
-            Log.e(TAG, "Cannot write haarcascade temp file. Continuing anyway");
-        }
 
         // Pick best camera and get capture parameters
         String cameraId = setUpCameraParameters();
@@ -203,7 +166,7 @@ public class Camera2Listener {
         mCacheBitmap = Bitmap.createBitmap(mCaptureSize.getWidth(), mCaptureSize.getHeight(),
                 Bitmap.Config.ARGB_8888);
 
-        mCacheImage= new Mat(DESIRED_CAPTURE_WIDTH, DESIRED_CAPTURE_HEIGHT, CvType.CV_8UC4);
+        mCacheImage= new Mat(mCaptureSize.getWidth(), mCaptureSize.getHeight(), CvType.CV_8UC4);
 
         /* Uncomment to enable the FPS meter for debugging */
         if (BuildConfig.DEBUG) {
@@ -375,7 +338,7 @@ public class Camera2Listener {
 
         org.opencv.core.Size size= MyCameraBridgeViewBase.calculateBestCameraFrameSize(
                 Arrays.asList(outputSizes), new SizeAccessor(),
-                DESIRED_CAPTURE_WIDTH, DESIRED_CAPTURE_HEIGHT);
+                Camera.DESIRED_CAPTURE_WIDTH, Camera.DESIRED_CAPTURE_HEIGHT);
         if (size.width<= 0 || size.height<= 0) {
             throw new CameraException(CameraException.CAMERA_ERROR,
                     mContext.getResources().getString(R.string.service_camera_error));
@@ -558,7 +521,7 @@ public class Camera2Listener {
      * Once started, the client is notified using the onCameraStarted callback. When
      * error, the onCameraError is called.
      */
-    public void startCamera() {
+    void startCamera() {
         if (mCameraDevice == null) {
             Log.e(TAG, "Trying to start unopened camera");
             throw new IllegalStateException("Trying to start unopened camera");
@@ -817,7 +780,7 @@ public class Camera2Listener {
      *
      * This method does not return until the capture has completely stop.
      */
-    public void stopCamera() {
+    void stopCamera() {
         Log.d(TAG, "stopCamera: enter");
 
         boolean wasRunning= false;  // avoid multiple callback notifications
@@ -864,33 +827,13 @@ public class Camera2Listener {
     }
 
     /**
-     * Sets the flip operation to perform to the frame before is applied a rotation
-     *
-     * @param flip FlipDirection.NONE, FlipDirection.VERTICAL or FlipDirection.HORIZONTAL
-     */
-    public void setPreviewFlip(FlipDirection flip) {
-        // TODO: // FIXME: 8/05/17
-        switch (flip) {
-            case NONE:
-                //mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.NONE);
-                break;
-            case VERTICAL:
-                //mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.VERTICAL);
-                break;
-            case HORIZONTAL:
-                //mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.HORIZONTAL);
-                break;
-        }
-    }
-
-    /**
      * Sets the rotation to perform to the camera image before is displayed
      * in the preview surface
      *
      * @param rotation rotation to perform (clockwise) in degrees
      *                 legal values: 0, 90, 180, or 270
      */
-    public void setPreviewRotation (int rotation) {
+    void setPreviewRotation (int rotation) {
         mPreviewRotation= rotation;
     }
 
@@ -913,11 +856,6 @@ public class Camera2Listener {
             mCacheImage.release();
             mCacheImage= null;
         }
-
-        // finish JNI part
-        VisionPipeline.cleanup();
-
-        Log.d(TAG, "cleanup: completed");
     }
 
     /* Callback block for capture session capture management */
@@ -947,15 +885,6 @@ public class Camera2Listener {
                 Log.d(TAG, "CameraCaptureSession.CaptureCallback: onCaptureFailed");
         }
     };
-
-    /**
-     * Enable or disable camera viewer refresh to save CPU cycles
-     * @param v true to enable update, false to disable
-     */
-    @SuppressWarnings("unused")
-    public void setUpdateViewer(boolean v) {
-        // Currently this method does nothing
-    }
 
     // TODO: provide a better implementation
     static private Mat imageToMat(Image image) {
@@ -1071,55 +1000,5 @@ public class Camera2Listener {
         } catch (InterruptedException e) {
             Log.e(TAG, "stop CameraThread");
         }
-    }
-
-    /**
-     * Load a resource into a temporary file
-     *
-     * @param c - context
-     * @param rid - resource id
-     * @param suffix - extension of the temporary file
-     * @return a File object representing the temporary file
-     * @throws IOException when failed
-     */
-    private static File resourceToTempFile (Context c, int rid, String suffix)
-            throws IOException {
-        InputStream is;
-        OutputStream os= null;
-        File outFile = null;
-
-        is= c.getResources().openRawResource(rid);
-        try {
-            outFile = File.createTempFile("tmp", suffix, c.getCacheDir());
-            os= new FileOutputStream(outFile);
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = is.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
-            }
-        } catch (IOException e) {
-            if (outFile != null) {
-                //noinspection ResultOfMethodCallIgnored
-                outFile.delete();
-                outFile= null;
-            }
-            throw e;
-        }
-        finally {
-            try {
-                if (is != null) is.close();
-            }
-            catch (IOException e) {
-                // Do nothing
-            }
-            try {
-                if (os != null) os.close();
-            }
-            catch (IOException e) {
-                // Do nothing
-            }
-        }
-
-        return outFile;
     }
 }

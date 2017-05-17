@@ -24,8 +24,8 @@ import org.opencv.core.Mat;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.camera.Camera;
 import com.crea_si.eviacam.camera.CameraLayerView;
-import com.crea_si.eviacam.camera.CameraListener;
 import com.crea_si.eviacam.camera.FrameProcessor;
 
 import android.app.AlertDialog;
@@ -92,7 +92,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
     private CameraLayerView mCameraLayerView;
 
     /* object in charge of capturing & processing frames */
-    private CameraListener mCameraListener;
+    private Camera mCamera;
 
     /* object which encapsulates rotation and orientation logic */
     private OrientationManager mOrientationManager;
@@ -228,22 +228,19 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
          * camera and machine vision stuff
          */
         try {
-            mCameraListener = new CameraListener(mService, this);
+            mCamera = new Camera(mService, this);
         }
         catch(CameraException e) {
             manageCameraError(e);
             return false;  // abort initialization
         }
-        mCameraLayerView.addCameraSurface(mCameraListener.getCameraSurface());
-
-        /* flip the preview when needed */
-        mCameraListener.setPreviewFlip(mCameraListener.getCameraFlip());
+        mCameraLayerView.addCameraSurface(mCamera.getCameraSurface());
 
         // orientation manager
         mOrientationManager= new OrientationManager(
                 mService,
-                mCameraListener.getCameraFlip(),
-                mCameraListener.getCameraOrientation());
+                mCamera.getCameraFlip(),
+                mCamera.getCameraOrientation());
 
         // initialize specific motion processor(s)
         onInit(mService);
@@ -338,7 +335,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         mCameraLayerView.enableDetectionFeedback();
         
         // start processing frames
-        mCameraListener.startCamera();
+        mCamera.startCamera();
 
         // set wait state until camera actually starts or error
         mWaitState= true;
@@ -443,7 +440,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
         onResume();
 
-        //mCameraListener.setUpdateViewer(true);
+        //mCamera.setUpdateViewer(true);
         mCameraLayerView.enableDetectionFeedback();
 
         mPowerManagement.lockFullPower();         // Screen always on
@@ -473,7 +470,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "CoreEngine.doStop");
         if (mCurrentState == STATE_DISABLED || mCurrentState == STATE_STOPPED) return;
 
-        mCameraListener.stopCamera();
+        mCamera.stopCamera();
         mOverlayView.setVisibility(View.INVISIBLE);
 
         mPowerManagement.unlockFullPower();
@@ -504,7 +501,8 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         // Call derived
         onCleanup();
 
-        mCameraListener= null;
+        mCamera.cleanup();
+        mCamera = null;
 
         mOrientationManager.cleanup();
         mOrientationManager= null;
@@ -647,8 +645,8 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // Try to start the camera again
-                    mCameraListener.stopCamera();
-                    mCameraListener.startCamera();
+                    mCamera.stopCamera();
+                    mCamera.startCamera();
                 }
             });
         }
@@ -682,12 +680,12 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
         /*
          * In STATE_RUNNING, STATE_PAUSED or STATE_STANDBY state.
-         * Need to check if faced detected
+         * Need to check if face detected
          */
         int pictRotation = mOrientationManager.getPictureRotation();
 
         // set preview rotation
-        mCameraListener.setPreviewRotation(pictRotation);
+        mCamera.setPreviewRotation(pictRotation);
 
         // call jni part to detect and track face
         mMotion.x= mMotion.y= 0.0f;

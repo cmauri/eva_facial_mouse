@@ -63,6 +63,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.Range;
 import android.util.Size;
 import android.view.Surface;
 import android.view.SurfaceView;
@@ -123,6 +124,9 @@ public class Camera2Listener {
 
     // capture size
     private Size mCaptureSize;
+
+    // selected capture FPS range
+    private Range<Integer> mTargetFPSRange;
 
     // captured frames count for debugging purposes
     private int mCapturedFrames;
@@ -378,6 +382,43 @@ public class Camera2Listener {
         }
         mCaptureSize= new Size((int) size.width, (int) size.height);
 
+        /*
+         * Tries to pick a frame rate higher or equal than 15 fps.
+         *
+         * CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES always returns a list of
+         * supported preview fps ranges with at least one element.
+         * Every element is an FPS range
+         * TODO (still true?): The list is sorted from small to large (first by maximum fps and then
+         * minimum fps).
+         *
+         * With the old API:
+         * Nexus 7: the list has only one element (4000,60000)
+         * Samsung Galaxy Nexus: (15000,15000),(15000,30000),(24000,30000)
+         */
+        Range<Integer>[] cameraTargetFPSRanges=
+                cameraCharacteristics.get(CameraCharacteristics.CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES);
+        if (cameraTargetFPSRanges== null) {
+            Log.w(TAG, "Cannot get camera target FPS ranges. Ignoring.");
+        }
+        else {
+            int winner= cameraTargetFPSRanges.length-1;
+            int maxLimit= cameraTargetFPSRanges[winner].getUpper();
+
+            Log.i(TAG, "Camera FPS ranges");
+            for (Range<Integer> r : cameraTargetFPSRanges) {
+                Log.i(TAG, r.toString());
+            }
+
+            for (int i= winner-1; i>= 0; i--) {
+                if (cameraTargetFPSRanges[i].getUpper()!= maxLimit ||
+                        cameraTargetFPSRanges[i].getLower()< 15000) {
+                    break;
+                }
+                winner= i;
+            }
+            mTargetFPSRange= cameraTargetFPSRanges[winner];
+        }
+
         return cameraId;
     }
 
@@ -566,25 +607,25 @@ public class Camera2Listener {
             mCameraDevice.createCaptureSession(Collections.singletonList(mImageReader.getSurface()),
                     mCameraCaptureSessionCallback, mBackgroundHandler);
 
-
             /* Wait for the session to complete */
             Log.d(TAG, "Waiting on session.");
             mCaptureSession = mCameraCaptureSessionCallback.waitAndGetSession(2500);
 
             // STATISTICS_INFO_AVAILABLE_FACE_DETECT_MODES
-            // CONTROL_AE_AVAILABLE_TARGET_FPS_RANGES
-            // CONTROL_AE_TARGET_FPS_RANGE
 
+            if (null != mTargetFPSRange) {
+                previewRequestBuilder.set(CaptureRequest.CONTROL_AE_TARGET_FPS_RANGE,
+                        mTargetFPSRange);
+            }
 
             //previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
-            // mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-
+            // previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
             // Comment out the above and uncomment this to disable continuous autofocus and
             // instead set it to a fixed value of 20 diopters. This should make the picture
             // nice and blurry for denoised edge detection.
-            // mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
+            // previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
             //		   CaptureRequest.CONTROL_AF_MODE_OFF);
-            // mPreviewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 20.0f);
+            // previewRequestBuilder.set(CaptureRequest.LENS_FOCUS_DISTANCE, 20.0f);
             // Finally, we start displaying the camera preview.
 
             mCaptureSession.setRepeatingRequest(previewRequestBuilder.build(),

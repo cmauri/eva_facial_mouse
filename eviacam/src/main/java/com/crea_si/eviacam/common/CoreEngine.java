@@ -616,7 +616,9 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         }
         else {
             /* Other camera exceptions */
-            cleanup();
+            if (null != mCamera) {
+                mCamera.stopCamera();
+            }
 
             if (cameraException.getProblem() != CameraException.CAMERA_DISABLED) {
                 ACRA.getErrorReporter().handleSilentException(cameraException);

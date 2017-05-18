@@ -512,6 +512,9 @@ class Camera2Listener {
 
             mCameraCloseLock= null;
             mCameraDevice = null;
+
+            mCaptureSession= null;
+            mImageReader= null;
         }
     }
 
@@ -781,6 +784,10 @@ class Camera2Listener {
      * This method does not return until the capture has completely stop.
      */
     void stopCamera() {
+        if (mCameraDevice == null) {
+            Log.w(TAG, "Trying to stop closed camera");
+            return;
+        }
         Log.d(TAG, "stopCamera: enter");
 
         boolean wasRunning= false;  // avoid multiple callback notifications

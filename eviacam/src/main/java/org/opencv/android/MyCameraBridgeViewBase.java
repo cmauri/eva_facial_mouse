@@ -561,7 +561,7 @@ public abstract class MyCameraBridgeViewBase extends SurfaceView implements Surf
      * @return optimal frame size
      */
     static
-    protected Size calculateBestCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor,
+    public Size calculateBestCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor,
                                                 int maxDesiredWidth, int maxDesiredHeight) {
         if (supportedSizes.size()== 0)
             return new Size(0, 0);

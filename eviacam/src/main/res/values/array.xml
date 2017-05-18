@@ -96,4 +96,15 @@
     <item>100</item>
 </string-array>
 
+<string-array name="use_camera2_api_entries" translatable="false">
+    <item>@string/settings_use_camera2_api_auto</item>
+    <item>@string/settings_use_camera2_api_yes</item>
+    <item>@string/settings_use_camera2_api_no</item>
+</string-array>
+<string-array name="use_camera2_api_entries_values" translatable="false">
+    <item>auto</item>
+    <item>yes</item>
+    <item>no</item>
+</string-array>
+
 </resources>

@@ -19,19 +19,12 @@
 
 package com.crea_si.eviacam.camera;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.acra.ACRA;
 import org.opencv.android.CameraException;
 import org.opencv.android.MyCameraBridgeViewBase;
 import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewFrame;
 import org.opencv.android.MyJavaCameraView;
 import org.opencv.android.MyCameraBridgeViewBase.CvCameraViewListener2;
-import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
 import android.content.Context;
@@ -43,21 +36,18 @@ import android.view.SurfaceView;
 
 import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.R;
-import com.crea_si.eviacam.common.VisionPipeline;
 import com.crea_si.eviacam.util.FlipDirection;
 
 /**
  * Provides a simple camera interface for initializing, starting and stopping it.
  */
-public class CameraListener implements CvCameraViewListener2 {
-    private final Context mContext;
-    
+class CameraListener implements CvCameraViewListener2 {
     // callback to process frames
     private final FrameProcessor mFrameProcessor;
     
     // OpenCV capture&view facility
     private final MyCameraBridgeViewBase mCameraView;
-    public SurfaceView getCameraSurface(){
+    SurfaceView getCameraSurface(){
         return mCameraView;
     }
 
@@ -67,72 +57,23 @@ public class CameraListener implements CvCameraViewListener2 {
        camera such as the Lenovo YT3-X50L)
      */
     private final FlipDirection mCameraFlip;
-    public FlipDirection getCameraFlip() { return mCameraFlip; }
+    FlipDirection getCameraFlip() { return mCameraFlip; }
 
     // physical orientation of the camera (0, 90, 180, 270)
     private final int mCameraOrientation;
-    public int getCameraOrientation() { return mCameraOrientation; }
+    int getCameraOrientation() { return mCameraOrientation; }
 
     // captured frames count
     private int mCapuredFrames;
-
-    /** 
-     * Load a resource into a temporary file
-     * 
-     * @param c - context
-     * @param rid - resource id
-     * @param suffix - extension of the temporary file
-     * @return a File object representing the temporary file
-     * @throws IOException when failed
-     */
-    private static File resourceToTempFile (Context c, int rid, String suffix) 
-            throws IOException {
-        InputStream is;
-        OutputStream os= null;
-        File outFile = null;
-        
-        is= c.getResources().openRawResource(rid);
-        try {
-            outFile = File.createTempFile("tmp", suffix, c.getCacheDir());
-            os= new FileOutputStream(outFile);
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = is.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
-            }
-        } catch (IOException e) {
-            if (outFile != null) {
-                //noinspection ResultOfMethodCallIgnored
-                outFile.delete();
-                outFile= null;
-            }
-            throw e;
-        }
-        finally {
-            try {
-                if (is != null) is.close();
-            }
-            catch (IOException e) {
-                // Do nothing
-            }
-            try {
-                if (os != null) os.close();
-            }
-            catch (IOException e) {
-                // Do nothing
-            }
-        }
-
-        return outFile;
-    }
 
     /**
      * Constructor
      * @param c context
      * @param fp object that will receive the camera callbacks
      */
-    public CameraListener(@NonNull Context c, @NonNull FrameProcessor fp) throws CameraException {
-        mContext= c;
+    @SuppressWarnings("deprecation")
+    CameraListener(@NonNull Context c, @NonNull FrameProcessor fp,
+                   int desiredCaptureWidth, int desiredCaptureHeight) throws CameraException {
         mFrameProcessor= fp;
 
         /*
@@ -200,40 +141,14 @@ public class CameraListener implements CvCameraViewListener2 {
         // We first attempted to work at 320x240, but for some devices such as the
         // Galaxy Nexus crashes with a "Callback buffer was too small!" error.
         // However, at 352x288 works for all devices tried so far.
-        mCameraView.setMaxFrameSize(352, 288);
+        mCameraView.setMaxFrameSize(desiredCaptureWidth, desiredCaptureHeight);
 
         //mCameraView.enableFpsMeter();  // remove comment for testing
 
         mCameraView.setVisibility(SurfaceView.VISIBLE);
     }
     
-    public void startCamera() {
-        /*
-          In previous versions we used the OpenCV async helper, but we found
-          problems with devices running Android arm64 (e.g. Huawei P8) due
-          to missing OpenCV libraries. To avoid such problems we included the
-          OpenCV binaries in the App apk
-         */
-        if (!OpenCVLoader.initDebug()) {
-            throw new RuntimeException("Cannot initialize OpenCV");
-        }
-
-        Log.i(EVIACAM.TAG, "OpenCV loaded successfully");
-
-        // initialize JNI part
-        System.loadLibrary("visionpipeline");
-
-        /* Load haarcascade from resources */
-        try {
-            File f= resourceToTempFile (mContext, R.raw.haarcascade, "xml");
-            VisionPipeline.init(f.getAbsolutePath());
-            //noinspection ResultOfMethodCallIgnored
-            f.delete();
-        }
-        catch (IOException e) {
-            Log.e(EVIACAM.TAG, "Cannot write haarcascade temp file. Continuing anyway");
-        }
-
+    void startCamera() {
         // start camera capture
         try {
             mCameraView.enableView();
@@ -243,7 +158,7 @@ public class CameraListener implements CvCameraViewListener2 {
         }
     }
     
-    public void stopCamera() {
+    void stopCamera() {
         try {
             mCameraView.disableView();
         }
@@ -259,7 +174,7 @@ public class CameraListener implements CvCameraViewListener2 {
      *
      * @param flip FlipDirection.NONE, FlipDirection.VERTICAL or FlipDirection.HORIZONTAL
      */
-    public void setPreviewFlip(FlipDirection flip) {
+    void setPreviewFlip(FlipDirection flip) {
         switch (flip) {
             case NONE:
                 mCameraView.setPreviewFlip(MyCameraBridgeViewBase.FlipDirection.NONE);
@@ -280,7 +195,7 @@ public class CameraListener implements CvCameraViewListener2 {
      * @param rotation rotation to perform (clockwise) in degrees
      *                 legal values: 0, 90, 180, or 270
      */
-    public void setPreviewRotation (int rotation) {
+    void setPreviewRotation (int rotation) {
         mCameraView.setPreviewRotation(rotation);
     }
 
@@ -293,9 +208,6 @@ public class CameraListener implements CvCameraViewListener2 {
     @Override
     public void onCameraViewStopped() {
         Log.i(EVIACAM.TAG, "onCameraViewStopped. Frame count:" + mCapuredFrames);
-        
-        // finish JNI part
-        VisionPipeline.cleanup();
 
         mFrameProcessor.onCameraStopped();
     }

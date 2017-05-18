@@ -20,7 +20,8 @@
  */
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:key="preference_screen">
 
     <PreferenceCategory android:title="@string/settings_motion_settings">
 
@@ -141,6 +142,21 @@
             android:entries="@array/time_without_detection_entries"
             android:entryValues="@array/time_without_detection_values"
             android:defaultValue="@string/time_without_detection_default"
+        />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="advanced"
+        android:title="@string/settings_advanced">
+
+    <ListPreference
+        android:key="use_camera2_api"
+        android:title="@string/settings_use_camera2_api"
+        android:summary="%s"
+        android:entries="@array/use_camera2_api_entries"
+        android:entryValues="@array/use_camera2_api_entries_values"
+        android:defaultValue="@string/use_camera2_api_entries_default"
         />
 
     </PreferenceCategory>

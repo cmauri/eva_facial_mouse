@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,13 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.camera.Camera;
 
 /**
  * The main preferences activity. It is also used for the mouse specific
@@ -94,15 +96,33 @@ public class MousePreferencesActivity extends Activity {
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preference_fragment);
 
+            /*
+             * Remove camera2 related preferences if not supported by the device
+             */
+            if (!Camera.hasCamera2Support()) {
+                PreferenceCategory advanced = (PreferenceCategory) findPreference("advanced");
+                if (null != advanced) {
+                    getPreferenceScreen().removePreference(advanced);
+                }
+            }
+            else {
+                ListPreference lp = (ListPreference) findPreference(Preferences.KEY_USE_CAMERA2_API);
+                lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
+            }
+
+            /*
+             * Remove preferences not applicable in slave mode
+            */
             if (slaveMode) {
-                /*
-                 * Remove preferences not applicable in slave mode
-                 */
                 PreferenceGroup cat= (PreferenceGroup) getPreferenceScreen().
                         findPreference("interface_settings");
                 Preference p= getPreferenceScreen().
                         findPreference(Preferences.KEY_DOCKING_PANEL_EDGE);
                 cat.removePreference(p);
+            }
+            else {
+                ListPreference lp = (ListPreference) findPreference(Preferences.KEY_DOCKING_PANEL_EDGE);
+                lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
             }
 
             /*
@@ -148,13 +168,7 @@ public class MousePreferencesActivity extends Activity {
             /*
              * Listeners for list preference entries
              */
-            ListPreference lp;
-            if (!slaveMode) {
-                lp = (ListPreference) findPreference(Preferences.KEY_DOCKING_PANEL_EDGE);
-                lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
-            }
-
-            lp = (ListPreference) findPreference(Preferences.KEY_TIME_WITHOUT_DETECTION);
+            ListPreference lp = (ListPreference) findPreference(Preferences.KEY_TIME_WITHOUT_DETECTION);
             lp.setOnPreferenceChangeListener(new ListPreferenceUpdate(lp));
 
             lp = (ListPreference) findPreference(Preferences.KEY_UI_ELEMENTS_SIZE);

@@ -250,9 +250,16 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
         mSaveState= mCurrentState;
 
         // Notify successful initialization
-        // TODO: send notification via Handler and remove return value
-        if (mOnInitListener!= null) mOnInitListener.onInit(OnInitListener.INIT_SUCCESS);
-
+         /* Notify whoever requested the initialization */
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mOnInitListener!= null) {
+                    mOnInitListener.onInit(OnInitListener.INIT_SUCCESS);
+                }
+            }
+        });
+        // TODO: remove return value
         return true;
     }
 

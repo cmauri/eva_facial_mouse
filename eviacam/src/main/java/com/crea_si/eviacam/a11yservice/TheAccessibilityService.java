@@ -33,65 +33,127 @@ import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.EngineSelector;
 import com.crea_si.eviacam.common.Analytics;
 import com.crea_si.eviacam.common.CrashRegister;
-import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.common.Engine;
 import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.wizard.WizardUtils;
 
+import org.acra.ACRA;
+
 /**
  * The Enable Viacam accessibility service
  */
-public class TheAccessibilityService
-        extends AccessibilityService
+public class TheAccessibilityService extends AccessibilityService
         implements ComponentCallbacks, Engine.OnInitListener {
+
+    private static final String TAG = "TheAccessibilityService";
 
     // reference to the engine
     private AccessibilityServiceModeEngine mEngine;
 
-    // stores whether it was previously initialized (see comments on init() )
-    private boolean mInitialized= false;
+    // stores whether the accessibility service was previously started (see comments on init())
+    private boolean mServiceStarted = false;
+
+    // reference to the notification management stuff
+    private ServiceNotification mServiceNotification;
+
+    // Receiver listener for the service notification
+    private final BroadcastReceiver mServiceNotificationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int action = intent.getIntExtra(ServiceNotification.NOTIFICATION_ACTION_NAME, -1);
+
+            if (action == ServiceNotification.NOTIFICATION_ACTION_STOP) {
+                cleanupEngine();
+            } else if (action == ServiceNotification.NOTIFICATION_ACTION_START) {
+                initEngine();
+            } else {
+                // ignore intent
+                Log.i(TAG, "mServiceNotificationReceiver: Got unknown intent");
+            }
+        }
+    };
 
     /**
      * Start the initialization sequence of the accessibility service.
-     * When the startup process is finished onInit is called
      */
     private void init() {
-        if (CrashRegister.crashedRecently(this)) {
-            /*
-              Abort initialization to avoid several crash messages in a row.
-              The user will need to restart the accessibility service manually.
-             */
-            Log.w(EVIACAM.TAG, "Recent crash detected. Aborting initialization.");
-            CrashRegister.clearCrash(this);
-            return;
-        }
-
-        /* TODO  
-         * Check if service has been already started. 
+        /*
+         * Check if service has been already started.
          * Under certain circumstances onUnbind is not called (e.g. running
          * on an emulator happens quite often) and the service continues running
-         * although it shows it is disabled this does not solve the issue but at
+         * although it shows it is disabled. This does not solve the issue but at
          * least the service does not crash
          *
          * http://stackoverflow.com/questions/28752238/accessibilityservice-onunbind-not-always-
          * called-when-running-on-emulator
          */
-        if (mInitialized) {
-            Log.w(EVIACAM.TAG, "Accessibility service already running! Stop here.");
+        if (mServiceStarted) {
+            Log.w(TAG, "Accessibility service already running! Stop here.");
+            ACRA.getErrorReporter().handleException(new IllegalStateException(
+                    "Accessibility service already running! Stop here."), true);
             return;
         }
 
-        /* When preferences are not properly initialized (i.e. is in slave mode)
+        mServiceStarted= true;
+
+         /* When preferences are not properly initialized (i.e. is in slave mode)
            the call will return null. As is not possible to stop the accessibility
            service just take into account an avoid further actions. */
         if (Preferences.initForA11yService(this) == null) return;
 
-        /* Init the main engine */
-        mEngine= EngineSelector.initAccessibilityServiceModeEngine();
-        if (mEngine== null) {
-            Log.e(EVIACAM.TAG, "Cannot initialize CoreEngine in A11Y mode");
+        // Service notification
+        mServiceNotification= new ServiceNotification(this, mServiceNotificationReceiver);
+        mServiceNotification.init();
+
+        /*
+         * If crashed recently, abort initialization to avoid several crash messages in a row.
+         * The user will need to enable it again through the notification icon.
+         */
+        if (CrashRegister.crashedRecently(this)) {
+            Log.w(TAG, "Recent crash detected. Aborting initialization.");
+            CrashRegister.clearCrash(this);
+            mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_START);
+            return;
         }
-        else {
+
+        initEngine();
+    }
+
+    /**
+     * Cleanup accessibility service before exiting completely
+     */
+    private void cleanup() {
+        cleanupEngine();
+
+        if (Preferences.get() != null) {
+            Preferences.get().cleanup();
+        }
+
+        if (mServiceNotification!= null) {
+            mServiceNotification.cleanup();
+            mServiceNotification= null;
+        }
+
+        mServiceStarted = false;
+    }
+
+    /**
+     * Start engine initialization sequence. When finished, onInit is called
+     */
+    private void initEngine() {
+        if (null != mEngine) {
+            Log.i(TAG, "Engine already initialized. Ignoring.");
+            return;
+        }
+
+        // During initialization cannot send new commands
+        mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_NONE);
+
+        /* Init the main engine */
+        mEngine = EngineSelector.initAccessibilityServiceModeEngine();
+        if (mEngine == null) {
+            Log.e(TAG, "Cannot initialize CoreEngine in A11Y mode");
+        } else {
             mEngine.init(this, this);
         }
     }
@@ -104,13 +166,20 @@ public class TheAccessibilityService
     public void onInit(int status) {
         if (status != 0) {
             // Initialization failed. TODO: provide some feedback
-            Log.e(EVIACAM.TAG, "Cannot initialize CoreEngine in A11Y mode");
-            return;
+            Log.e(TAG, "Cannot initialize CoreEngine in A11Y mode");
         }
+        else {
+            initEnginePhase2();
+        }
+    }
 
+    /**
+     * Completes the initialization of the engine
+     */
+    private void initEnginePhase2() {
         Analytics.get().trackStartService();
 
-        /* Start wizard or the full engine */
+        /* Start wizard or the full engine? */
         if (Preferences.get().getRunTutorial()) {
             // register notification receiver
             LocalBroadcastManager.getInstance(this).registerReceiver(
@@ -121,9 +190,10 @@ public class TheAccessibilityService
             dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             this.startActivity(dialogIntent);
         }
-        else mEngine.start();
-
-        mInitialized = true;
+        else {
+            mEngine.start();
+            mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_STOP);
+        }
     }
 
     /**
@@ -134,15 +204,18 @@ public class TheAccessibilityService
         public void onReceive(Context context, Intent intent) {
             if (mEngine!= null) {
                 mEngine.start();
+                mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_STOP);
             }
+            LocalBroadcastManager.getInstance(TheAccessibilityService.this).
+                    unregisterReceiver(mFinishWizardReceiver);
         }
     };
 
-    private void cleanup() {
-        // TODO: handle exceptions properly
-        if (!mInitialized) return;
-
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mFinishWizardReceiver);
+    /**
+     * Stop the engine and free resources
+     */
+    private void cleanupEngine() {
+        if (null == mEngine) return;
 
         Analytics.get().trackStopService();
 
@@ -153,20 +226,16 @@ public class TheAccessibilityService
 
         EngineSelector.releaseAccessibilityServiceModeEngine();
 
-        if (Preferences.get() != null) {
-            Preferences.get().cleanup();
-        }
-
-        mInitialized= false;
+        mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_START);
     }
-    
+
     /**
      * Called when the accessibility service is started
      */
     @Override
     public void onCreate() {
         super.onCreate();
-        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onCreate");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onCreate");
     }
 
     /**
@@ -174,7 +243,7 @@ public class TheAccessibilityService
      */
     @Override
     public void onServiceConnected() {
-        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onServiceConnected");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onServiceConnected");
         init();
     }
 
@@ -187,7 +256,7 @@ public class TheAccessibilityService
          * which might be related with the spurious crashes when switching
          * off the accessibility service. Tested on Nexus 7 Android 5.1.1
          */
-        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onUnbind");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onUnbind");
         cleanup();
         return false;
     }
@@ -198,7 +267,7 @@ public class TheAccessibilityService
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onDestroy");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onDestroy");
         cleanup();
     }
 
@@ -222,6 +291,6 @@ public class TheAccessibilityService
      */
     @Override
     public void onInterrupt() {
-        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onInterrupt");
+        if (BuildConfig.DEBUG) Log.d(TAG, "onInterrupt");
     }
 }

@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,8 @@ class ServiceNotification {
      * Type of notification to display
      */
     static final int NOTIFICATION_ACTION_NONE = 0;
-    static final int NOTIFICATION_ACTION_PAUSE = 1;
-    static final int NOTIFICATION_ACTION_RESUME = 2;
+    static final int NOTIFICATION_ACTION_STOP = 1;
+    static final int NOTIFICATION_ACTION_START = 2;
 
     /*
      * constants for notifications
@@ -113,8 +113,8 @@ class ServiceNotification {
      * Set the action of the notification and update accordingly
      * @param action of the notification
      *             NOTIFICATION_ACTION_NONE
-     *             NOTIFICATION_ACTION_PAUSE
-     *             NOTIFICATION_ACTION_RESUME
+     *             NOTIFICATION_ACTION_STOP
+     *             NOTIFICATION_ACTION_START
      */
     void update (int action) {
         if (mAction == action) return;
@@ -142,10 +142,12 @@ class ServiceNotification {
         if (action == NOTIFICATION_ACTION_NONE) {
             text = c.getText(R.string.app_name);
             iconId = R.drawable.ic_notification_enabled;
-        } else if (action == NOTIFICATION_ACTION_PAUSE) {
+        } else if (action == NOTIFICATION_ACTION_STOP) {
+            // TODO: update text
             text = c.getText(R.string.notification_running_click_to_pause);
             iconId = R.drawable.ic_notification_enabled;
-        } else if (action == NOTIFICATION_ACTION_RESUME) {
+        } else if (action == NOTIFICATION_ACTION_START) {
+            // TODO: update text
             text = c.getText(R.string.notification_stopped_click_to_resume);
             iconId = R.drawable.ic_notification_disabled;
         }

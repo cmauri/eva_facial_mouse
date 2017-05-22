@@ -32,20 +32,9 @@ import com.crea_si.eviacam.slavemode.SlaveModeEngineImpl;
  * Both modes CANNOT run simultaneously
  */
 public class EngineSelector {
-    /*
-    * Modes of operation from the point of view of the service
-    * that starts the engine
-    */
-    private static final int NONE_MODE= -1;
-    private static final int A11Y_SERVICE_MODE= 0;
-    private static final int SLAVE_MODE= 1;
-
     /* singleton instances */
     private static AccessibilityServiceModeEngine sAccessibilityServiceModeEngine = null;
     private static SlaveModeEngineImpl sSlaveModeEngine = null;
-
-    /* mode in use */
-    private static int mModeInUse= NONE_MODE;
 
     /**
      * Get an instance to the current accessibility mode engine
@@ -53,13 +42,13 @@ public class EngineSelector {
      * @return a reference to the engine interface or null if not available
      */
     public static AccessibilityServiceModeEngine initAccessibilityServiceModeEngine() {
-        if (mModeInUse == SLAVE_MODE) return null;
+        if (null != sSlaveModeEngine) return null;
 
-        mModeInUse= A11Y_SERVICE_MODE;
-
-        if (sAccessibilityServiceModeEngine == null) {
-            sAccessibilityServiceModeEngine= new AccessibilityServiceModeEngineImpl();
+        if (null != sAccessibilityServiceModeEngine) {
+            throw new IllegalStateException(
+                    "initAccessibilityServiceModeEngine: already initialized");
         }
+        sAccessibilityServiceModeEngine= new AccessibilityServiceModeEngineImpl();
 
         return sAccessibilityServiceModeEngine;
     }
@@ -72,8 +61,8 @@ public class EngineSelector {
      * Release accessibility service mode if previously requested
      */
     public static void releaseAccessibilityServiceModeEngine() {
-        if (mModeInUse== A11Y_SERVICE_MODE) {
-            mModeInUse= NONE_MODE;
+        if (null != sAccessibilityServiceModeEngine) {
+            sAccessibilityServiceModeEngine.cleanup();
             sAccessibilityServiceModeEngine = null;
         }
     }
@@ -84,13 +73,13 @@ public class EngineSelector {
      * @return a reference to the engine interface or null if not available
      */
     public static SlaveModeEngine initSlaveModeEngine() {
-        if (mModeInUse == A11Y_SERVICE_MODE) return null;
+        if (null != sAccessibilityServiceModeEngine) return null;
 
-        mModeInUse= SLAVE_MODE;
-
-        if (sSlaveModeEngine == null) {
-            sSlaveModeEngine= new SlaveModeEngineImpl();
+        if (null != sSlaveModeEngine) {
+            throw new IllegalStateException("initSlaveModeEngine: already initialized");
         }
+
+        sSlaveModeEngine= new SlaveModeEngineImpl();
 
         return sSlaveModeEngine;
     }
@@ -99,8 +88,8 @@ public class EngineSelector {
      * Release accessibility service mode if previously requested
      */
     public static void releaseSlaveModeEngine() {
-        if (mModeInUse== SLAVE_MODE) {
-            mModeInUse= NONE_MODE;
+        if (null != sSlaveModeEngine) {
+            sSlaveModeEngine.cleanup();
             sSlaveModeEngine = null;
         }
     }

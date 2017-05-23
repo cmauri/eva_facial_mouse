@@ -78,6 +78,7 @@ public class TheAccessibilityService extends AccessibilityService
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     cleanupEngine();
+                                    Preferences.get().setEngineWasRunning(false);
                                 }
                             })
                    .create();
@@ -132,6 +133,15 @@ public class TheAccessibilityService extends AccessibilityService
         if (CrashRegister.crashedRecently(this)) {
             Log.w(TAG, "Recent crash detected. Aborting initialization.");
             CrashRegister.clearCrash(this);
+            mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_START);
+            return;
+        }
+
+        /*
+         * If the device has been rebooted and the engine was stopped before
+         * such a reboot, do not start.
+         */
+        if (!Preferences.get().getEngineWasRunning()) {
             mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_START);
             return;
         }
@@ -199,6 +209,8 @@ public class TheAccessibilityService extends AccessibilityService
     private void initEnginePhase2() {
         Analytics.get().trackStartService();
 
+        Preferences.get().setEngineWasRunning(true);
+
         /* Start wizard or the full engine? */
         if (Preferences.get().getRunTutorial()) {
             // register notification receiver
@@ -255,7 +267,7 @@ public class TheAccessibilityService extends AccessibilityService
     @Override
     public void onCreate() {
         super.onCreate();
-        if (BuildConfig.DEBUG) Log.d(TAG, "onCreate");
+        Log.i(TAG, "onCreate");
     }
 
     /**
@@ -263,7 +275,7 @@ public class TheAccessibilityService extends AccessibilityService
      */
     @Override
     public void onServiceConnected() {
-        if (BuildConfig.DEBUG) Log.d(TAG, "onServiceConnected");
+        Log.i(TAG, "onServiceConnected");
         init();
     }
 

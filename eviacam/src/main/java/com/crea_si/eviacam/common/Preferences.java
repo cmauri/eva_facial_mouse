@@ -59,6 +59,7 @@ public class Preferences {
     private static final String KEY_RUN_TUTORIAL= "run_tutorial";
     private static final String KEY_SHOW_LAUNCHER_HELP= "show_launcher_help";
     public static final String KEY_USE_CAMERA2_API= "use_camera2_api";
+    private static final String KEY_ENGINE_WAS_RUNNING= "engine_was_running";
 
     /**
      * Gamepad locations
@@ -366,6 +367,23 @@ public class Preferences {
     public void setACRAEnabled (boolean value) {
         SharedPreferences.Editor spe= mSharedPreferences.edit();
         spe.putBoolean(ACRA.PREF_ENABLE_ACRA, value);
+        spe.apply();
+    }
+
+    /**
+     * Get whether the engine was running (i.e. not stopped through the notification)
+     */
+    public boolean getEngineWasRunning() {
+        return mSharedPreferences.getBoolean(Preferences.KEY_ENGINE_WAS_RUNNING, true);
+    }
+
+    /**
+     * Save whether the engine was running
+     * @param v value
+     */
+    public void setEngineWasRunning(boolean v) {
+        SharedPreferences.Editor spe= mSharedPreferences.edit();
+        spe.putBoolean(Preferences.KEY_ENGINE_WAS_RUNNING, v);
         spe.apply();
     }
  }

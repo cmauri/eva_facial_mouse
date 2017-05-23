@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.WindowManager;
@@ -50,6 +51,8 @@ public class TheAccessibilityService extends AccessibilityService
         implements ComponentCallbacks, Engine.OnInitListener {
 
     private static final String TAG = "TheAccessibilityService";
+
+    private static TheAccessibilityService sTheAccessibilityService;
 
     // reference to the engine
     private AccessibilityServiceModeEngine mEngine;
@@ -116,6 +119,7 @@ public class TheAccessibilityService extends AccessibilityService
         }
 
         mServiceStarted= true;
+        sTheAccessibilityService= this;
 
          /* When preferences are not properly initialized (i.e. is in slave mode)
            the call will return null. As is not possible to stop the accessibility
@@ -153,6 +157,8 @@ public class TheAccessibilityService extends AccessibilityService
      * Cleanup accessibility service before exiting completely
      */
     private void cleanup() {
+        sTheAccessibilityService= null;
+
         cleanupEngine();
 
         if (Preferences.get() != null) {
@@ -261,6 +267,19 @@ public class TheAccessibilityService extends AccessibilityService
         EngineSelector.releaseAccessibilityServiceModeEngine();
 
         mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_START);
+    }
+
+    /**
+     * Get the current instance of the accessibility service
+     *
+     * @return reference to the accessibility service or null
+     */
+    public static @Nullable TheAccessibilityService get() {
+        return sTheAccessibilityService;
+    }
+
+    public void openNotifications() {
+        performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
     }
 
     /**

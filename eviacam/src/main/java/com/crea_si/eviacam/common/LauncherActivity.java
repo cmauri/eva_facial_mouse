@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.crea_si.eviacam.common;
 
 import android.app.Activity;
@@ -31,6 +30,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.a11yservice.TheAccessibilityService;
 
 /**
  * Launcher activity
@@ -115,11 +115,18 @@ public class LauncherActivity extends Activity {
 
         if (Preferences.initForA11yService(this) == null) return;
 
-        if (Preferences.get().getShowLauncherHelp()) {
-            showLauncherHelp();
+        TheAccessibilityService service= TheAccessibilityService.get();
+        if (null != service) {
+            /* Engine running, open notifications */
+            service.openNotifications();
+            finish();
         }
         else {
-            if (!openAccessibility()) noAccessibilitySettingsAlert();
+            if (Preferences.get().getShowLauncherHelp()) {
+                showLauncherHelp();
+            } else {
+                if (!openAccessibility()) noAccessibilitySettingsAlert();
+            }
         }
     }
 

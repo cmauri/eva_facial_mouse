@@ -194,12 +194,14 @@ public class TheAccessibilityService extends AccessibilityService
      */
     @Override
     public void onInit(int status) {
-        if (status != 0) {
-            // Initialization failed. TODO: provide some feedback
-            Log.e(TAG, "Cannot initialize CoreEngine in A11Y mode");
+        if (status == Engine.OnInitListener.INIT_SUCCESS) {
+            initEnginePhase2();
         }
         else {
-            initEnginePhase2();
+            // Initialization failed
+            Log.e(TAG, "Cannot initialize CoreEngine in A11Y mode");
+            cleanupEngine();
+            mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_START);
         }
     }
 
@@ -224,8 +226,8 @@ public class TheAccessibilityService extends AccessibilityService
         }
         else {
             mEngine.start();
-            mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_STOP);
         }
+        mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_STOP);
     }
 
     /**

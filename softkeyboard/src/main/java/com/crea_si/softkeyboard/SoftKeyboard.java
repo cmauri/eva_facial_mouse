@@ -56,6 +56,7 @@ public class SoftKeyboard extends InputMethodService
     private static SoftKeyboard sInstance;
     private static final int SWITCH_LANGUAGE_KEYCODE = -101;
     private static final int SWITCH_NAVIGATION = -102;
+    private static final int IME_PICKER = -103;
 
     private StringBuilder mComposing = new StringBuilder();
     private long mMetaState = 0;
@@ -525,6 +526,8 @@ public class SoftKeyboard extends InputMethodService
             mInputViewManager.handleModeChange();
         } else if (primaryCode == SWITCH_NAVIGATION) {
             mInputViewManager.setNavigationKeyboard();
+        } else if (primaryCode == IME_PICKER) {
+            mInputMethodManager.showInputMethodPicker();
         } else {
             handleCharacter(primaryCode, keyCodes);
         }

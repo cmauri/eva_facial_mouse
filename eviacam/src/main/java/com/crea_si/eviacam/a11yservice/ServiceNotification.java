@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015-16 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 
 import com.crea_si.eviacam.R;
+import com.crea_si.eviacam.common.MousePreferencesActivity;
 
 /**
  * Manage pause/resume notifications
@@ -39,8 +42,8 @@ class ServiceNotification {
      * Type of notification to display
      */
     static final int NOTIFICATION_ACTION_NONE = 0;
-    static final int NOTIFICATION_ACTION_PAUSE = 1;
-    static final int NOTIFICATION_ACTION_RESUME = 2;
+    static final int NOTIFICATION_ACTION_STOP = 1;
+    static final int NOTIFICATION_ACTION_START = 2;
 
     /*
      * constants for notifications
@@ -113,8 +116,8 @@ class ServiceNotification {
      * Set the action of the notification and update accordingly
      * @param action of the notification
      *             NOTIFICATION_ACTION_NONE
-     *             NOTIFICATION_ACTION_PAUSE
-     *             NOTIFICATION_ACTION_RESUME
+     *             NOTIFICATION_ACTION_STOP
+     *             NOTIFICATION_ACTION_START
      */
     void update (int action) {
         if (mAction == action) return;
@@ -130,32 +133,41 @@ class ServiceNotification {
      * @return return notification object
      */
     private static Notification createNotification(@NonNull Context c, int action) {
-        // notification initialization
-        Intent intent = new Intent(NOTIFICATION_FILTER_ACTION);
-        intent.putExtra(NOTIFICATION_ACTION_NAME, action);
+        Intent intent;
 
-        PendingIntent pIntent = PendingIntent.getBroadcast
+        /* Pending intent to notify the a11y service */
+        intent = new Intent(NOTIFICATION_FILTER_ACTION);
+        intent.putExtra(NOTIFICATION_ACTION_NAME, action);
+        PendingIntent pIntentAction = PendingIntent.getBroadcast
                 (c, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        /* Pending intent to open settings activity */
+        intent = new Intent(c, MousePreferencesActivity.class);
+        PendingIntent pOpenSettings= PendingIntent.getActivity(c, 0, intent, 0);
+
+        /* Choose right text message */
         CharSequence text;
-        int iconId;
+        int iconId= R.drawable.ic_notification_enabled;
         if (action == NOTIFICATION_ACTION_NONE) {
             text = c.getText(R.string.app_name);
-            iconId = R.drawable.ic_notification_enabled;
-        } else if (action == NOTIFICATION_ACTION_PAUSE) {
-            text = c.getText(R.string.notification_running_click_to_pause);
-            iconId = R.drawable.ic_notification_enabled;
-        } else if (action == NOTIFICATION_ACTION_RESUME) {
-            text = c.getText(R.string.notification_stopped_click_to_resume);
-            iconId = R.drawable.ic_notification_disabled;
+        } else if (action == NOTIFICATION_ACTION_STOP) {
+            text = c.getText(R.string.notification_running_click_to_stop);
+        } else if (action == NOTIFICATION_ACTION_START) {
+            text = c.getText(R.string.notification_stopped_click_to_start);
         }
         else throw new IllegalStateException();
 
-        return new Notification.Builder(c)
-                .setContentTitle(c.getText(R.string.app_name))
-                .setContentText(text)
-                .setSmallIcon(iconId)
-                .setContentIntent(pIntent)
-                .build();
+        NotificationCompat.Builder builder= new NotificationCompat.Builder(c)
+            .setSmallIcon(iconId)
+            .setLargeIcon(BitmapFactory.decodeResource(c.getResources(), R.drawable.ic_launcher))
+            .setContentTitle(c.getText(R.string.app_name))
+            .setContentText(text)
+            .setContentIntent(pIntentAction)
+            .setPriority(Notification.PRIORITY_MAX)
+            .setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText(text))
+            .addAction(android.R.drawable.ic_menu_preferences,
+                    c.getResources().getString(R.string.notification_settings_label), pOpenSettings);
+        return builder.build();
     }
 }

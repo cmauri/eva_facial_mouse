@@ -170,8 +170,6 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
             throw new IllegalStateException();
         }
 
-        /* Proceed with initialization. Store service and listener */
-        mPowerManagement = new PowerManagement(s, this);
         mService= s;
         mOnInitListener= l;
 
@@ -199,14 +197,28 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
     private BroadcastReceiver onSplashReady= new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            boolean status= intent.getBooleanExtra(SplashActivity.KEY_STATUS, false);
             if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "onSplashReady: onReceive: called");
 
             /* Unregister receiver */
             LocalBroadcastManager.getInstance(mService).unregisterReceiver(onSplashReady);
 
-            /* Resume initialization */
-            mSplashDisplayed = true;
-            init2();
+            if (status) {
+                /* Resume initialization */
+                mSplashDisplayed = true;
+                init2();
+            }
+            else {
+                /* Notify failed initialization */
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mOnInitListener!= null) {
+                            mOnInitListener.onInit(OnInitListener.INIT_ERROR);
+                        }
+                    }
+                });
+            }
         }
     };
 
@@ -215,6 +227,7 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
      */
     // TODO: remove return value
     private boolean init2() {
+        mPowerManagement = new PowerManagement(mService, this);
         /*
          * Create UI stuff: root overlay and camera view
          */
@@ -249,10 +262,16 @@ public abstract class CoreEngine implements Engine, FrameProcessor,
 
         mSaveState= mCurrentState;
 
-        // Notify successful initialization
-        // TODO: send notification via Handler and remove return value
-        if (mOnInitListener!= null) mOnInitListener.onInit(OnInitListener.INIT_SUCCESS);
-
+        /* Notify successful initialization */
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mOnInitListener!= null) {
+                    mOnInitListener.onInit(OnInitListener.INIT_SUCCESS);
+                }
+            }
+        });
+        // TODO: remove return value
         return true;
     }
 

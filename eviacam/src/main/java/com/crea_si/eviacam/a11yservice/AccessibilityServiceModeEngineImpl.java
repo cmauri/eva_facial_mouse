@@ -19,17 +19,12 @@
 package com.crea_si.eviacam.a11yservice;
 
 import com.crea_si.eviacam.common.CoreEngine;
-import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.common.MouseEmulation;
 
 import android.accessibilityservice.AccessibilityService;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 /**
@@ -45,8 +40,6 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
     // mouse emulation subsystem
     private MouseEmulation mMouseEmulation;
 
-    // reference to the notification management stuff
-    private ServiceNotification mServiceNotification;
 
     @Override
     protected void onInit(@NonNull Service service) {
@@ -56,19 +49,10 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
            so that the pointer is drawn on top of everything else */
         mMouseEmulation = new MouseEmulation(service, getOverlayView(),
                 getOrientationManager(), mClickDispatcher);
-
-        // Service notification
-        mServiceNotification= new ServiceNotification(service, mServiceNotificationReceiver);
-        mServiceNotification.init();
     }
 
     @Override
     protected void onCleanup() {
-        if (mServiceNotification!= null) {
-            mServiceNotification.cleanup();
-            mServiceNotification= null;
-        }
-
         if (mMouseEmulation != null) {
             mMouseEmulation.cleanup();
             mMouseEmulation = null;
@@ -80,26 +64,8 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
         }
     }
 
-    // Receiver listener for the service notification
-    private final BroadcastReceiver mServiceNotificationReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int action = intent.getIntExtra(ServiceNotification.NOTIFICATION_ACTION_NAME, -1);
-
-            if (action == ServiceNotification.NOTIFICATION_ACTION_PAUSE) {
-                pause();
-            } else if (action == ServiceNotification.NOTIFICATION_ACTION_RESUME) {
-                resume();
-            } else {
-                // ignore intent
-                Log.i(EVIACAM.TAG, "mServiceNotificationReceiver: Got unknown intent");
-            }
-        }
-    };
-
     @Override
     protected final boolean onStart() {
-        mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_PAUSE);
         mMouseEmulation.start();
         mClickDispatcher.start();
 
@@ -108,21 +74,18 @@ public class AccessibilityServiceModeEngineImpl extends CoreEngine
 
     @Override
     protected void onStop() {
-        mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_NONE);
         mMouseEmulation.stop();
         mClickDispatcher.stop();
     }
 
     @Override
     protected void onPause() {
-        mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_RESUME);
         mMouseEmulation.stop();
         mClickDispatcher.stop();
     }
 
     @Override
     protected void onStandby() {
-        mServiceNotification.update(ServiceNotification.NOTIFICATION_ACTION_RESUME);
         mMouseEmulation.stop();
         mClickDispatcher.stop();
     }

@@ -36,16 +36,18 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.crea_si.eviacam.R;
 
 /**
- * Displays an splash screen, and checks and guides the installation of the openCV manager.
- * Does it here (activity) so that installation dialog could be properly displayed.
+ * Displays a splash screen, ask to accept the EULA and permissions.
+ *
+ * In previous versions it used to check and guide the installation of the openCV manager.
  */
 public class SplashActivity extends Activity
         implements Eula.Listener, ActivityCompat.OnRequestPermissionsResultCallback {
 
-    /* Intent filter for termination notification */
+    /* Intent filter for termination notification (splash -> service) */
     public static final String FINISHED_INTENT_FILTER = "SplashActivity_finished";
+    public static final String KEY_STATUS = "status";
 
-    /* Parameters for the intents of this activity */
+    /* Parameters for the intents of this activity (service -> splash) */
     private static final String IS_SECOND_RUN_PARAM = "isSecondRun";
 
     /* Request codes for permission request callback */
@@ -111,6 +113,17 @@ public class SplashActivity extends Activity
         return i.getBooleanExtra(SplashActivity.IS_SECOND_RUN_PARAM, false);
     }
 
+    /**
+     * Notify the service the splash screen finished
+     *
+     * @param status true when all OK
+     */
+    private void notifyService (boolean status) {
+        Intent notificationIntent= new Intent(FINISHED_INTENT_FILTER);
+        notificationIntent.putExtra(KEY_STATUS, status);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(notificationIntent);
+    }
+
     private void checkRequisites() {
         if (!Eula.wasAccepted(this)) {
             Eula.acceptEula(this, this);
@@ -118,9 +131,8 @@ public class SplashActivity extends Activity
         }
 
         if (checkPermissions()) {
-            /* If all permissions granted notify that this activity is finished */
-            Intent notificationIntent= new Intent(FINISHED_INTENT_FILTER);
-            LocalBroadcastManager.getInstance(this).sendBroadcast(notificationIntent);
+            /* If all permissions granted notify that this activity finished OK */
+            notifyService(true);
 
             finish();
 
@@ -182,6 +194,7 @@ public class SplashActivity extends Activity
 
     @Override
     public void onCancelEula() {
+        notifyService(false);
         finish();
     }
 
@@ -190,6 +203,7 @@ public class SplashActivity extends Activity
                                            @NonNull int[] grantResults) {
         if (requestCode == CAMERA_PERMISSION_REQUEST) {
             if (grantResults.length== 0 || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                notifyService(false);
                 finish();
             }
             else {
@@ -203,6 +217,7 @@ public class SplashActivity extends Activity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode== MANAGE_OVERLAY_PERMISSION_REQUEST) {
             if (!Settings.canDrawOverlays(this)) {
+                notifyService(false);
                 finish();
             }
             else {

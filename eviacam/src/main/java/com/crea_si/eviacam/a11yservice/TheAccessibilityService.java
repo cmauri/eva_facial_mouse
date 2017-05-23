@@ -20,17 +20,21 @@
 package com.crea_si.eviacam.a11yservice;
 
 import android.accessibilityservice.AccessibilityService;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.EngineSelector;
+import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.common.Analytics;
 import com.crea_si.eviacam.common.CrashRegister;
 import com.crea_si.eviacam.common.Engine;
@@ -59,11 +63,27 @@ public class TheAccessibilityService extends AccessibilityService
     // Receiver listener for the service notification
     private final BroadcastReceiver mServiceNotificationReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context c, Intent intent) {
             int action = intent.getIntExtra(ServiceNotification.NOTIFICATION_ACTION_NAME, -1);
 
             if (action == ServiceNotification.NOTIFICATION_ACTION_STOP) {
-                cleanupEngine();
+                /* Ask for confirmation before stopping */
+                AlertDialog ad = new AlertDialog.Builder(c)
+                    .setMessage(c.getResources().getString(R.string.notification_stop_confirmation))
+                    .setPositiveButton(c.getResources().getString(
+                            R.string.notification_stop_confirmation_no), null)
+                    .setNegativeButton(c.getResources().getString(
+                            R.string.notification_stop_confirmation_yes),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    cleanupEngine();
+                                }
+                            })
+                   .create();
+                //noinspection ConstantConditions
+                ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+                ad.show();
             } else if (action == ServiceNotification.NOTIFICATION_ACTION_START) {
                 initEngine();
             } else {

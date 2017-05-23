@@ -106,8 +106,12 @@
     <!-- the docking panel end -->
 
     <!-- notification start -->
-    <string name="notification_running_click_to_pause">Running (click to pause)</string>
-    <string name="notification_stopped_click_to_resume">Stopped (click to resume)</string>
+    <string name="notification_running_click_to_stop">Running (click to stop)</string>
+    <string name="notification_stopped_click_to_start">Stopped (click to start)</string>
+    <string name="notification_stop_confirmation">Stop EVA Facial Mouse?</string>
+    <string name="notification_stop_confirmation_no">Cancel</string>
+    <string name="notification_stop_confirmation_yes">Yes</string>
+    <string name="notification_settings_label">Settings</string>
     <!-- notification end -->
 
     <!-- OpenCV start -->

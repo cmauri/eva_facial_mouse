@@ -27,6 +27,8 @@
     <Row>
         <Key android:codes="@integer/key_switch_alpha_symbol" android:keyLabel="ABC" 
              android:keyEdgeFlags="left" android:keyWidth="7.5%p"/>
+        <Key android:codes="@integer/key_ime_picker"
+            android:keyIcon="@drawable/ic_keyboard_white_24dp" />
         <Key android:codes="61" android:keyIcon="@drawable/ic_keyboard_tab_white_48dp" />
         <Key android:codes="-122" android:keyLabel="Home"/>
         <Key android:codes="-123" android:keyLabel="End" />
@@ -36,8 +38,7 @@
         <Key android:codes="22" android:keyIcon="@drawable/ic_keyboard_arrow_right_white_48dp"/>
         <Key android:codes="92" android:keyLabel="⇧" />
         <Key android:codes="93" android:keyLabel="⇩" />
-        <Key android:codes="-112" android:keyLabel="Del" />
-        <Key android:codes="@integer/key_return" 
+        <Key android:codes="@integer/key_return"
              android:keyIcon="@drawable/sym_keyboard_return" 
              android:keyEdgeFlags="right" android:keyWidth="7.5%p" />
     </Row>

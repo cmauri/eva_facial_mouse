@@ -27,13 +27,13 @@
     <Row>
         <Key android:codes="@integer/key_switch_alpha_symbol" android:keyLabel="ABC" 
              android:keyEdgeFlags="left" android:keyWidth="7.5%p"/>
-        <Key android:codes="61" android:keyLabel="TAB" />
+        <Key android:codes="61" android:keyIcon="@drawable/ic_keyboard_tab_white_48dp" />
         <Key android:codes="-122" android:keyLabel="Home"/>
         <Key android:codes="-123" android:keyLabel="End" />
-        <Key android:codes="21" android:keyLabel="←"/>
-        <Key android:codes="19" android:keyLabel="↑"/>
-        <Key android:codes="20" android:keyLabel="↓"/>
-        <Key android:codes="22" android:keyLabel="→"/>
+        <Key android:codes="21" android:keyIcon="@drawable/ic_keyboard_arrow_left_white_48dp"/>
+        <Key android:codes="19" android:keyIcon="@drawable/ic_keyboard_arrow_up_white_48dp"/>
+        <Key android:codes="20" android:keyIcon="@drawable/ic_keyboard_arrow_down_white_48dp"/>
+        <Key android:codes="22" android:keyIcon="@drawable/ic_keyboard_arrow_right_white_48dp"/>
         <Key android:codes="92" android:keyLabel="⇧" />
         <Key android:codes="93" android:keyLabel="⇩" />
         <Key android:codes="-112" android:keyLabel="Del" />

@@ -119,7 +119,7 @@ public class SetupWizard extends BasicWizardLayout {
     private boolean showKeyboardWarnDialog (@NonNull Activity activity,
                                             DialogInterface.OnClickListener listenerPos,
                                             DialogInterface.OnClickListener listenerNeg) {
-        if (InputMethodAction.isEnabledCustomKeyboard(activity)) return true;
+        if (InputMethodAction.isCustomKeyboardSelected(activity)) return true;
 
         mStepBefore= -1;
 

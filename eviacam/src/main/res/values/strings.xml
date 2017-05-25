@@ -220,8 +220,16 @@
     <string name="wizard_full_enable_after">All the functions of EVA will be enabled after this wizard</string>
     <!-- Wizard end -->
 
+    <!-- Keyboard related messages begin -->
+    <string name="service_dialog_eva_keyboard_not_enabled">EVA Keyboard is not enabled. Enable through the following dialog.</string>
+    <string name="service_dialog_eva_keyboard_not_selected">EVA Keyboard is not selected. Select through the following dialog.</string>
+    <string name="service_dialog_eva_keyboard_gboard_not_selected">Select EVA Keyboard or GBoard through the following dialog.</string>
+    <string name="service_dialog_gboard_not_installed">Google keyboard (GBoard) is not installed. Install now?</string>
+    <string name="service_dialog_gboard_not_enabled">Google keyboard (GBoard) is not enabled. Enable through the following dialog.</string>
+    <!-- Keyboard related messages end -->
+
     <!-- Service toast start -->
-    <string name="service_toast_keyboard_not_enabled_toast">EVA Keyboard is not enabled. To set it up, use the wizard.</string>
+  <!--  <string name="service_toast_keyboard_not_enabled_toast2">EVA Keyboard is not enabled. Enable through the following dialog.</string> -->
     <string name="service_toast_pointer_stopped_toast">EVA stopped %1$s without detecting your face. To enable it again, make sure your face is centered inside the camera viewer.</string>
     <string name="service_toast_navigation_keyboard_advice">Use the Navigation Keyboard to scroll the browser contents.</string>
     <string name="service_toast_context_menu_enabled">Context Menu enabled</string>

@@ -207,7 +207,7 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
             s.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS);
             break;
         case R.id.softkeyboard_button:
-            mInputMethodAction.toggleIME();
+            mInputMethodAction.dockMenuKeyboardSequence();
             break;
         case R.id.toggle_context_menu:
             if (mDockPanelLayerView.getContextMenuEnabled()) {
@@ -271,7 +271,7 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
                 ((clsName= node.getClassName())!= null) &&
                 clsName.toString().equalsIgnoreCase("android.widget.EditText")) {
             node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
-            mInputMethodAction.openIME();
+            mInputMethodAction.textViewFocusedSequence();
         }
 
         /*
@@ -332,7 +332,7 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
             
             AccessibilityNodeInfo root= null;
             
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 /*
                   According to the documentation [1]: "This method returns only the windows
                   that a sighted user can interact with, as opposed to all windows.".
@@ -392,24 +392,22 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
                   LIMITATIONS: when a pop up or dialog is covering the IME there is no way to
                   know (at least for API < 21) such circumstance. Therefore, we give preference
                   to the IME. This may lead to situations where the pop up is not accessible.
-
-                  TODO: add an option to open/close IME
                  */
                 if (mInputMethodAction.click(pInt.x, pInt.y)) return;
             }
-            
+
             /* Manages actions on an arbitrary position of the screen  */
-            
+
             // Finds node under (x, y) and its available actions
             AccessibilityNodeInfo node= findActionable (pInt, FULL_ACTION_MASK, root);
-            
+
             if (node == null) return;
 
             if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "Actionable node found: (" + pInt.x + ", " +
                     pInt.y + ")." + AccessibilityNodeDebug.getNodeInfo(node));
 
             int availableActions= FULL_ACTION_MASK & node.getActions();
-            
+
             if (Integer.bitCount(availableActions)> 1) {
                 /* Multiple actions available, need to show the context menu? */
                 if (mDockPanelLayerView.getContextMenuEnabled()) {

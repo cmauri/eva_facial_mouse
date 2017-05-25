@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,34 +16,49 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.crea_si.eviacam.common;
 
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
 import com.crea_si.input_method_aidl.IClickableIME;
 
+import java.util.List;
+
 /**
- * Handles the communication with the IME
+ * Handles the communication with the EVA Keyboard and provides other
+ * utilities related with keyboards
  */
 
 public class InputMethodAction implements ServiceConnection {
-    
+    private static final String TAG = "InputMethodAction";
+
+    /* Binding identifiers */
     private static final String REMOTE_PACKAGE= "com.crea_si.eviacam.service";
     private static final String REMOTE_ACTION= "com.crea_si.softkeyboard.RemoteBinderService";
-    private static final String IME_NAME= REMOTE_PACKAGE + "/com.crea_si.softkeyboard.SoftKeyboard";
-    
+
+    /* Substring identifying custom and GBoard input methods */
+    private static final String GBOARD_IME = "com.android.inputmethod.";
+    private static final String CUSTOM_IME = "com.crea_si.eviacam.service";
+
     // period (in milliseconds) to try to rebind again to the IME
     private static final int BIND_RETRY_PERIOD = 2000;
     
@@ -57,13 +72,20 @@ public class InputMethodAction implements ServiceConnection {
 
     private final Handler mHandler= new Handler();
 
+    /**
+     * Constructor
+     * @param c context
+     */
     public InputMethodAction(@NonNull Context c) {
         mContext= c;
 
         // attempt to bind with IME
         keepBindAlive();
     }
-    
+
+    /**
+     * Free resources
+     */
     public void cleanup() {
         if (mRemoteService == null) return;
         
@@ -74,8 +96,7 @@ public class InputMethodAction implements ServiceConnection {
     /**
      * Bind to the remote IME when needed
      * 
-     * TODO: support multiple compatible IMEs
-     * TODO: provide feedback to the user 
+     * TODO: provide feedback to the user
      */
     private void keepBindAlive() {
         if (mRemoteService != null) return;
@@ -92,16 +113,16 @@ public class InputMethodAction implements ServiceConnection {
 
         mLastBindAttemptTimeStamp = tstamp;
 
-        if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "Attempt to bind to remote IME");
+        if (BuildConfig.DEBUG) Log.d(TAG, "Attempt to bind to remote IME");
         Intent intent= new Intent(REMOTE_ACTION);
         intent.setPackage(REMOTE_PACKAGE);
         try {
             if (!mContext.bindService(intent, this, Context.BIND_AUTO_CREATE)) {
-                if (BuildConfig.DEBUG) Log.d(EVIACAM.TAG, "Cannot bind remote IME");
+                if (BuildConfig.DEBUG) Log.d(TAG, "Cannot bind remote IME");
             }
         }
         catch(SecurityException e) {
-            Log.e(EVIACAM.TAG, "Cannot bind remote IME. Security exception.");
+            Log.e(TAG, "Cannot bind remote IME. Security exception.");
         }
     }
     
@@ -110,7 +131,7 @@ public class InputMethodAction implements ServiceConnection {
         // This is called when the connection with the service has been
         // established, giving us the object we can use to
         // interact with the service.
-        Log.i(EVIACAM.TAG, "remoteIME:onServiceConnected: " + className.toString());
+        Log.i(TAG, "remoteIME:onServiceConnected: " + className.toString());
         mRemoteService = IClickableIME.Stub.asInterface(service);
     }
 
@@ -118,16 +139,21 @@ public class InputMethodAction implements ServiceConnection {
     public void onServiceDisconnected(ComponentName className) {
         // This is called when the connection with the service has been
         // unexpectedly disconnected -- that is, its process crashed.
-        Log.i(EVIACAM.TAG, "remoteIME:onServiceDisconnected");
+        Log.i(TAG, "remoteIME:onServiceDisconnected");
         mContext.unbindService(this);
         mRemoteService = null;
         keepBindAlive();
     }
-    
+
+    /** Try to click on an IME key
+     * @param x - abscissa coordinate of the point (relative to the screen)
+     * @param y - ordinate coordinate of the point (relative to the screen)
+     * @return true if the point is within view bounds of the IME, false otherwise
+     */
     public boolean click(int x, int y) {
         if (mRemoteService == null) {
             if (BuildConfig.DEBUG) {
-                Log.d(EVIACAM.TAG, "InputMethodAction: click: no remote service available");
+                Log.d(TAG, "InputMethodAction: click: no remote service available");
             }
             return false;
         }
@@ -139,45 +165,78 @@ public class InputMethodAction implements ServiceConnection {
         }
     }
 
-    private boolean IMEPrereq () {
-        if (!isEnabledCustomKeyboard(mContext)) {
-            mHandler.post(new Runnable() {
+    /**
+     * Display the input method picker
+     * @param c context
+     */
+    private static void displayIMEPicker(@NonNull Context c) {
+        InputMethodManager imm=
+                (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (null != imm) {
+            imm.showInputMethodPicker();
+        }
+    }
+
+    /**
+     * Display the input method settings
+     */
+    private static void displayIMESettings(@NonNull Context c) {
+        final Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_INPUT_METHOD_SETTINGS);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        c.startActivity(intent);
+    }
+
+    /**
+     * Sequence of operations to be executed when a text view is focused
+     */
+    public void textViewFocusedSequence() {
+        if (!checkCustomKeyboardEnabled(mContext, mHandler)) return;
+
+        if (!checkGBoardEnabled(mContext, mHandler)) return;
+
+        boolean rightKeyboardSelected= isCustomKeyboardSelected(mContext);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            rightKeyboardSelected= rightKeyboardSelected || isGBoardSelected(mContext);
+        }
+
+        if (!rightKeyboardSelected) {
+            String msg;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+                msg= mContext.getResources().getString(
+                        R.string.service_dialog_eva_keyboard_not_selected);
+            }
+            else {
+                msg= mContext.getResources().getString(
+                        R.string.service_dialog_eva_keyboard_gboard_not_selected);
+            }
+            DisplayInformationDialog(mContext, mHandler, msg, new Runnable() {
                 @Override
                 public void run() {
-                    EVIACAM.LongToast(mContext, R.string.service_toast_keyboard_not_enabled_toast);
+                    displayIMEPicker(mContext);
                 }
             });
 
-            return false;
+            return;
         }
-
-        if (mRemoteService == null) {
-            if (BuildConfig.DEBUG) {
-                Log.d(EVIACAM.TAG, "InputMethodAction: IMEPrereq: no remote service available");
-            }
-            keepBindAlive();
-            return false;
-        }
-
-        return true;
-    }
-
-    public void openIME() {
-        if (!IMEPrereq()) return;
 
         try {
             mRemoteService.openIME();
         } catch (RemoteException e) {
             // Nothing to be done
-            Log.e(EVIACAM.TAG, "InputMethodAction: exception while trying to open IME");
+            Log.e(TAG, "InputMethodAction: exception while trying to open IME");
         }
     }
 
+    /**
+     * Close the EVA keyboard. Has no effect is EVA keyboard is not selected.
+     */
     public void closeIME() {
         if (mRemoteService == null) {
             if (BuildConfig.DEBUG) {
                 if (BuildConfig.DEBUG) {
-                    Log.d(EVIACAM.TAG, "InputMethodAction: closeIME: no remote service available");
+                    Log.d(TAG, "InputMethodAction: closeIME: no remote service available");
                 }
             }
             keepBindAlive();
@@ -189,30 +248,260 @@ public class InputMethodAction implements ServiceConnection {
             mRemoteService.closeIME();
         } catch (RemoteException e) {
             // Nothing to be done
-            Log.i(EVIACAM.TAG, "InputMethodAction: exception while trying to close IME");
-        }
-    }
-
-    public void toggleIME() {
-        if (!IMEPrereq()) return;
-
-        // Does not check mInputMethodManager.isActive because does not mean IME is open
-        try {
-            mRemoteService.toggleIME();
-        } catch (RemoteException e) {
-            // Nothing to be done
-            Log.e(EVIACAM.TAG, "InputMethodAction: exception while trying to toggle IME");
+            Log.i(TAG, "InputMethodAction: exception while trying to close IME");
         }
     }
 
     /**
-     * Check if the custom keyboard is enabled and is the default one
+     * Sequence of actions when keyboard menu option is selected
+     */
+    public void dockMenuKeyboardSequence() {
+        if (!checkCustomKeyboardEnabled(mContext, mHandler)) return;
+
+        if (!checkGBoardEnabled(mContext, mHandler)) return;
+
+        if (!isCustomKeyboardSelected(mContext)) {
+            displayIMEPicker(mContext);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    EVIACAM.LongToast(mContext, R.string.service_dialog_eva_keyboard_not_selected);
+                }
+            });
+        }
+        else {
+            // Does not check mInputMethodManager.isActive because does not mean IME is open
+            try {
+                mRemoteService.toggleIME();
+            } catch (RemoteException e) {
+                // Nothing to be done
+                Log.e(TAG, "InputMethodAction: exception while trying to toggle IME");
+            }
+        }
+    }
+
+    /**
+     * Check if the custom keyboard is enabled and is the selected one
      * @param c context
      * @return true if enabled
      */
-    public static boolean isEnabledCustomKeyboard (Context c) {
+    public static boolean isCustomKeyboardSelected(@NonNull Context c) {
         String pkgName= Settings.Secure.getString(c.getContentResolver(),
                                                   Settings.Secure.DEFAULT_INPUT_METHOD);
-        return pkgName.contentEquals(IME_NAME);
+        return null != pkgName && pkgName.contains(CUSTOM_IME);
+    }
+
+    /**
+     * Check if the custom keyboard is enabled and is the selected one
+     * @param c context
+     * @return true if enabled
+     */
+    private static boolean isGBoardSelected(@NonNull Context c) {
+        String pkgName = Settings.Secure.getString(c.getContentResolver(),
+                Settings.Secure.DEFAULT_INPUT_METHOD);
+        return null != pkgName && pkgName.contains(GBOARD_IME);
+    }
+
+    /**
+     * Check if the keyboard identified by the substring is installed
+     * @param c context
+     * @param subString substring the the ID of the keyboard should contain
+     * @return true if the specified keyboard is installed
+     */
+    private static boolean isKeyboardInstalled(@NonNull Context c, @NonNull String subString) {
+        InputMethodManager imeManager = (InputMethodManager)
+                c.getSystemService(Context.INPUT_METHOD_SERVICE);
+        List<InputMethodInfo> inputMethods = imeManager.getInputMethodList();
+
+        for (InputMethodInfo imi : inputMethods) {
+            String id= imi.getId();
+            if (null != id && id.contains(subString)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the GBoard keyboard is enabled
+     * @param c context
+     * @return true if the GBoard keyboard is enabled
+     */
+    private static boolean isGBoardInstalled(@NonNull Context c) {
+        return isKeyboardInstalled(c, GBOARD_IME);
+    }
+
+    /**
+     * Check if the keyboard identified by the substring is enabled
+     * @param c context
+     * @param subString substring the the ID of the keyboard should contain
+     * @return true if the specified keyboard is enabled
+     */
+    private static boolean isKeyboardEnabled(@NonNull Context c, @NonNull String subString) {
+        InputMethodManager imeManager = (InputMethodManager)
+                c.getSystemService(Context.INPUT_METHOD_SERVICE);
+        List<InputMethodInfo> inputMethods = imeManager.getEnabledInputMethodList();
+
+        for (InputMethodInfo imi : inputMethods) {
+            String id= imi.getId();
+            if (null != id && id.contains(subString)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the custom keyboard is enabled
+     * @param c context
+     * @return true if the custom keyboard is enabled
+     */
+    private static boolean isCustomKeyboardEnabled(@NonNull Context c) {
+        return isKeyboardEnabled(c, CUSTOM_IME);
+    }
+
+    /**
+     * Check if the GBoard keyboard is enabled
+     * @param c context
+     * @return true if the GBoard keyboard is enabled
+     */
+    private static boolean isGBoardEnabled(@NonNull Context c) {
+        return isKeyboardEnabled(c, GBOARD_IME);
+    }
+
+    private static void DisplayInformationDialog(@NonNull final Context c,
+                                                 @NonNull final Handler h,
+                                                 @NonNull final CharSequence msg,
+                                                 @NonNull final Runnable r) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            DisplayInformationDialog0(c, msg, r);
+        }
+        else {
+            h.post(new Runnable() {
+                @Override
+                public void run() {
+                    DisplayInformationDialog0(c, msg, r);
+                }
+            });
+        }
+    }
+
+    private static void DisplayInformationDialog0(@NonNull Context c, @NonNull CharSequence msg,
+                                                 @NonNull final Runnable r) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setTitle(c.getText(R.string.app_name));
+        builder.setMessage(msg);
+        builder.setPositiveButton(c.getText(android.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        r.run();
+                    }
+                });
+        AlertDialog ad = builder.create();
+
+        //noinspection ConstantConditions
+        ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        ad.show();
+    }
+
+    /**
+     * Checks whether the EVA custom keyboard is enabled and asks to do so when not
+     *
+     * @param c context
+     * @return true if EVA custom keyboard is enabled
+     */
+    private static boolean checkCustomKeyboardEnabled(@NonNull final Context c,
+                                                      @NonNull Handler h) {
+        if (isCustomKeyboardEnabled(c)) {
+            return true;
+        }
+
+        DisplayInformationDialog(c, h, c.getResources().getString(
+                R.string.service_dialog_eva_keyboard_not_enabled),
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        displayIMESettings(c);
+                    }
+                });
+        return false;
+    }
+
+    /**
+     * Checks whether the GBoard or any equivalent Google keyboard is installed and enabled.
+     * When not is the case, guides the user to do so.
+     *
+     * @param c context
+     * @return true if GBoard is installed and enabled or if API < 22
+     *
+     * Remarks: for devices with API below 22 the GBoard keyboard does not respond to
+     * performAction(), so do not ask the user to install and enable it
+     */
+    private static boolean checkGBoardEnabled(@NonNull final Context c, @NonNull Handler h) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return true;
+        }
+
+        //TODO: check that this advice is not disabled
+
+        /* Device with API 22+ */
+
+        if (!isGBoardInstalled(c)) {
+            /* Not installed */
+            DisplayInformationDialog(c, h, c.getResources().getString(
+                    R.string.service_dialog_gboard_not_installed), new Runnable() {
+                @Override
+                public void run() {
+                    String appPackageName= "com.google.android.inputmethod.latin";
+                    try {
+                        Intent intent= new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("market://details?id=" + appPackageName));
+                        int flags= intent.getFlags();
+                        flags|= Intent.FLAG_ACTIVITY_NEW_TASK;
+                        intent.setFlags(flags);
+
+                        c.startActivity(intent);
+                    } catch (android.content.ActivityNotFoundException e) {
+                        Intent intent= new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("https://play.google.com/store/apps/details?id=" +
+                                        appPackageName));
+                        int flags= intent.getFlags();
+                        flags|= Intent.FLAG_ACTIVITY_NEW_TASK;
+                        intent.setFlags(flags);
+
+                        c.startActivity(intent);
+                    }
+                }
+            });
+
+            return false;
+        }
+
+        if (!isGBoardEnabled(c)) {
+            /* Not enabled */
+            DisplayInformationDialog(c, h, c.getResources().getString(
+                    R.string.service_dialog_gboard_not_enabled),
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            displayIMESettings(c);
+                        }
+                    });
+            return false;
+        }
+
+        return true;
     }
 }
+
+
+/*
+whenWebView =>
+    if (customKeyboardSelected()) {
+        textViewFocusedSequence(NAVIGATION);
+    }
+    else {
+        InformationDialog(KeyBoardPickerDialog())
+    }
+ */

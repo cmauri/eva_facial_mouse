@@ -44,7 +44,7 @@ public class KeyboardWizardStep extends WizardStep {
     private void checkUpdate (View v) {
         ImageView iv = (ImageView) v.findViewById(R.id.keyboardImage);
         Button b= (Button) v.findViewById(R.id.keyboardConfigureButton);
-        if (InputMethodAction.isEnabledCustomKeyboard(getActivity())) {
+        if (InputMethodAction.isCustomKeyboardSelected(getActivity())) {
             iv.setImageResource(R.drawable.ic_correct);
             b.setEnabled(false);
         }

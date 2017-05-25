@@ -528,6 +528,7 @@ public class SoftKeyboard extends InputMethodService
             mInputViewManager.setNavigationKeyboard();
         } else if (primaryCode == IME_PICKER) {
             mInputMethodManager.showInputMethodPicker();
+            closeIME();
         } else {
             handleCharacter(primaryCode, keyCodes);
         }

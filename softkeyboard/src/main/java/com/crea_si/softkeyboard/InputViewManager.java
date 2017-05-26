@@ -16,11 +16,13 @@
 package com.crea_si.softkeyboard;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.view.MotionEvent;
@@ -47,6 +49,9 @@ class InputViewManager {
     private static final int QWERTY_ES = 2;
     private static final int QWERTY_CA = 3;
     private static final int QWERTY_DE = 4;
+
+    /* Current layout key */
+    private static final String CURRENT_LAYOUT = "current_layout";
 
     final private InputMethodService mIMEService;
     final private InputMethodManager mInputMethodManager;
@@ -160,6 +165,26 @@ class InputViewManager {
                 mIMEService.getLayoutInflater().inflate(R.layout.input, null);
         mInputView.setOnKeyboardActionListener(listener);
         return mInputView;
+    }
+
+    /**
+     * Retrieve previously saved layout from settings and enable it
+     */
+    void selectSavedLayout() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mIMEService);
+        int layout = settings.getInt(CURRENT_LAYOUT, NONE_LAYOUT);
+        if (NONE_LAYOUT == layout) return;
+        selectLayout(layout);
+    }
+
+    /**
+     * Save currently selected layout to preferences
+     */
+    void saveCurrentLayout() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(mIMEService);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(CURRENT_LAYOUT, mCurrentLayout);
+        editor.apply();
     }
 
     /*

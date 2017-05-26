@@ -100,7 +100,10 @@ public class SoftKeyboard extends InputMethodService
      */
     @Override
     public View onCreateInputView() {
-        return mInputViewManager.createView(this);
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "onInitializeInterface");
+        View v= mInputViewManager.createView(this);
+        mInputViewManager.selectSavedLayout();
+        return v;
     }
 
     /**
@@ -218,8 +221,10 @@ public class SoftKeyboard extends InputMethodService
 
     @Override
     public void onFinishInputView(boolean finishingInput) {
+        if (BuildConfig.DEBUG) Log.d(EVIACAMSOFTKBD.TAG, "onFinishInputView");
         mReadyForInput = false;
         super.onFinishInputView(finishingInput);
+        mInputViewManager.saveCurrentLayout();
     }
 
     /**

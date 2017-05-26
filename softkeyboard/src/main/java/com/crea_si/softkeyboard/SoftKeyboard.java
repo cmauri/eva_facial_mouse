@@ -519,7 +519,7 @@ public class SoftKeyboard extends InputMethodService
             handleClose();
             return;
         } else if (primaryCode == LatinKeyboardView.KEYCODE_OPTIONS) {
-            // Show a menu or somethin'
+            // Show a menu or something
         } else if (primaryCode == SWITCH_LANGUAGE_KEYCODE) {
             mInputMethodManager.switchToNextInputMethod(getToken(), true);
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
@@ -637,8 +637,8 @@ public class SoftKeyboard extends InputMethodService
             mInputViewManager.updateShiftKeyState(null);
             updateCandidates();
         } else {
-            getCurrentInputConnection().commitText(
-                    String.valueOf((char) primaryCode), 1);
+            mComposing.append((char) primaryCode);
+            getCurrentInputConnection().setComposingText(mComposing, 1);
         }
     }
 

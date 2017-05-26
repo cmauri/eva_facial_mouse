@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -30,15 +29,15 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
-public class InputViewManager {
+class InputViewManager {
     /*
      * Layout types
      */
-    public static final int NONE_LAYOUT = 0;
-    public static final int QWERTY_LAYOUT = 1;
-    public static final int SYMBOLS_LAYOUT = 2;
-    public static final int SYMBOLS_SHIFT_LAYOUT = 3;
-    public static final int NAVIGATION_LAYOUT = 4;
+    private static final int NONE_LAYOUT = 0;
+    static final int QWERTY_LAYOUT = 1;
+    static final int SYMBOLS_LAYOUT = 2;
+    private static final int SYMBOLS_SHIFT_LAYOUT = 3;
+    static final int NAVIGATION_LAYOUT = 4;
     
     /*
      * Qwerty layout subtypes
@@ -67,7 +66,7 @@ public class InputViewManager {
     private boolean mCapsLock;
     private long mLastShiftTime= 0;
 
-    public InputViewManager(InputMethodService ime) {
+    InputViewManager(InputMethodService ime) {
         mIMEService= ime;
         mInputMethodManager = (InputMethodManager) ime.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
@@ -78,7 +77,7 @@ public class InputViewManager {
      * 
      * @param type type of layout
      */
-    public void selectLayout(int type) {
+    void selectLayout(int type) {
         if (type == mCurrentLayout) return;
 
         switch (type) {
@@ -113,7 +112,7 @@ public class InputViewManager {
         }
     }
     
-    public int getSelectedLayout() {
+    int getSelectedLayout() {
         return mCurrentLayout;
     }
     
@@ -123,7 +122,7 @@ public class InputViewManager {
      * TODO: there is probably a better way to choose between different
      * keyboard layouts when changing the subtype (e.g. when changing language)
      */
-    public void selectSubtype(@Nullable InputMethodSubtype subtype) {
+    void selectSubtype(@Nullable InputMethodSubtype subtype) {
         if (subtype== null) return; // prevent crash
         final String locale= subtype.getLocale();
         if (locale.compareTo("es")== 0) {
@@ -156,7 +155,7 @@ public class InputViewManager {
      * @param listener the listener
      * @return the view
      */
-    public View createView(KeyboardView.OnKeyboardActionListener listener) {
+    View createView(KeyboardView.OnKeyboardActionListener listener) {
         mInputView= (LatinKeyboardView)
                 mIMEService.getLayoutInflater().inflate(R.layout.input, null);
         mInputView.setOnKeyboardActionListener(listener);
@@ -181,7 +180,7 @@ public class InputViewManager {
      * 
      * @param subtype (can be null)
      */
-    public void enableSelected(InputMethodSubtype subtype) {
+    void enableSelected(InputMethodSubtype subtype) {
         if (mInputView== null) return;
         mInputView.setKeyboard(getSelectedKeyboard());
         mInputView.closing();
@@ -194,7 +193,7 @@ public class InputViewManager {
     /*
      * Cleanup when closing the keyboard
      */
-    public void closing() {
+    void closing() {
         if (mInputView== null) return;
         mInputView.closing();
     }
@@ -202,7 +201,7 @@ public class InputViewManager {
     /*
      * Handle backspace key
      */
-    public boolean handleBack() {
+    boolean handleBack() {
         return mInputView != null && mInputView.handleBack();
     }
     
@@ -210,7 +209,7 @@ public class InputViewManager {
      * Helper to update the shift state of our keyboard based on the initial
      * editor state.
      */
-    public void updateShiftKeyState(EditorInfo attr) {
+    void updateShiftKeyState(EditorInfo attr) {
         if (mInputView == null) return;
 
         // Applicable only to the qwerty keyboard
@@ -227,7 +226,7 @@ public class InputViewManager {
     /*
      * Update label for the enter key according to what editor says
      */
-    public void updateEnterLabel(EditorInfo attr) {
+    void updateEnterLabel(EditorInfo attr) {
         if (mInputView == null) return;
         LatinKeyboard current= (LatinKeyboard) mInputView.getKeyboard();
         current.setImeOptions(mIMEService.getResources(), attr.imeOptions);
@@ -236,7 +235,7 @@ public class InputViewManager {
     /*
      * Handle when user press shift key
      */
-    public void handleShift() {
+    void handleShift() {
         if (mInputView == null) return;
         
         if (mCurrentLayout == QWERTY_LAYOUT) {
@@ -261,7 +260,7 @@ public class InputViewManager {
         }
     }
     
-    public int[] getKeyboardLocationOnScreen() {
+    int[] getKeyboardLocationOnScreen() {
         if (mInputView == null) return null;
         int coord[]= new int[2];
         mInputView.getLocationOnScreen(coord);
@@ -269,31 +268,13 @@ public class InputViewManager {
         return coord;
     }
     
-    public Key getKeyBelow (int x, int y) {
-        // has clicked inside the keyboard?
-        if (mInputView == null) return null;
-
-        Keyboard kbd= mInputView.getKeyboard();
-        if (kbd == null) return null;
-
-        // keys near the given point
-        int[] keys= kbd.getNearestKeys ((int) x, (int) y);
-
-        for (int i : keys) {
-            Keyboard.Key k= kbd.getKeys().get(i);
-            if (k.isInside(x, y)) return k;
-        }
-
-        return null;
-    }
-
     /**
      * Perform a click on the keyboard
      * @param x - abscissa coordinate relative to the view of the keyboard
      * @param y - ordinate coordinate relative to the view of the keyboard
      * @return - true if click performed
      */
-    public boolean performClick (int x, int y) {
+    boolean performClick(int x, int y) {
         // has clicked inside the keyboard?
         if (mInputView == null) return false;
 
@@ -326,15 +307,14 @@ public class InputViewManager {
     /*
      * Return whether the qwerty layout is shifted
      */
-    public boolean isShifted() {
-        if (mCurrentLayout != QWERTY_LAYOUT) return false;
-        return mInputView != null && mInputView.isShifted();
+    boolean isShifted() {
+        return mCurrentLayout == QWERTY_LAYOUT && mInputView != null && mInputView.isShifted();
     }
     
     /*
      * Handle layout change
      */
-    public void handleModeChange() {
+    void handleModeChange() {
         if (mInputView == null) return;
 
         if (mCurrentLayout == QWERTY_LAYOUT) {
@@ -348,7 +328,7 @@ public class InputViewManager {
     /*
      * Enable navigation keyboard
      */
-    public void setNavigationKeyboard() {
+    void setNavigationKeyboard() {
         if (mInputView == null) return;
         if (mCurrentLayout == NAVIGATION_LAYOUT) return;
 

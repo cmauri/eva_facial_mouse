@@ -256,7 +256,7 @@ public class SoftKeyboard extends InputMethodService
 
     @Override
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
-        /**
+        /*
          * When subtype changes we need to recreate the keyboard layouts and apply them
          *
          */
@@ -302,9 +302,8 @@ public class SoftKeyboard extends InputMethodService
                 return;
             }
 
-            List<String> stringList = new ArrayList<String>();
-            for (int i = 0; i < completions.length; i++) {
-                CompletionInfo ci = completions[i];
+            List<String> stringList = new ArrayList<>();
+            for (CompletionInfo ci : completions) {
                 if (ci != null) stringList.add(ci.getText().toString());
             }
             setSuggestions(stringList, true, true);
@@ -451,11 +450,7 @@ public class SoftKeyboard extends InputMethodService
      * Helper to determine if a given character code is alphabetic.
      */
     private boolean isAlphabet(int code) {
-        if (Character.isLetter(code)) {
-            return true;
-        } else {
-            return false;
-        }
+        return Character.isLetter(code);
     }
 
     /**
@@ -516,7 +511,6 @@ public class SoftKeyboard extends InputMethodService
             mInputViewManager.handleShift();
         } else if (primaryCode == Keyboard.KEYCODE_CANCEL) {
             handleClose();
-            return;
         } else if (primaryCode == LatinKeyboardView.KEYCODE_OPTIONS) {
             // Show a menu or something
         } else if (primaryCode == SWITCH_LANGUAGE_KEYCODE) {
@@ -583,7 +577,7 @@ public class SoftKeyboard extends InputMethodService
     private void updateCandidates() {
         if (!mCompletionOn) {
             if (mComposing.length() > 0) {
-                ArrayList<String> list = new ArrayList<String>();
+                ArrayList<String> list = new ArrayList<>();
                 list.add(mComposing.toString());
                 setSuggestions(list, true, true);
             } else {

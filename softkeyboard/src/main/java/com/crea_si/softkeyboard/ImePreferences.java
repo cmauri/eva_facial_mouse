@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
+/*
  * Modified by Cesar Mauri (CREA) 2015 for the Enable Viacam for Android project
  */
 package com.crea_si.softkeyboard;

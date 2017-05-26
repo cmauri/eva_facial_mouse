@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Modified by Cesar Mauri (CREA) 2015 for the Enable Viacam for Android project
+/*
+ * Modified by Cesar Mauri (CREA) 2015-17 for the Enable Viacam for Android project
  */
 package com.crea_si.softkeyboard;
 
@@ -25,17 +25,18 @@ import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.view.inputmethod.EditorInfo;
 
-public class LatinKeyboard extends Keyboard {
+class LatinKeyboard extends Keyboard {
 
     private Key mEnterKey;
     private Key mSpaceKey;
     
-    public LatinKeyboard(Context context, int xmlLayoutResId) {
+    LatinKeyboard(Context context, int xmlLayoutResId) {
         super(context, xmlLayoutResId);
     }
 
-    public LatinKeyboard(Context context, int layoutTemplateResId, 
-            CharSequence characters, int columns, int horizontalPadding) {
+    @SuppressWarnings("unused")
+    public LatinKeyboard(Context context, int layoutTemplateResId,
+                         CharSequence characters, int columns, int horizontalPadding) {
         super(context, layoutTemplateResId, characters, columns, horizontalPadding);
     }
 
@@ -93,9 +94,9 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    static class LatinKey extends Keyboard.Key {
+    private static class LatinKey extends Keyboard.Key {
         
-        public LatinKey(Resources res, Keyboard.Row parent, int x, int y, XmlResourceParser parser) {
+        LatinKey(Resources res, Keyboard.Row parent, int x, int y, XmlResourceParser parser) {
             super(res, parent, x, y, parser);
         }
         

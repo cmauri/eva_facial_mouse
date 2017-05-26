@@ -65,7 +65,7 @@ public class InputMethodAction implements ServiceConnection {
     private final Context mContext;
 
     // binder (proxy) with the remote input method service
-    private IClickableIME mRemoteService;
+    private volatile IClickableIME mRemoteService;
     
     // time stamp of the last time the thread ran
     private long mLastBindAttemptTimeStamp = 0;
@@ -268,6 +268,34 @@ public class InputMethodAction implements ServiceConnection {
                     EVIACAM.LongToast(mContext, R.string.service_dialog_eva_keyboard_not_selected);
                 }
             });
+
+            /*
+             * Poll until the custom keyboard has been selected and open it
+             */
+            Runnable pollActiveKeyboard= new Runnable() {
+                @Override
+                public void run() {
+                    for (int i= 0; i< 80; i++) {
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            // Do nothing
+                        }
+                        IClickableIME s= mRemoteService;
+                        //Log.d(TAG, i + ": s= " + s + "selected: " + isCustomKeyboardSelected(mContext));
+
+                        if (null!= s && isCustomKeyboardSelected(mContext)) {
+                            try {
+                                s.openIME();
+                                break;
+                            } catch (RemoteException e) {
+                                // Nothing to be done
+                            }
+                        }
+                    }
+                }
+            };
+            new Thread(pollActiveKeyboard).start();
         }
         else {
             // Does not check mInputMethodManager.isActive because does not mean IME is open

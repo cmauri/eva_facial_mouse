@@ -31,10 +31,12 @@ public class LatinKeyboardView extends KeyboardView {
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setPreviewEnabled(false);
     }
 
     public LatinKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        setPreviewEnabled(false);
     }
 
     @Override

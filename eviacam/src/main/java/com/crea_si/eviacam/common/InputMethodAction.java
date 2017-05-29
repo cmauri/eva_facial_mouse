@@ -32,16 +32,21 @@ import android.os.Looper;
 import android.os.RemoteException;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
 import com.crea_si.input_method_aidl.IClickableIME;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Handles the communication with the EVA Keyboard and provides other
@@ -57,6 +62,7 @@ public class InputMethodAction implements ServiceConnection {
 
     /* Substring identifying custom and GBoard input methods */
     private static final String GBOARD_IME = "com.android.inputmethod.";
+    private static final String VOICE_IME = "com.google.android.voicesearch.ime.";
     private static final String CUSTOM_IME = "com.crea_si.eviacam.service";
 
     // period (in milliseconds) to try to rebind again to the IME
@@ -69,6 +75,10 @@ public class InputMethodAction implements ServiceConnection {
     
     // time stamp of the last time the thread ran
     private long mLastBindAttemptTimeStamp = 0;
+
+    // show the remainder for GBoard installation? Use AtomicBoolean instead of MutableBoolean
+    // because the later is not available since API 21+
+    private AtomicBoolean mShowGBoardInstallationReminder= new AtomicBoolean(true);
 
     private final Handler mHandler= new Handler();
 
@@ -95,8 +105,6 @@ public class InputMethodAction implements ServiceConnection {
     
     /**
      * Bind to the remote IME when needed
-     * 
-     * TODO: provide feedback to the user
      */
     private void keepBindAlive() {
         if (mRemoteService != null) return;
@@ -194,11 +202,12 @@ public class InputMethodAction implements ServiceConnection {
     public void textViewFocusedSequence() {
         if (!checkCustomKeyboardEnabled(mContext, mHandler)) return;
 
-        if (!checkGBoardEnabled(mContext, mHandler)) return;
+        if (!checkGBoardEnabled(mContext, mHandler, mShowGBoardInstallationReminder)) return;
 
         boolean rightKeyboardSelected= isCustomKeyboardSelected(mContext);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            rightKeyboardSelected= rightKeyboardSelected || isGBoardSelected(mContext);
+            rightKeyboardSelected= rightKeyboardSelected || isGBoardSelected(mContext) ||
+                    isVoiceSelected(mContext);
         }
 
         if (!rightKeyboardSelected) {
@@ -211,12 +220,12 @@ public class InputMethodAction implements ServiceConnection {
                 msg= mContext.getResources().getString(
                         R.string.service_dialog_eva_keyboard_gboard_not_selected);
             }
-            DisplayInformationDialog(mContext, mHandler, msg, new Runnable() {
+            displayInformationDialog(mContext, mHandler, msg, new Runnable() {
                 @Override
                 public void run() {
                     displayIMEPicker(mContext);
                 }
-            });
+            }, null);
 
             return;
         }
@@ -258,7 +267,7 @@ public class InputMethodAction implements ServiceConnection {
     public void dockMenuKeyboardSequence() {
         if (!checkCustomKeyboardEnabled(mContext, mHandler)) return;
 
-        if (!checkGBoardEnabled(mContext, mHandler)) return;
+        if (!checkGBoardEnabled(mContext, mHandler, mShowGBoardInstallationReminder)) return;
 
         if (!isCustomKeyboardSelected(mContext)) {
             displayIMEPicker(mContext);
@@ -331,6 +340,17 @@ public class InputMethodAction implements ServiceConnection {
     }
 
     /**
+     * Check if the voice keyboard is enabled and is the selected one
+     * @param c context
+     * @return true if enabled
+     */
+    private static boolean isVoiceSelected(@NonNull Context c) {
+        String pkgName = Settings.Secure.getString(c.getContentResolver(),
+                Settings.Secure.DEFAULT_INPUT_METHOD);
+        return null != pkgName && pkgName.contains(VOICE_IME);
+    }
+
+    /**
      * Check if the keyboard identified by the substring is installed
      * @param c context
      * @param subString substring the the ID of the keyboard should contain
@@ -397,28 +417,46 @@ public class InputMethodAction implements ServiceConnection {
         return isKeyboardEnabled(c, GBOARD_IME);
     }
 
-    private static void DisplayInformationDialog(@NonNull final Context c,
+    private static void displayInformationDialog(@NonNull final Context c,
                                                  @NonNull final Handler h,
                                                  @NonNull final CharSequence msg,
-                                                 @NonNull final Runnable r) {
+                                                 @NonNull final Runnable r,
+                                                 @Nullable final AtomicBoolean showDialog) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
-            DisplayInformationDialog0(c, msg, r);
+            displayInformationDialog0(c, msg, r, showDialog);
         }
         else {
             h.post(new Runnable() {
                 @Override
                 public void run() {
-                    DisplayInformationDialog0(c, msg, r);
+                    displayInformationDialog0(c, msg, r, showDialog);
                 }
             });
         }
     }
 
-    private static void DisplayInformationDialog0(@NonNull Context c, @NonNull CharSequence msg,
-                                                 @NonNull final Runnable r) {
+    private static void displayInformationDialog0(@NonNull Context c, @NonNull CharSequence msg,
+                                                  @NonNull final Runnable r,
+                                                  @Nullable final AtomicBoolean showDialog) {
+        View checkBoxView= null;
+        if (null != showDialog) {
+            checkBoxView = View.inflate(c, R.layout.input_method_action_help, null);
+            CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox);
+            checkBox.setChecked(!showDialog.get());
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    showDialog.set(!isChecked);
+                }
+            });
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(c);
         builder.setTitle(c.getText(R.string.app_name));
         builder.setMessage(msg);
+        if (null != checkBoxView) {
+            builder.setView(checkBoxView);
+        }
         builder.setPositiveButton(c.getText(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -426,6 +464,8 @@ public class InputMethodAction implements ServiceConnection {
                         r.run();
                     }
                 });
+        builder.setNeutralButton(c.getText(R.string.service_dialog_ime_action_help_not_now), null);
+
         AlertDialog ad = builder.create();
 
         //noinspection ConstantConditions
@@ -445,14 +485,14 @@ public class InputMethodAction implements ServiceConnection {
             return true;
         }
 
-        DisplayInformationDialog(c, h, c.getResources().getString(
+        displayInformationDialog(c, h, c.getResources().getString(
                 R.string.service_dialog_eva_keyboard_not_enabled),
                 new Runnable() {
                     @Override
                     public void run() {
                         displayIMESettings(c);
                     }
-                });
+                }, null);
         return false;
     }
 
@@ -461,23 +501,29 @@ public class InputMethodAction implements ServiceConnection {
      * When not is the case, guides the user to do so.
      *
      * @param c context
-     * @return true if GBoard is installed and enabled or if API < 22
+     * @param installCheckBoxState if not null, show the user a checkbox to not show again the message
+     *                      during the rest of the session
+     * @return true if GBoard is installed and enabled or if API < 22 or
      *
      * Remarks: for devices with API below 22 the GBoard keyboard does not respond to
      * performAction(), so do not ask the user to install and enable it
      */
-    private static boolean checkGBoardEnabled(@NonNull final Context c, @NonNull Handler h) {
+    private boolean checkGBoardEnabled(@NonNull final Context c, @NonNull Handler h,
+                                       @Nullable AtomicBoolean installCheckBoxState) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP_MR1) {
             return true;
         }
-
-        //TODO: check that this advice is not disabled
-
         /* Device with API 22+ */
 
-        if (!isGBoardInstalled(c)) {
+        boolean gBoardInstalled= isGBoardInstalled(c);
+
+        if (!gBoardInstalled && !mShowGBoardInstallationReminder.get()) {
+            return true;
+        }
+
+        if (!gBoardInstalled) {
             /* Not installed */
-            DisplayInformationDialog(c, h, c.getResources().getString(
+            displayInformationDialog(c, h, c.getResources().getString(
                     R.string.service_dialog_gboard_not_installed), new Runnable() {
                 @Override
                 public void run() {
@@ -501,21 +547,21 @@ public class InputMethodAction implements ServiceConnection {
                         c.startActivity(intent);
                     }
                 }
-            });
+            }, installCheckBoxState);
 
             return false;
         }
 
         if (!isGBoardEnabled(c)) {
             /* Not enabled */
-            DisplayInformationDialog(c, h, c.getResources().getString(
+            displayInformationDialog(c, h, c.getResources().getString(
                     R.string.service_dialog_gboard_not_enabled),
                     new Runnable() {
                         @Override
                         public void run() {
                             displayIMESettings(c);
                         }
-                    });
+                    }, null);
             return false;
         }
 

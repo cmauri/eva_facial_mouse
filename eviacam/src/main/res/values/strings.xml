@@ -226,6 +226,8 @@
     <string name="service_dialog_eva_keyboard_gboard_not_selected">Select EVA Keyboard or GBoard through the following dialog.</string>
     <string name="service_dialog_gboard_not_installed">Google keyboard (GBoard) is not installed. Install now?</string>
     <string name="service_dialog_gboard_not_enabled">Google keyboard (GBoard) is not enabled. Enable through the following dialog.</string>
+    <string name="service_dialog_ime_action_help_dont_remind">Don\'t remind me again during the session</string>
+    <string name="service_dialog_ime_action_help_not_now">Not now</string>
     <!-- Keyboard related messages end -->
 
     <!-- Service toast start -->

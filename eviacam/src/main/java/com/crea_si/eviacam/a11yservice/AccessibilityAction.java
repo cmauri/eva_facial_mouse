@@ -266,10 +266,11 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
           EDIT: focus only EditText elements, focusing arbitrary widgets cause scrolling issues
          */
         // TODO: currently only checks for EditText instances, check with EditText subclasses
-        CharSequence clsName;
-        if ((action & AccessibilityNodeInfo.ACTION_CLICK) != 0 &&
-                ((clsName= node.getClassName())!= null) &&
-                clsName.toString().equalsIgnoreCase("android.widget.EditText")) {
+       CharSequence clsName;
+       if ((action & AccessibilityNodeInfo.ACTION_CLICK) != 0 &&
+                (node.isEditable() ||
+                        (((clsName= node.getClassName())!= null) &&
+                           clsName.toString().equalsIgnoreCase("android.widget.EditText")))) {
             node.performAction(AccessibilityNodeInfo.ACTION_FOCUS);
             mInputMethodAction.textViewFocusedSequence();
         }

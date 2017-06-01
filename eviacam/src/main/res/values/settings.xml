@@ -24,6 +24,8 @@
     <integer name="axis_speed_default">8</integer>
     <integer name="axis_speed_min">1</integer>
     <integer name="axis_speed_max">25</integer>
+
+    <bool name="lock_speed_settings_default">true</bool>
     
     <integer name="acceleration_default">2</integer>
     <integer name="acceleration_min">0</integer>

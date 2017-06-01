@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -33,6 +34,7 @@ import android.preference.PreferenceGroup;
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.camera.Camera;
+import com.crea_si.eviacam.util.NumberPickerPreference;
 
 /**
  * The main preferences activity. It is also used for the mouse specific
@@ -59,7 +61,7 @@ public class MousePreferencesActivity extends Activity {
             return true;
         }
     }
-    
+
     /*
      * The settings fragment
      */
@@ -97,6 +99,48 @@ public class MousePreferencesActivity extends Activity {
             addPreferencesFromResource(R.xml.preference_fragment);
 
             /*
+             * Lock speed settings checkbox
+             */
+
+            /* Disable vertical speed if needed */
+            final NumberPickerPreference vSpeedPreference = (NumberPickerPreference)
+                    getPreferenceScreen().findPreference("vertical_speed");
+            final NumberPickerPreference hSpeedPreference = (NumberPickerPreference)
+                    getPreferenceScreen().findPreference("horizontal_speed");
+
+            CheckBoxPreference lockSpeedPreferences =
+                    (CheckBoxPreference) getPreferenceScreen().findPreference("lock_speeds");
+            final boolean lockSpeeds = lockSpeedPreferences.isChecked();
+            if (lockSpeeds) {
+                vSpeedPreference.setValue(hSpeedPreference.getValue());
+                vSpeedPreference.setEnabled(false);
+            }
+
+            lockSpeedPreferences.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if ((Boolean) newValue) {
+                        // Lock speed preferences
+                        vSpeedPreference.setValue(hSpeedPreference.getValue());
+                        vSpeedPreference.setEnabled(false);
+                    } else {
+                        vSpeedPreference.setEnabled(true);
+                    }
+                    return true;
+                }
+            });
+
+            hSpeedPreference.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    if (lockSpeeds) {
+                        vSpeedPreference.setValue((int) newValue);
+                    }
+                    return true;
+                }
+            });
+
+            /*
              * Remove camera2 related preferences if not supported by the device
              */
             if (!Camera.hasCamera2Support()) {
@@ -114,9 +158,9 @@ public class MousePreferencesActivity extends Activity {
              * Remove preferences not applicable in slave mode
             */
             if (slaveMode) {
-                PreferenceGroup cat= (PreferenceGroup) getPreferenceScreen().
+                PreferenceGroup cat = (PreferenceGroup) getPreferenceScreen().
                         findPreference("interface_settings");
-                Preference p= getPreferenceScreen().
+                Preference p = getPreferenceScreen().
                         findPreference(Preferences.KEY_DOCKING_PANEL_EDGE);
                 cat.removePreference(p);
             }
@@ -128,12 +172,12 @@ public class MousePreferencesActivity extends Activity {
             /*
              * Wizard button
              */
-            Preference wizPreference= getPreferenceScreen().findPreference("wizard");
+            Preference wizPreference = getPreferenceScreen().findPreference("wizard");
             wizPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     // If cannot init preferences just ignore silently
-                    if (Preferences.initForA11yService(getActivity())== null) return true;
+                    if (Preferences.initForA11yService(getActivity()) == null) return true;
                     Preferences.get().setRunTutorial(true);
                     Preferences.get().cleanup();
 
@@ -148,16 +192,17 @@ public class MousePreferencesActivity extends Activity {
             /*
              * Version button
              */
-            Preference p= getPreferenceScreen().findPreference("version");
+            Preference p = getPreferenceScreen().findPreference("version");
             p.setSummary(getResources().getText(R.string.app_name) +
-                                        " " + BuildConfig.VERSION_NAME);
+                    " " + BuildConfig.VERSION_NAME);
             p.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 int clickCount;
+
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     clickCount++;
-                    if (clickCount>= 4) {
-                        clickCount= 0;
+                    if (clickCount >= 4) {
+                        clickCount = 0;
                         Intent i = new Intent(getActivity(), TechInfoActivity.class);
                         startActivity(i);
                     }

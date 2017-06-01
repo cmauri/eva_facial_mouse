@@ -76,7 +76,7 @@
     <string name="settings_use_camera2_api_auto">Auto</string>
     <string name="settings_use_camera2_api_yes">Yes (experimental)</string>
     <string name="settings_use_camera2_api_no">No</string>
-
+    <string name="settings_lock_speed_settings">Lock speed settings</string>
     <!-- Settings screen end -->
 
     <!-- actions start -->

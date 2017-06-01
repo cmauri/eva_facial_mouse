@@ -3,7 +3,7 @@
  /*
  ** Enable Viacam for Android, a camera based mouse emulator
  **
- ** Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ ** Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  **
  ** This program is free software: you can redistribute it and/or modify
  ** it under the terms of the GNU General Public License as published by
@@ -40,6 +40,11 @@
             android:defaultValue="@integer/axis_speed_default"
             app:minValue="@integer/axis_speed_min"
             app:maxValue="@integer/axis_speed_max"
+        />
+        <CheckBoxPreference
+            android:key="lock_speeds"
+            android:title="@string/settings_lock_speed_settings"
+            android:defaultValue="@bool/lock_speed_settings_default"
         />
        
        <com.crea_si.eviacam.util.NumberPickerPreference

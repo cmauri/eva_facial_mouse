@@ -27,6 +27,7 @@ package com.crea_si.eviacam.util;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
+import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -63,6 +64,7 @@ public class NumberPickerPreference extends DialogPreference {
         mTitle= this.getTitle();
     }
     
+    @SuppressWarnings("unused")
     public NumberPickerPreference(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.dialogPreferenceStyle);
     }
@@ -113,9 +115,16 @@ public class NumberPickerPreference extends DialogPreference {
     }
 
     public void setValue(int value) {
-        mValue = value;
-        setTitle(mTitle + ": " + Integer.toString(value));
-        persistInt(mValue);
+        Preference.OnPreferenceChangeListener listener= getOnPreferenceChangeListener();
+        boolean update= true;
+        if (null != listener) {
+            update= listener.onPreferenceChange(this, value);
+        }
+        if (update) {
+            mValue = value;
+            setTitle(mTitle + ": " + Integer.toString(value));
+            persistInt(mValue);
+        }
     }
 
     public int getValue() {

@@ -1,0 +1,33 @@
+1. Install Android SDK (SDK platform 23), Android NDK (version r13b+) and
+   Android Studio (version 2.3+).
+
+2. Clone repository and submodules
+
+    git clone --recursive https://github.com/cmauri/eva_facial_mouse.git
+
+    Note that master branch contains only major releases whereas develop
+    branch contains latests changes.
+
+3. Inside the eva_facial_mouse directory create a text file called
+   local.properties which contains variables that point the SDK and NDK
+   installation directories. 
+
+    sdk.dir=<absolute SDK path>
+    ndk.dir=<absolute NDK path>
+
+    For instance:
+
+    sdk.dir=/opt/Android/Sdk
+    ndk.dir=/opt/Android/android-ndk-r13b
+
+4. Download the latest stable OpenCV Android pack from here:
+
+    http://opencv.org/releases.html
+
+5. Unpack the OpenCV Android pack and add the OPENCV_ANDROID_SDK environment
+   variable to point <OpenCV-dir>/sdk. For instance:
+
+    OPENCV_ANDROID_SDK=/opt/Android/OpenCV-3.1.0-android-sdk/sdk
+
+6. Open Android Studio and import eva_facial_mouse directory
+   "Open an existing Android Studio project".

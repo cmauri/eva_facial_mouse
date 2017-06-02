@@ -92,8 +92,7 @@
     <string name="dock_toggle_rest_mode">Conmutar el Mode Repòs. Per desactivar el clic automàtic mentre llegeix o mira un vídeo, per exemple.</string>
 
     <!-- Messages for the notification -->
-    <string name="notification_running_click_to_pause">S\'està executant (clic per aturar)</string>
-    <string name="notification_stopped_click_to_resume">Aturat (clic per reprendre)</string>
+
 
     <!-- OpenCV installation stuff. These allow to compose a message like:
         "Installation cancelled" "EVA"" needs OpenCV manager..."
@@ -203,7 +202,6 @@
     <string name="wizard_full_enable_after">Totes les funcions d\'EVA s\'activaran al finalitzar aquest assistent</string>
 
     <!-- Toasts -->
-    <string name="service_toast_keyboard_not_enabled_toast">El teclat d\'EVA no està activat. Per activar-lo, executi l\'assistent de configuració.</string>
     <string name="service_toast_pointer_stopped_toast">EVA s\'ha aturat %1$s sense detectar el rostre. Per tornar-lo a activar asseguri\'s que el seu rostre apareix dins el visor de càmera.</string>
     <string name="service_toast_navigation_keyboard_advice">Utilitzi el Teclat de Navegació per desplaçar els continguts del navegador web.</string>
     <string name="service_toast_context_menu_enabled">Menú Contextual activat</string>

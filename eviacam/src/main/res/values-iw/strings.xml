@@ -70,8 +70,7 @@
    <string name="dock_toggle_context_menu">החלפת מצב תפריט ההקשר</string>
    <string name="dock_toggle_rest_mode">החלפת מצב מנוחה. כדי לנטרל לחיצות אוטומטיות בזמן קריאה או צפייה בווידאו למשל.</string>
    <!--Messages for the notification-->
-   <string name="notification_running_click_to_pause">פעיל (יש ללחוץ כדי להשהות)</string>
-   <string name="notification_stopped_click_to_resume">נעצר (יש ללחוץ כדי להמשיך)</string>
+
    <!--OpenCV installation stuff. These allow to compose a message like:
         "Installation cancelled" "EVA"" needs OpenCV manager..."-->
    <string name="opencv_package_installation_failed">התקנת החבילה נכשלה</string>
@@ -168,7 +167,6 @@
    <string name="wizard_run_wizard_again">כדי להפעיל את האשף שוב, עליך לגשת אל \nהגדרות &gt; נגישות &gt; EVA Facial Mouse &gt; הגדרות</string>
    <string name="wizard_full_enable_after">כל התכונות של עכבראש יופעלו לאחר האשף הזה</string>
    <!--Toasts and other messages-->
-   <string name="service_toast_keyboard_not_enabled_toast">לא זוהתה מקלדת עכבראש. כדי להגדיר אותה, יש להשתמש באשף.</string>
    <string name="service_toast_pointer_stopped_toast">עכבראש עצר את %1$s מבלי לזהות את פניך. כדי להפעיל את השירות שוב, יש לוודא כי הפנים שלך ממורכזות בתוך מציג המצלמה.</string>
    <string name="service_toast_navigation_keyboard_advice">ניתן להשתמש במקלדת הניווט כדי לגלול בתכני הדפדפן.</string>
    <string name="service_toast_context_menu_enabled">תפריט ההקשר פעיל</string>

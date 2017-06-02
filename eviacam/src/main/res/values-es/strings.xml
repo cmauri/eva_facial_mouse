@@ -92,8 +92,6 @@
     <string name="dock_toggle_rest_mode">Conmutar el Modo Reposo. Para desactivar el clic automático mientras lee o mira un vídeo, por ejemplo.</string>
 
     <!-- Messages for the notification -->
-    <string name="notification_running_click_to_pause">Se está ejecutando (clic para pausar)</string>
-    <string name="notification_stopped_click_to_resume">Detenido (clic para reanudar)</string>
 
     <!-- OpenCV installation stuff. These allow to compose a message like:
         "Installation cancelled" "EVA"" needs OpenCV manager..."
@@ -202,7 +200,6 @@
     <string name="wizard_full_enable_after">Todas las funciones de EVA se activarán al finalizar este asistente</string>
 
     <!-- Toasts -->
-    <string name="service_toast_keyboard_not_enabled_toast">El teclado de EVA no está activado. Ejecute EVA Asistente para activarlo.</string>
     <string name="service_toast_pointer_stopped_toast">EVA se ha detenido %1$s sin detectar el rostro. Para volverlo a activar, asegúrese de que su rostro aparece dentro del visor de cámara.</string>
     <string name="service_toast_navigation_keyboard_advice">Use el Teclado de Navegación para desplazar los contenidos del navegador web.</string>
     <string name="service_toast_context_menu_enabled">Menú Contextual activado</string>

@@ -103,14 +103,12 @@
     <string name="wizard_trying_to_detect_face">Versuche Gesicht zu erkennen…</string>
     <string name="wizard_keyboard_not_configured_confirm">Wirklich fortsetzen ohne eine Tastatur zu konfigurieren?</string>
     <string name="slave_settings_gamepad_transparency">Transparenz</string>
-    <string name="service_toast_keyboard_not_enabled_toast">EVA Tastatur ist nicht aktiviert. Verwende den Assistenten zur Einrichtung.</string>
     <string name="service_camera_no_access">Fehler beim Zugriff auf die Kamera, möglicherweise wird sie von einer anderen Applikation verwendet.</string>
     <string name="service_toast_context_menu_disabled">Kontextmenü deaktiviert</string>
     <string name="service_toast_context_menu_enabled">Kontextmenü aktiviert</string>
     <string name="dock_menu_button">Menüleiste ein-/ausblenden</string>
     <string name="wizard_eva_not_running_summary">Um den Assistenten zu verwenden, muss der EVA Facial Mouse Dienst aktiviert werden</string>
     <string name="wizard_we_finished">Wir sind fertig!</string>
-    <string name="notification_stopped_click_to_resume">Gestoppt (antippen um fortzusetzen)</string>
     <string name="wizard_to_continue_make_click">Bevor du fortsetzt, versuche einen normalen Klick und einen langen Klick auf die Schaltfläche</string>
     <string name="wizard_set_keyboard">1. Öffne: \'Einstellungen > Sprache &amp; Eingabe\'>
         \n2. Aktiviere \'EVA Tastatur\'
@@ -120,7 +118,6 @@
     <string name="action_scroll_backward">Rückwärts blättern</string>
     <string name="wizard_scroll_buttons">Scroll Schaltflächen</string>
     <string name="wizard_scroll_buttons_description">Zum Scrollen verwende die Scroll Schaltflächen</string>
-    <string name="notification_running_click_to_pause">Gestartet (antippen zum pausieren)</string>
     <string name="wizard_run_wizard_again">Um den Assistenten erneut auszuführen, öffne\nEinstellungen > Bedienungshilfen > EVA Facial Mouse > Einstellungen</string>
     <string name="wizard_pre_click_summary">Zum Klicken halte den Zeiger über die gewünschte Position. Nach einem kurzen Moment wird automatisch ein Klick ausgelöst. Wenn das angeklickete Element mehr als eine Aktion unterstützt, wird ein Kontextmenü dargestellt.</string>
     <string name="service_toast_pointer_stopped_toast">EVA wird nach %1$s gestoppt falls dein Gesicht nicht erkannt wurde. Zur Fortsetzung vergewissere dich, dass sich dein Gesicht im Aufnahmebereich der Kamera befindet.</string>

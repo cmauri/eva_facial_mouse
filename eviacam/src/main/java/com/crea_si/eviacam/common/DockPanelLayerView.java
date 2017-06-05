@@ -1,7 +1,7 @@
 /*
  * Enable Viacam for Android, a camera based mouse emulator
  *
- * Copyright (C) 2015 Cesar Mauri Loba (CREA Software Systems)
+ * Copyright (C) 2015-17 Cesar Mauri Loba (CREA Software Systems)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,14 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.util.ViewUtils;
 
@@ -69,7 +71,7 @@ public class DockPanelLayerView extends RelativeLayout
     private Bitmap mToggleCollapsed;
 
     // status of the context menu
-    private boolean mContextMenuEnabled= true;
+    private boolean mContextMenuEnabled= false;
 
     // status of the rest mode
     private boolean mRestModeEnabled= false;
@@ -457,5 +459,21 @@ public class DockPanelLayerView extends RelativeLayout
                 setChildrenRestModeAppearance(vg.getChildAt(i), alpha);
             }
         }
+    }
+
+    public void startFlashingContextMenuButton() {
+        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from visible to invisible
+        animation.setDuration(200); // duration
+        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        animation.setRepeatCount(Animation.INFINITE);
+        animation.setRepeatMode(Animation.REVERSE);
+
+        ImageButton ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_context_menu);
+        ib.startAnimation(animation);
+    }
+
+    public void stopFlashingContextMenuButton() {
+        ImageButton ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_context_menu);
+        ib.clearAnimation();
     }
 }

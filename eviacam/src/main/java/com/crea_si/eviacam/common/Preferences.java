@@ -60,6 +60,7 @@ public class Preferences {
     private static final String KEY_SHOW_LAUNCHER_HELP= "show_launcher_help";
     public static final String KEY_USE_CAMERA2_API= "use_camera2_api";
     private static final String KEY_ENGINE_WAS_RUNNING= "engine_was_running";
+    private static final String KEY_SHOW_CONTEXT_MENU_HELP = "display_context_menu_help";
 
     /**
      * Gamepad locations
@@ -384,6 +385,25 @@ public class Preferences {
     public void setEngineWasRunning(boolean v) {
         SharedPreferences.Editor spe= mSharedPreferences.edit();
         spe.putBoolean(Preferences.KEY_ENGINE_WAS_RUNNING, v);
+        spe.apply();
+    }
+
+    /**
+     * Get whether need to show the context menu help dialog
+     *
+     * @return true when need to show it
+     */
+    public boolean getShowContextMenuHelp () {
+        return mSharedPreferences.getBoolean(Preferences.KEY_SHOW_CONTEXT_MENU_HELP, true);
+    }
+
+    /**
+     * Save whether need to show the context menu help dialog
+     * @param v value to save
+     */
+    public void setShowContextMenuHelp (boolean v) {
+        SharedPreferences.Editor spe= mSharedPreferences.edit();
+        spe.putBoolean(Preferences.KEY_SHOW_CONTEXT_MENU_HELP, v);
         spe.apply();
     }
  }

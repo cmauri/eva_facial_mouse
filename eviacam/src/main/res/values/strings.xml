@@ -228,6 +228,8 @@
     <string name="service_dialog_gboard_not_enabled">Google keyboard (GBoard) is not enabled. Enable through the following dialog.</string>
     <string name="service_dialog_ime_action_help_dont_remind">Don\'t remind me again during the session</string>
     <string name="service_dialog_ime_action_help_not_now">Not now</string>
+    <string name="service_dialog_context_menu_help_msg">The element you clicked supports more than one action. The Context Menu allows you to chose the desired action. To enable and disable the Context Menu use the flashing icon.</string>
+    <string name="service_dialog_context_menu_help_dont_remind">Don\'t remind me again</string>
     <!-- Keyboard related messages end -->
 
     <!-- Service toast start -->

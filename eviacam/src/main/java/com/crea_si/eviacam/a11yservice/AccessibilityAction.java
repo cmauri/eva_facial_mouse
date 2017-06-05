@@ -25,7 +25,9 @@ import java.util.List;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
@@ -34,15 +36,19 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.crea_si.eviacam.BuildConfig;
 import com.crea_si.eviacam.common.DockPanelLayerView;
 import com.crea_si.eviacam.common.EVIACAM;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.common.InputMethodAction;
+import com.crea_si.eviacam.common.Preferences;
 import com.crea_si.eviacam.util.AccessibilityNodeDebug;
 
  /**
@@ -109,6 +115,9 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
 
     // tracks whether the contextual menu is open
     private boolean mContextMenuOpen= false;
+
+    // tracks whether the contextual menu help dialog is open
+    private boolean mContextMenuHelpOpen= false;
 
     // node on which the action should be performed when context menu open
     private AccessibilityNodeInfo mNode;
@@ -317,7 +326,7 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
      * @param pInt - point in screen coordinates
      */
     void performAction(@NonNull Point pInt) {
-        if (mContextMenuOpen) {
+        if (mContextMenuOpen && !mContextMenuHelpOpen) {
             /* When context menu open only check it */
             int action= mContextMenuLayerView.testClick(pInt);
             mContextMenuLayerView.hideContextMenu();
@@ -417,6 +426,18 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
                     mNode = node;
                 }
                 else {
+                    /* Need to display help dialog. Run in the main thread */
+                    if (Preferences.get().getShowContextMenuHelp() &&
+                            mDockPanelLayerView.getVisibility() == View.VISIBLE) {
+                        mContextMenuHelpOpen= true;
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                showContextMenuHelp();
+                            }
+                        });
+                    }
+
                     /* Pick the default action */
                     for (ActionLabel al : mActionLabels) {
                         if ((al.action & availableActions)!= 0) {
@@ -432,7 +453,42 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
             }
         }
     }
-    
+
+    /**
+     * Show the context menu help dialog
+     */
+    private void showContextMenuHelp() {
+        mDockPanelLayerView.startFlashingContextMenuButton();
+
+        final Context c= mDockPanelLayerView.getContext();
+        View checkBoxView = View.inflate(c, R.layout.context_menu_help, null);
+        CheckBox checkBox = (CheckBox) checkBoxView.findViewById(R.id.checkbox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Preferences.get().setShowContextMenuHelp(!isChecked);
+            }
+        });
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setTitle(c.getText(R.string.app_name));
+        builder.setMessage(c.getText(R.string.service_dialog_context_menu_help_msg));
+        builder.setView(checkBoxView);
+        builder.setPositiveButton(c.getText(android.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mContextMenuHelpOpen= false;
+                        mDockPanelLayerView.stopFlashingContextMenuButton();
+                    }
+                });
+        AlertDialog ad = builder.create();
+
+        //noinspection ConstantConditions
+        ad.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        ad.show();
+    }
+
     /**
      * Needs to be called at regular intervals
      * 

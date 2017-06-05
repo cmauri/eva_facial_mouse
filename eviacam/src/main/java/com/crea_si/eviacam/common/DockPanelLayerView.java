@@ -28,6 +28,7 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -347,7 +348,14 @@ public class DockPanelLayerView extends RelativeLayout
                 @Override
                 public void run() {
                     if (mIsExpanded) collapse();
-                    else expand();
+                    else {
+                        expand();
+                        if (mRestModeEnabled) {
+                            mRestModeEnabled = false;
+                            updateToggleButtons ();
+                            setRestModeAppearance();
+                        }
+                    }
                 }
             });
         }
@@ -358,6 +366,7 @@ public class DockPanelLayerView extends RelativeLayout
                 public void run() {
                     updateToggleButtons ();
                     setRestModeAppearance();
+                    collapse();
                 }
             });
         }
@@ -407,6 +416,20 @@ public class DockPanelLayerView extends RelativeLayout
      */
     public boolean getContextMenuEnabled () {
         return mContextMenuEnabled;
+    }
+
+    /**
+     * Check whether the point below the pointer is actionable
+     * @param p point in screen coordinates
+     * @return true when is actionable
+     *
+     * In rest mode, only a specific button in the dock panel works
+     */
+    public boolean isActionable(@NonNull Point p) {
+        if (!mRestModeEnabled) return true;
+        int id= getViewIdBelowPoint(p);
+
+        return id == R.id.toggle_rest_mode || id == R.id.expand_collapse_dock_button;
     }
     
     private void expand() {

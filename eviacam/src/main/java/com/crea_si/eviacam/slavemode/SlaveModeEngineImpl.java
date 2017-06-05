@@ -386,6 +386,6 @@ public class SlaveModeEngineImpl extends CoreEngine implements SlaveModeEngine, 
         mPointInt.y= (int) location.y;
 
         // Rest mode, only specific button in the dock panel works
-        return (mDockPanelLayerView.getViewIdBelowPoint(mPointInt) == R.id.toggle_rest_mode);
+        return mDockPanelLayerView.isActionable(mPointInt);
     }
 }

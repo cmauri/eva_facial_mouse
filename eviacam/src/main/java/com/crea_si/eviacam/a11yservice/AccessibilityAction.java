@@ -316,8 +316,8 @@ import com.crea_si.eviacam.util.AccessibilityNodeDebug;
     boolean isActionable(@NonNull Point p) {
         if (!mDockPanelLayerView.getRestModeEnabled()) return true;
 
-        // Rest mode, only specific button in the dock panel works
-        return (mDockPanelLayerView.getViewIdBelowPoint(p) == R.id.toggle_rest_mode);
+        /* In rest mode check for active areas of the Dock Menu */
+        return mDockPanelLayerView.isActionable(p);
     }
 
     /**

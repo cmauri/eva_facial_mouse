@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <!--Title for Latin keyboard-->
+  <string name="kbd_service_name">Klávesnice EVA</string>
+  <!--Symbols that are commonly considered word separators in this language-->
+  <string name="kbd_word_separators">\u0020.,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|\"</string>
+  <!--Labels on soft keys-->
+  <string name="kbd_key_label_go">Provést</string>
+  <string name="kbd_key_label_next">Další</string>
+  <string name="kbd_key_label_send">Odeslat</string>
+  <!--Labels for navigation keyboard-->
+  <string name="kdd_key_label_delete">Smazat</string>
+  <string name="kbd_key_label_home">Domů</string>
+  <string name="kbd_key_label_pgup">Nahoru</string>
+  <string name="kbd_key_label_end">Konec</string>
+  <string name="kbd_key_label_pgdown">Dolů</string>
+  <!--Labels for subtype-->
+  <string name="kbd_label_subtype_generic">%s</string>
+  <!--Titles for ImePreference-->
+  <string name="kbd_settings_name">Nastavení klávesnice EVA</string>
+  <string name="kbd_language_selection_title">Jazyky klávesnice</string>
+  <string name="kbd_select_language">Nastavit jazyky klávesnice</string>
+</resources>

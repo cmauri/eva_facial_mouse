@@ -29,6 +29,7 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -45,13 +46,16 @@ import android.widget.RelativeLayout;
 import com.crea_si.eviacam.R;
 import com.crea_si.eviacam.util.ViewUtils;
 
+/**
+ * Dock menu view
+ */
 public class DockPanelLayerView extends RelativeLayout 
     implements OnSharedPreferenceChangeListener {
     
     private static final int TOGGLE_BUTTON_SHORT_SIDE_DP= 18;
     private static final int TOGGLE_BUTTON_LONG_SIDE_DP= 30;
     private static final int TOGGLE_BUTTON_PADDING_DP= 2;
-    
+
     private final int DOCKING_PANEL_EDGE_DEFAULT;
     private final int EDGE_RIGHT;
     private final int EDGE_TOP;
@@ -66,10 +70,13 @@ public class DockPanelLayerView extends RelativeLayout
     private boolean mIsExpanded= true;
     
     // arrow icon when the panel is expanded
-    private Bitmap mToggleExpanded;
+    private Bitmap mToggleExpandedArrow;
     
     // arrow icon when the panel is collapsed
-    private Bitmap mToggleCollapsed;
+    private Bitmap mToggleCollapsedArrow;
+
+    // rest mode icon when the panel is collapsed
+    private Bitmap mToggleCollapsedRestMode;
 
     // status of the context menu
     private boolean mContextMenuEnabled= false;
@@ -77,16 +84,20 @@ public class DockPanelLayerView extends RelativeLayout
     // status of the rest mode
     private boolean mRestModeEnabled= false;
 
-    public DockPanelLayerView(Context context) {
-        super(context);
+    /**
+     * Constructor
+     * @param c context
+     */
+    public DockPanelLayerView(Context c) {
+        super(c);
        
         // get constants from resources
-        Resources r= context.getResources();
+        Resources r= c.getResources();
         DOCKING_PANEL_EDGE_DEFAULT= r.getInteger(R.integer.docking_panel_edge_default);
         EDGE_RIGHT= Integer.parseInt(r.getString(R.string.docking_panel_edge_right_value));
         EDGE_TOP= Integer.parseInt(r.getString(R.string.docking_panel_edge_top_value));
         EDGE_BOTTOM=  Integer.parseInt(r.getString(R.string.docking_panel_edge_bottom_value));
-        DISABLED_ALPHA= (float) (r.getColor(R.color.disabled_alpha) >> 24) / 255.0f;
+        DISABLED_ALPHA= (float) (ContextCompat.getColor(c, R.color.disabled_alpha) >> 24) / 255.0f;
         
         // shared preferences
         SharedPreferences sp= Preferences.get().getSharedPreferences();
@@ -128,7 +139,7 @@ public class DockPanelLayerView extends RelativeLayout
     }
     
     /**
-     * create container and set layout parameters
+     * Create container and set layout parameters
      */
     private static LinearLayout createContainerView (Context c, int gravity) {
         
@@ -163,6 +174,12 @@ public class DockPanelLayerView extends RelativeLayout
     
     /**
      * Inflate contents view and apply size
+     *
+     * @param c context
+     * @param container into which add the buttons
+     * @param gravity orientation of the layout
+     * @param size multiplier to scale the size of the buttons
+     * @return newly created view
      */
     private static View createPanelButtonsView (
             Context c, ViewGroup container, int gravity, float size) {
@@ -192,16 +209,24 @@ public class DockPanelLayerView extends RelativeLayout
         
         return contents;
     }
-    
+
+    /**
+     * Check if the menu should be draw in vertical orientation according to its gravity value
+     * @param gravity gravity value
+     * @return true when vertical
+     */
     private static boolean isVertical (int gravity) {
         return (gravity == Gravity.END || gravity == Gravity.START);
     }
     
     /**
-     * create toggle button
+     * Create toggle button (i.e. button to show/hide the menu
+     * @param gravity orientation of the layout
+     * @param size multiplier to scale the size of the buttons
+     * @return newly created view
      */
     private View createToggleButtonView (int gravity, float size) {
-        // first we need a relative layout for centering toggle
+        /* first we need a relative layout for centering toggle */
         RelativeLayout buttonLayout= new RelativeLayout(this.getContext());
         if (isVertical(gravity)) {
             LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams (
@@ -216,23 +241,23 @@ public class DockPanelLayerView extends RelativeLayout
             buttonLayout.setLayoutParams(llp);
         }
         
-        // size of the button
+        /* compute the size of the button */
         int longSide= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 TOGGLE_BUTTON_LONG_SIDE_DP, getResources().getDisplayMetrics()) * size);
         int shortSide= (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                TOGGLE_BUTTON_SHORT_SIDE_DP, getResources().getDisplayMetrics()) *size);
+                TOGGLE_BUTTON_SHORT_SIDE_DP, getResources().getDisplayMetrics()) * size);
         
-        // create the button
-        ImageButton ib= new ImageButton(this.getContext());
+        /* create the button */
+        ImageButton ib= new ImageButton(getContext());
         ib.setId(R.id.expand_collapse_dock_button);
-        ib.setBackgroundColor(getResources().getColor(R.color.half_alpha));
+        ib.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.half_alpha));
         ib.setContentDescription(this.getContext().getText(R.string.dock_menu_button));
         ib.setScaleType(ScaleType.FIT_CENTER);
         int padding_px = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
                 TOGGLE_BUTTON_PADDING_DP, getResources().getDisplayMetrics());
         ib.setPadding(padding_px, padding_px, padding_px, padding_px);
         
-        // set layout params
+        /* set layout params */
         if (isVertical(gravity)) {
             RelativeLayout.LayoutParams rlp= new RelativeLayout.LayoutParams(shortSide, longSide);
             rlp.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
@@ -245,13 +270,21 @@ public class DockPanelLayerView extends RelativeLayout
         }
         buttonLayout.addView(ib);
         
-        // get original bitmap (which is arrow left)
-        Drawable d= this.getContext().getResources().getDrawable(R.drawable.arrow_left);
+        /*
+         * get and scale bitmaps
+         */
+
+        /* get arrow left icon and scale */
+        Drawable d= ContextCompat.getDrawable(getContext(), R.drawable.arrow_left);
         Bitmap origBitmap= ((BitmapDrawable) d).getBitmap();
-        
-        // scale to the final size
         Bitmap arrowLeft= Bitmap.createScaledBitmap(origBitmap, shortSide, longSide, true);
-        
+
+        /* get rest mode icon and scale */
+        d= ContextCompat.getDrawable(getContext(), R.drawable.ic_rest_mode_enabled);
+        origBitmap= ((BitmapDrawable) d).getBitmap();
+        mToggleCollapsedRestMode= Bitmap.createScaledBitmap(origBitmap, longSide, shortSide, true);
+
+        /* rotate arrow as needed */
         if (isVertical(gravity)) {
             // arrow right
             Matrix matrix = new Matrix(); 
@@ -260,12 +293,12 @@ public class DockPanelLayerView extends RelativeLayout
                     arrowLeft.getHeight(), matrix, false);
             
             if (gravity == Gravity.START) {
-                mToggleExpanded= arrowLeft;
-                mToggleCollapsed= arrowRight;
+                mToggleExpandedArrow = arrowLeft;
+                mToggleCollapsedArrow = arrowRight;
             }
             else { // END
-                mToggleExpanded= arrowRight;
-                mToggleCollapsed= arrowLeft;
+                mToggleExpandedArrow = arrowRight;
+                mToggleCollapsedArrow = arrowLeft;
             }
         }
         else {
@@ -281,21 +314,26 @@ public class DockPanelLayerView extends RelativeLayout
                     arrowUp.getHeight(), matrix, false);
 
             if (gravity == Gravity.TOP) {
-                mToggleExpanded= arrowUp;
-                mToggleCollapsed= arrowDown;
+                mToggleExpandedArrow = arrowUp;
+                mToggleCollapsedArrow = arrowDown;
             }
             else { // BOTTOM
-                mToggleExpanded= arrowDown;
-                mToggleCollapsed= arrowUp;
+                mToggleExpandedArrow = arrowDown;
+                mToggleCollapsedArrow = arrowUp;
             }
         }
-        ib.setImageBitmap(mToggleExpanded);
+        ib.setImageBitmap(mToggleExpandedArrow);
         
         return buttonLayout;
     }
-    
+
+    /**
+     * Create and assemble the full menu
+     * @param gravity orientation of the layout
+     * @param size multiplier to scale the size of the buttons
+     */
     private void createAndAddDockPanel (int gravity, float size) {
-    
+
         // create elements
         LinearLayout container= createContainerView (getContext(), gravity);
         
@@ -325,7 +363,7 @@ public class DockPanelLayerView extends RelativeLayout
     
     /**
      * Finds the ID of the view below the point
-     * @param p - the point
+     * @param p - the point in screen coordinates
      * @return id of the view, NO_ID otherwise
      */
     public int getViewIdBelowPoint (Point p) {
@@ -381,7 +419,9 @@ public class DockPanelLayerView extends RelativeLayout
         }
     }
 
-    /* Update the bitmaps of toggle buttons */
+    /**
+     * Update the bitmaps of toggle buttons
+     */
     private void updateToggleButtons () {
         ImageButton ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_rest_mode);
         if (mRestModeEnabled) {
@@ -431,7 +471,10 @@ public class DockPanelLayerView extends RelativeLayout
 
         return id == R.id.toggle_rest_mode || id == R.id.expand_collapse_dock_button;
     }
-    
+
+    /**
+     * Expand the view so it becomes fully visible
+     */
     private void expand() {
         if (mIsExpanded) return;
         
@@ -440,11 +483,14 @@ public class DockPanelLayerView extends RelativeLayout
         
         ImageButton ib= (ImageButton)
                 mDockPanelView.findViewById(R.id.expand_collapse_dock_button);
-        if (ib != null) ib.setImageBitmap(mToggleExpanded);
+        if (ib != null) ib.setImageBitmap(mToggleExpandedArrow);
                 
         mIsExpanded= true;
     }
-    
+
+    /**
+     * Hide the menu leaving only a button to expand it again
+     */
     private void collapse() {
         if (!mIsExpanded) return;
         
@@ -453,7 +499,14 @@ public class DockPanelLayerView extends RelativeLayout
         
         ImageButton ib= (ImageButton)
                 mDockPanelView.findViewById(R.id.expand_collapse_dock_button);
-        if (ib != null) ib.setImageBitmap(mToggleCollapsed);
+        if (ib != null) {
+            if (mRestModeEnabled) {
+                ib.setImageBitmap(mToggleCollapsedRestMode);
+            }
+            else {
+                ib.setImageBitmap(mToggleCollapsedArrow);
+            }
+        }
 
         mIsExpanded= false;
     }
@@ -466,9 +519,12 @@ public class DockPanelLayerView extends RelativeLayout
 
         setChildrenRestModeAppearance(mDockPanelView, alpha);
     }
-    
-    /*
+
+    /**
      * Recursive function change alpha to all buttons except the rest mode one
+     *
+     * @param v view
+     * @param alpha alpha channel value
      */
     private static void setChildrenRestModeAppearance(View v, float alpha) {
         if (v == null) return;
@@ -484,9 +540,12 @@ public class DockPanelLayerView extends RelativeLayout
         }
     }
 
+    /**
+     * Make the context menu button blink
+     */
     public void startFlashingContextMenuButton() {
         final Animation animation = new AlphaAnimation(1, 0); // Change alpha from visible to invisible
-        animation.setDuration(200); // duration
+        animation.setDuration(400); // duration
         animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
         animation.setRepeatCount(Animation.INFINITE);
         animation.setRepeatMode(Animation.REVERSE);
@@ -495,6 +554,9 @@ public class DockPanelLayerView extends RelativeLayout
         ib.startAnimation(animation);
     }
 
+    /**
+     * Stop blinking the context menu button
+     */
     public void stopFlashingContextMenuButton() {
         ImageButton ib= (ImageButton) mDockPanelView.findViewById(R.id.toggle_context_menu);
         ib.clearAnimation();

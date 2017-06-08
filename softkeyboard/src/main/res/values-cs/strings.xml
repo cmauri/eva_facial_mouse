@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<resources>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
   <!--Title for Latin keyboard-->
   <string name="kbd_service_name">Klávesnice EVA</string>
   <!--Symbols that are commonly considered word separators in this language-->

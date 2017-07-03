@@ -12,7 +12,7 @@
   <string name="kdd_key_label_delete">Smazat</string>
   <string name="kbd_key_label_home">Domů</string>
   <string name="kbd_key_label_pgup">Nahoru</string>
-  <string name="kbd_key_label_end">Konec</string>
+  <string name="kbd_key_label_end">Na konec</string>
   <string name="kbd_key_label_pgdown">Dolů</string>
   <!--Labels for subtype-->
   <string name="kbd_label_subtype_generic">%s</string>

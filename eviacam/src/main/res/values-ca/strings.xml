@@ -137,7 +137,7 @@
     <string name="wizard_icon_name">EVA Assistent</string>
     <string name="wizard_back">Enrere</string>
     <string name="wizard_positioning">Posicionament</string>
-    <string name="wizard_positioning_summary">Instal·li el dispositiu enfront de la cara, amb el cap en una posició natural, a uns 30–50cm.\nLa cara completa ha d\'aparèixer dins el visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre.</string>
+    <string name="wizard_positioning_summary2">Instal·li el dispositiu enfront de la cara, amb el cap en una posició natural, a uns 30–50cm.\nLa cara completa ha d\'aparèixer dins el visor de la part superior per ser detectada. Quan això succeeix, el marc passa a vermell i una creu indica el centre del rostre. Per a detectar el rostre correctament aquest ha d\'aparèixer uniformement il·luminat.</string>
     <string name="wizard_configuration_settings">Opcions de configuració</string>
     <string name="wizard_configuration_settings_summary">Per configurar la velocitat del punter i altres paràmetres, vagi a\nConfiguració > Accessibilitat > EVA Facial Mouse > Configuració</string>
     <string name="settings_configuration_wizard">Assistent de configuració</string>
@@ -183,7 +183,7 @@
     <string name="wizard_keyboard_not_configured">Teclat no configurat</string>
     <string name="wizard_keyboard_not_configured_confirm">Està segur que vol continuar sense configurar el teclat?</string>
     <string name="wizard_pointer_speed">Velocitat del punter</string>
-    <string name="wizard_pointer_speed_summary">Mogui el cap per moure el punter. Tracti d\'abastar tota la pantalla. Ajusti les velocitats si cal.</string>
+    <string name="wizard_pointer_speed_summary2">Mogui el cap per moure el punter. Tracti d\'abastar tota la pantalla. Si cal, ajusti la velocitat fins que li resulti apropiada.</string>
     <string name="wizard_skip_wizard">Ometre aquest assistent</string>
     <string name="wizard_close_wizard_question">Tancar l\'assistent?</string>
     <string name="wizard_eva_not_running">EVA no s\'està executant</string>

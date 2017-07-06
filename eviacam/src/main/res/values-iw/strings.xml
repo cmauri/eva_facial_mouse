@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
    <!--Do NOT translate-->
    <!--Description shown in the accessibility service screen-->
    <string name="service_description">עכבראש הנה תכנית הדמייה להזזת העכבר עם הזזת הראש. התכנית עוקבת אחר הפנים שלך בעזרת המצלמה הקדמית של ההתקן שלך.</string>

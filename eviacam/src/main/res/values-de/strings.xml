@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
     <string name="settings_acceleration">Beschleunigung</string>
     <string name="settings_acceleration_summary">Zeigerbeschleunigung. 0 deaktiviert</string>
     <string name="settings_after_five_minutes">nach 5 Minuten</string>

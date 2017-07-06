@@ -13,7 +13,7 @@
   <string name="settings_acceleration">Zrychlení</string>
   <string name="settings_acceleration_summary">Zrychlení kurzoru. Vypnete nastavením na „0“.</string>
   <string name="settings_click_settings">Nastavení klikání</string>
-  <string name="settings_detection_settings">Nastavení detekce</string>
+  <string name="settings_detection_settings">Nastavení rozpoznání</string>
   <string name="settings_never">Nikdy</string>
   <string name="settings_after_ten_seconds">po 10 vteřinách</string>
   <string name="settings_after_thirty_seconds">po 30 vteřinách</string>
@@ -30,7 +30,7 @@
   <string name="settings_motion_threshold_summary">Minimální délka pohybu hlavou, při které se pohne kurzor.</string>
   <string name="settings_sound_on_click">Zvukové upozornění při kliknutí</string>
   <string name="settings_consecutive_clicks">Souvislé klikání</string>
-  <string name="settings_time_without_detection">Deaktivovat aplikaci EVA v případě, že není rozpoznán obličej.</string>
+  <string name="settings_time_without_detection">Vypnut aplikaci EVA, není-li rozpoznán obličej.</string>
   <string name="settings_interface_settings">Nastavení rozhraní</string>
   <string name="settings_dock_menu_position">Umístění ovládacích ikonek</string>
   <string name="settings_dock_menu_position_left">Vlevo</string>
@@ -142,7 +142,7 @@
 \n4. Klikněte na \'Výchozí klávesnice\'
 \n5. Zvolte \'Klávesnici EVA\'</string>
   <string name="wizard_positioning">Nastavení pozice</string>
-  <string name="wizard_positioning_summary">Zařízení umístěte 30-50 cm od obličeje. Hlavu držte vzpřímeně.\nV okénku nahoře byste měli vidět celý svůj obličej, jinak nebude rozpoznán. Jakmile bude obličej rozpoznán, rámeček se zbarví červeně a uprostřed obličeje se objeví křížek.</string>
+  <string name="wizard_positioning_summary2">Zařízení umístěte 30–50 cm od obličeje. Hlavu držte vzpřímeně.\nV okénku nahoře byste měli vidět celý svůj obličej, jinak nebude rozpoznán. Jakmile bude obličej rozpoznán, rámeček se zbarví červeně a uprostřed obličeje se objeví křížek. Pro správné rozpoznání obličeje je důležité i rovnoměrné osvětlení vašeho obličeje.</string>
   <string name="wizard_dock_menu">Ovládací ikonky</string>
   <string name="wizard_dock_menu_summary">Ovládací ikonky na levém okraji displeje umožňují rychlý přístup k několika funkcím.</string>
   <string name="wizard_home">Domů</string>
@@ -156,7 +156,7 @@
   <string name="wizard_keyboard_not_configured">Klávesnice není nakonfigurována.</string>
   <string name="wizard_keyboard_not_configured_confirm">Jste si jisti, že chcete pokračovat bez konfigurace klávesnice?</string>
   <string name="wizard_pointer_speed">Rychlost kurzoru</string>
-  <string name="wizard_pointer_speed_summary">Kurzor ovládáte pohybem hlavy. Zkuste kurzor posunout až k okrajům obrazovky. V případě potřeby upravte rychlost.</string>
+  <string name="wizard_pointer_speed_summary2">Kurzor ovládáte pohybem hlavy. Zkuste kurzor posunout až k okrajům obrazovky. Je to důležité pro rozpoznání vaší přirozené rychlosti pohybu hlavou. Je důležité dbát na rovnoměrné osvětlení obličeje. V případě potřeby můžete rychlost upravit.</string>
   <string name="wizard_configuration_settings">Konfigurace</string>
   <string name="wizard_configuration_settings_summary">Pro nastavení rychlosti kurzoru a další možnosti jděte do \nNastavení &gt; Usnadnění &gt; EVA Facial Mouse &gt; Nastavení</string>
   <string name="wizard_settings">Nastavení</string>
@@ -176,10 +176,10 @@
   <string name="wizard_close_wizard_question">Chcete průvodce ukončit?</string>
   <string name="wizard_eva_not_running">Aplikace EVA je vypnutá.</string>
   <string name="wizard_eva_not_running_summary">Před spuštěním průvodce je nutné zapnout EVA Facial Mouse.</string>
-  <string name="wizard_trying_to_detect_face">Probíhá identifikace obličeje...</string>
+  <string name="wizard_trying_to_detect_face">Probíhá identifikace obličeje…</string>
   <string name="wizard_face_detected">Obličej identifikován.</string>
   <string name="wizard_pre_click_summary">Chcete-li kliknout, najeďte na příslušné místo displeje a upřeně se na něj zadívejte. Je-li na daném místě možné provést vice než jednu akci, zobrazí se kontextové menu.</string>
-  <string name="wizard_click_enabled_next">Oddalšího kroku již budete zařízení ovládat obličejem.</string>
+  <string name="wizard_click_enabled_next">Od dalšího kroku již budete zařízení ovládat obličejem.</string>
   <string name="wizard_to_test_click">Vyzkoušejte si klikání na tomto TLAČÍTKU. Všimněte si, že když kliknete mimo oblast tlačítka, zobrazí se navigační tlačítka.</string>
   <string name="wizard_button">TLAČÍTKO</string>
   <string name="wizard_to_continue_make_click">Než budete pokračovat, zkuste na TLAČÍTKO kliknout a kliknout a podržet.</string>
@@ -227,8 +227,5 @@
   <string name="close">Zavřít</string>
   <string name="camera_no_longer_available">Kamera zařízení není momentálně k dispozici.</string>
   <string name="max_cameras_in_use">Je používán maximální počet kamer.</string>
-    <string name="notification_running_click_to_pause">Zapnuta (kliknutím zastavíte)</string>
-    <string name="notification_stopped_click_to_resume">Vypnuta (kliknutím spustíte)</string>
-    <string name="service_toast_keyboard_not_enabled_toast">Použití Klávesnice EVA není povoleno. Chcete-li klávesnici povolit, jděte do průvodce.</string>
-    <!--assorted start-->
+  <!--assorted start-->
 </resources>

@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/wizard_pointer_speed_summary"
+        android:text="@string/wizard_pointer_speed_summary2"
         android:id="@+id/textView17"
         android:layout_marginBottom="10dp"/>
 

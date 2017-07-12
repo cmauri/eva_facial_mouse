@@ -79,8 +79,8 @@
   <string name="dock_toggle_rest_mode">Klidový režim. Umožňuje vám vypnout automatické klikání, např. když chcete číst text nebo zhlédnout video. </string>
   <!--the docking panel end-->
   <!--notification start-->
-  <string name="notification_running_click_to_stop">Zapnuta (kliknutím zastavíte)</string>
-  <string name="notification_stopped_click_to_start">Vypnuta (kliknutím spustíte)</string>
+  <string name="notification_running_click_to_pause">Zapnuta (kliknutím zastavíte)</string>
+  <string name="notification_stopped_click_to_resume">Vypnuta (kliknutím spustíte)</string>
   <string name="notification_stop_confirmation">Zastavit aplikaci EVA Facial Mouse?</string>
   <string name="notification_stop_confirmation_no">Zrušit</string>
   <string name="notification_stop_confirmation_yes">Ano</string>
@@ -203,6 +203,7 @@
   <!--Keyboard related messages end-->
   <!--Service toast start-->
   <!--<string name="service_toast_keyboard_not_enabled_toast2">EVA Keyboard is not enabled. Enable through the following dialog.</string>-->
+  <string name="service_toast_keyboard_not_enabled_toast">Použití Klávesnice EVA není povoleno. Chcete-li klávesnici povolit, jděte do průvodce.</string>
   <string name="service_toast_pointer_stopped_toast">Aplikace EVA se zastavila %1$s, protože nerozpoznala váš obličej. Chcete-li aplikaci znovu spustit, ujistěte se, že svůj obličej vidíte v hledáčku kamery. </string>
   <string name="service_toast_navigation_keyboard_advice">Prohlížeč lze ovládat navigační klávesnicí.</string>
   <string name="service_toast_context_menu_enabled">Kontextové menu zapnuto.</string>

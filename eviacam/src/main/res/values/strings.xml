@@ -165,7 +165,7 @@
         \n5. Choose \'EVA Keyboard\'
     </string>
     <string name="wizard_positioning">Positioning</string>
-    <string name="wizard_positioning_summary">Mount the device facing the face, with the head in a natural position, around 30–50cm.\nThe full face should appear inside the viewer to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face.</string>
+    <string name="wizard_positioning_summary2">Mount the device facing the face, with the head in a natural position, around 30–50cm.\nThe full face should appear inside the viewer to get detected. When this happens, the border turns into red and a cross is drawn on the center of the face. In order to detect your face properly, it should appear uniformly lit.</string>
     <string name="wizard_dock_menu">Dock menu</string>
     <string name="wizard_dock_menu_summary">The Dock Menu on the left edge of the screen allows quick access to a number of functions</string>
     <string name="wizard_home">Home</string>
@@ -179,7 +179,7 @@
     <string name="wizard_keyboard_not_configured">Keyboard not configured</string>
     <string name="wizard_keyboard_not_configured_confirm">Are you sure you want to continue without configuring the keyboard?</string>
     <string name="wizard_pointer_speed">Pointer speed</string>
-    <string name="wizard_pointer_speed_summary">Move your head to move the pointer. Try to reach the whole screen. Adjust speeds if necessary.</string>
+    <string name="wizard_pointer_speed_summary2">Move your head to move the pointer. Try to reach the whole screen. Adjust the speed if necessary until is appropriate for you.</string>
     <string name="wizard_configuration_settings">Configuration settings</string>
     <string name="wizard_configuration_settings_summary">To adjust the speed of the pointer and other settings, go to\nSettings > Accessibility > EVA Facial Mouse > Settings</string>
     <string name="wizard_settings">Settings</string>

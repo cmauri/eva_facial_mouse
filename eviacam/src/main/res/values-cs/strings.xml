@@ -1,0 +1,232 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
+  <!--Do NOT translate-->
+  <!--Description shown in the accessibility service screen-->
+  <string name="service_description">EVA je virtuální myš, kterou ovládáte pohybem hlavy. Pro snímání pohybu používá kameru na přední straně vašeho zařízení. </string>
+  <!--Settings screen start-->
+  <string name="settings_label">Nastavení </string>
+  <string name="settings_motion_settings">Nastavení pohybu</string>
+  <string name="settings_horizontal">Horizontální pohyb</string>
+  <string name="settings_horizontal_speed">Horizontální rychlost</string>
+  <string name="settings_vertical">Vertikální pohyb</string>
+  <string name="settings_vertical_speed">Vertikální rychlost </string>
+  <string name="settings_acceleration">Zrychlení</string>
+  <string name="settings_acceleration_summary">Zrychlení kurzoru. Vypnete nastavením na „0“.</string>
+  <string name="settings_click_settings">Nastavení klikání</string>
+  <string name="settings_detection_settings">Nastavení rozpoznání</string>
+  <string name="settings_never">Nikdy</string>
+  <string name="settings_after_ten_seconds">po 10 vteřinách</string>
+  <string name="settings_after_thirty_seconds">po 30 vteřinách</string>
+  <string name="settings_after_one_minute">po 1 minutě</string>
+  <string name="settings_after_two_minutes">po 2 minutách</string>
+  <string name="settings_after_five_minutes">po 5 minutách</string>
+  <string name="settings_dwell_area">Oblast kurzoru</string>
+  <string name="settings_dwell_area_summary">Nastavení tolerance pohybu kurzoru před kliknutím.</string>
+  <string name="settings_dwell_time">Prodleva mezi zastavením kurzoru a kliknutím.</string>
+  <string name="settings_dwell_time_summary">Po jak dlouhé době dojde ke kliknutí (v desetinách vteřiny).</string>
+  <string name="settings_motion_smoothing">Plynulost pohybu</string>
+  <string name="settings_motion_smoothing_summary">Redukce třesu. Vypnete nastavením na „0“.</string>
+  <string name="settings_motion_threshold">Minimální pohyb</string>
+  <string name="settings_motion_threshold_summary">Minimální délka pohybu hlavou, při které se pohne kurzor.</string>
+  <string name="settings_sound_on_click">Zvukové upozornění při kliknutí</string>
+  <string name="settings_consecutive_clicks">Souvislé klikání</string>
+  <string name="settings_time_without_detection">Vypnut aplikaci EVA, není-li rozpoznán obličej.</string>
+  <string name="settings_interface_settings">Nastavení rozhraní</string>
+  <string name="settings_dock_menu_position">Umístění ovládacích ikonek</string>
+  <string name="settings_dock_menu_position_left">Vlevo</string>
+  <string name="settings_dock_menu_position_right">Vpravo</string>
+  <string name="settings_dock_menu_position_top">Nahoře</string>
+  <string name="settings_dock_menu_position_bottom">Dole</string>
+  <string name="settings_ui_elements_size">Velikost ovládacích ikonek</string>
+  <string name="settings_ui_elements_size_xlarge">Velmi velká</string>
+  <string name="settings_ui_elements_size_large">Velká</string>
+  <string name="settings_ui_elements_size_normal">Normální</string>
+  <string name="settings_ui_elements_size_small">Malá</string>
+  <string name="settings_help">Pomoc</string>
+  <string name="settings_configuration_wizard">Průvodce nastavením</string>
+  <string name="settings_version">Verze</string>
+  <string name="settings_wizard_will_run">Průvodce nastavením se spustí při příštím zapnutí aplikace EVA.</string>
+  <string name="settings_send_anon_error_reports">Posílání anonymních chybových hlášení</string>
+  <string name="settings_advanced">Další nastavení</string>
+  <string name="settings_use_camera2_api">Zapnout API camera2</string>
+  <string name="settings_use_camera2_api_auto">Automaticky</string>
+  <string name="settings_use_camera2_api_yes">Ano (test)</string>
+  <string name="settings_use_camera2_api_no">Ne</string>
+  <string name="settings_lock_speed_settings">Zamknout nastavení rychlosti</string>
+  <!--Settings screen end-->
+  <!--actions start-->
+  <string name="action_click">Kliknout</string>
+  <string name="action_long_click">Kliknout a podržet</string>
+  <string name="action_collapse">Skrýt</string>
+  <string name="action_copy">Kopírovat</string>
+  <string name="action_cut">Vyjmout</string>
+  <string name="action_dismiss">Zrušit</string>
+  <string name="action_expand">Rozbalit</string>
+  <string name="action_paste">Vložit</string>
+  <string name="action_scroll_backward">Zpět</string>
+  <string name="action_scroll_forward">Vpřed</string>
+  <string name="action_select">Vybrat</string>
+  <string name="action_focus">Zaměřit</string>
+  <!--actions end-->
+  <!--the docking panel start-->
+  <string name="dock_back_button">Tlačítko \"Zpět\"</string>
+  <string name="dock_home_button">Tlačítko \"Domů\"</string>
+  <string name="dock_recents_button">Tlačítko \"Naposledy použité aplikace\"</string>
+  <string name="dock_notifications_button">Tlačítko \"Oznámení\"</string>
+  <string name="dock_menu_button">Zobrazit/skrýt ovládací ikonky</string>
+  <string name="dock_softkeyboard_button">Zobrazit klávesnici</string>
+  <string name="dock_toggle_context_menu">Kontextové menu kurzoru </string>
+  <string name="dock_toggle_rest_mode">Klidový režim. Umožňuje vám vypnout automatické klikání, např. když chcete číst text nebo zhlédnout video. </string>
+  <!--the docking panel end-->
+  <!--notification start-->
+  <string name="notification_running_click_to_pause">Zapnuta (kliknutím zastavíte)</string>
+  <string name="notification_stopped_click_to_resume">Vypnuta (kliknutím spustíte)</string>
+  <string name="notification_stop_confirmation">Zastavit aplikaci EVA Facial Mouse?</string>
+  <string name="notification_stop_confirmation_no">Zrušit</string>
+  <string name="notification_stop_confirmation_yes">Ano</string>
+  <string name="notification_settings_label">Nastavení</string>
+  <!--notification end-->
+  <!--OpenCV start-->
+  <string name="opencv_package_installation_failed">Instalace balíčku selhala.</string>
+  <string name="opencv_incompatible">Správce knihovny OpenCV není kompatibilní s touto aplikací. Zkuste ho aktualizovat v Google Play. </string>
+  <string name="opencv_init_error">Neproběhlo řádné spuštění knihovny OpenCV. Aplikace se zavře. </string>
+  <string name="opencv_installation">Instalace správce knihovny OpenCV. </string>
+  <string name="opencv_installation_summary">Aplikace EVA vyžaduje správce knihovny OpenCV. Chcete ho nainstalovat?</string>
+  <string name="opencv_not_ready">Knihovna OpenCV není dostupná. </string>
+  <string name="opencv_installation_in_progress">Probíhá instalace. Chcete vyčkat nebo ji zastavit?</string>
+  <string name="opencv_wait">Vyčkat</string>
+  <string name="opencv_retry">Zkusit znovu</string>
+  <!--OpenCV end-->
+  <!--Crash report (ACRA) start-->
+  <string name="crash_toast_text">Aplikace EVA Facial Mouse přestala fungovat.</string>
+  <string name="crash_dialog_text">Došlo k neočekávané chybě, která vyžaduje ukončení aplikace EVA. Prosím, pomozte nám problém vyřešit zasláním údajů o chybě. Pokud souhlasíte s odesláním dat, klikněte na OK. </string>
+  <string name="crash_dialog_comment_prompt">Můžete přidat i vlastní komentář k tomuto problému:</string>
+  <string name="crash_dialog_ok_toast">Děkujeme!</string>
+  <!--Crash report (ACRA) end-->
+  <!--Slave mode gamepad settings start-->
+  <string name="slave_settings_gamepad_settings">Nastavení herního ovladače</string>
+  <string name="slave_settings_gamepad_location">Umístění herního ovladače</string>
+  <string name="slave_settings_top_left">Nahoře vlevo</string>
+  <string name="slave_settings_bottom_left">Dole vlevo</string>
+  <string name="slave_settings_top_center">Nahoře uprostřed</string>
+  <string name="slave_settings_bottom_center">Dole uprostřed</string>
+  <string name="slave_settings_top_right">Nahoře vpravo</string>
+  <string name="slave_settings_bottom_right">Dole vpravo</string>
+  <string name="slave_settings_label">Nastavení dálkového ovládání (\"slave mode\")</string>
+  <string name="slave_settings_gamepad_interface_settings">Rozhraní herního ovladače</string>
+  <string name="slave_settings_gamepad_transparency">Průhlednost</string>
+  <string name="slave_settings_gamepad_abs_speed">Rychlost absolutního režimu</string>
+  <string name="slave_settings_gamepad_abs_speed_summary">Rychlost při použití absolutního režimu</string>
+  <string name="slave_settings_gamepad_rel_sensitivity">Citlivost v relativním režimu</string>
+  <string name="slave_settings_gamepad_rel_sensitivity_summary">Citlivost při použití relativního režimu (nízká hodnota znamená vysokou citlivost)</string>
+  <string name="slave_settings_gamepad_preferences">Nastavení herního ovladače</string>
+  <string name="slave_settings_mouse_preferences">Nastavení myši</string>
+  <!--Slave mode gamepad settings start-->
+  <!--Wizard start-->
+  <string name="wizard_icon_name">Průvodce aplikací EVA</string>
+  <string name="wizard_next">Další</string>
+  <string name="wizard_back">Zpět</string>
+  <string name="wizard_finish">Dokončit</string>
+  <string name="wizard_prerequisites">Základní požadavky</string>
+  <string name="wizard_install">Instalovat</string>
+  <string name="wizard_keyboard_setup">Nastavení klávesnice</string>
+  <string name="wizard_set_keyboard">
+<![CDATA[1. Jděte do: Nastavení > Jazyk a zadávání \']]>
+\n2. Povolte \'Klávesnici EVA\'
+\n3. Klikněte na \'Výchozí\'
+\n4. Zvolte \'Klávesnici EVA\'</string>
+  <string name="wizard_set_keyboard_lollipop">
+<![CDATA[1. Jděte do: \'Nastavení > Jazyk a zadávání > Výchozí klávesnice > VYBRAT KLÁVESNICI\']]>
+\n2. Povolte \'Klávesnici EVA\'
+\n3. Vraťte se o krok zpět
+\n4. Klikněte na \'Výchozí klávesnice\'
+\n5. Zvolte \'Klávesnici EVA\'</string>
+  <string name="wizard_positioning">Nastavení pozice</string>
+  <string name="wizard_positioning_summary2">Zařízení umístěte 30–50 cm od obličeje. Hlavu držte vzpřímeně.\nV okénku nahoře byste měli vidět celý svůj obličej, jinak nebude rozpoznán. Jakmile bude obličej rozpoznán, rámeček se zbarví červeně a uprostřed obličeje se objeví křížek. Pro správné rozpoznání obličeje je důležité i rovnoměrné osvětlení vašeho obličeje.</string>
+  <string name="wizard_dock_menu">Ovládací ikonky</string>
+  <string name="wizard_dock_menu_summary">Ovládací ikonky na levém okraji displeje umožňují rychlý přístup k několika funkcím.</string>
+  <string name="wizard_home">Domů</string>
+  <string name="wizard_recents">Naposledy použité aplikace</string>
+  <string name="wizard_open_notifications">Zobrazit oznámení</string>
+  <string name="wizard_open_keyboard">Zobrazit klávesnici</string>
+  <string name="wizard_scroll_buttons">Tlačítka navigace</string>
+  <string name="wizard_scroll_buttons_description">Obsah si můžete prohlížet pomocí tlačítek navigace.</string>
+  <string name="wizard_keyboard">Klávesnice</string>
+  <string name="wizard_keyboard_remarks">Většina klávesnic s aplikací EVA nefunguje. Chcete-li aktivovat kompatibilní klávesnici, proveďte následující kroky:</string>
+  <string name="wizard_keyboard_not_configured">Klávesnice není nakonfigurována.</string>
+  <string name="wizard_keyboard_not_configured_confirm">Jste si jisti, že chcete pokračovat bez konfigurace klávesnice?</string>
+  <string name="wizard_pointer_speed">Rychlost kurzoru</string>
+  <string name="wizard_pointer_speed_summary2">Kurzor ovládáte pohybem hlavy. Zkuste kurzor posunout až k okrajům obrazovky. Je to důležité pro rozpoznání vaší přirozené rychlosti pohybu hlavou. Je důležité dbát na rovnoměrné osvětlení obličeje. V případě potřeby můžete rychlost upravit.</string>
+  <string name="wizard_configuration_settings">Konfigurace</string>
+  <string name="wizard_configuration_settings_summary">Pro nastavení rychlosti kurzoru a další možnosti jděte do \nNastavení &gt; Usnadnění &gt; EVA Facial Mouse &gt; Nastavení</string>
+  <string name="wizard_settings">Nastavení</string>
+  <string name="wizard_known_limitations">Omezené funkce</string>
+  <string name="wizard_limitations_summary">Některé funkce zatím nejsou k dispozici kvůli omezením systému Android.
+
+\n- Nelze používat kameru
+
+\n- Na některých zařízeních nelze přijímat hovory
+
+\n- Nelze hrát většinu her
+
+\n- Omezené ovládání aplikací typu Mapy, Google Earth, Galerie a webové prohlížeče
+
+\n- Navigační tlačítka nemusí vždy fungovat (např. u webových prohlížečů). V takovém případě použijte navigační klávesnici (viz níže).</string>
+  <string name="wizard_skip_wizard">Přeskočit průvodce.</string>
+  <string name="wizard_close_wizard_question">Chcete průvodce ukončit?</string>
+  <string name="wizard_eva_not_running">Aplikace EVA je vypnutá.</string>
+  <string name="wizard_eva_not_running_summary">Před spuštěním průvodce je nutné zapnout EVA Facial Mouse.</string>
+  <string name="wizard_trying_to_detect_face">Probíhá identifikace obličeje…</string>
+  <string name="wizard_face_detected">Obličej identifikován.</string>
+  <string name="wizard_pre_click_summary">Chcete-li kliknout, najeďte na příslušné místo displeje a upřeně se na něj zadívejte. Je-li na daném místě možné provést vice než jednu akci, zobrazí se kontextové menu.</string>
+  <string name="wizard_click_enabled_next">Od dalšího kroku již budete zařízení ovládat obličejem.</string>
+  <string name="wizard_to_test_click">Vyzkoušejte si klikání na tomto TLAČÍTKU. Všimněte si, že když kliknete mimo oblast tlačítka, zobrazí se navigační tlačítka.</string>
+  <string name="wizard_button">TLAČÍTKO</string>
+  <string name="wizard_to_continue_make_click">Než budete pokračovat, zkuste na TLAČÍTKO kliknout a kliknout a podržet.</string>
+  <string name="wizard_click_scroll_button_to_continue">Na další krok přejdete kliknutím na tlačítko vpravo dole.</string>
+  <string name="wizard_notification_icon">Ikona oznámení</string>
+  <string name="wizard_notification_icon_summary">Aplikaci EVA zastavíte a znovu spustíte kliknutím na ikonku na liště oznámení nahoře.</string>
+  <string name="wizard_we_finished">Hotovo!</string>
+  <string name="wizard_run_wizard_again">Chcete-li znovu spustit tohoto průvodce, jděte do\nNastavení &gt; Usnadnění&gt; EVA Facial Mouse &gt; Nastavení</string>
+  <string name="wizard_full_enable_after">Všechny funkce aplikace EVA budou po ukončení tohoto průvodce aktivní. </string>
+  <!--Wizard end-->
+  <!--Keyboard related messages begin-->
+  <string name="service_dialog_eva_keyboard_not_enabled">Klávesnice EVA není zapnutá. Spustíte ji v následujícím dialogu.</string>
+  <string name="service_dialog_eva_keyboard_not_selected">Klávesnice EVA není nastavena jako výchozí. Nastavíte ji v následujícím dialogu.</string>
+  <string name="service_dialog_eva_keyboard_gboard_not_selected">V následujícím dialogu zvolte Klávesnici EVA nebo Klávesnici GBoard. </string>
+  <string name="service_dialog_gboard_not_installed">Není nainstalována klávesnice Google (GBoard). Chcete ji instalovat?</string>
+  <string name="service_dialog_gboard_not_enabled">Použití klávesnice Google (GBoard) není povoleno. Klávesnici povolíte v následujícím dialogu.</string>
+  <string name="service_dialog_ime_action_help_dont_remind">Znovu nepřipomínat.</string>
+  <string name="service_dialog_ime_action_help_not_now">Teď ne</string>
+  <string name="service_dialog_context_menu_help_msg">Kontextové menu na této položce vám umožňuje si vybrat z více akcí. Zapnete ho a vypnete kliknutím na blikající ikonku.</string>
+  <string name="service_dialog_context_menu_help_dont_remind">Znovu nepřipomínat.</string>
+  <!--Keyboard related messages end-->
+  <!--Service toast start-->
+  <!--<string name="service_toast_keyboard_not_enabled_toast2">EVA Keyboard is not enabled. Enable through the following dialog.</string>-->
+  <string name="service_toast_keyboard_not_enabled_toast">Použití Klávesnice EVA není povoleno. Chcete-li klávesnici povolit, jděte do průvodce.</string>
+  <string name="service_toast_pointer_stopped_toast">Aplikace EVA se zastavila %1$s, protože nerozpoznala váš obličej. Chcete-li aplikaci znovu spustit, ujistěte se, že svůj obličej vidíte v hledáčku kamery. </string>
+  <string name="service_toast_navigation_keyboard_advice">Prohlížeč lze ovládat navigační klávesnicí.</string>
+  <string name="service_toast_context_menu_enabled">Kontextové menu zapnuto.</string>
+  <string name="service_toast_context_menu_disabled">Kontextové menu vypnuto.</string>
+  <string name="service_toast_rest_mode_enabled">Klidový režim zapnutý.</string>
+  <string name="service_toast_rest_mode_disabled">Klidový režim vypnutý.</string>
+  <!--Service toast end-->
+  <!--Service camera start-->
+  <string name="service_camera_no_access">Nelze použít kameru. Možná ji používá jiná aplikace. </string>
+  <string name="service_camera_no_available">Na zařízení nebyla nalezena kamera. </string>
+  <string name="service_camera_disabled_error">Uživatel není oprávněn používat kameru tohoto zařízení.</string>
+  <string name="service_camera_error">Aplikace nemá přístup ke kameře zařízení. </string>
+  <!--Service camera end-->
+  <!--launcher activity start-->
+  <string name="launcher_how_to_run">Chcete-li použít aplikaci EVA Facial Mouse, povolte tuto službu v nastavení Usnadnění. </string>
+  <string name="launcher_open_a11y_settings">Otevřít nastavení Usnadnění.</string>
+  <string name="launcher_dont_remember_again">Příště nepřipomínat.</string>
+  <string name="launcher_no_accessibility_settings">Nelze otevřít nastavení Usnadnění.\n\nZkuste nastavení otevřít manuálně:\n\nNastavení &gt; Usnadnění &gt; EVA Facial Mouse\n\n, a zapněte službu EVA Facial Mouse.</string>
+  <string name="launcher_done">Hotovo</string>
+  <!--launcher activity end-->
+  <!--assorted end-->
+  <string name="close">Zavřít</string>
+  <string name="camera_no_longer_available">Kamera zařízení není momentálně k dispozici.</string>
+  <string name="max_cameras_in_use">Je používán maximální počet kamer.</string>
+  <!--assorted start-->
+</resources>

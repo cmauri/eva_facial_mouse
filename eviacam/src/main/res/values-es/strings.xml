@@ -19,7 +19,7 @@
  ** along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Description shown in the accessibility service screen -->
     <string name="service_description">EVA es un emulador de ratón que permite mover el puntero con la cabeza. Hace el seguimiento del rostro utilizando la cámara frontal del dispositivo.</string>
 
@@ -137,7 +137,7 @@
     <string name="wizard_icon_name">EVA Asistente</string>
     <string name="wizard_back">Atrás</string>
     <string name="wizard_positioning">Posicionamiento</string>
-    <string name="wizard_positioning_summary">Instale el dispositivo frente a la cara, con la cabeza en posición natural, a unos 30–50cm.\nLa cara completa debe aparecer dentro del visor para ser detectada. Cuando esto sucede, el marco pasa a rojo y una cruz indica el centro del rostro.</string>
+    <string name="wizard_positioning_summary2">Instale el dispositivo frente a la cara, con la cabeza en posición natural, a unos 30–50cm.\nLa cara completa debe aparecer dentro del visor para ser detectada. Cuando esto sucede, el marco pasa a rojo y una cruz indica el centro del rostro. Para detectar el rostro correctamente éste ha de aparecer uniformemente iluminado.</string>
     <string name="wizard_configuration_settings">Opciones de configuración</string>
     <string name="wizard_configuration_settings_summary">La velocidad del puntero y otros parámetros pueden ajustarse desde\nAjustes > Accesibilidad> EVA Facial Mouse > Ajustes</string>
     <string name="settings_configuration_wizard">Asistente de configuración</string>
@@ -210,7 +210,7 @@
     <string name="service_toast_rest_mode_enabled">Modo Reposo activado</string>
     <string name="service_toast_rest_mode_disabled">Modo Reposo desactivado</string>
     <string name="wizard_pointer_speed">Velocidad del puntero</string>
-    <string name="wizard_pointer_speed_summary">Mueva la cabeza para mover el puntero. Trate de alcanzar toda la pantalla. Ajuste las velocidades si es preciso.</string>
+    <string name="wizard_pointer_speed_summary2">Mueva la cabeza para mover el puntero. Trate de alcanzar toda la pantalla. Si es preciso, ajuste la velocidad hasta que le resulte apropiada.</string>
     <string name="wizard_button">Botón</string>
     <string name="launcher_how_to_run">Para ejecutar EVA Facial Mouse, active el servicio en los ajustes de accessibilidad</string>
     <string name="launcher_dont_remember_again">No volver a recordar</string>

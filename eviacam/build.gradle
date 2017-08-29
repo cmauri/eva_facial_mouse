@@ -131,6 +131,14 @@ android {
             buildConfigField "String", "BUILD_ORIGIN", getBuildOrigin()
         }
     }
+    productFlavors {
+        huawei {
+            applicationIdSuffix ".huawei"
+            versionNameSuffix "-huawei"
+        }
+        play {
+        }
+    }
 }
 
 

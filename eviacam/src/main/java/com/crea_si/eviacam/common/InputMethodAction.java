@@ -40,9 +40,9 @@ import com.crea_si.input_method_aidl.IClickableIME;
 
 public class InputMethodAction implements ServiceConnection {
     
-    private static final String REMOTE_PACKAGE= "com.crea_si.eviacam.service";
+    private static final String REMOTE_PACKAGE= BuildConfig.APPLICATION_ID;;
     private static final String REMOTE_ACTION= "com.crea_si.softkeyboard.RemoteBinderService";
-    private static final String IME_NAME= REMOTE_PACKAGE + "/com.crea_si.softkeyboard.SoftKeyboard";
+    private static final String IME_NAME= REMOTE_PACKAGE;
     
     // period (in milliseconds) to try to rebind again to the IME
     private static final int BIND_RETRY_PERIOD = 2000;
@@ -213,6 +213,6 @@ public class InputMethodAction implements ServiceConnection {
     public static boolean isEnabledCustomKeyboard (Context c) {
         String pkgName= Settings.Secure.getString(c.getContentResolver(),
                                                   Settings.Secure.DEFAULT_INPUT_METHOD);
-        return pkgName.contentEquals(IME_NAME);
+        return null!= pkgName && pkgName.contains(IME_NAME);
     }
 }

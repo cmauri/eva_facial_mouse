@@ -2,7 +2,9 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
   <!--Do NOT translate-->
   <!--Description shown in the accessibility service screen-->
-  <string name="service_description">EVA je virtuální myš, kterou ovládáte pohybem hlavy. Pro snímání pohybu používá kameru na přední straně vašeho zařízení. </string>
+  <string name="service_summary">EVA je virtuální myš, kterou ovládáte pohybem hlavy</string>
+  <string name="service_description_old">EVA je virtuální myš, kterou ovládáte pohybem hlavy. Pro snímání pohybu používá kameru na přední straně vašeho zařízení. </string>
+
   <!--Settings screen start-->
   <string name="settings_label">Nastavení </string>
   <string name="settings_motion_settings">Nastavení pohybu</string>

@@ -25,7 +25,8 @@
     <string name="app_name" translatable="false">EVA Facial Mouse</string>
 
     <!-- Description shown in the accessibility service screen -->
-    <string name="service_description">EVA is a mouse emulator that moves the pointer as you move your head. It tracks your face using the frontal camera of your device.</string>
+    <string name="service_summary">EVA is a mouse emulator that moves the pointer as you move your head</string>
+    <string name="service_description">EVA is a mouse emulator that moves the pointer as you move your head. It tracks your face using the frontal camera of your device.\nIt needs to:\n- Observe your actions: to detect when the screen changes and update scroll buttons.\n- Retrieve windows content: to perform actions on other applications.\n- Turn on Explore by Touch: to dismiss the Action Menu when screen touched.\n- Turn on enhanced web accessibility: to provide the best possible experience when using the web browser.</string>
 
     <!-- Settings screen start -->
     <string name="settings_label">EVA settings</string>

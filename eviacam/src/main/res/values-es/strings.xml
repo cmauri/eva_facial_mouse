@@ -21,7 +21,9 @@
 -->
 <resources>
     <!-- Description shown in the accessibility service screen -->
-    <string name="service_description">EVA es un emulador de ratón que permite mover el puntero con la cabeza. Hace el seguimiento del rostro utilizando la cámara frontal del dispositivo.</string>
+    <string name="service_summary">EVA es un emulador de ratón que permite mover el puntero con la cabeza</string>
+    <string name="service_description">EVA es un emulador de ratón que permite mover el puntero con la cabeza. Hace el seguimiento del rostro utilizando la cámara frontal del dispositivo.\nNecesita:\n- Observar tus acciones: para detectar cuándo cambia la pantalla y actualizar los botones de desplazamiento.\n- Recuperar el contenido de las ventanas: para ejecutar acciones en otras aplicaciones.\n- Activar la Exploración táctil: para cerrar el Menú de Acciones al tocar la pantalla.\n- Activar la accesibilidad web mejorada: para proporcionar la mejor experiencia de uso posible al utilizar el navegador web.</string>
+
 
     <!-- Label for the preferences screen -->
     <string name="settings_label">Ajustes de EVA</string>

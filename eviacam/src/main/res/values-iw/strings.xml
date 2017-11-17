@@ -2,7 +2,9 @@
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
    <!--Do NOT translate-->
    <!--Description shown in the accessibility service screen-->
-   <string name="service_description">עכבראש הנה תכנית הדמייה להזזת העכבר עם הזזת הראש. התכנית עוקבת אחר הפנים שלך בעזרת המצלמה הקדמית של ההתקן שלך.</string>
+   <string name="service_summary">עכבראש הנה תכנית הדמייה להזזת העכבר עם הזזת הראש</string>
+   <string name="service_description_old">עכבראש הנה תכנית הדמייה להזזת העכבר עם הזזת הראש. התכנית עוקבת אחר הפנים שלך בעזרת המצלמה הקדמית של ההתקן שלך.</string>
+
    <!--Label for the preferences screen-->
    <string name="settings_label">הגדרות עכבראש</string>
    <!--These are labels and summaries for settings-->

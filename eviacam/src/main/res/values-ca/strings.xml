@@ -21,7 +21,8 @@
 -->
 <resources>
     <!-- Description shown in the accessibility service screen -->
-    <string name="service_description">EVA és un emulador de ratolí que permet moure el punter amb el cap. Fa el seguiment del rostre emprant la càmera frontal del dispositiu.</string>
+    <string name="service_summary">EVA és un emulador de ratolí que permet moure el punter amb el cap</string>
+    <string name="service_description">EVA és un emulador de ratolí que permet moure el punter amb el cap. Fa el seguiment del rostre emprant la càmera frontal del dispositiu.\nNecessita:\n- Observar les teves accions: per detectar quan canvia la pantalla i actualitzar els botons de desplaçament.\n- Recuperar el contingut de les finestres: per executar accions en altres aplicacions.\n- Per activar l\'Exploració tàctil: per tancar el Menú d\'Accions en tocar la pantalla.\n- Activar l\'accessibilitat web millorada: per proporcionar la millor experiència d\'ús possible en utilitzar el navegador web.</string>
 
     <!-- Label for the preferences screen -->
     <string name="settings_label">Ajustos d\'EVA</string>

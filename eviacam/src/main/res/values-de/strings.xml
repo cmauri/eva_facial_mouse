@@ -92,7 +92,9 @@
     <string name="settings_time_without_detection">EVA deaktivieren wenn kein Gesicht erkannt wurde</string>
     <string name="settings_wizard_will_run">Der Assistent wird beim nächsten Start von EVA ausgeführt</string>
     <string name="wizard_skip_wizard">Assistent überspringen</string>
-    <string name="service_description">EVA ist ein Maus-Emulator, der einen Zeiger entsprechend deiner Kopfbewegungen steuert. Dabei erkennt und folgt es deinem Gesicht mit Hilfe der Kamera.</string>
+    <string name="service_summary">EVA ist ein Maus-Emulator, der einen Zeiger entsprechend deiner Kopfbewegungen steuert</string>
+    <string name="service_description_old">EVA ist ein Maus-Emulator, der einen Zeiger entsprechend deiner Kopfbewegungen steuert. Dabei erkennt und folgt es deinem Gesicht mit Hilfe der Kamera.</string>
+
     <string name="wizard_keyboard_remarks">Die meisten Tastaturen funktionieren nicht mit EVA. Um eine unterstützte Tastatur zu verwenden:</string>
     <string name="wizard_set_keyboard_lollipop">1. Öffne: \'Einstellungen > Sprache &amp; Eingabe > Aktuelle Tastatur > Tastatur auswählen\'>
          \n2. Aktiviere \'EVA Tastatur\'

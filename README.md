@@ -8,7 +8,7 @@ Based on the movement of the face captured through the **front camera**, the app
 [Watch the video (2:30)](https://www.youtube.com/watch?v=ED4EgNoB8hs)
 
 ## Quick Start
-[![Android App on Google Play](https://raw.githubusercontent.com/cmauri/eva_facial_mouse/develop/images/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.crea_si.eviacam.service)
+[![Android App on Google Play](https://raw.githubusercontent.com/cmauri/eva_facial_mouse/develop/images/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.crea_si.eva_facial_mouse)
 
 ## For whom is EVA?
 
